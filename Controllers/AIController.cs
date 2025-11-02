@@ -2,6 +2,7 @@ using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Services;
 using AIPlusBackend.Utils;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using System.Threading;
 
 namespace AIPlusBackend.Controllers
@@ -29,14 +30,21 @@ namespace AIPlusBackend.Controllers
         }
 
         [HttpPost("AskByWorkspace/{ID}")]
-        public async IAsyncEnumerable<string> AskByWorkspace(int ID)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task AskByWorkspace(int ID, [FromBody] AskByWorkspaceRequest body)
         {
-            var bearerToken = Request.Headers.Authorization.FirstOrDefault();
-            var token = bearerToken?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase).Trim();
+            HttpContext.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>()?.DisableBuffering();
+            Response.ContentType = "text/event-stream";
+            Response.Headers["Cache-Control"] = "no-cache";
+            Response.Headers["X-Accel-Buffering"] = "no";
+            Response.Headers["Connection"] = "keep-alive";
 
-            await foreach (var chunk in utils.AskByWorkspace(ID, token))
+            await foreach (var chunk in utils.AskByWorkspace(ID, body, token))
             {
-                yield return chunk;
+                var bytes = Encoding.UTF8.GetBytes($"data: {chunk}\n\n");
+                await Response.Body.WriteAsync(bytes);
+                await Response.Body.FlushAsync();
             }
         }
     }

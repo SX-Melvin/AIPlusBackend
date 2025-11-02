@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NLog;
 using RestSharp;
+using System.Text;
 
 namespace AIPlusBackend.Utils
 {
@@ -34,7 +35,7 @@ namespace AIPlusBackend.Utils
             return result;
         }
 
-        public async IAsyncEnumerable<string> AskByWorkspace(int ID, string? token = null)
+        public async IAsyncEnumerable<string> AskByWorkspace(int ID, AskByWorkspaceRequest body, string? token = null)
         {
             if(token == null)
             {
@@ -43,12 +44,12 @@ namespace AIPlusBackend.Utils
             }
 
             using var httpClient = new HttpClient();
+            _logger.Info(token);
 
-            // Create request
             var request = new HttpRequestMessage(HttpMethod.Post, $"{config.Value.Url}/api/workspaces/{ID}/chat/stream");
+            request.Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            // Send and start reading headers immediately (don’t buffer the body)
             var response = await httpClient.SendAsync(
                 request,
                 HttpCompletionOption.ResponseHeadersRead
@@ -65,7 +66,7 @@ namespace AIPlusBackend.Utils
             {
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
-                Console.WriteLine(JsonConvert.SerializeObject(line));
+                _logger.Info(JsonConvert.SerializeObject(line));
                 yield return line; // ← each chunk returned immediately
             }
         }
