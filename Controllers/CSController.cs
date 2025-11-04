@@ -1,4 +1,5 @@
 using AIPlusBackend.Dto.AIPlus;
+using AIPlusBackend.Dto.CSDB;
 using AIPlusBackend.Services;
 using AIPlusBackend.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -9,17 +10,17 @@ namespace AIPlusBackend.Controllers
 {
     [ApiController]
     [Route("Api/[controller]")]
-    public class AIController(AIPlusService service, AIPlusUtils utils) : ControllerBase
+    public class CSController(CSService service) : ControllerBase
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        [HttpPost("Login")]
-        public async Task<AIPlusLoginResponse> Login()
+        [HttpPost("GetNodePermission")]
+        public async Task<List<GetNodePermissionsResponse>> Login([FromBody] List<GetNodePermissionsRequest> body)
         {
-            var result = new AIPlusLoginResponse();
+            var result = new List<GetNodePermissionsResponse>();
             try
             {
-                return await service.Login();
+                return await service.GetPermissions(body);
             }
             catch (Exception ex)
             {

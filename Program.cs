@@ -1,7 +1,8 @@
 using AIPlusBackend.Configurations;
+using AIPlusBackend.Dto;
 using AIPlusBackend.Services;
 using AIPlusBackend.Utils;
-using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 
 var config = new ConfigurationBuilder()
@@ -12,6 +13,10 @@ var config = new ConfigurationBuilder()
 NLog.LogManager.Configuration = new NLogLoggingConfiguration(config.GetSection("NLog"));
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register EF Core with SQL Server
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.Configure<AIPlusConfiguration>(
     builder.Configuration.GetSection("AIPlus"));
@@ -30,6 +35,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<AIPlusService>();
 builder.Services.AddScoped<AIPlusUtils>();
+builder.Services.AddScoped<CSService>();
+builder.Services.AddScoped<CSDBUtils>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
