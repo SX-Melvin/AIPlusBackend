@@ -21,7 +21,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", builder =>
     {
         builder
-            .WithOrigins("http://localhost:5500", "null")
+            .WithExposedHeaders("Content-Type", "Cache-Control")
+            .WithOrigins("http://192.168.1.144", "null")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -35,10 +36,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-app.UseCors("AllowAll");
-app.UseSwagger();
 app.UseSwaggerUI();
+app.UseSwagger();
+
+app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 
