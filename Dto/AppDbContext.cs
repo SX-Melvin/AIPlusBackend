@@ -9,12 +9,16 @@ namespace AIPlusBackend.Dto
             : base(options) { }
 
         public DbSet<DTreeACL> DTreeACLs { get; set; }
+        public DbSet<KUAF> KUAFs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Exclude KUAFs Table From Migrations
             modelBuilder.Entity<DTreeACL>().HasNoKey();
             modelBuilder.Entity<DTreeACL>().ToTable(nameof(DTreeACL), t => t.ExcludeFromMigrations());
+            
+            modelBuilder.Entity<KUAF>().HasNoKey();
+            modelBuilder.Entity<KUAF>().ToTable(nameof(KUAF), t => t.ExcludeFromMigrations());
         }
     }
 }

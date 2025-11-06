@@ -17,11 +17,24 @@ namespace AIPlusBackend.Services
                 
                 foreach (var item in body)
                 {
+                    // Check user permission
+                    var permission = MapUserPermission.GetPermissionFromACL(acls, item.UserId);
+
+                    // Check group permission
+                    if (permission == null)
+                    {
+                        var kuaf = csdbUtils.GetKUAFByID(item.UserId);
+                        if(kuaf != null && kuaf.GroupID != null)
+                        {
+                            permission = MapUserPermission.GetPermissionFromACL(acls, kuaf.GroupID.Value);
+                        }
+                    }
+
                     result.Add(new()
                     {
                         NodeId = item.NodeId,
                         UserId = item.UserId,
-                        Permission = MapUserPermission.GetPermissionFromACL(acls, item.UserId)
+                        Permission = permission
                     });
                 }
             }
