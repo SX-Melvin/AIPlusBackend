@@ -15431,14 +15431,6 @@ csui.define("csui/lib/othelp", [], function () {
           // Explorer Insight START
           console.log("onRender Start");
           var globalthis = this;
-          const script = document.createElement("script");
-          script.src = "/img/csui/themes/carbonfiber/marked.min.js";
-          script.onload = () => {
-            console.log("Marked.js loaded!");
-            // You can now safely use `marked`
-            console.log(marked.parse("# Hello **world**"));
-          };
-          document.body.appendChild(script);
 
           function showAviator(){
               // Define the key you want to remove
@@ -15452,7 +15444,7 @@ csui.define("csui/lib/othelp", [], function () {
               } else {
                   console.log(`Key "${key}" does not exist.`);
               }
-              console.log("1");
+              
               let that = globalthis;
               console.log(that)
               var botChatCounter = 0;
@@ -16349,6 +16341,7 @@ csui.define("csui/lib/othelp", [], function () {
                     },
                     finishMessageBox: function (msgId) {
                       document.querySelector(`#${msgId} .msg-container`).style.display = "flex";
+                      document.querySelector(`#${msgId} .msg-text`).innerHTML = marked.parse(document.querySelector(`#${msgId} .msg-text`).textContent);
                     }
                   }
                   var AIPlusAPI = {
@@ -16356,6 +16349,8 @@ csui.define("csui/lib/othelp", [], function () {
                       if(id == "NONE") {
                         id = 2000;
                       }
+                      
+                      appendMessage(BOT_NAME, BOT_IMG, 'loading');
 
                       const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${id}/chat/stream`, {
                         method: "POST",
@@ -16376,7 +16371,6 @@ csui.define("csui/lib/othelp", [], function () {
                       const decoder = new TextDecoder("utf-8");
                       let buffer = "";
                       let msgId = null;
-                      appendMessage(BOT_NAME, BOT_IMG, 'loading');
                     
                       // Read chunks as they arrive
                       while (true) {
@@ -16405,12 +16399,10 @@ csui.define("csui/lib/othelp", [], function () {
                                 } else {
                                   AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
                                 }
-
                               } else if(data.type == 'done') {
                                 if(document.getElementById("botloading")) {
                                   document.getElementById("botloading").remove();
                                 }
-                                AIPlusUtils.finishMessageBox(`msg-${msgId}`);
                               } else if(data.type == 'error') {
                                 console.error(data.error);
                                 alert(data.error);
@@ -16423,8 +16415,9 @@ csui.define("csui/lib/othelp", [], function () {
                             continue;
                           }
                         }
-        
                       }
+
+                      AIPlusUtils.finishMessageBox(`msg-${msgId}`);
                     },
                     login: function() {
                       return fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {
@@ -16492,83 +16485,43 @@ csui.define("csui/lib/othelp", [], function () {
                       return;
                   } else {
                       const AviatorButtonElement = document.createElement('otc-button');
-                      // AviatorButtonElement.className = "ot-btn w-100 ot-icon ot-icon--is-header-icon ot-icon--is-styleable-icon ot-icon--appearance-default ot-header__item";
-
-                      // <button class="ot-btn w-100 ot-icon ot-icon--is-header-icon ot-icon--is-styleable-icon ot-icon--appearance-default ot-header__item" id="" aria-label="Extended ECM Favorites">
-                      // </button>
-                      let htmlContent = `
-                          <div style="contain:layout"
-                          <button class="ot-btn w-100 ot-icon ot-icon--is-header-icon ot-icon--is-styleable-icon ot-icon--appearance-default ot-header__item" id="" aria-label="Extended ECM Favorites">
-                              <svg width="22px" height="22px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" stroke="#ffffff" stroke-width="30.72">
-                                  <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0"></circle>
-                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="8.192"></g><g id="SVGRepo_iconCarrier"><path fill="#ffffff" d="M273.536 736H800a64 64 0 0 0 64-64V256a64 64 0 0 0-64-64H224a64 64 0 0 0-64 64v570.88L273.536 736zM296 800 147.968 918.4A32 32 0 0 1 96 893.44V256a128 128 0 0 1 128-128h576a128 128 0 0 1 128 128v416a128 128 0 0 1-128 128H296z"></path><path fill="#ffffff" d="M512 499.2a51.2 51.2 0 1 1 0-102.4 51.2 51.2 0 0 1 0 102.4zm192 0a51.2 51.2 0 1 1 0-102.4 51.2 51.2 0 0 1 0 102.4zm-384 0a51.2 51.2 0 1 1 0-102.4 51.2 51.2 0 0 1 0 102.4z"></path></g>
-                                  <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5"></circle>
-                              </svg>
-                          </button>
-                          </div>
-                          `;
-
-                      // Insert the HTML inside the target element
-                      // AviatorButtonElement.innerHTML = htmlContent;
-                      // AviatorButtonElement.insertAdjacentHTML("beforeend", htmlContent);
-
-                      // if (AviatorButtonElement.shadowRoot) {
-                      //     console.log("This element has a shadow DOM");
-                      //     AviatorButtonElement.shadowRoot.innerHTML = htmlContent;
-                      // } else {
-                      //     console.log("No shadow DOM found");
-                      //     //AviatorButtonElement.attachShadow({ mode: "open" }); // Create shadow root
-                      //     AviatorButtonElement.innerHTML = htmlContent;
-
-                      // }
-                      
-
-                      // AviatorButtonElement.textContent = 'Explorer Insight';
                       AviatorButtonElement.id = 'aviator-icon';
-                      // Set attributes
                       AviatorButtonElement.setAttribute("tabindex", "0");
                       AviatorButtonElement.setAttribute("headeritem", "");
-
-                      // AviatorButtonElement.setAttribute("arialabel", "Explorer Insights");
                       AviatorButtonElement.setAttribute("icon", "csui_header:csui_li_header_aviator42");
                       AviatorButtonElement.setAttribute("iconappearance", "default");
-                      //AviatorButtonElement.setAttribute("slot", "rightToolbar");
                       AviatorButtonElement.setAttribute("slot", "beforeOverflow");
                       AviatorButtonElement.setAttribute("title", "Aviator");
-                      //AviatorButtonElement.setAttribute("classname", "csui-iwatch");
                       AviatorButtonElement.style.borderRadius = "16px"; // Setting inline style
-                  
-                      //const buttonInsideShadow = AviatorButtonElement.shadowRoot.querySelector('div'); // Select elements inside Shadow DOM
-                      //console.log(buttonInsideShadow);
-
+                      
+                      const script = document.createElement("script");
+                      script.src = "/img/csui/themes/carbonfiber/marked.min.js";
 
                       const searchIcon = Menuelement.querySelectorAll('otc-button')[0];
-                      console.log("searchIcon");
                       Menuelement.insertBefore(AviatorButtonElement, searchIcon);
-                      console.log("AviatorButtonElement");
+                      AviatorButtonElement.appendChild(script);
+
                       AviatorButtonElement.addEventListener('click', function() {
-                          var person_name = globalthis.options.context._user.attributes.name;
-                          var thisticket = globalthis.options.context._user.connector.connection.session.ticket;
-                          var person_img = globalthis.options.context._user.attributes.photo_url;
-                          showAviator();
+                        var person_name = globalthis.options.context._user.attributes.name;
+                        var thisticket = globalthis.options.context._user.connector.connection.session.ticket;
+                        var person_img = globalthis.options.context._user.attributes.photo_url;
+                        showAviator();
                       });
                   }
               } else {
-                  setTimeout(addAviatorElement, 1000); // Retry after 1 second (adjust delay as needed)
+                  setTimeout(addAviatorElement, 1000);
               }
           }
 
           function checkForMenuElement() {
-            //adjust according to the current csui
               var Menuelement = document.getElementById('csui_controls_app.header_app.header.controls_user.profile_user.profile.view_7_control');
               
               if (Menuelement) {
                   Menuelement.addEventListener('click', function() {
                       addAviatorElement();             
                   });
-                  // fetchData(); // Call the function to fetch data
               } else {
-                  setTimeout(checkForMenuElement, 1000); // Retry after 1 second (adjust delay as needed)
+                  setTimeout(checkForMenuElement, 1000);
               }
               
               addAviatorElementAsIcon();
