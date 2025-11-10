@@ -15431,35 +15431,14 @@ csui.define("csui/lib/othelp", [], function () {
           // Explorer Insight START
           console.log("onRender Start");
           var globalthis = this;
-
-
-          async function fetchData() {
-            //const url = new URL('http://192.168.1.153:5112/chat/retrieveSessionIDandTitleandMessage');
-            const url = new URL('http://192.168.1.144:5112/chat/retrieveSessionIDandTitleandMessage');
-            const params = {
-              "user_ID": globalthis.options.context._user.attributes.id.toString()
-            };
-          
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-            console.log(url);
-            var response;
-            var data;
-          
-            try {
-                response = await fetch(url);
-                data = await response.json(); // Assuming the response is JSON
-              if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-              } 
-            } catch (error) {
-              console.error('There was a problem with the fetch operation:', error);
-            } finally {
-                if (response.ok) {
-                    sessionStorage.setItem("ExplorerInsightHistory", JSON.stringify(data, null, 2));
-                    // Iterating over the object and printing the values
-            }
-          }
-        }
+          const script = document.createElement("script");
+          script.src = "/img/csui/themes/carbonfiber/marked.min.js";
+          script.onload = () => {
+            console.log("Marked.js loaded!");
+            // You can now safely use `marked`
+            console.log(marked.parse("# Hello **world**"));
+          };
+          document.body.appendChild(script);
 
           function showAviator(){
               // Define the key you want to remove
@@ -15484,7 +15463,6 @@ csui.define("csui/lib/othelp", [], function () {
               console.log(ticket)
               const STOP_IMG = "/img/csui/themes/carbonfiber/image/icons/stop_circle.svg"
               const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/toolbar_copy.svg"
-              // const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/icons8-copy.png"
               const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/generate.svg"
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/Group_22.svg";
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
@@ -15600,60 +15578,36 @@ csui.define("csui/lib/othelp", [], function () {
                 let userTextDIvEl = document.getElementById(`usertext${botChatCounter}`);
 
                 if(botChatDivEl){
-                    botChatDivEl.addEventListener("click", copyText);
-                    function copyText(e) {
-                        e.preventDefault();
-                        e.stopImmediatePropagation();
-                        console.log()
-                        const el = document.createElement("textarea");
-                        el.value = botChatTextDIvEl.innerHTML;
-                        document.body.appendChild(el);
-                        el.select();
-                        document.execCommand("copy");
-                        document.body.removeChild(el);
-                    }
-                    botChatDivElGenerate.addEventListener("click", regenerateResponse);
-                    function regenerateResponse(e) {
-                        e.preventDefault();
-                        e.stopImmediatePropagation();
-                        // Select the form element
-                        document.getElementById('submitquestion').style.display = 'none';
+                  botChatDivEl.addEventListener("click", copyText);
+                  function copyText(e) {
+                      e.preventDefault();
+                      e.stopImmediatePropagation();
+                      console.log()
+                      const el = document.createElement("textarea");
+                      el.value = botChatTextDIvEl.innerHTML;
+                      document.body.appendChild(el);
+                      el.select();
+                      document.execCommand("copy");
+                      document.body.removeChild(el);
+                  }
 
-                        document.getElementById('chatbotstop').style.display = '';
+                  botChatDivElGenerate.addEventListener("click", regenerateResponse);
 
+                  function regenerateResponse(e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.getElementById('submitquestion').style.display = 'none';
+                    document.getElementById('chatbotstop').style.display = '';
                     let botChatDivElStop = document.getElementById(`chatbotstop`);
-                    botChatDivElStop.addEventListener("click", stopResponse2);
-                    function stopResponse2(e) {
-                        e.preventDefault();
-                        e.stopImmediatePropagation();
+                    console.log(userTextDIvEl);
+                    appendMessage(PERSON_NAME, PERSON_IMG, "right", userTextDIvEl.innerHTML);
+                    var type = "QUERY";
+                    botResponse(userTextDIvEl.innerHTML, type, "NONE");
+                  }
 
-                        if (globalsocket.readyState === WebSocket.OPEN) {
-                            document.getElementById('submitquestion').style.display = '';
-                            document.getElementById('submitquestion').disabled = true;
-
-                            document.getElementById('chatbotstop').style.display = 'none';
-                            document.getElementById("botloading").remove();
-                            appendMessage(BOT_NAME, BOT_IMG, "left", "");
-                            globalsocket.close(1000, 'Normal Closure'); // 1000 is the normal closure code
-                        } else {
-                            document.getElementById('submitquestion').style.display = '';
-                            document.getElementById('submitquestion').disabled = true;
-
-                        document.getElementById('chatbotstop').style.display = 'none';
-                            document.getElementById("botloading").remove();
-                            appendMessage(BOT_NAME, BOT_IMG, "left", "");
-                            console.log('WebSocket is not open.');
-                            globalsocket.close(1000, 'Normal Closure'); // 1000 is the normal closure code
-                            
-                        }
-                    }
-                        console.log(userTextDIvEl);
-                        appendMessage(PERSON_NAME, PERSON_IMG, "right", userTextDIvEl.innerHTML);
-                        var type = "QUERY";
-                        botResponse(userTextDIvEl.innerHTML, type, "NONE");
-                    }
-                    botChatCounter++;
+                  botChatCounter++;
                 }
+
                 msgerChat.scrollTop += 500;
                 return uniqueId;
               }
@@ -16139,8 +16093,6 @@ csui.define("csui/lib/othelp", [], function () {
                       e.preventDefault();
                       e.stopImmediatePropagation();
                       const target = e.target;
-                      console.log(e);
-                      console.log(document.getElementById("chatarea").scrollHeight);
                       document.getElementById("chatarea").style.height = (document.getElementById("chatarea").scrollHeight) + "px";
           
                       // Get the `maxlength` attribute
@@ -16155,56 +16107,47 @@ csui.define("csui/lib/othelp", [], function () {
                       if(document.getElementById("submitquestion").disabled == true)
                       {
                           document.getElementById("submitquestion").disabled = false;
-                          // document.getElementById("submitquestion").style.background = "#232e72";
                       }
                       if(currentLength == 0)
                       {
                           document.getElementById("submitquestion").disabled = true;
-                          // document.getElementById("submitquestion").style.background = "#999";
                       }
                       }
                   });
       
-                  //const msgerForm = get(".msger-inputarea");
                   const msgerInput = get(".msger-input");
-                  //const msgerInput = document.getElementById("chatarea");
-                  //console.log(msgerInput);
 
-                  console.log("attaching submit question click event")
                   document.getElementById("submitquestion").addEventListener("click", event => {
                       event.preventDefault();
                       event.stopImmediatePropagation();
-                      // Select the form element
-      
-                      document.getElementById('submitquestion').style.display = 'none';
-      
-                      // Create a new button element
-                      document.getElementById('chatbotstop').style.display = '';
+
                       let botChatDivElStop = document.getElementById(`chatbotstop`);
-                      botChatDivElStop.addEventListener("click", stopResponse2);
-                      function stopResponse2(e) {
-                          e.preventDefault();
-                          e.stopImmediatePropagation();
-      
-                          if (globalsocket.readyState === WebSocket.OPEN) {
-                              document.getElementById('submitquestion').style.display = '';
-                              document.getElementById('submitquestion').disabled = true;
-                              document.getElementById("botloading").remove();
-                              appendMessage(BOT_NAME, BOT_IMG, "left", "");
-      
-                              document.getElementById('chatbotstop').style.display = 'none';
-                              globalsocket.close(1000, 'Normal Closure'); // 1000 is the normal closure code
-                          } else {
-                              document.getElementById('submitquestion').style.display = '';
-                              document.getElementById('submitquestion').disabled = true;
-      
-                              document.getElementById('chatbotstop').style.display = 'none';
-                              document.getElementById("botloading").remove();
-                              appendMessage(BOT_NAME, BOT_IMG, "left", "");
-                              console.log('WebSocket is not open.');
-                              globalsocket.close(1000, 'Normal Closure');
-                          }
-                      }
+                      botChatDivElStop.style.display = '';
+                      document.getElementById('submitquestion').style.display = 'none';
+                      
+                      botChatDivElStop.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+    
+                        // if (globalsocket.readyState === WebSocket.OPEN) {
+                        //     document.getElementById('submitquestion').style.display = '';
+                        //     document.getElementById('submitquestion').disabled = true;
+                        //     document.getElementById("botloading").remove();
+                        //     appendMessage(BOT_NAME, BOT_IMG, "left", "");
+    
+                        //     document.getElementById('chatbotstop').style.display = 'none';
+                        //     globalsocket.close(1000, 'Normal Closure'); // 1000 is the normal closure code
+                        // } else {
+                        //     document.getElementById('submitquestion').style.display = '';
+                        //     document.getElementById('submitquestion').disabled = true;
+    
+                        //     document.getElementById('chatbotstop').style.display = 'none';
+                        //     document.getElementById("botloading").remove();
+                        //     appendMessage(BOT_NAME, BOT_IMG, "left", "");
+                        //     console.log('WebSocket is not open.');
+                        //     globalsocket.close(1000, 'Normal Closure');
+                        // }
+                      });
       
                       const msgText = msgerInput.value;
                       if (!msgText) return;
@@ -16373,323 +16316,27 @@ csui.define("csui/lib/othelp", [], function () {
                       document.getElementById('drop-zone1').insertAdjacentHTML('beforeend', msgHTML);
                       renderPage(currentPage);
                   }
-
                   //End: append search results functions
 
-                  function botResponse(questionToAsk, type, node_id) {
-                    appendMessage(BOT_NAME, BOT_IMG, "loading", "loading");
-                    const key = 'RAG_UUID_SESSIONID';
-                    // Check if the key exists in sessionStorage
-                    if (!sessionStorage.getItem(key)) {
-                        // If the key doesn't exist, create it with the specified value
-                        connectionid = generateUUID();;
-                        sessionStorage.setItem(key, connectionid);
-                        console.log(`Key "${key}" was not found. It has been created with value "${connectionid}".`);
-                    } else {
-                        // If the key exists, retrieve its value
-                        connectionid = sessionStorage.getItem(key);
-                        console.log(`Key "${key}" was found. Its value is "${connectionid}".`);
-                    }
-                    console.log(connectionid);
-
-                    var attachment = "NO";
-                    console.log(document.getElementById('file-item').style.display)
-
-                    if (document.getElementById('file-item').style.display == 'none') {
-                        attachment = "NO";
-                    } else {
-                        attachment = "YES";
-                    }
-                    var access_token = "OTCS_TOKEN"
-                    const socket = new WebSocket(`ws://192.168.1.144:5112/ws/document/${ticket}/${connectionid}/${access_token}/${attachment}`);
-                    globalsocket = socket;
-                    
-                    console.log(socket);
-                    var run = 0;
-                    var linkrun = 0;
-                    var source = [];
-                    responseStyle = `<style> p { margin: 0; } ol { margin: 0; padding-inline-start: 15px; } ul { margin: 0; padding-inline-start: 15px; }</style>`
-                    let full_response = responseStyle; //"";
-                      socket.addEventListener('open', function (event) {
-                          document.getElementById("summaryDiv").style.display = 'none';
-                          var query = questionToAsk;
-                          var nodeid = node_id;
-                          const message = JSON.stringify({ type, query, ticket, nodeid, connectionid, userID});
-                          socket.send(message);
-                          console.log('Sent message to server:', message);
-                          console.log('Connected to WebSocket');
-                          textdivnumber = botChatCounter;
-                          run = 0;
-                          linkrun = 0;
-                          if (chathistory[sessionStorage.getItem(key)].hasOwnProperty('0')) {
-                              let title = chathistory[sessionStorage.getItem(key)][0]["Title"];
-                              let thismessage = {Title: title, Message: questionToAsk, Type: "HUMAN", Time: formatDate(new Date())};
-                              console.log(thismessage)
-                              chathistory[sessionStorage.getItem(key)][Object.keys(chathistory[sessionStorage.getItem(key)]).length.toString()] = thismessage;
-                              console.log(chathistory)
-                              sessionStorage.setItem("ExplorerInsightHistory", JSON.stringify(chathistory, null, 2));
-                          }
-                      });
-                      socket.addEventListener('close', function (event) {
-                          let title = chathistory[sessionStorage.getItem(key)][0]["Title"];
-                          thismessage = {Title: title, Message: full_response, Type: "AI", Time: formatDate(new Date())};
-                          console.log(thismessage)
-                          chathistory[sessionStorage.getItem(key)][Object.keys(chathistory[sessionStorage.getItem(key)]).length.toString()] = thismessage;
-                          console.log(chathistory)
-                          sessionStorage.setItem("ExplorerInsightHistory", JSON.stringify(chathistory, null, 2));
-                          document.getElementById('submitquestion').style.display = '';
-                          document.getElementById('submitquestion').disabled = true;
-                          document.getElementById('chatbotstop').style.display = 'none';
-                          console.log('WebSocket connection closed', event);
-                      });
-                      socket.addEventListener('message', async function(event) {
-                          console.log('Message from server', event.data);
-                          const response = JSON.parse(event.data);
-                          console.log(response)
-                          if (response.type == "chat_title") {
-                              const chat_title = response.title;
-                              var sideNavbutton = document.createElement('div');
-                              sideNavbutton.className = 'sideNavbutton';
-                              sideNavbutton.id = sessionStorage.getItem(key).toString();
-                              sideNavbutton.style.margin = '10px';                       
-                              // Step 2: Set attributes for the anchor element
-                              var textSpan = document.createElement('span');
-                              
-                              var ellipsisSpan = document.createElement('span');
-                              ellipsisSpan.className = 'ellipsis';
-                              ellipsisSpan.textContent = '•••';
-                              textSpan.textContent = chat_title.toString();
-                              sideNavbutton.appendChild(textSpan);
-                              sideNavbutton.appendChild(ellipsisSpan);
-                              document.getElementById("mySidenav").appendChild(sideNavbutton);
-                              let thissessionID = sessionStorage.getItem(key);
-
-                              chathistory[sessionStorage.getItem(key)] = {"0": {Title: chat_title, Message: document.getElementById('msg-text').textContent, Type: "AI", Time: formatDate(new Date())}};
-                              console.log(chathistory)
-                              sessionStorage.setItem("ExplorerInsightHistory", JSON.stringify(chathistory, null, 2));
-                              let title = chathistory[sessionStorage.getItem(key)][0]["Title"];
-                              let thismessage = {Title: title, Message: questionToAsk, Type: "HUMAN", Time: formatDate(new Date())};
-                              console.log(thismessage)
-                              chathistory[sessionStorage.getItem(key)][Object.keys(chathistory[sessionStorage.getItem(key)]).length.toString()] = thismessage;
-                              console.log(chathistory)
-                              sessionStorage.setItem("ExplorerInsightHistory", JSON.stringify(chathistory, null, 2));
-                              document.getElementById(thissessionID).addEventListener('click', function(event) {
-                                  document.getElementById("summaryDiv").style.display = 'none';
-                                  document.getElementById('drop-zone1').innerHTML = "";
-                                  if (chathistory.hasOwnProperty(thissessionID)) {
-                                      const innerObj = chathistory[thissessionID];
-                                      for (const innerKey in innerObj) {
-                                          if (innerObj.hasOwnProperty(innerKey)) {
-                                              const messageDetails = innerObj[innerKey];
-                                              if (messageDetails.Type == "AI") {
-                                                  appendMessage(BOT_NAME, BOT_IMG, 'left', messageDetails.Message);
-                                              }
-          
-                                              if (messageDetails.Type == "HUMAN") {
-                                                  appendMessage(PERSON_NAME, PERSON_IMG, 'right', messageDetails.Message);
-                                              }
-                                              sessionStorage.setItem('RAG_UUID_SESSIONID', thissessionID);
-                                          }
-                                      }
-                                  }
-                                  document.getElementById("mySidenav").style.display = 'none'
-          
-                              });
-                          } else if (response.type == "chatbot_response" || response.type == "update_reference") {
-                              function processChatbotResponse() {
-                                  const content = response.content;
-                                  full_response += response.content
-                              
-                                  if (run == 0) {
-                                      document.getElementById("botloading").remove();
-                                      appendMessage(BOT_NAME, BOT_IMG, "left", marked.parse(content)); // Use Markdown formatting
-                                      run += 1;
-                                  } else {
-                                      console.log(content);
-                                      console.log(botChatCounter);
-                                      var divid = "chatbottext" + (botChatCounter -= 1).toString();
-                                      var myDiv = document.getElementById(divid);
-
-                                      // Attach a shadow root to the container
-                                      let shadow = myDiv.shadowRoot || myDiv.attachShadow({ mode: "open" });
-                                      //const shadow = myDiv.attachShadow({ mode: 'open' });
-
-                                      // For update_reference, override full_response.
-                                      if (response.type === "update_reference") {
-                                          full_response = responseStyle + content;
-                                      }
-                                      
-                                      shadow.innerHTML = marked.parse(full_response); // Apply Markdown safely
-                                      
-                                      botChatCounter += 1;
-                              
-                                      const msgerChat = get(".msger-chat");
-                                      msgerChat.scrollTop += 500;
-                                  }
-                              }
-                              if (typeof marked === "undefined") {
-                                  let mdscript = document.createElement("script");
-                                  mdscript.src = "https://cdn.jsdelivr.net/npm/marked/marked.min.js";
-                                  mdscript.onload = () => processChatbotResponse(response); // Wait until script is loaded
-                                  document.head.appendChild(mdscript);
-                              } else {
-                                  processChatbotResponse(response);
-                              }
-                          } else if (response.type == "loading_status") {
-                              var processname = response.process
-                              console.log(processname)
-            
-                              //document.getElementById("botloading").remove();
-
-                              let chatTextElement = document.getElementById(`chatbottext${botChatCounter}`);
-                              if (chatTextElement) {
-                                  animateThinking(processname, chatTextElement);
-                              }
-                              //run += 1;
-
-                          } else if (response.type == "search_results") {
-                              //search result test
-                              const mockResults = [
-                                  {
-                                      filename: "tech-specs.pdf",
-                                      page: 42,
-                                      snippet: "Reactor core specifications show maximum operating temperature of 850°C..."
-                                  },
-                                  {
-                                      filename: "user-manual.pdf",
-                                      page: 15,
-                                      snippet: "Maintenance schedule requires monthly inspections of cooling systems..."
-                                  }
-                              ];
-
-                              console.info('appending search result.')
-
-                              document.getElementById("botloading").remove();
-                                                          
-                              appendSearchResults(
-                                  BOT_NAME, 
-                                  "/img/csui/themes/carbonfiber/image/icons/Group_22.svg",
-                                  //mockResults
-                                  response.results,
-                                  response.content
-                              );
-                          } else if (response.type == "source_link") {
-                              if (linkrun == 0) {
-                                  var nodeid = response.nodeid
-                                  var nodefilename = response.nodefilename
-                                  var extension = nodefilename.split('.').pop();
-                                  console.log('Adding source link to response')
-                                  console.log(response)
-                                  if (extension != "png") {
-                                      if (response.allow_summarize) {
-                                          console.log('allow_summarize is true')
-                                          linkrun += 1;
-                                          var divid = "chatbottext" + (botChatCounter -= 1).toString();
-                                          //var divid = "chatbottext" + (botChatCounter).toString();
-                                          var myDiv = document.getElementById(divid);
-                                          myDiv.innerHTML += "\n\nSources (Context): \n"
-                                          full_response += "\n\nSources (Context): \n";
-                                          const anchor = document.createElement('a');
-                                          anchor.href = "http://" + document.domain + "/otcs/llisapi.dll/app/nodes/" + nodeid
-                                          anchor.textContent = linkrun.toString() + ") " + nodefilename;
-                                          anchor.target = '_blank';
-                                          const lineBreak = document.createElement('br');
-                                          full_response += '<a href="http://' + document.domain + '/otcs/llisapi.dll/app/nodes/' + nodeid + '" target="_blank">1) ' + nodefilename + '</a>';
-                                          full_response += '\n';
-                                          myDiv.appendChild(anchor);
-                                          myDiv.appendChild(lineBreak);
-                                          botChatCounter += 1;
-                                          document.getElementById("summaryDiv").style.display = 'flex';
-                                          document.getElementById("summaryDiv").innerHTML = `<button id="summarisedocument${nodeid}" class="summarise-btn">Summarise ${nodefilename}</button>`
-                                          source.push(nodeid)
-                                      }
-                                      else {
-                                          console.log('allow_summarize is false')
-                                          linkrun += 1;
-                                          var divid = "chatbottext" + (botChatCounter -= 1).toString();
-                                          //var divid = "chatbottext" + (botChatCounter).toString();
-                                          var myDiv = document.getElementById(divid);
-                                          myDiv.innerHTML += "\n"
-                                          full_response += "\n";
-                                          const anchor = document.createElement('a');
-                                          anchor.href = "http://" + document.domain + "/otcs/llisapi.dll/app/nodes/" + nodeid
-                                          anchor.textContent = linkrun.toString() + ") " + nodefilename;
-                                          anchor.target = '_blank';
-                                          const lineBreak = document.createElement('br');
-                                          full_response += '<a href="http://' + document.domain + '/otcs/llisapi.dll/app/nodes/' + nodeid + '" target="_blank">1) ' + nodefilename + '</a>';
-                                          full_response += '\n';
-                                          myDiv.appendChild(anchor);
-                                          myDiv.appendChild(lineBreak);
-                                          botChatCounter += 1;
-                                          //document.getElementById("summaryDiv").style.display = 'flex';
-                                          //document.getElementById("summaryDiv").innerHTML = `<button id="summarisedocument${nodeid}" class="summarise-btn">Summarise ${nodefilename}</button>`
-                                          source.push(nodeid)
-                                      }
-                                  }
-                                  
-                              }
-                              if (response.allow_summarize) {
-                                  console.log("allow_summarize is true, showing summarise buttons")
-                                  console.log(source)
-                                  for (let i = 0; i < source.length; i++) {
-                                      console.log(source[i])
-                                      document.getElementById("summarisedocument" + source[i]).addEventListener('click', function (e) {
-                                          event.preventDefault();
-                                          event.stopImmediatePropagation();
-                                          document.getElementById('submitquestion').style.display = 'none';
-                                          document.getElementById('submitquestion').disabled = true;
-                  
-                                          document.getElementById('chatbotstop').style.display = '';
-                                          appendMessage(PERSON_NAME, PERSON_IMG, "right", "Summarise this document for me");
-                                          msgerInput.value = "";
-                                          counterEle.innerHTML = `0/${maxLength}`;
-                                          var type = "SUMMARY";
-                                          botResponse("summarise", type, source[i]);
-                                      });
-                                  }
-                              }
-                          } else if (response.type == "END_OF_RESPONSE") {
-                              if (socket.readyState === WebSocket.OPEN) {
-                                  //let stoprespectiveid = "chatbotstop" + (botChatCounter - 1).toString();
-                                  //console.log(stoprespectiveid);
-                                  let botChatDivElStop = document.getElementById(`chatbotstop`);
-                                  botChatDivElStop.style.display = 'none';
-                                  //botChatDivElStop.remove();
-                                  //const element = document.getElementById(stoprespectiveid);
-                                  //console.log(element)
-                                  //if (element) {
-                                      //console.log(element)
-                                      document.getElementById('submitquestion').style.display = '';
-                                      document.getElementById('submitquestion').disabled = false;
-      
-                                      document.getElementById('chatbotstop').style.display = 'none';
-                                  //}
-                                  var summaryDiv = document.getElementById("summaryDiv");
-                                  summaryDiv.style.display = '';
-                                  socket.close(1000, 'Normal Closure'); // 1000 is the normal closure code
-                              } else {
-                                  console.log('WebSocket is not open.');
-                              }
-                          }
-                      }); 
-                      socket.addEventListener('error', function(event) {
-                          console.error('WebSocket error:', event);
-                          document.getElementById('submitquestion').style.display = '';
-                          document.getElementById('submitquestion').disabled = true;
-                          document.getElementById('chatbotstop').style.display = 'none';
-                          
-                          document.getElementById("botloading").remove();
-                          appendMessage(BOT_NAME, BOT_IMG, 'left', 'Sorry, there was an error connecting to the server. Please try again.');
-                      });
+                  function botResponse(questionToAsk, type, nodeId) {
+                    console.log(type, nodeId)
+                    AIPlusAPI.ask(nodeId, {
+                      "messages": [
+                        {"role": "user", "content": questionToAsk}
+                      ],
+                      "topK": 3,
+                      "enableTools": false
+                    });
                   }
                   
-                  document.getElementById("closeaviator").addEventListener("click", closeAviator)
+                  document.getElementById("closeaviator").addEventListener("click", closeAviator);
+
                   function closeAviator (e){
-                      e.preventDefault();
-                      e.stopImmediatePropagation();
-                      document.getElementById("aichatbottable").setAttribute('style', 'display:none !important');
-                      sessionStorage.removeItem(key);
-                      console.log(`Key "${key}" has been removed.`);
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    document.getElementById("aichatbottable").setAttribute('style', 'display:none !important');
+                    sessionStorage.removeItem(key);
+                    console.log(`Key "${key}" has been removed.`);
                   }
 
                   var AIPlusConfig = {
@@ -16706,6 +16353,10 @@ csui.define("csui/lib/othelp", [], function () {
                   }
                   var AIPlusAPI = {
                     ask: async function(id, body) {
+                      if(id == "NONE") {
+                        id = 2000;
+                      }
+
                       const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${id}/chat/stream`, {
                         method: "POST",
                         headers: {
@@ -16725,6 +16376,7 @@ csui.define("csui/lib/othelp", [], function () {
                       const decoder = new TextDecoder("utf-8");
                       let buffer = "";
                       let msgId = null;
+                      appendMessage(BOT_NAME, BOT_IMG, 'loading');
                     
                       // Read chunks as they arrive
                       while (true) {
@@ -16760,6 +16412,7 @@ csui.define("csui/lib/othelp", [], function () {
                                 }
                                 AIPlusUtils.finishMessageBox(`msg-${msgId}`);
                               } else if(data.type == 'error') {
+                                console.error(data.error);
                                 alert(data.error);
                               }
                             } catch (error) {
@@ -16789,15 +16442,6 @@ csui.define("csui/lib/othelp", [], function () {
                       .catch((error) => console.error(error));
                     }
                   }
-
-                  // var token = AIPlusAPI.login();
-                  AIPlusAPI.ask(2000, {
-                    "messages": [
-                      {"role": "user", "content": "Hello"}
-                    ],
-                    "topK": 3,
-                    "enableTools": false
-                  });
               }
 
           var Menuelement = document.getElementsByTagName("otc-menuitem");
