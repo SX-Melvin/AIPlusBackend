@@ -15431,28 +15431,14 @@ csui.define("csui/lib/othelp", [], function () {
           // Explorer Insight START
           console.log("onRender Start");
           var globalthis = this;
+          var wID = 2000;
 
-          function showAviator(){
-              // Define the key you want to remove
-              var key = 'RAG_UUID_SESSIONID';
-
-              // Check if the key exists in sessionStorage
-              if (sessionStorage.getItem(key)) {
-                  // If the key exists, remove it
-                  sessionStorage.removeItem(key);
-                  console.log(`Key "${key}" has been removed.`);
-              } else {
-                  console.log(`Key "${key}" does not exist.`);
-              }
-              
+          function showAviator() {
               let that = globalthis;
-              console.log(that)
               var botChatCounter = 0;
-              var globalsocket;
+              let activeController = false;
               let ticket = that.options.context._user.connector.connection.session.ticket;
               let userID = that.options.context._user.attributes.id;
-              let connectionid = '';
-              console.log(ticket)
               const STOP_IMG = "/img/csui/themes/carbonfiber/image/icons/stop_circle.svg"
               const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/toolbar_copy.svg"
               const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/generate.svg"
@@ -15460,37 +15446,6 @@ csui.define("csui/lib/othelp", [], function () {
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
               const BOT_NAME = "BOT";
               const PERSON_NAME = that.options.context._user.attributes.name;
-
-              let xhr = new XMLHttpRequest();
-              xhr.open("GET",PERSON_IMG, false);
-              xhr.setRequestHeader("otcsticket",ticket);
-              xhr.withCredentials = true;
-              xhr.send();
-              
-              xhr.onload = function(e) {
-              if (this.status == 200) {
-                  var blob = this.response;
-                  var binaryData = [];
-                  binaryData.push(blob);
-                  var img = document.createElement('img');
-                  img.onload = function(e) {
-                  window.URL.revokeObjectURL(img.src); // Clean up after yourself.
-                  };
-                  img.src = window.URL.createObjectURL(new Blob(binaryData));
-                  PERSON_IMG = img.src;
-                  console.log("2");
-              }
-              };
-
-              function generateUUID() {
-                  let dt = new Date().getTime();
-                  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                      const r = (dt + Math.random() * 16) % 16 | 0;
-                      dt = Math.floor(dt / 16);
-                      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-                  });
-                  return uuid;
-              }
 
               function appendMessage(name, img, side, text) {
                 const uniqueId = Math.round(new Date() / 100).toString();
@@ -15512,11 +15467,11 @@ csui.define("csui/lib/othelp", [], function () {
                         <div id=chatbottext${botChatCounter} style="white-space: pre-line;" class="msg-text">${text}</div>
 
                         <div class="msg-container" id=chatbot${botChatCounter} style="display: none; flex-direction: row; justify-content: flex-start;">
-                            <div id=chatbotcopy${botChatCounter} class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                              <span class=chatbottooltip>Copy</span>
+                            <div id="chatbotcopy${botChatCounter}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                              <span class='chatbottooltip'>Copy</span>
                             </div>
-                            <div id=chatbotgenerate${botChatCounter} class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                              <span class=chatbottooltip>Regenerate</span>
+                            <div id="chatbotgenerate${botChatCounter}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                              <span class='chatbottooltip'>Regenerate</span>
                             </div>
                         </div>
                     </div>
@@ -15565,37 +15520,39 @@ csui.define("csui/lib/othelp", [], function () {
                 msgerChat.insertAdjacentHTML("beforeend", msgHTML);
                 let botChatDivEl = document.getElementById(`chatbotcopy${botChatCounter}`);
                 let botChatDivElGenerate = document.getElementById(`chatbotgenerate${botChatCounter}`);
-
+                const copyTooltip = document.querySelector(`#chatbotcopy${botChatCounter} .chatbottooltip`);
                 let botChatTextDIvEl = document.getElementById(`chatbottext${botChatCounter}`);
                 let userTextDIvEl = document.getElementById(`usertext${botChatCounter}`);
 
-                if(botChatDivEl){
-                  botChatDivEl.addEventListener("click", copyText);
-                  function copyText(e) {
-                      e.preventDefault();
-                      e.stopImmediatePropagation();
-                      console.log()
-                      const el = document.createElement("textarea");
-                      el.value = botChatTextDIvEl.innerHTML;
-                      document.body.appendChild(el);
-                      el.select();
-                      document.execCommand("copy");
-                      document.body.removeChild(el);
-                  }
+                if(botChatDivEl) {
+                  botChatDivEl.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    const el = document.createElement("textarea");
+                    el.value = botChatTextDIvEl.textContent;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(el);
+                    copyTooltip.textContent = "Copied!";
 
-                  botChatDivElGenerate.addEventListener("click", regenerateResponse);
-
-                  function regenerateResponse(e) {
+                    setTimeout(() => {
+                      copyTooltip.textContent = "Copy";
+                    }, 3000);
+                    
+                    botChatDivEl.addEventListener("mouseenter", () => {
+                      copyTooltip.textContent = "Copy";
+                    });
+                  });
+                  
+                  botChatDivElGenerate.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     document.getElementById('submitquestion').style.display = 'none';
                     document.getElementById('chatbotstop').style.display = '';
-                    let botChatDivElStop = document.getElementById(`chatbotstop`);
-                    console.log(userTextDIvEl);
                     appendMessage(PERSON_NAME, PERSON_IMG, "right", userTextDIvEl.innerHTML);
-                    var type = "QUERY";
-                    botResponse(userTextDIvEl.innerHTML, type, "NONE");
-                  }
+                    botResponse(userTextDIvEl.innerHTML);
+                  });
 
                   botChatCounter++;
                 }
@@ -15621,191 +15578,168 @@ csui.define("csui/lib/othelp", [], function () {
                   }
 
                   function createChatbotElement() {
-                      const aiChatBotEl = document.createElement("div");
+                    const aiChatBotEl = document.createElement("div");
 
-                      aiChatBotEl.id = "aichatbottable";
-                      aiChatBotEl.classList.add("msger-container");
-                      aiChatBotEl.innerHTML = `
-                          <section class="msger-table" style="font-size: 14px; font-style: unset;">
-                              <header class="msger-header">
-                                  <div class="msger-header-title" id="chatbotmenu">
-                                      <div class="msg-img"
-                                          style="background-image:url(/img/csui/themes/carbonfiber/image/icons/aviator.png);display:inline-block;vertical-align:middle">
-                                      </div>
-                                      <div style="
-                                          font-size: 18px;
-                                          font-weight: 600;
-                                          font-family: 'OpenText Sans';
-                                          color: #2c3e50;
-                                          display:inline-block;
-                                          vertical-align:middle
-                                          ">Aviator</div>
-                                  </div>
-                                  <div class="msger-header-options">
-                                      <div id="closeaviator" class="msg-img"
-                                          style="background-image:url(/img/csui/themes/carbonfiber/image/icons/smart_close.svg);display:inline-block;vertical-align:middle;cursor:pointer;width:20px;height:20px;margin-top:5px;background-color: #dce4e8;color:black;">
-                                      </div>
-                                  </div>
-                              </header>
-                              <div id="mySidenav" class="sidenav">
-                              </div>
-                              <main class="msger-chat" id="drop-zone1" style="padding-left:20px;">
-                                  <div class="msg left-msg">
-                                      <div class="msg-img"
-                                          style="background-image:url(/img/csui/themes/carbonfiber/image/icons/Group_22.svg);margin-top:20px; display:inherit;">
-                                      </div>
-                                      <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
-                                          <div class="msg-info"></div>
-                                          <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
-                                              <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
-                                      </div>
-                                  </div>
-                              </main>
-                              <div style="display:flex; padding-left:10px; padding-top:10px; padding-right:10px;">
-                                  <div id="summaryDiv" class="summaryscrollmenu">
-                                  </div>
-                              </div>
-                              <div style="display:flex; padding-left:20px; padding-top:10px; padding-bottom:10px; padding-right:20px;">
-                                  <div class="file-item" id="file-item" style="display:None">
-                                      <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                          <path
-                                              d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
-                                      </svg>
-                                      <span class="file-name" id="file-name"></span>
-                                      <button class="remove-btn" id="remove-file" style="display:None">
-                                          <svg class="remove-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                              <path
-                                                  d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
-                                          </svg>
-                                      </button>
-                                      <div class="loader" id="loader-file" style="height:16px;width:16px"></div>
-                                  </div>
-                              </div>
-                              <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
-                                  <!-- Chat Input -->
-                                  <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
-                              
-                                  <!-- Inline Buttons -->
-                                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                                      <!-- Clear Button with "New Chat" Text -->
-                                      <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
-                                          <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
-                                          <span style="font-size: 14px; color: #333;">New Chat</span>
-                                      </div>
-                              
-                                      <div style="display: flex; align-items: center; gap: 10px;">
-                                          <!-- Counter -->
-                                          <div style="margin-right: 10px;" id="counter">0/2000</div>
-                              
-                                          <!-- File Input -->
-                                          <label for="file-input" class="icon-button" style="cursor: pointer;">
-                                              <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
-                                              </svg>
-                                          </label>
-                                          <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
-                              
-                                          <!-- Submit Button -->
-                                          <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
-                                              <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
-                                              </svg>
-                                          </button>
-                              
-                                          <!-- Stop Button -->
-                                          <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
-                                              <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
-                                              </svg>
-                                          </button>
-                                      </div>
-                                  </div>
-                              </div>
-                          </section>
-                      `;
+                    aiChatBotEl.id = "aichatbottable";
+                    aiChatBotEl.classList.add("msger-container");
+                    aiChatBotEl.innerHTML = `
+                        <section class="msger-table" style="font-size: 14px; font-style: unset;">
+                            <header class="msger-header">
+                                <div class="msger-header-title" id="chatbotmenu">
+                                    <div class="msg-img"
+                                        style="background-image:url(/img/csui/themes/carbonfiber/image/icons/aviator.png);display:inline-block;vertical-align:middle">
+                                    </div>
+                                    <div style="
+                                        font-size: 18px;
+                                        font-weight: 600;
+                                        font-family: 'OpenText Sans';
+                                        color: #2c3e50;
+                                        display:inline-block;
+                                        vertical-align:middle
+                                        ">Aviator</div>
+                                </div>
+                                <div class="msger-header-options">
+                                    <div id="closeaviator" class="msg-img"
+                                        style="background-image:url(/img/csui/themes/carbonfiber/image/icons/smart_close.svg);display:inline-block;vertical-align:middle;cursor:pointer;width:20px;height:20px;margin-top:5px;background-color: #dce4e8;color:black;">
+                                    </div>
+                                </div>
+                            </header>
+                            <div id="mySidenav" class="sidenav">
+                            </div>
+                            <main class="msger-chat" id="drop-zone1" style="padding-left:20px;">
+                                <div class="msg left-msg">
+                                    <div class="msg-img"
+                                        style="background-image:url(/img/csui/themes/carbonfiber/image/icons/Group_22.svg);margin-top:20px; display:inherit;">
+                                    </div>
+                                    <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
+                                        <div class="msg-info"></div>
+                                        <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
+                                            <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
+                                    </div>
+                                </div>
+                            </main>
+                            <div style="display:flex; padding-left:10px; padding-top:10px; padding-right:10px;">
+                                <div id="summaryDiv" class="summaryscrollmenu">
+                                </div>
+                            </div>
+                            <div id="files-container"></div>
+                            <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
+                                <!-- Chat Input -->
+                                <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
+                            
+                                <!-- Inline Buttons -->
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                                    <!-- Clear Button with "New Chat" Text -->
+                                    <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
+                                        <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
+                                        <span style="font-size: 14px; color: #333;">New Chat</span>
+                                    </div>
+                            
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <!-- Counter -->
+                                        <div style="margin-right: 10px;" id="counter">0/2000</div>
+                            
+                                        <!-- File Input -->
+                                        <label for="file-input" class="icon-button" style="cursor: pointer;">
+                                            <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
+                                            </svg>
+                                        </label>
+                                        <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
+                            
+                                        <!-- Submit Button -->
+                                        <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
+                                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
+                                            </svg>
+                                        </button>
+                            
+                                        <!-- Stop Button -->
+                                        <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
+                                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    `;
 
-                      return aiChatBotEl;
+                    return aiChatBotEl;
                   }
 
-                  function toggleChatbot() {
-                      const existingChatbot = document.getElementById("aichatbottable");
-                      const nodesTableDiv = document.querySelector("div.binf-widgets");
-                      if (existingChatbot) {
-                          existingChatbot.remove();
-                          botChatCounter = 0;
-                      } else {
-                          nodesTableDiv.appendChild(createChatbotElement());
-                      }
+                  const existingChatbot = document.getElementById("aichatbottable");
+                  const nodesTableDiv = document.querySelector("div.binf-widgets");
+                  if(!existingChatbot) {
+                    nodesTableDiv.appendChild(createChatbotElement());
                   }
-                  
-                  toggleChatbot();
-                  
+                  document.getElementById("aichatbottable").style.display = "block";
 
                   let chathistory = JSON.parse(sessionStorage.getItem("ExplorerInsightHistory"));
                   for (const key in chathistory) {
-                      var sideNavbutton = document.createElement('div');
-                      sideNavbutton.className = 'sideNavbutton';
-                      sideNavbutton.id = key.toString();
-                      sideNavbutton.style.margin = '10px';
-                      // Step 2: Set attributes for the anchor element
-                      var textSpan = document.createElement('span');
-                      textSpan.id = key.toString() + 'text';
-                      textSpan.className = 'chattooltipitem';
-                      
-                      var tooltipSpan = document.createElement('span');
-                      var ellipsisSpan = document.createElement('span');
-                      ellipsisSpan.className = 'ellipsis';
-                      ellipsisSpan.textContent = '•••';
-                      ellipsisSpan.id = key.toString() + 'ellipsis';
-                      tooltipSpan.className = 'chatmenuTooltip';
-                      tooltipSpan.id = key.toString() + 'tooltip';
-                      const innerObj = chathistory[key];
-                      for (const innerKey in innerObj) {
-                          if (innerObj.hasOwnProperty(innerKey)) {
-                              const messageDetails = innerObj[innerKey];
-                              textSpan.textContent = messageDetails.Title.toString();
-                              textSpan.title = messageDetails.Title.toString();
-                              tooltipSpan.textContent = messageDetails.Title.toString();
-                          }
+                    var sideNavbutton = document.createElement('div');
+                    sideNavbutton.className = 'sideNavbutton';
+                    sideNavbutton.id = key.toString();
+                    sideNavbutton.style.margin = '10px';
+                    var textSpan = document.createElement('span');
+                    textSpan.id = key.toString() + 'text';
+                    textSpan.className = 'chattooltipitem';
+                    
+                    var tooltipSpan = document.createElement('span');
+                    var ellipsisSpan = document.createElement('span');
+                    ellipsisSpan.className = 'ellipsis';
+                    ellipsisSpan.textContent = '•••';
+                    ellipsisSpan.id = key.toString() + 'ellipsis';
+                    tooltipSpan.className = 'chatmenuTooltip';
+                    tooltipSpan.id = key.toString() + 'tooltip';
+                    const innerObj = chathistory[key];
+                    for (const innerKey in innerObj) {
+                      if (innerObj.hasOwnProperty(innerKey)) {
+                        const messageDetails = innerObj[innerKey];
+                        textSpan.textContent = messageDetails.Title.toString();
+                        textSpan.title = messageDetails.Title.toString();
+                        tooltipSpan.textContent = messageDetails.Title.toString();
                       }
-                      sideNavbutton.appendChild(textSpan);
-                      sideNavbutton.appendChild(tooltipSpan);
-                      sideNavbutton.appendChild(ellipsisSpan);
-                      sideNavbutton.innerHTML += '<div class="dropdown-content" id=' + key.toString() + 'dropdown' + '><a id="' + key.toString() + 'delete' + '">Delete</a></div>';
-                      document.getElementById("mySidenav").appendChild(sideNavbutton);
-                      document.getElementById(key.toString() + 'text').addEventListener('click', function(event) {
-                          document.getElementById("summaryDiv").style.display = 'none';
-                          document.getElementById('drop-zone1').innerHTML = "";
-                          if (chathistory.hasOwnProperty(key)) {
-                              const innerObj = chathistory[key];
-                              for (const innerKey in innerObj) {
-                                  if (innerObj.hasOwnProperty(innerKey)) {
-                                      const messageDetails = innerObj[innerKey];
-                                      if (messageDetails.Type == "AI") {
-                                          appendMessage(BOT_NAME, BOT_IMG, 'left', messageDetails.Message);
-                                      }
-                                      if (messageDetails.Type == "HUMAN") {
-                                          appendMessage(PERSON_NAME, PERSON_IMG, 'right', messageDetails.Message);
-                                      }
-                                      sessionStorage.setItem('RAG_UUID_SESSIONID', key);
-                                  }
-                              }
+                    }
+                    sideNavbutton.appendChild(textSpan);
+                    sideNavbutton.appendChild(tooltipSpan);
+                    sideNavbutton.appendChild(ellipsisSpan);
+                    sideNavbutton.innerHTML += '<div class="dropdown-content" id=' + key.toString() + 'dropdown' + '><a id="' + key.toString() + 'delete' + '">Delete</a></div>';
+                    document.getElementById("mySidenav").appendChild(sideNavbutton);
+                    document.getElementById(key.toString() + 'text').addEventListener('click', function(event) {
+                      document.getElementById("summaryDiv").style.display = 'none';
+                      document.getElementById('drop-zone1').innerHTML = "";
+                      if (chathistory.hasOwnProperty(key)) {
+                        const innerObj = chathistory[key];
+                        for (const innerKey in innerObj) {
+                          if (innerObj.hasOwnProperty(innerKey)) {
+                            const messageDetails = innerObj[innerKey];
+                            if (messageDetails.Type == "AI") {
+                              appendMessage(BOT_NAME, BOT_IMG, 'left', messageDetails.Message);
+                            }
+                            if (messageDetails.Type == "HUMAN") {
+                              appendMessage(PERSON_NAME, PERSON_IMG, 'right', messageDetails.Message);
+                            }
+                            sessionStorage.setItem('RAG_UUID_SESSIONID', key);
                           }
-                          document.getElementById("mySidenav").style.display = 'none'
+                        }
+                      }
+                      document.getElementById("mySidenav").style.display = 'none'
+                    });
 
-                      });
-                      document.getElementById(key.toString() + 'delete').addEventListener('click', function(event) {
-                          document.getElementById(key.toString()).remove();
-                                });
-                              }
+                    document.getElementById(key.toString() + 'delete').addEventListener('click', function(event) {
+                      document.getElementById(key.toString()).remove();
+                    });
+                  }
+                            
                   document.getElementById('chatbotmenu').addEventListener('click', function(event) {
-                      console.log("Chatbot menu")
-                      console.log(document.getElementById("mySidenav").style.display)
-                      if (document.getElementById("mySidenav").style.display == 'none'){
-                          document.getElementById("mySidenav").style.display = 'block'
-                      } else if (document.getElementById("mySidenav").style.display = 'block'){
-                          document.getElementById("mySidenav").style.display = 'none'
-                      };
+                    console.log(document.getElementById("mySidenav").style.display)
+                    if (document.getElementById("mySidenav").style.display == 'none'){
+                        document.getElementById("mySidenav").style.display = 'block'
+                    } else if (document.getElementById("mySidenav").style.display = 'block'){
+                        document.getElementById("mySidenav").style.display = 'none'
+                    };
                   });
 
                   var tooltip = document.querySelectorAll('.chatmenuTooltip');
@@ -15813,118 +15747,15 @@ csui.define("csui/lib/othelp", [], function () {
                   document.addEventListener('mousemove', fn, false);
 
                   function fn(e) {
-                      for (var i=tooltip.length; i--;) {
-                          tooltip[i].style.left = e.pageX + 'px';
-                          tooltip[i].style.top = e.pageY + 'px';
-                      }
+                    for (var i=tooltip.length; i--;) {
+                      tooltip[i].style.left = e.pageX + 'px';
+                      tooltip[i].style.top = e.pageY + 'px';
+                    }
                   }
 
-                  document.getElementById('remove-file').addEventListener('click', async function(event) {
-                      if (!sessionStorage.getItem(key)) {
-                          // If the key doesn't exist, create it with the specified value
-                          connectionid = generateUUID();;
-                          sessionStorage.setItem(key, connectionid);
-                          console.log(`Key "${key}" was not found. It has been created with value "${connectionid}".`);
-                      } else {
-                          // If the key exists, retrieve its value
-                          connectionid = sessionStorage.getItem(key);
-                          console.log(`Key "${key}" was found. Its value is "${connectionid}".`);
-                      }
-                      document.getElementById('loader-file').style.display = '';
-                      document.getElementById('remove-file').style.display = 'None';
-                      try {
-                          //const response = await fetch("http://192.168.1.153:5112/vectorstore/deleteTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                          const response = await fetch("http://192.168.1.144:5112/vectorstore/deleteTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                              method: 'DELETE'
-                          });
-      
-                          if (response.ok) {
-                              document.getElementById('file-input').value= null;
-                              document.getElementById('file-item').style.display = 'None';
-                              document.getElementById('file-name').innerHTML = '';
-                              document.getElementById('loader-file').style.display = 'None';
-                          } else {
-                              alert('File upload failed');
-                          }
-                      } catch (error) {
-                          console.error('Error uploading file:', error);
-                          alert('Error uploading file');
-                      }
-                  });
-
                   document.getElementById('file-input').addEventListener('change', async function(event) {
-                      event.preventDefault();
-                      console.log(event);
-                      const file = event.target.files[0];
-                      if (file) {
-                          console.log('File name:', file.name);
-                          console.log('File type:', file.type);
-                          console.log('File size:', file.size, 'bytes');
-
-                          const fileLink = document.createElement('a');
-                          fileLink.href = URL.createObjectURL(file);
-                          fileLink.download = file.name;
-                          fileLink.textContent = file.name;
-
-                          document.getElementById('file-item').style.display = 'flex';
-                          document.getElementById('file-name').innerHTML = "";
-                          document.getElementById('file-name').append(fileLink);
-                          document.getElementById('remove-file').style.display = 'None';
-                          document.getElementById('loader-file').style.display = '';
-                          
-                          // Example of reading the file content
-                          const reader = new FileReader();
-                          reader.onload = function(e) {
-                              console.log('File content:', e.target.result);
-                          };
-                          reader.readAsText(file);
-
-                          if (file) {
-                              const formData = new FormData();
-                              formData.append('file', file);
-                              if (!sessionStorage.getItem(key)) {
-                                  // If the key doesn't exist, create it with the specified value
-                                  connectionid = generateUUID();;
-                                  sessionStorage.setItem(key, connectionid);
-                                  console.log(`Key "${key}" was not found. It has been created with value "${connectionid}".`);
-                              } else {
-                                  // If the key exists, retrieve its value
-                                  connectionid = sessionStorage.getItem(key);
-                                  console.log(`Key "${key}" was found. Its value is "${connectionid}".`);
-                              }
-
-                              try {
-                                  //const response = await fetch("http://192.168.1.153:5112/vectorstore/deleteTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                  const response = await fetch("http://192.168.1.144:5112/vectorstore/deleteTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                      method: 'DELETE'
-                                  });
-              
-                                  try {
-                                      //const response = await fetch("http://192.168.1.153:5112/vectorstore/ingestTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                      const response = await fetch("http://192.168.1.144:5112/vectorstore/ingestTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                          method: 'POST',
-                                          body: formData
-                                      });
-                  
-                                      if (response.ok) {
-                                          document.getElementById('remove-file').style.display = '';
-                                          document.getElementById('loader-file').style.display = 'None';
-                                      } else {
-                                          alert('File upload failed');
-                                      }
-                                  } catch (error) {
-                                      console.error('Error uploading file:', error);
-                                      alert('Error uploading file');
-                                  }
-                              } finally {
-                                  console.log('File uploaded');
-                              }
-                          } else {
-                              alert('Please select a file');
-                          }
-                      } else {
-                          console.log('No file selected');
-                      }
+                    event.preventDefault();
+                    handleFiles([event.target.files[0]]);
                   });
 
                   const dropZone = document.getElementById('drop-zone1');
@@ -15937,8 +15768,8 @@ csui.define("csui/lib/othelp", [], function () {
                   });
 
                   function preventDefaults(e) {
-                      e.preventDefault();
-                      e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                   }
 
                   // Highlight drop zone when item is dragged over it
@@ -15954,90 +15785,92 @@ csui.define("csui/lib/othelp", [], function () {
                   dropZone.addEventListener('drop', handleDrop, false);
 
                   function handleDrop(e) {
-                      const dt = e.dataTransfer;
-                      const files = dt.files;
-                      handleFiles(files);
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    handleFiles(files);
                   }
 
                   async function handleFiles(files) {
-                      files = [...files];
-                  
-                      // Create a DataTransfer to hold the files
-                      const dataTransfer = new DataTransfer();
-                      files.forEach(file => dataTransfer.items.add(file));
-                  
-                      // Assign the DataTransfer to the file input
-                      fileInput.files = dataTransfer.files;
-                      const file = fileInput.files[0];
-                      if (file) {
-                          console.log('File name:', file.name);
-                          console.log('File type:', file.type);
-                          console.log('File size:', file.size, 'bytes');
+                    files = [...files];
+                    
+                    // Create a DataTransfer to hold the files
+                    const dataTransfer = new DataTransfer();
+                    files.forEach(file => dataTransfer.items.add(file));
 
-                          const fileLink = document.createElement('a');
-                          fileLink.href = URL.createObjectURL(file);
-                          fileLink.download = file.name;
-                          fileLink.textContent = file.name;
+                    let idx = 0;
+                    fileInput.files = dataTransfer.files;
 
-                          document.getElementById('file-item').style.display = 'flex';
-                          document.getElementById('file-name').innerHTML = "";
-                          document.getElementById('file-name').append(fileLink);
-                          document.getElementById('remove-file').style.display = 'None';
-                          document.getElementById('loader-file').style.display = '';
-                          
-                          // Example of reading the file content
-                          const reader = new FileReader();
-                          reader.onload = function(e) {
-                              console.log('File content:', e.target.result);
-                          };
-                          reader.readAsText(file);
+                    // Render each of the file boxes
+                    for(const file of files) {
+                      document.getElementById("files-container").innerHTML += `
+                        <div class="file-item" id="file-item-${idx}" style="font-size:11px;padding:4px">
+                          <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
+                          </svg>
+                          <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
+                          <button data-idx="${idx}" title="Remove" id="remove-file-btn-${idx}" class="remove-btn" style="display: none">
+                            <svg class="remove-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                              <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                            </svg>
+                          </button>
+                          <div id="loader-file-${idx}" style="display:flex">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                          </div>
+                        </div>
+                      `;
+                      idx++;
+                    }
+                    
+                    document.querySelectorAll('.remove-btn').forEach(btn => {
+                      btn.addEventListener('click', e => {
+                        // TODO: Remove Job by ID
+                        const idx = btn.dataset.idx;
+                        document.getElementById(`file-item-${idx}`).remove();
+                      });
+                    });
 
-                          if (file) {
-                              const formData = new FormData();
-                              formData.append('file', file);
-                              if (!sessionStorage.getItem(key)) {
-                                  // If the key doesn't exist, create it with the specified value
-                                  connectionid = generateUUID();;
-                                  sessionStorage.setItem(key, connectionid);
-                                  console.log(`Key "${key}" was not found. It has been created with value "${connectionid}".`);
-                              } else {
-                                  // If the key exists, retrieve its value
-                                  connectionid = sessionStorage.getItem(key);
-                                  console.log(`Key "${key}" was found. Its value is "${connectionid}".`);
-                              }
+                    // Ingest each of the files
+                    idx = 0
+                    let jobIds = [];
+                    for(const file of files) {
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      formData.append('metadata', "");
+                      formData.append('workspaceId', "1");
 
-                              try {
-                                  //const response = await fetch("http://192.168.1.153:5112/vectorstore/deleteTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                  const response = await fetch("http://192.168.1.144:5112/vectorstore/deleteTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                      method: 'DELETE'
-                                  });
-              
-                                  try {
-                                      //const response = await fetch("http://192.168.1.153:5112/vectorstore/ingestTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                      const response = await fetch("http://192.168.1.144:5112/vectorstore/ingestTempDocument?Ticket=" + encodeURIComponent(connectionid), {
-                                          method: 'POST',
-                                          body: formData
-                                      });
-                  
-                                      if (response.ok) {
-                                          document.getElementById('remove-file').style.display = '';
-                                          document.getElementById('loader-file').style.display = 'None';
-                                      } else {
-                                          alert('File upload failed');
-                                      }
-                                  } catch (error) {
-                                      console.error('Error uploading file:', error);
-                                      alert('Error uploading file');
-                                  }
-                              } finally {
-                                  console.log('File uploaded');
-                              }
-                          } else {
-                              alert('Please select a file');
-                          }
+                      const ingest = await AIPlusAPI.ingest(formData);
+                      console.log(1, ingest)
+                      if(ingest.jobId != null) {
+                        jobIds.push({
+                          idx,
+                          ingest
+                        });
                       } else {
-                          console.log('No file selected');
+                        alert(`Error when uploading ${file.name}`);
+                        document.getElementById(`file-item-${idx}`).remove();
                       }
+                      idx++;
+                    }
+
+                    const interval = setInterval(() => {
+                      const jobs = [...jobIds];
+                      for(const job of jobs) {
+                        const getJob = AIPlusAPI.getJob(job.ingest.jobId);
+                        if(getJob.status != null && getJob.status.toLowerCase() == "completed") {
+                          jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
+                          document.querySelector(`#remove-file-btn-${job.idx}`).style.display = "block";
+                          document.querySelector(`#loader-file-${job.idx}`).style.display = "none";
+                        } else if(getJob.status != null && getJob.status.toLowerCase() == "failed") {
+                          jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
+                        }
+
+                        if(jobIds.length === 0) {
+                          clearInterval(interval);
+                        }
+                      }
+                    }, 3000);
                   }
 
                   //handle counter
@@ -16064,23 +15897,19 @@ csui.define("csui/lib/othelp", [], function () {
                   counterEle.innerHTML = `${currentLength}/${maxLength}`;
                   
                   //handle clear
-                  let clearEle = document.getElementById("clearbtn");
-                  clearEle.addEventListener('click', function (e) {
-                      e.preventDefault();
-                      e.stopImmediatePropagation();
-                      showAviator();
-                      sessionStorage.removeItem(key);
-                      console.log(`Key "${key}" has been removed.`);
-                      messageEle.value = "";
-                      counterEle.innerHTML = `0/${maxLength}`;
-                      if(document.getElementById("submitquestion"))
-                      {
-                          document.getElementById("submitquestion").disabled = true;
-                          // document.getElementById("submitquestion").style.background = "#999";
-                      }
-                      
+                  document.getElementById("clearbtn").addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    const chat = document.querySelector('.msger-chat');
+                    [...chat.children].slice(1).forEach(child => child.remove());
+
+                    messageEle.value = "";
+                    counterEle.innerHTML = `0/${maxLength}`;
+                    if(document.getElementById("submitquestion")) {
+                      document.getElementById("submitquestion").disabled = true;
+                    }
                   });
-                  console.log("attaching input event to message element");
+
                   messageEle.addEventListener('input', function (e) {
                       e.preventDefault();
                       e.stopImmediatePropagation();
@@ -16120,25 +15949,16 @@ csui.define("csui/lib/othelp", [], function () {
                       botChatDivElStop.addEventListener("click", function (e) {
                         e.preventDefault();
                         e.stopImmediatePropagation();
-    
-                        // if (globalsocket.readyState === WebSocket.OPEN) {
-                        //     document.getElementById('submitquestion').style.display = '';
-                        //     document.getElementById('submitquestion').disabled = true;
-                        //     document.getElementById("botloading").remove();
-                        //     appendMessage(BOT_NAME, BOT_IMG, "left", "");
-    
-                        //     document.getElementById('chatbotstop').style.display = 'none';
-                        //     globalsocket.close(1000, 'Normal Closure'); // 1000 is the normal closure code
-                        // } else {
-                        //     document.getElementById('submitquestion').style.display = '';
-                        //     document.getElementById('submitquestion').disabled = true;
-    
-                        //     document.getElementById('chatbotstop').style.display = 'none';
-                        //     document.getElementById("botloading").remove();
-                        //     appendMessage(BOT_NAME, BOT_IMG, "left", "");
-                        //     console.log('WebSocket is not open.');
-                        //     globalsocket.close(1000, 'Normal Closure');
-                        // }
+
+                        document.getElementById('submitquestion').style.display = '';
+                        document.getElementById('chatbotstop').style.display = 'none';
+                        if(document.getElementById("botloading")) {
+                          document.getElementById("botloading").remove();
+                        }
+                        if(activeController != null) {
+                          activeController.abort()
+                        }
+                        activeController = null;
                       });
       
                       const msgText = msgerInput.value;
@@ -16148,7 +15968,7 @@ csui.define("csui/lib/othelp", [], function () {
                       msgerInput.value = "";
                       counterEle.innerHTML = `0/${maxLength}`;
                       var type = "QUERY";
-                      botResponse(msgText, type, "NONE");
+                      botResponse(msgText);
                   });
                   
       
@@ -16156,8 +15976,6 @@ csui.define("csui/lib/othelp", [], function () {
                       return type === 144 | type === 749
                   }
 
-                  // Function to animate the "Thinking..." text
-                  // Keep track of all active animations
                   const activeAnimations = new Map();
 
                   function animateThinking(text, container) {
@@ -16178,13 +15996,13 @@ csui.define("csui/lib/othelp", [], function () {
                       };
                       
                       function showText() {
-                          if (i < text.length) {
-                              container.textContent += text[i];
-                              i++;
-                              currentAnimation.textTimeout = setTimeout(showText, 25); // Delay between letters
-                          } else {
-                              animateDots();
-                          }
+                        if (i < text.length) {
+                          container.textContent += text[i];
+                          i++;
+                          currentAnimation.textTimeout = setTimeout(showText, 25); // Delay between letters
+                        } else {
+                          animateDots();
+                        }
                       }
 
                       function animateDots() {
@@ -16192,127 +16010,22 @@ csui.define("csui/lib/othelp", [], function () {
 
                           // Clear any existing interval before starting a new one
                           if (currentAnimation.dotInterval) {
-                              clearInterval(currentAnimation.dotInterval);
+                            clearInterval(currentAnimation.dotInterval);
                           }
 
                           currentAnimation.dotInterval = setInterval(() => {
-                              container.textContent = text + ".".repeat(dotCount % 4); // Loops "", ".", "..", "..."
-                              dotCount++;
+                            container.textContent = text + ".".repeat(dotCount % 4); // Loops "", ".", "..", "..."
+                            dotCount++;
                           }, 500); // Speed of dot animation
                       }
 
-                      // Store the current animation references
                       activeAnimations.set(container, currentAnimation);
                       
                       showText();
                   }
 
-                  function appendSearchResults(name, img, results, responseText) {
-                      const itemsPerPage = 10;
-                      const totalPages = Math.ceil(results.length / itemsPerPage);
-                      let currentPage = 0;
-                      const resultId = `search-results-${Date.now()}`;
-                  
-                      // Create closure for pagination handling
-                      const handlePageChange = (newPage) => {
-                          if (newPage < 0 || newPage >= totalPages) return;
-                          currentPage = newPage;
-                          renderPage();
-                      };
-                  
-                      const renderPage = () => {
-                          const start = currentPage * itemsPerPage;
-                          const end = start + itemsPerPage;
-                          const pageResults = results.slice(start, end);
-                  
-                          const formattedResults = pageResults.map(result => `
-                              <div class="search-result-item" style="margin: 5px 0; padding: 6px; background: #f0f8ff; border-radius: 4px; border: 1px solid #cce3e3; overflow-wrap: break-word;">
-                                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                                      <svg width="14" height="14" viewBox="0 0 24 24" style="flex-shrink: 0;">
-                                          <path fill="#2b6cb0" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                                      </svg>
-                                      <div style="font-weight: 500; color: #2b6cb0; font-size: 0.9em;">${result.filename}</div>
-                                  </div>
-                                  <div style="color: #4a5568; font-size: 0.82em; margin-bottom: 6px; line-height: 1.3;">${result.snippet}</div>
-                                  <div style="display: flex; gap: 6px;">
-                                      <button onclick="showDocument(${result.nodeid})" 
-                                              style="padding: 3px 6px; background: #4299e1; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75em;">
-                                          View Document
-                                      </button>
-                                      <button onclick="downloadDocument('${result.nodeid}')" 
-                                              style="padding: 3px 6px; background: #cbd5e0; color: #2d3748; border: none; border-radius: 3px; cursor: pointer; font-size: 0.75em;">
-                                          Download
-                                      </button>
-                                  </div>
-                              </div>
-                          `).join('');
-                  
-                          // Update pagination controls
-                          const paginationHTML = `
-                              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                  <button class="prev-page" 
-                                          style="padding: 2px 8px; background: ${currentPage === 0 ? '#e2e8f0' : '#4299e1'}; 
-                                              color: ${currentPage === 0 ? '#718096' : 'white'}; 
-                                              border: none; border-radius: 4px; cursor: ${currentPage === 0 ? 'not-allowed' : 'pointer'};"
-                                          ${currentPage === 0 ? 'disabled' : ''}>
-                                      ← Previous
-                                  </button>
-                                  <div style="font-size: 0.8em; color: #4a5568;">
-                                      Page ${currentPage + 1} of ${totalPages}
-                                  </div>
-                                  <button class="next-page" 
-                                          style="padding: 2px 8px; background: ${currentPage === totalPages - 1 ? '#e2e8f0' : '#4299e1'}; 
-                                              color: ${currentPage === totalPages - 1 ? '#718096' : 'white'}; 
-                                              border: none; border-radius: 4px; cursor: ${currentPage === totalPages - 1 ? 'not-allowed' : 'pointer'};"
-                                          ${currentPage === totalPages - 1 ? 'disabled' : ''}>
-                                      Next →
-                                  </button>
-                              </div>
-                          `;
-
-                          // Insert into DOM
-                          const container = document.getElementById(resultId);
-                          if (container) {
-                              container.innerHTML = formattedResults + paginationHTML;
-                              
-                              // Add event listeners
-                              container.querySelector('.prev-page')?.addEventListener('click', () => handlePageChange(currentPage - 1));
-                              container.querySelector('.next-page')?.addEventListener('click', () => handlePageChange(currentPage + 1));
-                          }
-                      };
-                  
-                      const msgHTML = `
-                          <div class="msg left-msg">
-                              <div class="msg-img" style="background-image: url(${img});display:inherit;"></div>
-                              <div>
-                                  <div style="background-color:#fff" class="msg-bubble">
-                                      <div class="msg-text" id="msg-text">${responseText}</div>
-                                  </div>
-                                  <div style="background-color: #e6fffa; margin-right: auto !important;" class="msg-bubble">
-                                      <div style="color: black; padding: 10px;">
-                                          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                              <svg width="18" height="18" viewBox="0 0 24 24">
-                                                  <path fill="#2d3748" d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
-                                              </svg>
-                                              <div style="font-weight: 500; font-size: 0.95em;">Document Search Results</div>
-                                          </div>
-                                          <div id="${resultId}">
-                                              <!-- Results will be rendered here -->
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      `;
-                  
-                      document.getElementById('drop-zone1').insertAdjacentHTML('beforeend', msgHTML);
-                      renderPage(currentPage);
-                  }
-                  //End: append search results functions
-
-                  function botResponse(questionToAsk, type, nodeId) {
-                    console.log(type, nodeId)
-                    AIPlusAPI.ask(nodeId, {
+                  function botResponse(questionToAsk) {
+                    AIPlusAPI.ask({
                       "messages": [
                         {"role": "user", "content": questionToAsk}
                       ],
@@ -16321,15 +16034,11 @@ csui.define("csui/lib/othelp", [], function () {
                     });
                   }
                   
-                  document.getElementById("closeaviator").addEventListener("click", closeAviator);
-
-                  function closeAviator (e){
+                  document.getElementById("closeaviator").addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     document.getElementById("aichatbottable").setAttribute('style', 'display:none !important');
-                    sessionStorage.removeItem(key);
-                    console.log(`Key "${key}" has been removed.`);
-                  }
+                  });
 
                   var AIPlusConfig = {
                     apiUrl: "https://ai-agent-test.leapcount.com",
@@ -16342,23 +16051,32 @@ csui.define("csui/lib/othelp", [], function () {
                     finishMessageBox: function (msgId) {
                       document.querySelector(`#${msgId} .msg-container`).style.display = "flex";
                       document.querySelector(`#${msgId} .msg-text`).innerHTML = marked.parse(document.querySelector(`#${msgId} .msg-text`).textContent);
+                      document.getElementById('submitquestion').style.display = '';
+                      document.getElementById('chatbotstop').style.display = 'none';
+                      if(document.getElementById("botloading")) {
+                        document.getElementById("botloading").remove();
+                      }
                     }
                   }
                   var AIPlusAPI = {
-                    ask: async function(id, body) {
-                      if(id == "NONE") {
-                        id = 2000;
+                    ask: async function(body) {
+                      if (activeController) {
+                        activeController.abort();
+                        console.log("Previous chat stream aborted.");
                       }
-                      
+
+                      activeController = new AbortController();
+                      const { signal } = activeController;
                       appendMessage(BOT_NAME, BOT_IMG, 'loading');
 
-                      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${id}/chat/stream`, {
+                      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json",
-                          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyX3Rlc3QtYXBpIiwid29ya3NwYWNlSWRzIjpbIioiXSwicm9sZSI6InVzZXIiLCJzZXNzaW9uSWQiOiJhOTI5MTYwMC05ZGRmLTQ5NTMtOTgzMC1hNTdiNGU2NTllNTQiLCJpYXQiOjE3NjIxMzIwNzcsImV4cCI6MTc2MjczNjg3N30.od4xj7ejzpA4Kgz7dpS1vAQ6qRuarm1Iz0Bini2BtsM"
+                          "Authorization": `Bearer ${localStorage.getItem('aviatorToken')}`
                         },
-                        body: JSON.stringify(body)
+                        body: JSON.stringify(body),
+                        signal
                       });
                     
                       if (!response.ok) {
@@ -16371,18 +16089,21 @@ csui.define("csui/lib/othelp", [], function () {
                       const decoder = new TextDecoder("utf-8");
                       let buffer = "";
                       let msgId = null;
-                    
+                      
                       // Read chunks as they arrive
                       while (true) {
                         const { done, value } = await reader.read();
-                        if (done) break;
-                    
+                        
+                        if (done) {
+                          break;
+                        }
+                        
                         const chunk = decoder.decode(value, { stream: true });
                         buffer += chunk;
-        
+                        
                         const lines = buffer.split("\n");
                         buffer = lines.pop();
-
+                        
                         for(const line of lines) {
                           try {
                             const json = line.replace("data: ", "");
@@ -16417,9 +16138,44 @@ csui.define("csui/lib/othelp", [], function () {
                         }
                       }
 
+                      activeController = null;
                       AIPlusUtils.finishMessageBox(`msg-${msgId}`);
                     },
-                    login: function() {
+                    getJob: async function(jobId) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/jobs/${jobId}`, {
+                          method: "GET",
+                          redirect: "follow",
+                          headers: {
+                            "Authorization": `Bearer ${localStorage.getItem('aviatorToken')}`
+                          }
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("getJob error:", error);
+                        throw error;
+                      }
+                    },
+                    ingest: async function(formData) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/documents`, {
+                          method: "POST",
+                          body: formData,
+                          redirect: "follow",
+                          headers: {
+                            "Authorization": `Bearer ${localStorage.getItem('aviatorToken')}`
+                          }
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("Ingest error:", error);
+                      }
+                    },
+                    login: async function() {
                       return fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {
                         method: "POST",
                         redirect: "follow"
