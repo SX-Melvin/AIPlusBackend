@@ -10,6 +10,7 @@ namespace AIPlusBackend.Services
         public async Task<List<GetNodePermissionsResponse>> GetPermissions(List<GetNodePermissionsRequest> body)
         {
             var result = new List<GetNodePermissionsResponse>();
+            string? permission = null;
 
             try
             {
@@ -17,14 +18,16 @@ namespace AIPlusBackend.Services
                 
                 foreach (var item in body)
                 {
-                    // Check user permission
-                    var permission = MapUserPermission.GetPermissionFromACL(acls, item.UserId);
+                    // Check if user exist
+                    var kuaf = csdbUtils.GetKUAFByID(item.UserId);
 
-                    // Check group permission
-                    if (permission == null)
+                    if (kuaf != null && kuaf.Deleted == 0)
                     {
-                        var kuaf = csdbUtils.GetKUAFByID(item.UserId);
-                        if(kuaf != null && kuaf.GroupID != null)
+                        // Check user permission
+                        permission = MapUserPermission.GetPermissionFromACL(acls, item.UserId);
+
+                        // Check group permission
+                        if (permission == null && kuaf.GroupID != null)
                         {
                             permission = MapUserPermission.GetPermissionFromACL(acls, kuaf.GroupID.Value);
                         }

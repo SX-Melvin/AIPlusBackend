@@ -4,6 +4,6 @@
     {
         public long NodeId { get; set; }
         public long UserId { get; set; }
-        public string? Permission { get; set; }
+        public string? Permission { get; set; } = null;
     }
 }

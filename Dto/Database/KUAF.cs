@@ -6,5 +6,6 @@
         public long? GroupID { get; set; }
         public long Type { get; set; }
         public string Name { get; set; }
+        public byte? Deleted { get; set; } = 1;
     }
 }
