@@ -9,6 +9,7 @@ namespace AIPlusBackend.Dto
             : base(options) { }
 
         public DbSet<DTreeACL> DTreeACLs { get; set; }
+        public DbSet<AIPlusTempFile> AIPlusTempFiles { get; set; }
         public DbSet<KUAF> KUAFs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

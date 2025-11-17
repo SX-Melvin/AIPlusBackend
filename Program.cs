@@ -2,6 +2,8 @@ using AIPlusBackend.Configurations;
 using AIPlusBackend.Dto;
 using AIPlusBackend.Services;
 using AIPlusBackend.Utils;
+using AIPlusBackend.Utils.Scheduler;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 
@@ -33,8 +35,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHangfire(x => x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+
 builder.Services.AddScoped<AIPlusService>();
 builder.Services.AddScoped<AIPlusUtils>();
+builder.Services.AddScoped<TempFileService>();
 builder.Services.AddScoped<CSService>();
 builder.Services.AddScoped<CSDBUtils>();
 
@@ -50,5 +56,14 @@ app.UseRouting();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+
+var recurringJobs = app.Services.GetRequiredService<IRecurringJobManager>();
+
+// Set scheduler to delete temp files every 10 minutes
+recurringJobs.AddOrUpdate<DeleteTempFiles>(
+    "delete-temp-files",
+    job => job.CheckAndDeleteTempFiles(),
+    "*/1 * * * *"
+);
 
 await app.RunAsync();
