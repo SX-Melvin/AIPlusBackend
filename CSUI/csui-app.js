@@ -15431,7 +15431,7 @@ csui.define("csui/lib/othelp", [], function () {
           // Explorer Insight START
           console.log("onRender Start");
           var globalthis = this;
-          var wID = 2000;
+          var wID = "content_server10-secure";
 
           function showAviator() {
               let that = globalthis;
@@ -16026,11 +16026,11 @@ csui.define("csui/lib/othelp", [], function () {
 
                   function botResponse(questionToAsk) {
                     AIPlusAPI.ask({
+                      "userId": userID,
                       "messages": [
                         {"role": "user", "content": questionToAsk}
                       ],
-                      "topK": 3,
-                      "enableTools": false
+                      "topK": 3
                     });
                   }
                   
@@ -16045,6 +16045,14 @@ csui.define("csui/lib/othelp", [], function () {
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
+                    removeLoaderTextbox: function() {
+                      if(document.getElementById("botloading")) {
+                        document.getElementById("botloading").remove();
+                      }
+                    },
+                    replaceTextMessageBox: function(msgId, msg) {
+                      document.querySelector(`#${msgId} .msg-text`).textContent = msg;
+                    },
                     appendTextMessageBox: function(msgId, msg) {
                       document.querySelector(`#${msgId} .msg-text`).textContent += msg;
                     },
@@ -16089,6 +16097,7 @@ csui.define("csui/lib/othelp", [], function () {
                       const decoder = new TextDecoder("utf-8");
                       let buffer = "";
                       let msgId = null;
+                      let firstMessageHasRendered = false;
                       
                       // Read chunks as they arrive
                       while (true) {
@@ -16110,20 +16119,23 @@ csui.define("csui/lib/othelp", [], function () {
                             const data = JSON.parse(json);
 
                             try {
-                              if(data.type == 'content') {
-                                if(document.getElementById("botloading")) {
-                                  document.getElementById("botloading").remove();
-                                }
+                              AIPlusUtils.removeLoaderTextbox();
 
-                                if(msgId == null) {
-                                  msgId = appendMessage(BOT_NAME, BOT_IMG, 'left', data.delta);
-                                } else {
-                                  AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
+                              if(msgId == null) {
+                                msgId = appendMessage(BOT_NAME, BOT_IMG, 'left', "");
+                              }
+                              
+                              if(data.type == 'content') {
+                                if(!firstMessageHasRendered) {
+                                  AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
+                                  firstMessageHasRendered = true;
                                 }
+                                AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
                               } else if(data.type == 'done') {
-                                if(document.getElementById("botloading")) {
-                                  document.getElementById("botloading").remove();
-                                }
+                                AIPlusUtils.removeLoaderTextbox();
+                              } else if(data.type == 'thinking') {
+                                AIPlusUtils.removeLoaderTextbox();
+                                AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
                               } else if(data.type == 'error') {
                                 console.error(data.error);
                                 alert(data.error);
