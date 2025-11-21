@@ -1,3 +1,4 @@
+using AIPlusBackend.Dto;
 using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Dto.CSDB;
 using AIPlusBackend.Dto.TempFile;
@@ -16,9 +17,9 @@ namespace AIPlusBackend.Controllers
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         [HttpPost("AddTempFileSchedule")]
-        public async Task<AddTempFileScheduleResponse> AddTempFileSchedule([FromBody] AddTempFileScheduleRequest body)
+        public async Task<APIResponse<AddTempFileScheduleResponse>> AddTempFileSchedule([FromBody] AddTempFileScheduleRequest body)
         {
-            var result = new AddTempFileScheduleResponse();
+            var result = new APIResponse<AddTempFileScheduleResponse>();
             try
             {
                 return await service.AddTempFileSchedule(body);

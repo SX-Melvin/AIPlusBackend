@@ -1,3 +1,4 @@
+using AIPlusBackend.Dto;
 using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Dto.CSDB;
 using AIPlusBackend.Services;
@@ -15,9 +16,9 @@ namespace AIPlusBackend.Controllers
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         [HttpPost("GetNodePermission")]
-        public async Task<List<GetNodePermissionsResponse>> Login([FromBody] List<GetNodePermissionsRequest> body)
+        public async Task<APIResponse<List<GetNodePermissionsResponse>>> Login([FromBody] List<GetNodePermissionsRequest> body)
         {
-            var result = new List<GetNodePermissionsResponse>();
+            var result = new APIResponse<List<GetNodePermissionsResponse>>();
             try
             {
                 return await service.GetPermissions(body);

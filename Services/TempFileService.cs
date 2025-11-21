@@ -1,4 +1,5 @@
-﻿using AIPlusBackend.Dto.CSDB;
+﻿using AIPlusBackend.Dto;
+using AIPlusBackend.Dto.CSDB;
 using AIPlusBackend.Dto.TempFile;
 using AIPlusBackend.Utils;
 using AIPlusBackend.Utils.Common;
@@ -8,9 +9,9 @@ namespace AIPlusBackend.Services
     public class TempFileService(CSDBUtils csdbUtils)
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public async Task<AddTempFileScheduleResponse> AddTempFileSchedule(AddTempFileScheduleRequest body)
+        public async Task<APIResponse<AddTempFileScheduleResponse>> AddTempFileSchedule(AddTempFileScheduleRequest body)
         {
-            var result = new AddTempFileScheduleResponse();
+            var result = new APIResponse<AddTempFileScheduleResponse>();
 
             try
             {
@@ -21,7 +22,7 @@ namespace AIPlusBackend.Services
                     WorkspaceID = body.WorkspaceId
                 });
 
-                result = new()
+                result.Data = new()
                 {
                     WorkspaceID = data.WorkspaceID,
                     JobId = data.JobId,
@@ -32,6 +33,7 @@ namespace AIPlusBackend.Services
             catch(Exception ex)
             {
                 _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
             }
 
             return result;
