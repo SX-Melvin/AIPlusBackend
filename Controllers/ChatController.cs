@@ -46,7 +46,7 @@ namespace AIPlusBackend.Controllers
             return result;
         }
 
-        [HttpGet("User/{userId}")]
+        [HttpGet("Room/User/{userId}")]
         public async Task<APIResponse<Pagination<ChatRoom>>> GetChat([FromQuery] int pageNumber, [FromQuery] int pageSize, long userId)
         {
             var result = new APIResponse<Pagination<ChatRoom>>();
