@@ -15429,11 +15429,10 @@ csui.define("csui/lib/othelp", [], function () {
         },
         onRender: function () {
           // Explorer Insight START
-          console.log("onRender Start");
           var globalthis = this;
-          var wID = 2000;
+          var wID = "content_server10-secure";
 
-          function showAviator() {
+          async function showAviator() {
               let that = globalthis;
               var botChatCounter = 0;
               let activeController = false;
@@ -15571,10 +15570,6 @@ csui.define("csui/lib/othelp", [], function () {
                       const m = "0" + date.getMinutes();
 
                       return `${h.slice(-2)}:${m.slice(-2)}`;
-                  }
-
-                  function random(min, max) {
-                      return Math.floor(Math.random() * (max - min) + min);
                   }
 
                   function createChatbotElement() {
@@ -15938,7 +15933,7 @@ csui.define("csui/lib/othelp", [], function () {
       
                   const msgerInput = get(".msger-input");
 
-                  document.getElementById("submitquestion").addEventListener("click", event => {
+                  document.getElementById("submitquestion").addEventListener("click", async event => {
                       event.preventDefault();
                       event.stopImmediatePropagation();
 
@@ -15970,67 +15965,15 @@ csui.define("csui/lib/othelp", [], function () {
                       var type = "QUERY";
                       botResponse(msgText);
                   });
-                  
-      
-                  function isDocumentTypeValid(type) {
-                      return type === 144 | type === 749
-                  }
-
-                  const activeAnimations = new Map();
-
-                  function animateThinking(text, container) {
-                      // Stop any existing animation for this container
-                      if (activeAnimations.has(container)) {
-                          const { textTimeout, dotInterval } = activeAnimations.get(container);
-                          clearTimeout(textTimeout);
-                          clearInterval(dotInterval);
-                          activeAnimations.delete(container);
-                      }
-
-                      container.innerHTML = ""; // Clear previous content
-                      
-                      let i = 0;
-                      let currentAnimation = {
-                          textTimeout: null,
-                          dotInterval: null
-                      };
-                      
-                      function showText() {
-                        if (i < text.length) {
-                          container.textContent += text[i];
-                          i++;
-                          currentAnimation.textTimeout = setTimeout(showText, 25); // Delay between letters
-                        } else {
-                          animateDots();
-                        }
-                      }
-
-                      function animateDots() {
-                          let dotCount = 0;
-
-                          // Clear any existing interval before starting a new one
-                          if (currentAnimation.dotInterval) {
-                            clearInterval(currentAnimation.dotInterval);
-                          }
-
-                          currentAnimation.dotInterval = setInterval(() => {
-                            container.textContent = text + ".".repeat(dotCount % 4); // Loops "", ".", "..", "..."
-                            dotCount++;
-                          }, 500); // Speed of dot animation
-                      }
-
-                      activeAnimations.set(container, currentAnimation);
-                      
-                      showText();
-                  }
 
                   function botResponse(questionToAsk) {
                     AIPlusAPI.ask({
+                      "userId": userID,
                       "messages": [
                         {"role": "user", "content": questionToAsk}
                       ],
-                      "topK": 3,
-                      "enableTools": false
+                      "enableTools": false,
+                      "topK": 3
                     });
                   }
                   
@@ -16045,6 +15988,14 @@ csui.define("csui/lib/othelp", [], function () {
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
+                    removeLoaderTextbox: function() {
+                      if(document.getElementById("botloading")) {
+                        document.getElementById("botloading").remove();
+                      }
+                    },
+                    replaceTextMessageBox: function(msgId, msg) {
+                      document.querySelector(`#${msgId} .msg-text`).textContent = msg;
+                    },
                     appendTextMessageBox: function(msgId, msg) {
                       document.querySelector(`#${msgId} .msg-text`).textContent += msg;
                     },
@@ -16073,7 +16024,7 @@ csui.define("csui/lib/othelp", [], function () {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json",
-                          "Authorization": `Bearer ${localStorage.getItem('aviatorToken')}`
+                          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
                         },
                         body: JSON.stringify(body),
                         signal
@@ -16089,6 +16040,7 @@ csui.define("csui/lib/othelp", [], function () {
                       const decoder = new TextDecoder("utf-8");
                       let buffer = "";
                       let msgId = null;
+                      let firstMessageHasRendered = false;
                       
                       // Read chunks as they arrive
                       while (true) {
@@ -16110,20 +16062,23 @@ csui.define("csui/lib/othelp", [], function () {
                             const data = JSON.parse(json);
 
                             try {
-                              if(data.type == 'content') {
-                                if(document.getElementById("botloading")) {
-                                  document.getElementById("botloading").remove();
-                                }
+                              AIPlusUtils.removeLoaderTextbox();
 
-                                if(msgId == null) {
-                                  msgId = appendMessage(BOT_NAME, BOT_IMG, 'left', data.delta);
-                                } else {
-                                  AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
+                              if(msgId == null) {
+                                msgId = appendMessage(BOT_NAME, BOT_IMG, 'left', "");
+                              }
+                              
+                              if(data.type == 'content') {
+                                if(!firstMessageHasRendered) {
+                                  AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
+                                  firstMessageHasRendered = true;
                                 }
+                                AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
                               } else if(data.type == 'done') {
-                                if(document.getElementById("botloading")) {
-                                  document.getElementById("botloading").remove();
-                                }
+                                AIPlusUtils.removeLoaderTextbox();
+                              } else if(data.type == 'thinking') {
+                                AIPlusUtils.removeLoaderTextbox();
+                                AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
                               } else if(data.type == 'error') {
                                 console.error(data.error);
                                 alert(data.error);
@@ -16147,7 +16102,7 @@ csui.define("csui/lib/othelp", [], function () {
                           method: "GET",
                           redirect: "follow",
                           headers: {
-                            "Authorization": `Bearer ${localStorage.getItem('aviatorToken')}`
+                            "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
                           }
                         });
                     
@@ -16165,7 +16120,7 @@ csui.define("csui/lib/othelp", [], function () {
                           body: formData,
                           redirect: "follow",
                           headers: {
-                            "Authorization": `Bearer ${localStorage.getItem('aviatorToken')}`
+                            "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
                           }
                         });
                     
@@ -16176,21 +16131,20 @@ csui.define("csui/lib/othelp", [], function () {
                       }
                     },
                     login: async function() {
-                      return fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {
+                      const response = await fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {
                         method: "POST",
                         redirect: "follow"
-                      })
-                      .then((response) => {
-                        const res = response.json();
-                        if(res.token) {
-                          sessionStorage.setItem("aviatorToken", res.token);
-                        }
-                        return res;
-                      })
-                      .then((result) => console.log(result))
-                      .catch((error) => console.error(error));
+                      });
+
+                      const result = await response.json();
+                      if(result.token) {
+                        sessionStorage.setItem("aviatorToken", result.token);
+                      }
+                      return result;
                     }
                   }
+
+                  await AIPlusAPI.login();
               }
 
           var Menuelement = document.getElementsByTagName("otc-menuitem");
