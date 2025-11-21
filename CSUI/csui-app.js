@@ -15447,18 +15447,16 @@ csui.define("csui/lib/othelp", [], function () {
               const PERSON_NAME = that.options.context._user.attributes.name;
 
               function appendMessage(name, img, side, text) {
-                const uniqueId = Math.round(new Date() / 100).toString();
+                const uniqueId = new Date().getTime();
                 let msgHTML;
                 const msgerChat = get(".msger-chat");
 
-                msgHTML = `
-                  <div id="msg-${uniqueId}" class="msg ${side}-msg">
-                  <div class="msg-img" style="background-image: url(${img}); margin-top: 20px; display: inherit;"></div>
-                `
+                msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
 
                 if(side == "left")
                 {
                     msgHTML += `
+                    <div class="msg-img" style="background-image: url(${img}); margin-top: 20px; display: inherit;"></div>
                     <div style="background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
                         <div class="msg-info">
                         </div>
@@ -15503,6 +15501,10 @@ csui.define("csui/lib/othelp", [], function () {
                     </div>
                     </div>`;
                 } else if(side == "right") {
+                    if(that.options.context._user.attributes.photo_url != null) {
+                      msgHTML += `<div class="msg-img" style="background-image: url(${img}); margin-top: 20px; display: inherit;"></div>`;
+                    }
+
                     msgHTML += `
                     <div style="width:75%">
                         <div class="msg-info">
@@ -15579,85 +15581,103 @@ csui.define("csui/lib/othelp", [], function () {
                     aiChatBotEl.classList.add("msger-container");
                     aiChatBotEl.innerHTML = `
                         <section class="msger-table" style="font-size: 14px; font-style: unset;">
-                            <header class="msger-header">
-                                <div class="msger-header-title" id="chatbotmenu">
-                                    <div class="msg-img"
-                                        style="background-image:url(/img/csui/themes/carbonfiber/image/icons/aviator.png);display:inline-block;vertical-align:middle">
-                                    </div>
-                                    <div style="
-                                        font-size: 18px;
-                                        font-weight: 600;
-                                        font-family: 'OpenText Sans';
-                                        color: #2c3e50;
-                                        display:inline-block;
-                                        vertical-align:middle
-                                        ">Aviator</div>
-                                </div>
-                                <div class="msger-header-options">
-                                    <div id="closeaviator" class="msg-img"
-                                        style="background-image:url(/img/csui/themes/carbonfiber/image/icons/smart_close.svg);display:inline-block;vertical-align:middle;cursor:pointer;width:20px;height:20px;margin-top:5px;background-color: #dce4e8;color:black;">
-                                    </div>
-                                </div>
-                            </header>
+                          <div style="display: flex;height:100%" class="msger-main-content">
                             <div id="mySidenav" class="sidenav">
+                              <header class="msger-header">
+                                <div class="msger-header-title" id="chatbotmenu">
+                                <img class="msg-img" style="background-image:url(/img/csui/themes/carbonfiber/image/icons/aviator.png);display:inline-block;vertical-align:middle" />
+                                <div style="
+                                    font-size: 18px;
+                                    font-weight: 600;
+                                    font-family: 'OpenText Sans';
+                                    color: #2c3e50;
+                                    display:inline-block;
+                                    vertical-align:middle
+                                    ">Aviator</div>
+                                </div>
+                              </header>
+
+                              <div style="margin:5px 5px">
+                                <div class="chat-history-title"><strong>Your chats</strong></div>
+                                <button class="chat-history-item">How to cook spaghetti</button>
+                              </div>
                             </div>
-                            <main class="msger-chat" id="drop-zone1" style="padding-left:20px;">
-                                <div class="msg left-msg">
-                                    <div class="msg-img"
-                                        style="background-image:url(/img/csui/themes/carbonfiber/image/icons/Group_22.svg);margin-top:20px; display:inherit;">
+
+                              <div class="msger-chat-container">
+                                <header class="msger-header" style="border-left:1px solid whitesmoke">
+                                    <div class="msger-header-title" id="chatbotmenu">
+                                      <div style="
+                                          font-size: 18px;
+                                          font-weight: 600;
+                                          font-family: 'OpenText Sans';
+                                          color: #2c3e50;
+                                          display:inline-block;
+                                          vertical-align:middle
+                                          ">Chat</div>
                                     </div>
-                                    <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
-                                        <div class="msg-info"></div>
-                                        <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
-                                            <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
+                                    <div class="msger-header-options">
+                                        <div id="closeaviator" class="msg-img"
+                                            style="background-image:url(/img/csui/themes/carbonfiber/image/icons/smart_close.svg);display:inline-block;vertical-align:middle;cursor:pointer;width:20px;height:20px;margin-top:5px;background-color: #dce4e8;color:black;">
+                                        </div>
+                                    </div>
+                                </header>
+
+                                <main class="msger-chat" id="drop-zone1" style="padding-left:20px;">
+                                    <div class="msg left-msg">
+                                        <div class="msg-img"
+                                            style="background-image:url(/img/csui/themes/carbonfiber/image/icons/Group_22.svg);margin-top:20px; display:inherit;">
+                                        </div>
+                                        <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
+                                            <div class="msg-info"></div>
+                                            <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
+                                                <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
+                                        </div>
+                                    </div>
+                                </main>
+                                <div id="files-container"></div>
+                                <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
+                                    <!-- Chat Input -->
+                                    <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
+                                
+                                    <!-- Inline Buttons -->
+                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                                        <!-- Clear Button with "New Chat" Text -->
+                                        <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
+                                            <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
+                                            <span style="font-size: 14px; color: #333;">New Chat</span>
+                                        </div>
+                                
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <!-- Counter -->
+                                            <div style="margin-right: 10px;" id="counter">0/2000</div>
+                                
+                                            <!-- File Input -->
+                                            <label for="file-input" class="icon-button" style="cursor: pointer;">
+                                                <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
+                                                </svg>
+                                            </label>
+                                            <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
+                                
+                                            <!-- Submit Button -->
+                                            <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
+                                                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
+                                                </svg>
+                                            </button>
+                                
+                                            <!-- Stop Button -->
+                                            <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
+                                                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </main>
-                            <div style="display:flex; padding-left:10px; padding-top:10px; padding-right:10px;">
-                                <div id="summaryDiv" class="summaryscrollmenu">
-                                </div>
+                              </div>
                             </div>
-                            <div id="files-container"></div>
-                            <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
-                                <!-- Chat Input -->
-                                <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
-                            
-                                <!-- Inline Buttons -->
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                                    <!-- Clear Button with "New Chat" Text -->
-                                    <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
-                                        <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
-                                        <span style="font-size: 14px; color: #333;">New Chat</span>
-                                    </div>
-                            
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <!-- Counter -->
-                                        <div style="margin-right: 10px;" id="counter">0/2000</div>
-                            
-                                        <!-- File Input -->
-                                        <label for="file-input" class="icon-button" style="cursor: pointer;">
-                                            <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
-                                            </svg>
-                                        </label>
-                                        <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
-                            
-                                        <!-- Submit Button -->
-                                        <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
-                                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
-                                            </svg>
-                                        </button>
-                            
-                                        <!-- Stop Button -->
-                                        <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
-                                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+
                         </section>
                     `;
 
@@ -15670,83 +15690,6 @@ csui.define("csui/lib/othelp", [], function () {
                     nodesTableDiv.appendChild(createChatbotElement());
                   }
                   document.getElementById("aichatbottable").style.display = "block";
-
-                  let chathistory = JSON.parse(sessionStorage.getItem("ExplorerInsightHistory"));
-                  for (const key in chathistory) {
-                    var sideNavbutton = document.createElement('div');
-                    sideNavbutton.className = 'sideNavbutton';
-                    sideNavbutton.id = key.toString();
-                    sideNavbutton.style.margin = '10px';
-                    var textSpan = document.createElement('span');
-                    textSpan.id = key.toString() + 'text';
-                    textSpan.className = 'chattooltipitem';
-                    
-                    var tooltipSpan = document.createElement('span');
-                    var ellipsisSpan = document.createElement('span');
-                    ellipsisSpan.className = 'ellipsis';
-                    ellipsisSpan.textContent = '•••';
-                    ellipsisSpan.id = key.toString() + 'ellipsis';
-                    tooltipSpan.className = 'chatmenuTooltip';
-                    tooltipSpan.id = key.toString() + 'tooltip';
-                    const innerObj = chathistory[key];
-                    for (const innerKey in innerObj) {
-                      if (innerObj.hasOwnProperty(innerKey)) {
-                        const messageDetails = innerObj[innerKey];
-                        textSpan.textContent = messageDetails.Title.toString();
-                        textSpan.title = messageDetails.Title.toString();
-                        tooltipSpan.textContent = messageDetails.Title.toString();
-                      }
-                    }
-                    sideNavbutton.appendChild(textSpan);
-                    sideNavbutton.appendChild(tooltipSpan);
-                    sideNavbutton.appendChild(ellipsisSpan);
-                    sideNavbutton.innerHTML += '<div class="dropdown-content" id=' + key.toString() + 'dropdown' + '><a id="' + key.toString() + 'delete' + '">Delete</a></div>';
-                    document.getElementById("mySidenav").appendChild(sideNavbutton);
-                    document.getElementById(key.toString() + 'text').addEventListener('click', function(event) {
-                      document.getElementById("summaryDiv").style.display = 'none';
-                      document.getElementById('drop-zone1').innerHTML = "";
-                      if (chathistory.hasOwnProperty(key)) {
-                        const innerObj = chathistory[key];
-                        for (const innerKey in innerObj) {
-                          if (innerObj.hasOwnProperty(innerKey)) {
-                            const messageDetails = innerObj[innerKey];
-                            if (messageDetails.Type == "AI") {
-                              appendMessage(BOT_NAME, BOT_IMG, 'left', messageDetails.Message);
-                            }
-                            if (messageDetails.Type == "HUMAN") {
-                              appendMessage(PERSON_NAME, PERSON_IMG, 'right', messageDetails.Message);
-                            }
-                            sessionStorage.setItem('RAG_UUID_SESSIONID', key);
-                          }
-                        }
-                      }
-                      document.getElementById("mySidenav").style.display = 'none'
-                    });
-
-                    document.getElementById(key.toString() + 'delete').addEventListener('click', function(event) {
-                      document.getElementById(key.toString()).remove();
-                    });
-                  }
-                            
-                  document.getElementById('chatbotmenu').addEventListener('click', function(event) {
-                    console.log(document.getElementById("mySidenav").style.display)
-                    if (document.getElementById("mySidenav").style.display == 'none'){
-                        document.getElementById("mySidenav").style.display = 'block'
-                    } else if (document.getElementById("mySidenav").style.display = 'block'){
-                        document.getElementById("mySidenav").style.display = 'none'
-                    };
-                  });
-
-                  var tooltip = document.querySelectorAll('.chatmenuTooltip');
-
-                  document.addEventListener('mousemove', fn, false);
-
-                  function fn(e) {
-                    for (var i=tooltip.length; i--;) {
-                      tooltip[i].style.left = e.pageX + 'px';
-                      tooltip[i].style.top = e.pageY + 'px';
-                    }
-                  }
 
                   document.getElementById('file-input').addEventListener('change', async function(event) {
                     event.preventDefault();
@@ -15962,7 +15905,6 @@ csui.define("csui/lib/othelp", [], function () {
                       appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
                       msgerInput.value = "";
                       counterEle.innerHTML = `0/${maxLength}`;
-                      var type = "QUERY";
                       botResponse(msgText);
                   });
 
@@ -16137,8 +16079,8 @@ csui.define("csui/lib/othelp", [], function () {
                       });
 
                       const result = await response.json();
-                      if(result.token) {
-                        sessionStorage.setItem("aviatorToken", result.token);
+                      if(result.data.token) {
+                        sessionStorage.setItem("aviatorToken", result.data.token);
                       }
                       return result;
                     }
@@ -16174,9 +16116,6 @@ csui.define("csui/lib/othelp", [], function () {
                       const secondDivider = Menuelement.querySelectorAll('otc-menudivider')[1];
                       Menuelement.insertBefore(AviatorElement, secondDivider);
                       AviatorElement.addEventListener('click', function() {
-                          var person_name = globalthis.options.context._user.attributes.name;
-                          var thisticket = globalthis.options.context._user.connector.connection.session.ticket;
-                          var person_img = globalthis.options.context._user.attributes.photo_url;
                           showAviator();
                       });
                   }
@@ -16212,9 +16151,6 @@ csui.define("csui/lib/othelp", [], function () {
                       AviatorButtonElement.appendChild(script);
 
                       AviatorButtonElement.addEventListener('click', function() {
-                        var person_name = globalthis.options.context._user.attributes.name;
-                        var thisticket = globalthis.options.context._user.connector.connection.session.ticket;
-                        var person_img = globalthis.options.context._user.attributes.photo_url;
                         showAviator();
                       });
                   }

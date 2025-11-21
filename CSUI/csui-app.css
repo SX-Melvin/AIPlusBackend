@@ -6631,6 +6631,12 @@ body.bin-widgets .binf-modal-backdrop {
 
 /*# sourceMappingURL=csui-app.css.map */
 
+#files-container {
+    padding: 0px 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 6px; /* space between items */
+}
 
 .file-item {
     display: flex;
@@ -6638,9 +6644,8 @@ body.bin-widgets .binf-modal-backdrop {
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    box-sizing: border-box; /* fixes overflow */
 }
 
 .file-icon {
@@ -6651,10 +6656,17 @@ body.bin-widgets .binf-modal-backdrop {
 }
 
 .file-name {
-    flex-grow: 1;
-    color: #333;
-    font-size: 14px;
-}
+    flex: 1; /* take remaining width inside .file-item */
+    min-width: 0; /* VERY important when inside flexbox */
+  }
+  
+  .file-name a {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
 .remove-btn {
     background: none;
@@ -6687,24 +6699,18 @@ body.bin-widgets .binf-modal-backdrop {
 .sidenav {
     top:54px;
     bottom:110px;
-    width: auto; /* 0 width - change this with JavaScript */
-    position: fixed; /* Stay in place */
+    width: 30%; /* 0 width - change this with JavaScript */
+    /* position: fixed; Stay in place */
     z-index: 1; /* Stay on top */ 
     background-color: #f1f1f1;
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 60px; /* Place content 60px from the top */
-    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
-    display: none;
-  }
-
+}
   
-
 .sideNavbutton {
     display: flex;
     flex-direction: row;
     align-items: center;
-    /* border-radius: 20px;
-    transition: background-color 0.3s, box-shadow 0.3s; */
     border: 2px solid black;
     color: black;
     padding: 14px 28px;
@@ -6712,10 +6718,10 @@ body.bin-widgets .binf-modal-backdrop {
     cursor: pointer;
     border-radius: 20px;                
     border-color: #e7e7e7;
-  color: black;
-  width:190px;
-  height: 30px;
-  position: relative;
+    color: black;
+    width:190px;
+    height: 30px;
+    position: relative;
   }
   .sideNavbutton:hover {
     /* border: 2px solid black; */
