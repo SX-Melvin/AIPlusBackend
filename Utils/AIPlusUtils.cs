@@ -42,6 +42,7 @@ namespace AIPlusBackend.Utils
             try
             {
                 var request = new RestRequest($"/api/workspaces/{wID}/files/{jobId}", Method.Delete);
+                request.AddQueryParameter("deleteStorage", true); // Delete from storage as well
                 request.AddHeader("Authorization", $"Bearer {token}");
                 var response = await Client.ExecuteAsync<AIPlusDeleteFileResponse>(request);
                 _logger.Info("AIPlus Delete File Response: " + response.Content);

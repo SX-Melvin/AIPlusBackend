@@ -9,6 +9,8 @@ namespace AIPlusBackend.Dto
             : base(options) { }
 
         public DbSet<DTreeACL> DTreeACLs { get; set; }
+        public DbSet<ChatRoom> ChatRooms { get; set; }
+        public DbSet<Database.Chat> Chats { get; set; }
         public DbSet<AIPlusTempFile> AIPlusTempFiles { get; set; }
         public DbSet<KUAF> KUAFs { get; set; }
 

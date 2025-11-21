@@ -37,6 +37,62 @@ namespace AIPlusBackend.Utils
 
             return true;
         }
+        public ChatRoom CreateChatRoom(ChatRoom data)
+        {
+            _context.ChatRooms.Add(data);
+            _context.SaveChanges();
+            return data;
+        }
+        public Pagination<ChatRoom> GetChatRoomsByUser(long userId, int pageNumber, int pageSize)
+        {
+            var query = _context.ChatRooms
+                .Where(x => x.UserID == userId)
+                .OrderByDescending(c => c.CreatedAt);
 
+            int totalCount = query.Count();
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new Pagination<ChatRoom>
+            {
+                Data = items,
+                TotalRecords = totalCount,
+                HasNext = pageNumber * pageSize < totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        public Pagination<Chat> GetChatsByChatId(long chatId, int pageNumber, int pageSize)
+        {
+            var query = _context.Chats
+                .Where(x => x.ChatID == chatId)
+                .OrderByDescending(c => c.CreatedAt);
+
+            int totalCount = query.Count();
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new Pagination<Chat>
+            {
+                Data = items,
+                TotalRecords = totalCount,
+                HasNext = pageNumber * pageSize < totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+        public Chat CreateChat(Chat data)
+        {
+            _context.Chats.Add(data);
+            _context.SaveChanges();
+            return data;
+        }
     }
 }
