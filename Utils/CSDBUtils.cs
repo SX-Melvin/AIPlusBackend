@@ -47,7 +47,7 @@ namespace AIPlusBackend.Utils
         {
             var query = _context.ChatRooms
                 .Where(x => x.UserID == userId)
-                .OrderByDescending(c => c.CreatedAt);
+                .OrderBy(c => c.CreatedAt);
 
             int totalCount = query.Count();
 
