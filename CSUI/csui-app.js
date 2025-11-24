@@ -15443,10 +15443,13 @@ csui.define("csui/lib/othelp", [], function () {
               const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/generate.svg"
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/Group_22.svg";
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
-              const BOT_NAME = "BOT";
               const PERSON_NAME = that.options.context._user.attributes.name;
 
-              function appendMessage(name, img, side, text) {
+              function appendMessage(side, text, date = null) {
+                if(date == null) {
+                  date = new Date();
+                }
+
                 const uniqueId = new Date().getTime();
                 let msgHTML;
                 const msgerChat = get(".msger-chat");
@@ -15456,7 +15459,7 @@ csui.define("csui/lib/othelp", [], function () {
                 if(side == "left")
                 {
                     msgHTML += `
-                    <div class="msg-img" style="background-image: url(${img}); margin-top: 20px; display: inherit;"></div>
+                    <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
                     <div style="background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
                         <div class="msg-info">
                         </div>
@@ -15487,7 +15490,7 @@ csui.define("csui/lib/othelp", [], function () {
                 } else if(side == "loading") {
                     msgHTML = `
                     <div id="botloading" class="msg ${side}-msg">
-                    <div class="msg-img" style="background-image: url(${img}); margin-top: 20px; display: inherit;"></div>
+                    <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
     
                     <div style="background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
                         <div class="msg-info">
@@ -15502,14 +15505,14 @@ csui.define("csui/lib/othelp", [], function () {
                     </div>`;
                 } else if(side == "right") {
                     if(that.options.context._user.attributes.photo_url != null) {
-                      msgHTML += `<div class="msg-img" style="background-image: url(${img}); margin-top: 20px; display: inherit;"></div>`;
+                      msgHTML += `<div class="msg-img" style="background-image: url(${PERSON_IMG}); margin-top: 20px; display: inherit;"></div>`;
                     }
 
                     msgHTML += `
                     <div style="width:75%">
                         <div class="msg-info">
                         <div class="msg-info-name"></div>
-                        <div class="msg-info-time">${name} ${formatDate(new Date())}</div>
+                        <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
                         </div>
     
                         <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble"><div id=usertext${botChatCounter} style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
@@ -15551,7 +15554,7 @@ csui.define("csui/lib/othelp", [], function () {
                     e.stopImmediatePropagation();
                     document.getElementById('submitquestion').style.display = 'none';
                     document.getElementById('chatbotstop').style.display = '';
-                    appendMessage(PERSON_NAME, PERSON_IMG, "right", userTextDIvEl.innerHTML);
+                    appendMessage("right", userTextDIvEl.innerHTML);
                     botResponse(userTextDIvEl.innerHTML);
                   });
 
@@ -15560,9 +15563,19 @@ csui.define("csui/lib/othelp", [], function () {
 
                 msgerChat.scrollTop += 500;
                 return uniqueId;
-              }
-                  
+              } 
+
                   // Utils
+                  function clearChats() {
+                    const chat = document.querySelector('.msger-chat');
+                    [...chat.children].slice(1).forEach(child => child.remove());
+
+                    messageEle.value = "";
+                    counterEle.innerHTML = `0/${maxLength}`;
+                    if(document.getElementById("submitquestion")) {
+                      document.getElementById("submitquestion").disabled = true;
+                    }
+                  }
                   function get(selector, root = document) {
                       return root.querySelector(selector);
                   }
@@ -15599,7 +15612,7 @@ csui.define("csui/lib/othelp", [], function () {
 
                               <div style="margin:5px 5px">
                                 <div class="chat-history-title"><strong>Your chats</strong></div>
-                                <button class="chat-history-item">How to cook spaghetti</button>
+                                <div id="chat-room-container"></div>
                               </div>
                             </div>
 
@@ -15838,14 +15851,7 @@ csui.define("csui/lib/othelp", [], function () {
                   document.getElementById("clearbtn").addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    const chat = document.querySelector('.msger-chat');
-                    [...chat.children].slice(1).forEach(child => child.remove());
-
-                    messageEle.value = "";
-                    counterEle.innerHTML = `0/${maxLength}`;
-                    if(document.getElementById("submitquestion")) {
-                      document.getElementById("submitquestion").disabled = true;
-                    }
+                    clearChats();
                   });
 
                   messageEle.addEventListener('input', function (e) {
@@ -15902,7 +15908,7 @@ csui.define("csui/lib/othelp", [], function () {
                       const msgText = msgerInput.value;
                       if (!msgText) return;
       
-                      appendMessage(PERSON_NAME, PERSON_IMG, "right", msgText);
+                      appendMessage("right", msgText);
                       msgerInput.value = "";
                       counterEle.innerHTML = `0/${maxLength}`;
                       botResponse(msgText);
@@ -15960,7 +15966,7 @@ csui.define("csui/lib/othelp", [], function () {
 
                       activeController = new AbortController();
                       const { signal } = activeController;
-                      appendMessage(BOT_NAME, BOT_IMG, 'loading');
+                      appendMessage('loading');
 
                       const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
                         method: "POST",
@@ -16007,7 +16013,7 @@ csui.define("csui/lib/othelp", [], function () {
                               AIPlusUtils.removeLoaderTextbox();
 
                               if(msgId == null) {
-                                msgId = appendMessage(BOT_NAME, BOT_IMG, 'left', "");
+                                msgId = appendMessage('left', "");
                               }
                               
                               if(data.type == 'content') {
@@ -16055,6 +16061,34 @@ csui.define("csui/lib/othelp", [], function () {
                         throw error;
                       }
                     },
+                    getChatRooms: async function(page, size = 20) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/User/${userID}?pageNumber=${page}&pageSize=${size}`, {
+                          method: "GET",
+                          redirect: "follow"
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("getChatRooms error:", error);
+                        throw error;
+                      }
+                    },
+                    getChats: async function(chatId, page, size = 25) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/${chatId}/Chats?pageNumber=${page}&pageSize=${size}`, {
+                          method: "GET",
+                          redirect: "follow"
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("getChats error:", error);
+                        throw error;
+                      }
+                    },
                     ingest: async function(formData) {
                       try {
                         const response = await fetch(`${AIPlusConfig.apiUrl}/api/documents`, {
@@ -16087,6 +16121,27 @@ csui.define("csui/lib/othelp", [], function () {
                   }
 
                   await AIPlusAPI.login();
+
+                  // TODO: Render Chat Rooms
+                  const rooms = await AIPlusAPI.getChatRooms(1);
+                  const chatRoomContainer = document.querySelector("#chat-room-container");
+                  if(rooms?.data?.data == null || rooms?.data?.data?.length == 0) {
+                    chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
+                  }
+                  for(const chatRoom of rooms.data.data) {
+                    chatRoomContainer.innerHTML = ``;
+                    chatRoomContainer.innerHTML += `<button data-id="${chatRoom.id}" title="${chatRoom.name}" class="chat-history-item">${chatRoom.name}</button>`;
+                  }
+
+                  document.querySelector('.chat-history-item').addEventListener("click", async (e) => {
+                    clearChats();
+                    const chats = await AIPlusAPI.getChats(e.target.dataset.id, 1);
+                    for(const chat of chats.data.data) {
+                      const side = chat.isHuman ? "right" : "left";
+                      appendMessage(side, chat.message, new Date(chat.createdAt));
+                    }
+                    console.log(chats.data);
+                  });
               }
 
           var Menuelement = document.getElementsByTagName("otc-menuitem");
