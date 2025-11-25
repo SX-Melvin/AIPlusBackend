@@ -137,6 +137,14 @@ namespace AIPlusBackend.Controllers
                 body.RoomId = chatRoom.ID;
             }
 
+            csdb.CreateChat(new()
+            {
+                ChatRoomID = body.RoomId.Value,
+                IsHuman = true,
+                CreatedAt = now,
+                Message = userMessage.Content
+            });
+
             await foreach (var chunk in utils.AskQuestion(body.Data, body.AIPlusToken))
             {
                 var json = JsonConvert.SerializeObject(chunk);
@@ -159,14 +167,6 @@ namespace AIPlusBackend.Controllers
                 await Response.Body.FlushAsync();
 
                 string botResponse = "";
-
-                csdb.CreateChat(new()
-                {
-                    ChatRoomID = body.RoomId.Value,
-                    IsHuman = true,
-                    CreatedAt = now,
-                    Message = userMessage.Content
-                });
 
                 foreach (var item in botResponses)
                 {

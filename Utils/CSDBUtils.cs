@@ -52,8 +52,8 @@ namespace AIPlusBackend.Utils
         public Pagination<ChatRoom> GetChatRoomsByUser(long userId, int pageNumber, int pageSize)
         {
             var query = _context.ChatRooms
-                .Where(x => x.UserID == userId)
-                .OrderByDescending(c => c.CreatedAt);
+        .Where(x => x.UserID == userId)
+        .OrderByDescending(c => c.CreatedAt);
 
             int totalCount = query.Count();
 
@@ -65,6 +65,7 @@ namespace AIPlusBackend.Utils
             return new Pagination<ChatRoom>
             {
                 Data = items,
+                TotalPage = (int)Math.Ceiling((double)totalCount / pageSize),
                 TotalRecords = totalCount,
                 HasNext = pageNumber * pageSize < totalCount,
                 PageNumber = pageNumber,
@@ -90,6 +91,7 @@ namespace AIPlusBackend.Utils
                 TotalRecords = totalCount,
                 HasNext = pageNumber * pageSize < totalCount,
                 PageNumber = pageNumber,
+                TotalPage = (int)Math.Ceiling((double)totalCount / pageSize),
                 PageSize = pageSize
             };
         }
