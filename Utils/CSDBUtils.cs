@@ -47,7 +47,7 @@ namespace AIPlusBackend.Utils
         {
             var query = _context.ChatRooms
                 .Where(x => x.UserID == userId)
-                .OrderBy(c => c.CreatedAt);
+                .OrderByDescending(c => c.CreatedAt);
 
             int totalCount = query.Count();
 
@@ -68,7 +68,7 @@ namespace AIPlusBackend.Utils
         public Pagination<Chat> GetChatsByChatId(long chatId, int pageNumber, int pageSize)
         {
             var query = _context.Chats
-                .Where(x => x.ChatID == chatId)
+                .Where(x => x.ChatRoomID == chatId)
                 .OrderByDescending(c => c.CreatedAt);
 
             int totalCount = query.Count();
@@ -87,7 +87,6 @@ namespace AIPlusBackend.Utils
                 PageSize = pageSize
             };
         }
-
         public Chat CreateChat(Chat data)
         {
             _context.Chats.Add(data);

@@ -5,7 +5,7 @@ using AIPlusBackend.Utils;
 
 namespace AIPlusBackend.Services
 {
-    public class ChatService(CSDBUtils csdbUtils)
+    public class ChatService(CSDBUtils csdbUtils, AIPlusUtils ai)
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public async Task<APIResponse<NewChatRoomResponse>> NewChatRoom(NewChatRoomRequest body, long userId)
@@ -26,7 +26,7 @@ namespace AIPlusBackend.Services
                     csdbUtils.CreateChat(new()
                     {
                         CreatedAt = item.CreatedAt,
-                        ChatID = data.ID,
+                        ChatRoomID = data.ID,
                         IsHuman = item.IsHuman,
                         Message = item.Message,
                     });
@@ -61,7 +61,7 @@ namespace AIPlusBackend.Services
                     var data = csdbUtils.CreateChat(new()
                     {
                         CreatedAt = item.CreatedAt,
-                        ChatID = chatID,
+                        ChatRoomID = chatID,
                         IsHuman = item.IsHuman,
                         Message = item.Message,
                     });
@@ -69,7 +69,7 @@ namespace AIPlusBackend.Services
                     result.Data.Add(new()
                     {
                         Message = data.Message,
-                        ChatID = data.ChatID,
+                        ChatID = data.ChatRoomID,
                         CreatedAt = data.CreatedAt,
                         IsHuman = data.IsHuman,
                         ID = data.ID,

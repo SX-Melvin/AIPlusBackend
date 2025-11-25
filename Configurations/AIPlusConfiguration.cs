@@ -4,6 +4,7 @@
     {
         public string ApiKey { get; set; }
         public string Url { get; set; }
+        public string WorkspaceId { get; set; }
         public string FolderStructureJSONPath { get; set; }
     }
 }

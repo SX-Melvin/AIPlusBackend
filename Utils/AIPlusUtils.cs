@@ -1,5 +1,6 @@
 ﻿using AIPlusBackend.Configurations;
 using AIPlusBackend.Dto.AIPlus;
+using AIPlusBackend.Utils.Common;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NLog;
@@ -74,13 +75,13 @@ namespace AIPlusBackend.Utils
 
             return result;
         }
-        public async Task<List<AIPlusAskQuestionResponse>> AskQuestionByWorkspace(string wID, AIPlusAskQuestionRequest body, string token)
+        public async Task<List<AIPlusAskQuestionResponse>> AskQuestionByWorkspace(string wId, AIPlusAskQuestionRequest body, string token)
         {
             List<AIPlusAskQuestionResponse> result = new();
 
             try
             {
-                var request = new RestRequest($"/api/workspaces/{wID}/chat/stream", Method.Post);
+                var request = new RestRequest($"/api/workspaces/{wId}/chat/stream", Method.Post);
                 request.AddHeader("Authorization", $"Bearer {token}");
                 request.AddJsonBody(body);
 
@@ -115,6 +116,31 @@ namespace AIPlusBackend.Utils
             }
 
             return result;
+        }
+        public async IAsyncEnumerable<AIPlusAskQuestionResponse> AskQuestion(AIPlusAskQuestionRequest body, string token)
+        {
+            var request = new RestRequest($"/api/workspaces/{config.Value.WorkspaceId}/chat/stream", Method.Post);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddJsonBody(body);
+
+            using var stream = await Client.DownloadStreamAsync(request);
+            using var reader = new StreamReader(stream);
+
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                int index = line.IndexOf("data: ", StringComparison.OrdinalIgnoreCase);
+                string cleanString = index < 0 ? line : line.Remove(index, "data: ".Length);
+
+                if(StringUtils.IsValidJSON(cleanString))
+                {
+                    var response = JsonConvert.DeserializeObject<AIPlusAskQuestionResponse>(cleanString);
+                    if (response != null && response.Type != null)
+                    {
+                        yield return response;
+                    }
+                }
+            }
         }
         public async Task<AIPlusUploadFileResponse> UploadFile(string wID, string filePath, string metadata, string token)
         {

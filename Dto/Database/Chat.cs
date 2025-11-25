@@ -6,7 +6,7 @@ namespace AIPlusBackend.Dto.Database
     public class Chat
     {
         public long ID { get; set; }
-        public long ChatID { get; set; }
+        public long ChatRoomID { get; set; }
         public string Message { get; set; }
         public bool IsHuman { get; set; }
         public DateTime CreatedAt { get; set; }

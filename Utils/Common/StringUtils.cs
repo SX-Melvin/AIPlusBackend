@@ -1,4 +1,6 @@
-﻿using NLog;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NLog;
 using System.Text.RegularExpressions;
 
 namespace AIPlusBackend.Utils.Common
@@ -29,6 +31,29 @@ namespace AIPlusBackend.Utils.Common
             }
 
             return result;
+        }
+        public static bool IsValidJSON(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return false;
+
+            str = str.Trim();
+
+            if ((str.StartsWith("{") && str.EndsWith("}")) ||
+                (str.StartsWith("[") && str.EndsWith("]")))
+            {
+                try
+                {
+                    JToken.Parse(str);
+                    return true;
+                }
+                catch (JsonReaderException)
+                {
+                    return false;
+                }
+            }
+
+            return false;
         }
     }
 }
