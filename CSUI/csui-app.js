@@ -15443,6 +15443,7 @@ csui.define("csui/lib/othelp", [], function () {
               const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
               const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
               const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
+              const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
               const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
               const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
@@ -15980,10 +15981,31 @@ csui.define("csui/lib/othelp", [], function () {
                       }
 
                       for(const chatRoom of rooms.data.data) {
-                        chatRoomContainer.insertAdjacentHTML("beforeend", `<button data-id="${chatRoom.id}" title="${chatRoom.name}" class="chat-history-item msger-btn ${CHAT_ID == chatRoom.id ? "hoverable-active" : "hoverable"}">${chatRoom.name}</button>`);
+                        chatRoomContainer.insertAdjacentHTML("beforeend", `
+                          <button data-id="${chatRoom.id}" title="${chatRoom.name}" class="p-relative chat-history-item msger-btn ${CHAT_ID == chatRoom.id ? "hoverable-active" : "hoverable"}">
+                            ${chatRoom.name}
+                            <div data-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
+                              <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
+                            </div>
+                          </button>`);
                       }
                       
+                      document.querySelectorAll('.chat-history-tooltip').forEach(btn => {
+                        btn.addEventListener("click", async (e) => {
+                          e.stopPropagation();
+                          if(confirm("Delete this chat?")) {
+                            await AIPlusAPI.deleteChatRoom(btn.dataset.id);
+                          }
+                        });
+                      });
                       document.querySelectorAll('.chat-history-item').forEach(btn => {
+                        btn.addEventListener("mouseenter", async (e) => {
+                          document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "block";
+                        });
+                        btn.addEventListener("mouseleave", async (e) => {
+                          document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "none";
+                        });
+
                         btn.addEventListener("click", async (e) => {
                           this.toggleLoaderChatContainer(true);
                           clearChats();
@@ -16174,7 +16196,25 @@ csui.define("csui/lib/othelp", [], function () {
                         throw error;
                       }
                     },
-                    getChatRooms: async function(page, size = 20) {
+                    deleteChatRoom: async function(id) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/${id}`, {
+                          method: "DELETE",
+                          redirect: "follow"
+                        });
+                    
+                        const result = await response.json();
+                        if(CHAT_ID == id) {
+                          clearChats();
+                        }
+                        await this.getChatRooms(1);
+                        return result;
+                      } catch (error) {
+                        console.error("getChatRooms error:", error);
+                        throw error;
+                      }
+                    },
+                    getChatRooms: async function(page = 1, size = 20) {
                       try {
                         const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/User/${userID}?pageNumber=${page}&pageSize=${size}`, {
                           method: "GET",

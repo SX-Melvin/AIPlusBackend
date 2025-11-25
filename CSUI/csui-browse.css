@@ -14137,6 +14137,9 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
 .hoverable:hover {
     background-color: rgba(200, 200, 200, .5)!important;
 }
+.hoverable-fade:hover {
+    opacity: .5!important;
+}
 
 .msger-img-btn {
     background-color:none;
@@ -14356,5 +14359,16 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
         background-color: #078db3;
     }
 }
-
+.p-relative {
+    position: relative;
+}
+.chat-history-tooltip {
+    display:none;
+    border-radius:5px!important;
+    background:white!important;
+    position:absolute!important;
+    right:10px!important;
+    top:7px!important;
+    padding:2px!important;
+}
 /* AI Chatbot */
