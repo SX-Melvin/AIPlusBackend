@@ -14105,21 +14105,50 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     /* justify-content: space-between; */ 
     width: 100%;
 }
-
-.chat-history-title {
+.msger-btn {
+    text-align: start!important;
+    background-color: white!important;
+    border: none!important;
+}
+.chat-sidenav-title {
+    font-weight: 400!important;
+    padding:10px 5px!important;
+    border-radius: 5px;
+}
+.chat-sidenav-sub-title {
     font-weight: bold!important;
     padding:10px!important;
 }
 .chat-history-item {
     border: none;
+    margin-bottom: 5px!important;
     display: block;
     width: 100%;
     text-align: start;
     border-radius: 10px;
     padding: 10px!important;
+    overflow: hidden!important;
+    white-space: nowrap!important;
+    text-overflow: ellipsis!important;
 }
-.chat-history-item:hover {
-    background-color: rgba(200, 200, 200, .5);
+.hoverable-active {
+    background-color: rgba(200, 200, 200, .5)!important;
+}
+.hoverable:hover {
+    background-color: rgba(200, 200, 200, .5)!important;
+}
+
+.msger-img-btn {
+    background-color:none;
+    border:none;
+    display:inline-block;
+    vertical-align:middle;
+    cursor:pointer;
+    width:20px;
+    height:20px;
+    margin-top:5px;
+    background-color: #dce4e8;
+    color:black;
 }
 
 .msger-table {

@@ -15438,14 +15438,19 @@ csui.define("csui/lib/othelp", [], function () {
               let activeController = false;
               let ticket = that.options.context._user.connector.connection.session.ticket;
               let userID = that.options.context._user.attributes.id;
-              const STOP_IMG = "/img/csui/themes/carbonfiber/image/icons/stop_circle.svg"
-              const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/toolbar_copy.svg"
-              const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/generate.svg"
-              const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/Group_22.svg";
+              const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
+              const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
+              const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
+              const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
+              const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
+              const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
+              const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
+              const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
+              let CHAT_ID = null;
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
               const PERSON_NAME = that.options.context._user.attributes.name;
 
-              function appendMessage(side, text, date = null) {
+              function appendMessage(side, text, date = null, appendOnFirstChild = false) {
                 if(date == null) {
                   date = new Date();
                 }
@@ -15521,7 +15526,13 @@ csui.define("csui/lib/othelp", [], function () {
                 `;
                 }
 
-                msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+                if(appendOnFirstChild) {
+                  AIPlusUtils.toggleInitialMsg(false);
+                  msgerChat.insertAdjacentHTML("afterbegin", msgHTML);
+                } else {
+                  msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+                }
+
                 let botChatDivEl = document.getElementById(`chatbotcopy${botChatCounter}`);
                 let botChatDivElGenerate = document.getElementById(`chatbotgenerate${botChatCounter}`);
                 const copyTooltip = document.querySelector(`#chatbotcopy${botChatCounter} .chatbottooltip`);
@@ -15567,6 +15578,9 @@ csui.define("csui/lib/othelp", [], function () {
 
                   // Utils
                   function clearChats() {
+                    AIPlusUtils.toggleInitialMsg(true);
+                    CHAT_ID = null;
+
                     const chat = document.querySelector('.msger-chat');
                     [...chat.children].slice(1).forEach(child => child.remove());
 
@@ -15598,55 +15612,75 @@ csui.define("csui/lib/othelp", [], function () {
                             <div id="mySidenav" class="sidenav">
                               <header class="msger-header">
                                 <div class="msger-header-title" id="chatbotmenu">
-                                <img class="msg-img" style="background-image:url(/img/csui/themes/carbonfiber/image/icons/aviator.png);display:inline-block;vertical-align:middle" />
-                                <div style="
-                                    font-size: 18px;
-                                    font-weight: 600;
-                                    font-family: 'OpenText Sans';
-                                    color: #2c3e50;
-                                    display:inline-block;
-                                    vertical-align:middle
-                                    ">Aviator</div>
+                                  <div style="
+                                      font-size: 19px;
+                                      font-weight: 600;
+                                      font-family: 'OpenText Sans';
+                                      color: #2c3e50;
+                                      display:inline-block;
+                                      vertical-align:middle
+                                      ">Tools</div>
                                 </div>
-                              </header>
 
-                              <div style="margin:5px 5px">
-                                <div class="chat-history-title"><strong>Your chats</strong></div>
+                                <button title="Hide sidebar" class="msger-img-btn" style="background-image:url(${DOUBLE_ARROWS})"></button>
+                              </header>
+                              
+                              <div style="margin:5px 5px;">
+                              <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+                                  <img src="${CHAT_LOGO}" style="width:14px" />
+                                  <strong>&nbsp;Chats</strong>
+                                </button>
+                                <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+                                  <img src="${PROJECT_LOGO}" style="width:14px" />
+                                  <strong>&nbsp;Projects</strong>
+                                  </button>
+                                <br>
+                                <div class="chat-sidenav-sub-title" style="border-top:1px solid black"><strong>Your chats</strong></div>
                                 <div id="chat-room-container"></div>
                               </div>
                             </div>
+                              <div class="msger-chat-container" style="position:relative">
+                                <div style="position:absolute;background-color:rgba(0,0,0,.2);right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
+                                  <div class="outer-border">
+                                  <div class="loader">
+                                    <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
+                                      <path d="M36.5 8.79752C51.7874 8.79752 64.2025 21.2126 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752ZM72.5 36.5C72.5 16.63 56.37 0.5 36.5 0.5C16.63 0.5 0.499999 16.63 0.499999 36.5C0.499999 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5Z" fill="#CFDCFC" style="fill:#CFDCFC;fill:color(display-p3 0.8118 0.8627 0.9882);fill-opacity:1;"></path>
+                                      <clipPath id="smart_loader_1764047844677">
+                                        <path d="M40.6488 4.64876C40.6488 2.35746 38.7913 0.5 36.5 0.5C16.63 0.5 0.500007 16.63 0.500007 36.5C0.500007 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5C72.5 34.2087 70.6425 32.3512 68.3512 32.3512C66.0599 32.3512 64.2025 34.2087 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752C38.7913 8.79752 40.6488 6.94006 40.6488 4.64876Z" style=""></path>
+                                      </clipPath>
+                                      <foreignObject width="73" height="73" clip-path="url(#smart_loader_1764047844677)">
+                                        <div class="spinner-gradient"></div>
+                                      </foreignObject>
+                                    </svg>
+                                  </div>
+                                  <div class="binf-sr-only" aria-live="polite" aria-busy="true">
+                                    Loading..
+                                  </div>
+                                </div>
+                              </div>
 
-                              <div class="msger-chat-container">
                                 <header class="msger-header" style="border-left:1px solid whitesmoke">
-                                    <div class="msger-header-title" id="chatbotmenu">
-                                      <div style="
-                                          font-size: 18px;
-                                          font-weight: 600;
-                                          font-family: 'OpenText Sans';
-                                          color: #2c3e50;
-                                          display:inline-block;
-                                          vertical-align:middle
-                                          ">Chat</div>
-                                    </div>
-                                    <div class="msger-header-options">
-                                        <div id="closeaviator" class="msg-img"
-                                            style="background-image:url(/img/csui/themes/carbonfiber/image/icons/smart_close.svg);display:inline-block;vertical-align:middle;cursor:pointer;width:20px;height:20px;margin-top:5px;background-color: #dce4e8;color:black;">
-                                        </div>
-                                    </div>
+                                  <div class="msger-header-title" id="chatbotmenu">
+                                  <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
+
+                                  <div style="
+                                      font-size: 18px;
+                                      font-weight: 600;
+                                      font-family: 'OpenText Sans';
+                                      color: #2c3e50;
+                                      display:inline-block;
+                                      vertical-align:middle
+                                      ">Aviator</div>
+                                  </div>
+
+                                  <div class="msger-header-options">
+                                    <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
+                                      <img src="${CLOSE_ICON}" />
+                                    </button>
+                                  </div>
                                 </header>
 
-                                <main class="msger-chat" id="drop-zone1" style="padding-left:20px;">
-                                    <div class="msg left-msg">
-                                        <div class="msg-img"
-                                            style="background-image:url(/img/csui/themes/carbonfiber/image/icons/Group_22.svg);margin-top:20px; display:inherit;">
-                                        </div>
-                                        <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
-                                            <div class="msg-info"></div>
-                                            <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
-                                                <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
-                                        </div>
-                                    </div>
-                                </main>
+                                <main class="msger-chat" id="drop-zone1" style="padding-left:20px;"></main>
                                 <div id="files-container"></div>
                                 <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
                                     <!-- Chat Input -->
@@ -15920,8 +15954,8 @@ csui.define("csui/lib/othelp", [], function () {
                       "messages": [
                         {"role": "user", "content": questionToAsk}
                       ],
-                      "enableTools": false,
-                      "topK": 3
+                      "enableTools": true,
+                      "topK": 10
                     });
                   }
                   
@@ -15936,6 +15970,71 @@ csui.define("csui/lib/othelp", [], function () {
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
+                    appendChatRoom: function(rooms) {
+                      console.log({CHAT_ID})
+                      const chatRoomContainer = document.querySelector("#chat-room-container");
+                      chatRoomContainer.innerHTML = ``;
+
+                      if(rooms?.data?.data == null || rooms?.data?.data?.length == 0) {
+                        chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
+                      }
+
+                      for(const chatRoom of rooms.data.data) {
+                        chatRoomContainer.insertAdjacentHTML("beforeend", `<button data-id="${chatRoom.id}" title="${chatRoom.name}" class="chat-history-item msger-btn ${CHAT_ID == chatRoom.id ? "hoverable-active" : "hoverable"}">${chatRoom.name}</button>`);
+                      }
+                      
+                      document.querySelectorAll('.chat-history-item').forEach(btn => {
+                        btn.addEventListener("click", async (e) => {
+                          this.toggleLoaderChatContainer(true);
+                          clearChats();
+                          CHAT_ID = e.target.dataset.id;
+
+                          document.querySelectorAll('.chat-history-item').forEach(e => {
+                            if(e.dataset.id == CHAT_ID) {
+                              e.classList.add("hoverable-active");
+                            } else {
+                              e.classList.remove("hoverable-active");
+                            }
+                          });
+
+                          const chats = await AIPlusAPI.getChats(e.target.dataset.id, 1);
+                          for (const chat of chats.data.data) {
+                            const side = chat.isHuman ? "right" : "left";
+                            appendMessage(side, chat.message, new Date(chat.createdAt), true);
+                          }
+                          this.toggleLoaderChatContainer(false);
+                        });
+                      });
+                    },
+                    toggleInitialMsg: function(isVisible) {
+                      const el = document.getElementById("initial-msg");
+                        if(isVisible) {
+                          if(!el) {
+                            get('.msger-chat').insertAdjacentHTML("afterbegin", `<div class="msg left-msg" id="initial-msg">
+                              <div class="msg-img"
+                                  style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
+                              </div>
+                              <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
+                                  <div class="msg-info"></div>
+                                  <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
+                                      <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
+                              </div>
+                            </div>`);
+                          }
+                        } else {
+                          if(el) {
+                            el.remove();
+                          }
+                        }
+                    },
+                    toggleLoaderChatContainer: function(isVisible) {
+                      const el = document.querySelector("#msger-chat-container-loader");
+                      if(isVisible) {
+                        el.style.display = "block";
+                      } else {
+                        el.style.display = "none";
+                      }
+                    },
                     removeLoaderTextbox: function() {
                       if(document.getElementById("botloading")) {
                         document.getElementById("botloading").remove();
@@ -15963,23 +16062,26 @@ csui.define("csui/lib/othelp", [], function () {
                         activeController.abort();
                         console.log("Previous chat stream aborted.");
                       }
-
+                      
+                      let botMessage = "";
                       activeController = new AbortController();
                       const { signal } = activeController;
                       appendMessage('loading');
 
-                      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
+                      const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/User/${userID}/Ask`, {
                         method: "POST",
                         headers: {
-                          "Content-Type": "application/json",
-                          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                          "Content-Type": "application/json"
                         },
-                        body: JSON.stringify(body),
+                        body: JSON.stringify({
+                          roomId: CHAT_ID,
+                          aiPlusToken: sessionStorage.getItem('aviatorToken'),
+                          data: body
+                        }),
                         signal
                       });
                     
                       if (!response.ok) {
-                        console.error("Error:", response.statusText);
                         console.error("Error:", response.statusText);
                         return;
                       }
@@ -16016,11 +16118,13 @@ csui.define("csui/lib/othelp", [], function () {
                                 msgId = appendMessage('left', "");
                               }
                               
+                              // CHECK Type
                               if(data.type == 'content') {
                                 if(!firstMessageHasRendered) {
                                   AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
                                   firstMessageHasRendered = true;
                                 }
+                                botMessage += data.delta;
                                 AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
                               } else if(data.type == 'done') {
                                 AIPlusUtils.removeLoaderTextbox();
@@ -16030,6 +16134,13 @@ csui.define("csui/lib/othelp", [], function () {
                               } else if(data.type == 'error') {
                                 console.error(data.error);
                                 alert(data.error);
+                              }
+                              
+                              // CHECK additional_data
+                              if(data.additional_data != null) {
+                                if(data.additional_data.type == "chat_room_id") {
+                                  CHAT_ID = data.additional_data.data;
+                                }
                               }
                             } catch (error) {
                               console.error(error);
@@ -16043,6 +16154,8 @@ csui.define("csui/lib/othelp", [], function () {
 
                       activeController = null;
                       AIPlusUtils.finishMessageBox(`msg-${msgId}`);
+                      
+                      await AIPlusAPI.getChatRooms(1);
                     },
                     getJob: async function(jobId) {
                       try {
@@ -16053,7 +16166,7 @@ csui.define("csui/lib/othelp", [], function () {
                             "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
                           }
                         });
-                    
+                        
                         const result = await response.json();
                         return result;
                       } catch (error) {
@@ -16069,9 +16182,51 @@ csui.define("csui/lib/othelp", [], function () {
                         });
                     
                         const result = await response.json();
+                        AIPlusUtils.appendChatRoom(result);
                         return result;
                       } catch (error) {
                         console.error("getChatRooms error:", error);
+                        throw error;
+                      }
+                    },
+                    createChatByRoom: async function(roomId, body) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Room/${roomId}/Chat`, {
+                          method: "POST",
+                          redirect: "follow",
+                          headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "text/plain"
+                          },
+                          body: JSON.stringify(body)
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("getChats error:", error);
+                        throw error;
+                      }
+                    },
+                    createChatRoom: async function(name, messages) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/User/${userID}`, {
+                          method: "POST",
+                          redirect: "follow",
+                          headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "text/plain"
+                          },
+                          body: JSON.stringify({
+                            name,
+                            messages
+                          })
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("getChats error:", error);
                         throw error;
                       }
                     },
@@ -16122,26 +16277,9 @@ csui.define("csui/lib/othelp", [], function () {
 
                   await AIPlusAPI.login();
 
-                  // TODO: Render Chat Rooms
-                  const rooms = await AIPlusAPI.getChatRooms(1);
-                  const chatRoomContainer = document.querySelector("#chat-room-container");
-                  if(rooms?.data?.data == null || rooms?.data?.data?.length == 0) {
-                    chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
-                  }
-                  for(const chatRoom of rooms.data.data) {
-                    chatRoomContainer.innerHTML = ``;
-                    chatRoomContainer.innerHTML += `<button data-id="${chatRoom.id}" title="${chatRoom.name}" class="chat-history-item">${chatRoom.name}</button>`;
-                  }
-
-                  document.querySelector('.chat-history-item').addEventListener("click", async (e) => {
-                    clearChats();
-                    const chats = await AIPlusAPI.getChats(e.target.dataset.id, 1);
-                    for(const chat of chats.data.data) {
-                      const side = chat.isHuman ? "right" : "left";
-                      appendMessage(side, chat.message, new Date(chat.createdAt));
-                    }
-                    console.log(chats.data);
-                  });
+                  clearChats();
+                  await AIPlusAPI.getChatRooms(1);
+                  AIPlusUtils.toggleInitialMsg(true);
               }
 
           var Menuelement = document.getElementsByTagName("otc-menuitem");
