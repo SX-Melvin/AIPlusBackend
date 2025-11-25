@@ -1,17 +1,31 @@
 # AIPlusBackend
 
 ```
--- CSDB.otcs.AIPlusChats definition
+-- CSDB.otcs.AIPlus_ChatRooms definition
 
 -- Drop table
 
--- DROP TABLE CSDB.otcs.AIPlusChats;
+-- DROP TABLE CSDB.otcs.AIPlus_ChatRooms;
 
-CREATE TABLE CSDB.otcs.AIPlusChats (
+CREATE TABLE CSDB.otcs.AIPlus_ChatRooms (
+	ID bigint IDENTITY(1,1) NOT NULL,
+	Name varchar(255) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	UserID bigint NOT NULL,
+	CreatedAt datetime2(0) DEFAULT getdate() NOT NULL
+);
+
+
+-- CSDB.otcs.AIPlus_Chats definition
+
+-- Drop table
+
+-- DROP TABLE CSDB.otcs.AIPlus_Chats;
+
+CREATE TABLE CSDB.otcs.AIPlus_Chats (
 	ID bigint IDENTITY(1,1) NOT NULL,
 	IsHuman bit DEFAULT 1 NOT NULL,
-	ChatID bigint NOT NULL,
-	Message text COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	ChatRoomID bigint NOT NULL,
+	Message varchar(5000) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
 	CreatedAt datetime2(0) DEFAULT getdate() NOT NULL
 );
 
