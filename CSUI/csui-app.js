@@ -15444,9 +15444,12 @@ csui.define("csui/lib/othelp", [], function () {
               const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
               const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
               const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
+              const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
               const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
               const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
+              const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
+              let paginations = {chatHistory: {now: 1, max: null}};
               let CHAT_ID = null;
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
               const PERSON_NAME = that.options.context._user.attributes.name;
@@ -15626,7 +15629,7 @@ csui.define("csui/lib/othelp", [], function () {
                                 <button title="Hide sidebar" class="msger-img-btn" style="background-image:url(${DOUBLE_ARROWS})"></button>
                               </header>
                               
-                              <div style="margin:5px 5px;">
+                              <div style="margin:5px 5px;height:calc(100% - 70px);overflow:hidden;padding-bottom:110px">
                               <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
                                   <img src="${CHAT_LOGO}" style="width:14px" />
                                   <strong>&nbsp;Chats</strong>
@@ -15636,8 +15639,12 @@ csui.define("csui/lib/othelp", [], function () {
                                   <strong>&nbsp;Projects</strong>
                                   </button>
                                 <br>
-                                <div class="chat-sidenav-sub-title" style="border-top:1px solid black"><strong>Your chats</strong></div>
-                                <div id="chat-room-container"></div>
+                                <div class="chat-sidenav-sub-title" style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
+                                  <strong>Your chats</strong>
+                                  <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
+                                  <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
+                                </div>
+                                <div id="chat-room-container" style="overflow:scroll;height:100%;"></div>
                               </div>
                             </div>
                               <div class="msger-chat-container" style="position:relative">
@@ -15916,7 +15923,6 @@ csui.define("csui/lib/othelp", [], function () {
                   });
       
                   const msgerInput = get(".msger-input");
-
                   document.getElementById("submitquestion").addEventListener("click", async event => {
                       event.preventDefault();
                       event.stopImmediatePropagation();
@@ -15966,25 +15972,40 @@ csui.define("csui/lib/othelp", [], function () {
                     document.getElementById("aichatbottable").setAttribute('style', 'display:none !important');
                   });
 
+                  document.getElementById("chat-room-container").addEventListener("scroll", async () => {
+                    const container = document.getElementById("chat-room-container");
+                    const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
+
+                    if (nearBottom) {
+                      if(paginations.chatHistory.now < paginations.chatHistory.max) {
+                        await AIPlusAPI.getChatRooms(paginations.chatHistory.now + 1, null, true);
+                      }
+                    }
+                  });
+
+                  document.getElementById("chat-refresh").addEventListener("click", async (e) => {
+                    await AIPlusAPI.getChatRooms(1);
+                  });
+
                   var AIPlusConfig = {
                     apiUrl: "https://ai-agent-test.leapcount.com",
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
-                    appendChatRoom: function(rooms) {
-                      console.log({CHAT_ID})
+                    appendChatRoom: function(rooms, appendMode = false) {
                       const chatRoomContainer = document.querySelector("#chat-room-container");
-                      chatRoomContainer.innerHTML = ``;
-
-                      if(rooms?.data?.data == null || rooms?.data?.data?.length == 0) {
-                        chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
+                      if(!appendMode) {
+                        chatRoomContainer.innerHTML = ``;
+                        if(rooms?.data?.data == null || rooms?.data?.data?.length == 0) {
+                          chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
+                        }
                       }
 
                       for(const chatRoom of rooms.data.data) {
                         chatRoomContainer.insertAdjacentHTML("beforeend", `
                           <button data-id="${chatRoom.id}" title="${chatRoom.name}" class="p-relative chat-history-item msger-btn ${CHAT_ID == chatRoom.id ? "hoverable-active" : "hoverable"}">
                             ${chatRoom.name}
-                            <div data-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
+                            <div title="Delete this conversation" data-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
                               <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
                             </div>
                           </button>`);
@@ -15998,6 +16019,7 @@ csui.define("csui/lib/othelp", [], function () {
                           }
                         });
                       });
+
                       document.querySelectorAll('.chat-history-item').forEach(btn => {
                         btn.addEventListener("mouseenter", async (e) => {
                           document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "block";
@@ -16009,6 +16031,7 @@ csui.define("csui/lib/othelp", [], function () {
                         btn.addEventListener("click", async (e) => {
                           this.toggleLoaderChatContainer(true);
                           clearChats();
+                          AIPlusUtils.toggleInitialMsg(false);
                           CHAT_ID = e.target.dataset.id;
 
                           document.querySelectorAll('.chat-history-item').forEach(e => {
@@ -16028,26 +16051,35 @@ csui.define("csui/lib/othelp", [], function () {
                         });
                       });
                     },
+                    toggleChatHistoryLoader: function(isVisible) {
+                      if(isVisible) {
+                        document.querySelector("#chat-refresh").style.display = "none";
+                        document.querySelector("#chat-refresh-animation").style.display = "block";
+                      } else {
+                        document.querySelector("#chat-refresh").style.display = "block";
+                        document.querySelector("#chat-refresh-animation").style.display = "none";
+                      }
+                    },
                     toggleInitialMsg: function(isVisible) {
                       const el = document.getElementById("initial-msg");
-                        if(isVisible) {
-                          if(!el) {
-                            get('.msger-chat').insertAdjacentHTML("afterbegin", `<div class="msg left-msg" id="initial-msg">
-                              <div class="msg-img"
-                                  style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
-                              </div>
-                              <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
-                                  <div class="msg-info"></div>
-                                  <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
-                                      <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
-                              </div>
-                            </div>`);
-                          }
-                        } else {
-                          if(el) {
-                            el.remove();
-                          }
+                      if(isVisible) {
+                        if(!el) {
+                          get('.msger-chat').insertAdjacentHTML("afterbegin", `<div class="msg left-msg" id="initial-msg">
+                            <div class="msg-img"
+                                style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
+                            </div>
+                            <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
+                                <div class="msg-info"></div>
+                                <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
+                                    <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
+                            </div>
+                          </div>`);
                         }
+                      } else {
+                        if(el) {
+                          el.remove();
+                        }
+                      }
                     },
                     toggleLoaderChatContainer: function(isVisible) {
                       const el = document.querySelector("#msger-chat-container-loader");
@@ -16214,15 +16246,21 @@ csui.define("csui/lib/othelp", [], function () {
                         throw error;
                       }
                     },
-                    getChatRooms: async function(page = 1, size = 20) {
+                    getChatRooms: async function(page = 1, size = 30, appendMode = false) {
                       try {
+                        AIPlusUtils.toggleChatHistoryLoader(true);
+                        if(size == null) size = 30;
+
                         const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/User/${userID}?pageNumber=${page}&pageSize=${size}`, {
                           method: "GET",
                           redirect: "follow"
                         });
                     
                         const result = await response.json();
-                        AIPlusUtils.appendChatRoom(result);
+                        paginations.chatHistory.max = result.data.totalPage;
+                        paginations.chatHistory.now = page;
+                        AIPlusUtils.appendChatRoom(result, appendMode);
+                        AIPlusUtils.toggleChatHistoryLoader(false);
                         return result;
                       } catch (error) {
                         console.error("getChatRooms error:", error);

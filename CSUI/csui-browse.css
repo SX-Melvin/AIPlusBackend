@@ -14092,6 +14092,10 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     --right-msg-bg: #579ffb;
 }
 
+.spin-animation {
+    animation: load8 1.1s linear infinite;
+}
+
 .msger-container {
     position: fixed;
     z-index: 100;
