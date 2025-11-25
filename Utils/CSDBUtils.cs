@@ -1,5 +1,6 @@
 ﻿using AIPlusBackend.Dto;
 using AIPlusBackend.Dto.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace AIPlusBackend.Utils
 {
@@ -42,6 +43,11 @@ namespace AIPlusBackend.Utils
             _context.ChatRooms.Add(data);
             _context.SaveChanges();
             return data;
+        }
+        public void DeleteChatRoom(long id)
+        {
+            _context.ChatRooms.Where(x => x.ID == id).ExecuteDelete();
+            _context.Chats.Where(x => x.ChatRoomID == id).ExecuteDelete();
         }
         public Pagination<ChatRoom> GetChatRoomsByUser(long userId, int pageNumber, int pageSize)
         {

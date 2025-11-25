@@ -82,6 +82,22 @@ namespace AIPlusBackend.Controllers
 
             return result;
         }
+        [HttpDelete("Room/{roomId}")]
+        public async Task<APIResponse<bool>> DeleteChatRoom(long roomId)
+        {
+            var result = new APIResponse<bool>();
+
+            try
+            {
+                return await service.DeleteChatRoom(roomId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
 
         [HttpPost("User/{userId}/Ask")]
         public async Task AskQuestion([FromBody] AskAgentRequest body, long userId)

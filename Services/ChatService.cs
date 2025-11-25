@@ -104,6 +104,26 @@ namespace AIPlusBackend.Services
 
             return result;
         }
+        public async Task<APIResponse<bool>> DeleteChatRoom(long id)
+        {
+            var result = new APIResponse<bool>()
+            {
+                Data = false
+            };
+
+            try
+            {
+                csdbUtils.DeleteChatRoom(id);
+                result.Data = true;
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
+            }
+
+            return result;
+        }
         public async Task<APIResponse<Pagination<Chat>>> GetChatsByChatId(long chatId, int pageNumber, int pageSize)
         {
             var result = new APIResponse<Pagination<Chat>>()
