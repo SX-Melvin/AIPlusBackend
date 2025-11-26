@@ -27,19 +27,19 @@ namespace AIPlusBackend.Services
 
             return result;
         }
-        public async Task<APIResponse<AIPlusFilingSuggestionResponse>> FilingSuggestion(string filePath, long userId)
+        public async Task<APIResponse<AIPlusGetFilingSuggestionResponse>> FilingSuggestion(string filePath, long userId)
         {
-            var result = new APIResponse<AIPlusFilingSuggestionResponse>();
+            var result = new APIResponse<AIPlusGetFilingSuggestionResponse>();
 
             try
             {
-                var randomToken = Guid.NewGuid().ToString();
+                var wId = Guid.NewGuid().ToString();
                 var token = utils.Login().Result.Token;
                 var jsonIngested = false;
                 var suggestFileIngested = false;
 
-                var jsonFile = await utils.UploadFile(randomToken, Path.Combine(config.Value.FolderStructureJSONPath, "folders_structure.json"), "", token);
-                var suggestFile = await utils.UploadFile(randomToken, filePath, "", token);
+                var jsonFile = await utils.UploadFile(wId, Path.Combine(config.Value.FolderStructureJSONPath, "folders_structure.json"), "", token);
+                var suggestFile = await utils.UploadFile(wId, filePath, "", token);
 
                 while(!jsonIngested || !suggestFileIngested)
                 {
@@ -79,44 +79,22 @@ namespace AIPlusBackend.Services
                     return result;
                 }
 
-                var response = await utils.AskQuestionByWorkspace(randomToken, new()
-                {
-                    EnableTools = false,
-                    Messages = [new() {
-                        Content = "Based on the email and folder structure in this workspace, suggest me maximum 3 folder ids to upload the email, dont give me the folder names or summarize only folder ids.",
-                        Role = "user"
-                    }],
-                    TopK = 20,
-                    UserId = userId
-                }, token);
-
-                var messageContentBuilder = new System.Text.StringBuilder();
-                foreach (var item in response)
-                {
-                    if(item.Type == "content" && item.Delta != null)
-                    {
-                        messageContentBuilder.Append(item.Delta);
-                    }
-                }
+                // TODO: Remove this logic
+                var response = await utils.GetFilingSuggestion(wId, token);
+                result.Data = response;
 
                 csdb.CreateTempFile(new()
                 {
                     DeleteAt = DateTime.Now.AddMinutes(0),
                     JobId = jsonFile.JobId,
-                    WorkspaceID = randomToken
+                    WorkspaceID = wId
                 });
                 csdb.CreateTempFile(new()
                 {
                     DeleteAt = DateTime.Now.AddMinutes(0),
                     JobId = suggestFile.JobId,
-                    WorkspaceID = randomToken
+                    WorkspaceID = wId
                 });
-
-                result.Data = new()
-                {
-                    ActualResponse = response,
-                    NodeIDs = StringUtils.GetNumbersFromString(messageContentBuilder.ToString())
-                };
             }
             catch (Exception ex)
             {

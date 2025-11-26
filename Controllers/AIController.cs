@@ -31,10 +31,11 @@ namespace AIPlusBackend.Controllers
 
             return result;
         }
+
         [HttpPost("Filing/Suggestion/{userId}")]
-        public async Task<APIResponse<AIPlusFilingSuggestionResponse>> FilingSuggestion(IFormFile file, long userId)
+        public async Task<APIResponse<AIPlusGetFilingSuggestionResponse>> FilingSuggestion(IFormFile file, long userId)
         {
-            var result = new APIResponse<AIPlusFilingSuggestionResponse>();
+            var result = new APIResponse<AIPlusGetFilingSuggestionResponse>();
             try
             {
                 var filePath = Path.Combine(Path.GetTempPath(), file.FileName);

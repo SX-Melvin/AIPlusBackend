@@ -117,6 +117,33 @@ namespace AIPlusBackend.Utils
 
             return result;
         }
+        public async Task<AIPlusGetFilingSuggestionResponse> GetFilingSuggestion(string wId, string token, string? emailFileName = null)
+        {
+            AIPlusGetFilingSuggestionResponse result = new();
+
+            try
+            {
+                var request = new RestRequest($"/api/workspaces/{wId}/file-email", Method.Post);
+                request.AddHeader("Authorization", $"Bearer {token}");
+                if(emailFileName != null)
+                {
+                    request.AddJsonBody(new
+                    {
+                        emailFileName
+                    });
+                }
+
+                var response = await Client.ExecuteAsync<AIPlusGetFilingSuggestionResponse>(request);
+                _logger.Info("AIPlus Get Filing Suggestion: " + response.Content);
+                return response.Data;
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
         public async IAsyncEnumerable<AIPlusAskQuestionResponse> AskQuestion(AIPlusAskQuestionRequest body, string token)
         {
             var request = new RestRequest($"/api/workspaces/{config.Value.WorkspaceId}/chat/stream", Method.Post);
