@@ -15444,12 +15444,13 @@ csui.define("csui/lib/othelp", [], function () {
               const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
               const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
               const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
+              const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_info.svg";
               const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
               const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
               const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
               const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
-              let paginations = {chatHistory: {now: 1, max: null}};
+              let paginations = {chatHistory: {now: 1, max: null}, chat: {now: 1, max: null}};
               let CHAT_ID = null;
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
               const PERSON_NAME = that.options.context._user.attributes.name;
@@ -15576,7 +15577,10 @@ csui.define("csui/lib/othelp", [], function () {
                   botChatCounter++;
                 }
 
+                // if(!appendOnFirstChild) {
                 msgerChat.scrollTop += 500;
+                // msgerChat.scrollTop = msgerChat.scrollHeight;
+                // }
                 return uniqueId;
               } 
 
@@ -15644,28 +15648,28 @@ csui.define("csui/lib/othelp", [], function () {
                                   <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
                                   <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
                                 </div>
-                                <div id="chat-room-container" style="overflow:scroll;height:100%;"></div>
+                                <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;"></div>
                               </div>
                             </div>
-                              <div class="msger-chat-container" style="position:relative">
+                              <div class="msger-chat-container" style="position:relative;min-height: 0;">
                                 <div style="position:absolute;background-color:rgba(0,0,0,.2);right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
                                   <div class="outer-border">
-                                  <div class="loader">
-                                    <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
-                                      <path d="M36.5 8.79752C51.7874 8.79752 64.2025 21.2126 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752ZM72.5 36.5C72.5 16.63 56.37 0.5 36.5 0.5C16.63 0.5 0.499999 16.63 0.499999 36.5C0.499999 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5Z" fill="#CFDCFC" style="fill:#CFDCFC;fill:color(display-p3 0.8118 0.8627 0.9882);fill-opacity:1;"></path>
-                                      <clipPath id="smart_loader_1764047844677">
-                                        <path d="M40.6488 4.64876C40.6488 2.35746 38.7913 0.5 36.5 0.5C16.63 0.5 0.500007 16.63 0.500007 36.5C0.500007 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5C72.5 34.2087 70.6425 32.3512 68.3512 32.3512C66.0599 32.3512 64.2025 34.2087 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752C38.7913 8.79752 40.6488 6.94006 40.6488 4.64876Z" style=""></path>
-                                      </clipPath>
-                                      <foreignObject width="73" height="73" clip-path="url(#smart_loader_1764047844677)">
-                                        <div class="spinner-gradient"></div>
-                                      </foreignObject>
-                                    </svg>
-                                  </div>
-                                  <div class="binf-sr-only" aria-live="polite" aria-busy="true">
-                                    Loading..
+                                    <div class="loader">
+                                      <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
+                                        <path d="M36.5 8.79752C51.7874 8.79752 64.2025 21.2126 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752ZM72.5 36.5C72.5 16.63 56.37 0.5 36.5 0.5C16.63 0.5 0.499999 16.63 0.499999 36.5C0.499999 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5Z" fill="#CFDCFC" style="fill:#CFDCFC;fill:color(display-p3 0.8118 0.8627 0.9882);fill-opacity:1;"></path>
+                                        <clipPath id="smart_loader_1764047844677">
+                                          <path d="M40.6488 4.64876C40.6488 2.35746 38.7913 0.5 36.5 0.5C16.63 0.5 0.500007 16.63 0.500007 36.5C0.500007 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5C72.5 34.2087 70.6425 32.3512 68.3512 32.3512C66.0599 32.3512 64.2025 34.2087 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752C38.7913 8.79752 40.6488 6.94006 40.6488 4.64876Z" style=""></path>
+                                        </clipPath>
+                                        <foreignObject width="73" height="73" clip-path="url(#smart_loader_1764047844677)">
+                                          <div class="spinner-gradient"></div>
+                                        </foreignObject>
+                                      </svg>
+                                    </div>
+                                    <div class="binf-sr-only" aria-live="polite" aria-busy="true">
+                                      Loading..
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
                                 <header class="msger-header" style="border-left:1px solid whitesmoke">
                                   <div class="msger-header-title" id="chatbotmenu">
@@ -15688,7 +15692,7 @@ csui.define("csui/lib/othelp", [], function () {
                                   </div>
                                 </header>
 
-                                <main class="msger-chat" id="drop-zone1" style="padding-left:20px;"></main>
+                                <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;"></main>
                                 <div id="files-container"></div>
                                 <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
                                     <!-- Chat Input -->
@@ -15703,8 +15707,12 @@ csui.define("csui/lib/othelp", [], function () {
                                         </div>
                                 
                                         <div style="display: flex; align-items: center; gap: 10px;">
-                                            <!-- Counter -->
-                                            <div style="margin-right: 10px;" id="counter">0/2000</div>
+                                          <div style="display: flex; align-items: center; gap: 4px; margin-right: 10px;">
+                                            <input type="checkbox" id="enable-tools" style="width:14px">
+                                            <label for="enable-tools"> Enable Tools</label>
+                                            <div style="margin-left:2px" title="Turn on document tools"><img src="${INFO_ICON}" width="12px" /></div>
+                                          </div>
+                                          <div style="margin-right: 10px;" id="counter">0/2000</div>
                                 
                                             <!-- File Input -->
                                             <label for="file-input" class="icon-button" style="cursor: pointer;">
@@ -15751,13 +15759,25 @@ csui.define("csui/lib/othelp", [], function () {
                     handleFiles([event.target.files[0]]);
                   });
 
-                  const dropZone = document.getElementById('drop-zone1');
+                  const dropZone = document.getElementById('chat-wrapper');
                   const fileInput = document.getElementById('file-input');
 
                   // Prevent default drag behaviors
                   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                       dropZone.addEventListener(eventName, preventDefaults, false);
                       document.body.addEventListener(eventName, preventDefaults, false);
+                  });
+
+                  dropZone.addEventListener("scroll", async (e) => {
+                    if (dropZone.scrollTop <= 20) {
+                      if(paginations.chat.now < paginations.chat.max) {
+                        const container = document.querySelector(".msger-chat");
+                        const oldScrollTop = container.scrollTop;
+                        const oldScrollHeight = container.scrollHeight;
+                        await AIPlusAPI.getChats(CHAT_ID, paginations.chat.now+1, null, true);
+                        document.querySelector(".msger-chat").scrollTop = oldScrollTop + (container.scrollHeight - oldScrollHeight);
+                      }
+                    }
                   });
 
                   function preventDefaults(e) {
@@ -15961,7 +15981,7 @@ csui.define("csui/lib/othelp", [], function () {
                       "messages": [
                         {"role": "user", "content": questionToAsk}
                       ],
-                      "enableTools": true,
+                      "enableTools": document.querySelector("#enable-tools").checked,
                       "topK": 10
                     });
                   }
@@ -16003,7 +16023,7 @@ csui.define("csui/lib/othelp", [], function () {
 
                       for(const chatRoom of rooms.data.data) {
                         chatRoomContainer.insertAdjacentHTML("beforeend", `
-                          <button data-id="${chatRoom.id}" title="${chatRoom.name}" class="p-relative chat-history-item msger-btn ${CHAT_ID == chatRoom.id ? "hoverable-active" : "hoverable"}">
+                          <button data-id="${chatRoom.id}" title="${chatRoom.name}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.id ? "hoverable-active" : ""}">
                             ${chatRoom.name}
                             <div title="Delete this conversation" data-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
                               <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
@@ -16029,11 +16049,10 @@ csui.define("csui/lib/othelp", [], function () {
                         });
 
                         btn.addEventListener("click", async (e) => {
-                          this.toggleLoaderChatContainer(true);
                           clearChats();
                           AIPlusUtils.toggleInitialMsg(false);
                           CHAT_ID = e.target.dataset.id;
-
+                          
                           document.querySelectorAll('.chat-history-item').forEach(e => {
                             if(e.dataset.id == CHAT_ID) {
                               e.classList.add("hoverable-active");
@@ -16041,13 +16060,8 @@ csui.define("csui/lib/othelp", [], function () {
                               e.classList.remove("hoverable-active");
                             }
                           });
-
-                          const chats = await AIPlusAPI.getChats(e.target.dataset.id, 1);
-                          for (const chat of chats.data.data) {
-                            const side = chat.isHuman ? "right" : "left";
-                            appendMessage(side, chat.message, new Date(chat.createdAt), true);
-                          }
-                          this.toggleLoaderChatContainer(false);
+                          
+                          await AIPlusAPI.getChats(e.target.dataset.id, 1);
                         });
                       });
                     },
@@ -16282,7 +16296,7 @@ csui.define("csui/lib/othelp", [], function () {
                         const result = await response.json();
                         return result;
                       } catch (error) {
-                        console.error("getChats error:", error);
+                        console.error("createChatByRoom error:", error);
                         throw error;
                       }
                     },
@@ -16304,21 +16318,31 @@ csui.define("csui/lib/othelp", [], function () {
                         const result = await response.json();
                         return result;
                       } catch (error) {
-                        console.error("getChats error:", error);
+                        console.error("createChatRoom error:", error);
                         throw error;
                       }
                     },
-                    getChats: async function(chatId, page, size = 25) {
+                    getChats: async function(chatId, page, size = 25, appendMode = true) {
                       try {
+                        if(size == null) size = 25;
+
+                        AIPlusUtils.toggleLoaderChatContainer(true);
                         const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/${chatId}/Chats?pageNumber=${page}&pageSize=${size}`, {
                           method: "GET",
                           redirect: "follow"
                         });
-                    
+                        
                         const result = await response.json();
+                        paginations.chat.max = result.data.totalPage;
+                        paginations.chat.now = page;
+                        for (const chat of result.data.data) {
+                          appendMessage(chat.isHuman ? "right" : "left", chat.message, new Date(chat.createdAt), appendMode);
+                        }
+                        AIPlusUtils.toggleLoaderChatContainer(false);
                         return result;
                       } catch (error) {
                         console.error("getChats error:", error);
+                        this.toggleLoaderChatContainer(false);
                         throw error;
                       }
                     },

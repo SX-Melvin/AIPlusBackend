@@ -14095,20 +14095,6 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
 .spin-animation {
     animation: load8 1.1s linear infinite;
 }
-
-.msger-container {
-    position: fixed;
-    z-index: 100;
-    width: 50%;
-    height: 100%;
-    right: 0;
-}
-
-.msger-chat-container {
-    display: flex !important; flex-flow: column wrap; 
-    /* justify-content: space-between; */ 
-    width: 100%;
-}
 .msger-btn {
     text-align: start!important;
     background-color: white!important;
@@ -14183,24 +14169,39 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     color: black;
     width: 100%;
 }
-
+.msger-container {
+    position: fixed;
+    z-index: 100;
+    width: 50%;
+    height: 100%;
+    right: 0;
+}
+.msger-chat-container {
+    display: flex !important;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100% !important;
+    min-height: 0;    /* REQUIRED for scroll to activate */
+}
 .msger-chat {
-    flex: 1;
-    overflow-y: auto;
+    flex: 1 !important;
+    min-height: 0;        /* REQUIRED */
+    overflow-y: auto !important;
     padding: 10px;
     width: 100%;
 }
-
-.msger-chat::-webkit-scrollbar {
-    width: 6px;
+.msger-scroll::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+    background-color: #ffffff!important;
+    visibility: visible!important;
 }
-
-.msger-chat::-webkit-scrollbar-track {
-    background: #ddd;
-}
-
-.msger-chat::-webkit-scrollbar-thumb {
-    background: #bdbdbd;
+.msger-scroll::-webkit-scrollbar-thumb {
+    border-radius: 8px!important;
+    border: 6px solid transparent!important;
+    min-height: 50px!important;
+    background-color: #808285!important;
 }
 
 .msg {
