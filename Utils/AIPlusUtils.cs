@@ -94,7 +94,6 @@ namespace AIPlusBackend.Utils
                 {
                     try
                     {
-                        Console.WriteLine("Received: " + line);
                         int index = line.IndexOf("data: ", StringComparison.OrdinalIgnoreCase);
                         string cleanString = index < 0 ? line : line.Remove(index, "data: ".Length);
                         var response = JsonConvert.DeserializeObject<AIPlusAskQuestionResponse>(cleanString);
@@ -148,6 +147,7 @@ namespace AIPlusBackend.Utils
         {
             var request = new RestRequest($"/api/workspaces/{config.Value.WorkspaceId}/chat/stream", Method.Post);
             request.AddHeader("Authorization", $"Bearer {token}");
+            Console.WriteLine(JsonConvert.SerializeObject(body));
             request.AddJsonBody(body);
 
             using var stream = await Client.DownloadStreamAsync(request);

@@ -109,6 +109,7 @@ namespace AIPlusBackend.Controllers
             var userMessage = body.Data.Messages[0];
             DateTime now = DateTime.Now;
             List<AIPlusAskQuestionResponse> botResponses = [];
+            List<AIPlusAskQuestionResponse> metadatas = [];
 
             // GET REST OF THE CHAT BY ROOM ID
             if(body.RoomId != null)
@@ -170,14 +171,19 @@ namespace AIPlusBackend.Controllers
 
                 foreach (var item in botResponses)
                 {
-                    if(string.Equals(item.Type, "content", StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(item.Type, "content", StringComparison.OrdinalIgnoreCase))
                     {
                         botResponse += item.Delta;
+                    }
+                    else if (string.Equals(item.Type, "tool_call_end", StringComparison.OrdinalIgnoreCase))
+                    {
+                        metadatas.Add(item);
                     }
                 }
 
                 csdb.CreateChat(new()
                 {
+                    Metadata = JsonConvert.SerializeObject(metadatas),
                     ChatRoomID = body.RoomId.Value,
                     IsHuman = false,
                     CreatedAt = DateTime.Now,

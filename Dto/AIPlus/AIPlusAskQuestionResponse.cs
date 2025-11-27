@@ -18,6 +18,9 @@ namespace AIPlusBackend.Dto.AIPlus
         
         [JsonProperty("message")]
         public string Message { get; set; }
+        
+        [JsonProperty("result")]
+        public AIPlusAskQuestionResult Result { get; set; }
 
         // OUR CUSTOM FIELDS
         [JsonProperty("additional_data")]
@@ -31,5 +34,43 @@ namespace AIPlusBackend.Dto.AIPlus
         [JsonProperty("data")]
         public string Data { get; set; }
         
+    }
+    public class AIPlusAskQuestionResult
+    {
+        [JsonProperty("success")]
+        public bool Success { get; set; }
+
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("data")]
+        public AIPlusAskQuestionResultData Data { get; set; }
+    }
+    public class AIPlusAskQuestionResultData
+    {
+        [JsonProperty("files")]
+        public List<AIPlusAskQuestionResultDataFile> Files { get; set; }
+    }
+    public class AIPlusAskQuestionResultDataFile
+    {
+        [JsonProperty("jobId")]
+        public string JobId { get; set; }
+
+        [JsonProperty("fileName")]
+        public string FileName { get; set; }
+
+        [JsonProperty("fileSize")]
+        public string FileSize { get; set; }
+
+        [JsonProperty("customMetadata")]
+        public AIPlusAskQuestionResultDataFileCustomMetadata CustomMetadata { get; set; }
+    }
+    public class AIPlusAskQuestionResultDataFileCustomMetadata
+    {
+        [JsonProperty("nodeId")]
+        public string NodeId { get; set; }
+
+        [JsonProperty("format")]
+        public string Format { get; set; }
     }
 }
