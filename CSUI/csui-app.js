@@ -15448,6 +15448,7 @@ csui.define("csui/lib/othelp", [], function () {
               const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
               const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
               const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
+              const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
               const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
               let paginations = {chatHistory: {now: 1, max: null}, chat: {now: 1, max: null}};
@@ -15455,14 +15456,14 @@ csui.define("csui/lib/othelp", [], function () {
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
               const PERSON_NAME = that.options.context._user.attributes.name;
 
-              function appendMessage(side, text, date = null, appendOnFirstChild = false) {
+              function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null) {
+                let msgHTML;
+                const msgerChat = get(".msger-chat");
+                const uniqueId = new Date().getTime();
+
                 if(date == null) {
                   date = new Date();
                 }
-
-                const uniqueId = new Date().getTime();
-                let msgHTML;
-                const msgerChat = get(".msger-chat");
 
                 msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
 
@@ -15470,19 +15471,21 @@ csui.define("csui/lib/othelp", [], function () {
                 {
                     msgHTML += `
                     <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
-                    <div style="background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
+                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
                         <div class="msg-info">
                         </div>
     
                         <div id=chatbottext${botChatCounter} style="white-space: pre-line;" class="msg-text">${text}</div>
 
+                        ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
+
                         <div class="msg-container" id=chatbot${botChatCounter} style="display: none; flex-direction: row; justify-content: flex-start;">
-                            <div id="chatbotcopy${botChatCounter}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                              <span class='chatbottooltip'>Copy</span>
-                            </div>
-                            <div id="chatbotgenerate${botChatCounter}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                              <span class='chatbottooltip'>Regenerate</span>
-                            </div>
+                          <div id="chatbotcopy${botChatCounter}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                            <span class='chatbottooltip'>Copy</span>
+                          </div>
+                          <div id="chatbotgenerate${botChatCounter}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                            <span class='chatbottooltip'>Regenerate</span>
+                          </div>
                         </div>
                     </div>
                     </div>
@@ -15502,7 +15505,7 @@ csui.define("csui/lib/othelp", [], function () {
                     <div id="botloading" class="msg ${side}-msg">
                     <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
     
-                    <div style="background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
+                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
                         <div class="msg-info">
                         </div>
     
@@ -15519,7 +15522,7 @@ csui.define("csui/lib/othelp", [], function () {
                     }
 
                     msgHTML += `
-                    <div style="width:75%">
+                    <div style="max-width:85%;">
                         <div class="msg-info">
                         <div class="msg-info-name"></div>
                         <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
@@ -15982,7 +15985,7 @@ csui.define("csui/lib/othelp", [], function () {
                         {"role": "user", "content": questionToAsk}
                       ],
                       "enableTools": document.querySelector("#enable-tools").checked,
-                      "topK": 10
+                      "topK": 20
                     });
                   }
                   
@@ -16012,6 +16015,33 @@ csui.define("csui/lib/othelp", [], function () {
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
+                    appendChatItem: function(data) {
+                      return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.customMetadata.nodeId}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+                        <img width="16px" src="${FILE_ICON}">
+                        <div class="file-chat-bubble-text">${data.fileName}</div>
+                      </a>`;
+                    },
+                    processChatMetadata: function(id, metadata) {
+                      let result = `<div id="chat-item-${id}" class="chat-items-container" style="display:flex;flex-wrap:wrap">`;
+                      
+                      if(metadata == null) {
+                        result += `</div>`;
+                        return result;
+                      }
+                      
+                      metadata = JSON.parse(metadata);
+                      
+                      for(const m of metadata) {
+                        if(m.type == "tool_call_end") {
+                          for(const data of m.result.data.files) {
+                            result += this.appendChatItem(data);
+                          }
+                        }
+                      }
+                      
+                      result += `</div>`;
+                      return result;
+                    },
                     appendChatRoom: function(rooms, appendMode = false) {
                       const chatRoomContainer = document.querySelector("#chat-room-container");
                       if(!appendMode) {
@@ -16111,6 +16141,15 @@ csui.define("csui/lib/othelp", [], function () {
                     replaceTextMessageBox: function(msgId, msg) {
                       document.querySelector(`#${msgId} .msg-text`).textContent = msg;
                     },
+                    appendMetadataItem: function(msgId, metadata) {
+                      if(metadata) {
+                        if(metadata.type == "tool_call_end") {
+                          for(const m of metadata.result.data.files) {
+                            document.querySelector(`#${msgId} .chat-items-container`).innerHTML += this.appendChatItem(m);
+                          }
+                        }
+                      }
+                    },
                     appendTextMessageBox: function(msgId, msg) {
                       document.querySelector(`#${msgId} .msg-text`).textContent += msg;
                     },
@@ -16187,7 +16226,9 @@ csui.define("csui/lib/othelp", [], function () {
                               }
                               
                               // CHECK Type
-                              if(data.type == 'content') {
+                              if(data.type == 'tool_call_end') {
+                                AIPlusUtils.appendMetadataItem(`msg-${msgId}`, data);
+                              } else if(data.type == 'content') {
                                 if(!firstMessageHasRendered) {
                                   AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
                                   firstMessageHasRendered = true;
@@ -16336,7 +16377,7 @@ csui.define("csui/lib/othelp", [], function () {
                         paginations.chat.max = result.data.totalPage;
                         paginations.chat.now = page;
                         for (const chat of result.data.data) {
-                          appendMessage(chat.isHuman ? "right" : "left", chat.message, new Date(chat.createdAt), appendMode);
+                          appendMessage(chat.isHuman ? "right" : "left", chat.message, new Date(chat.createdAt), appendMode, chat.metadata);
                         }
                         AIPlusUtils.toggleLoaderChatContainer(false);
                         return result;

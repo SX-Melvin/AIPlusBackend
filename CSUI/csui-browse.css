@@ -14172,7 +14172,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
 .msger-container {
     position: fixed;
     z-index: 100;
-    width: 50%;
+    width: 75%;
     height: 100%;
     right: 0;
 }
@@ -14296,18 +14296,30 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     width: 100%;
 }
 
+.shadow {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-/* .msger-send-btn {
-    margin-left: 10px !important;
-    background: #999;
-    color: #fff !important;
-    border-radius: 16px;
-    cursor: pointer;
-    float: right;
-    width: 70px;
-    margin-top: 10px !important;
-    margin-right: 10px !important;
-} */
+.file-chat-bubble-text {
+    font-size:12px!important;
+    margin-left:6px!important;
+    overflow: hidden!important;
+    white-space: nowrap!important;
+    text-overflow: ellipsis!important;
+    max-width: 160px!important;
+}
+.file-chat-bubble {
+    cursor: pointer!important; 
+    height: 24px!important; 
+    display:flex!important; 
+    margin-top: 10px!important; 
+    margin-right: 10px!important;
+    background-color:white!important;
+    border-radius:10px!important;
+    align-items:center!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+}
 
 .msger-send-btn {
     cursor: pointer;
