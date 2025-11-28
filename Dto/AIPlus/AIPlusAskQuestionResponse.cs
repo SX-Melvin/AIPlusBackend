@@ -16,6 +16,9 @@ namespace AIPlusBackend.Dto.AIPlus
         [JsonProperty("iterations")]
         public int Iterations { get; set; }
         
+        [JsonProperty("error")]
+        public string Error { get; set; }
+        
         [JsonProperty("message")]
         public string Message { get; set; }
         
