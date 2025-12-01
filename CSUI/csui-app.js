@@ -15430,7 +15430,7 @@ csui.define("csui/lib/othelp", [], function () {
         onRender: function () {
           // Explorer Insight START
           var globalthis = this;
-          var wID = "content_server10-secure";
+          var wID = "teststst-secure";
 
           async function showAviator() {
               let that = globalthis;
@@ -15466,7 +15466,7 @@ csui.define("csui/lib/othelp", [], function () {
                 }
 
                 msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
-
+                console.log(botChatCounter);
                 if(side == "left")
                 {
                     msgHTML += `
@@ -15479,24 +15479,14 @@ csui.define("csui/lib/othelp", [], function () {
 
                         ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
 
-                        <div class="msg-container" id=chatbot${botChatCounter} style="display: none; flex-direction: row; justify-content: flex-start;">
+                        <div class="msg-container" id=chatbot${botChatCounter} style="flex-direction: row; justify-content: flex-start;">
                           <div id="chatbotcopy${botChatCounter}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
                             <span class='chatbottooltip'>Copy</span>
                           </div>
-                          <div id="chatbotgenerate${botChatCounter}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                          <div data-id="${uniqueId}" id="chatbotgenerate${botChatCounter}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
                             <span class='chatbottooltip'>Regenerate</span>
                           </div>
                         </div>
-                    </div>
-                    </div>
-                `;
-                } else if(side == "leftquerychanged") {
-                    msgHTML += `
-                    <div style="background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
-                        <div class="msg-info">
-                        </div>
-    
-                        <div class="msg-text">${text}</div>
                     </div>
                     </div>
                 `;
@@ -15545,8 +15535,7 @@ csui.define("csui/lib/othelp", [], function () {
                 let botChatDivElGenerate = document.getElementById(`chatbotgenerate${botChatCounter}`);
                 const copyTooltip = document.querySelector(`#chatbotcopy${botChatCounter} .chatbottooltip`);
                 let botChatTextDIvEl = document.getElementById(`chatbottext${botChatCounter}`);
-                let userTextDIvEl = document.getElementById(`usertext${botChatCounter}`);
-
+                
                 if(botChatDivEl) {
                   botChatDivEl.addEventListener("click", (e) => {
                     e.preventDefault();
@@ -15571,6 +15560,8 @@ csui.define("csui/lib/othelp", [], function () {
                   botChatDivElGenerate.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
+                    console.log(123, e.target);
+                    let userTextDIvEl = document.querySelector(`#msg-${e.target.dataset.id}`).previousElementSibling.querySelector(".msg-text");
                     document.getElementById('submitquestion').style.display = 'none';
                     document.getElementById('chatbotstop').style.display = '';
                     appendMessage("right", userTextDIvEl.innerHTML);
