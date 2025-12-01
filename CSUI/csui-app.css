@@ -6634,18 +6634,23 @@ body.bin-widgets .binf-modal-backdrop {
 #files-container {
     padding: 0px 14px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
-    gap: 6px; /* space between items */
+    grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+    gap: 4px; /* space between items */
 }
 
-.file-item {
-    display: flex;
-    align-items: center;
+.file-item-container {
+    max-width: 12.5vw!important;
+    padding: 4px!important;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     box-sizing: border-box; /* fixes overflow */
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
 }
 
 .file-icon {

@@ -15448,6 +15448,7 @@ csui.define("csui/lib/othelp", [], function () {
               const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
               const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
               const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
+              const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_folder.svg";
               const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
               const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
@@ -15466,7 +15467,6 @@ csui.define("csui/lib/othelp", [], function () {
                 }
 
                 msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
-                console.log(botChatCounter);
                 if(side == "left")
                 {
                     msgHTML += `
@@ -15535,7 +15535,7 @@ csui.define("csui/lib/othelp", [], function () {
                 let botChatDivElGenerate = document.getElementById(`chatbotgenerate${botChatCounter}`);
                 const copyTooltip = document.querySelector(`#chatbotcopy${botChatCounter} .chatbottooltip`);
                 let botChatTextDIvEl = document.getElementById(`chatbottext${botChatCounter}`);
-                
+
                 if(botChatDivEl) {
                   botChatDivEl.addEventListener("click", (e) => {
                     e.preventDefault();
@@ -15560,7 +15560,6 @@ csui.define("csui/lib/othelp", [], function () {
                   botChatDivElGenerate.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    console.log(123, e.target);
                     let userTextDIvEl = document.querySelector(`#msg-${e.target.dataset.id}`).previousElementSibling.querySelector(".msg-text");
                     document.getElementById('submitquestion').style.display = 'none';
                     document.getElementById('chatbotstop').style.display = '';
@@ -15591,6 +15590,7 @@ csui.define("csui/lib/othelp", [], function () {
                     if(document.getElementById("submitquestion")) {
                       document.getElementById("submitquestion").disabled = true;
                     }
+                    AIPlusUtils.reRenderChatRooms();
                   }
                   function get(selector, root = document) {
                       return root.querySelector(selector);
@@ -15810,20 +15810,26 @@ csui.define("csui/lib/othelp", [], function () {
                     // Render each of the file boxes
                     for(const file of files) {
                       document.getElementById("files-container").innerHTML += `
-                        <div class="file-item" id="file-item-${idx}" style="font-size:11px;padding:4px">
-                          <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
-                          </svg>
-                          <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
-                          <button data-idx="${idx}" title="Remove" id="remove-file-btn-${idx}" class="remove-btn" style="display: none">
-                            <svg class="remove-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                              <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                        <div class="file-item-container">
+                          <div class="file-item" id="file-item-${idx}" style="font-size:11px;padding:4px">
+                            <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
                             </svg>
-                          </button>
-                          <div id="loader-file-${idx}" style="display:flex">
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
+                            <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
+                            <button data-idx="${idx}" title="Remove" id="remove-file-btn-${idx}" class="remove-btn" style="display: none">
+                              <svg class="remove-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                              </svg>
+                            </button>
+                            <div id="loader-file-${idx}" style="display:flex">
+                              <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation">
+                            </div>
+                          </div>
+
+                          <div class="file-item" id="folder-item-${idx}" style="font-size:11px;padding:4px;padding-left:10px;display:none">
+                            <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
+                            <span class="file-name"><a target="_blank" href="/"></a></span>
+                            <img src="${INFO_ICON}" class="folder-item-info" width="14" />
                           </div>
                         </div>
                       `;
@@ -15840,44 +15846,61 @@ csui.define("csui/lib/othelp", [], function () {
 
                     // Ingest each of the files
                     idx = 0
-                    let jobIds = [];
-                    for(const file of files) {
-                      const formData = new FormData();
-                      formData.append('file', file);
-                      formData.append('metadata', "");
-                      formData.append('workspaceId', "1");
+                    // let jobIds = [];
+                    // for(const file of files) {
+                    //   const formData = new FormData();
+                    //   formData.append('workspaceId', "1");
+                    //   formData.append('metadata', "");
+                    //   formData.append('priority', "10");
+                    //   formData.append('file', file);
 
-                      const ingest = await AIPlusAPI.ingest(formData);
-                      console.log(1, ingest)
-                      if(ingest.jobId != null) {
-                        jobIds.push({
-                          idx,
-                          ingest
-                        });
+                      // const ingest = await AIPlusAPI.ingest(formData);
+                      // if(ingest.jobId != null) {
+                      //   jobIds.push({
+                      //     idx,
+                      //     ingest
+                      //   });
+                      // } else {
+                        //   alert(`Error when uploading ${file.name}`);
+                        //   document.getElementById(`file-item-${idx}`).remove();
+                        // }
+                        
+                        // idx++;
+                    // }
+                      
+                    for(const file of files) {
+                      const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file);
+                      if(filingSuggestion.data.suggestion != null) {
+                        document.querySelector(`#loader-file-${idx}`).style.display = "none";
+                        document.querySelector(`#folder-item-${idx}`).style.display = "flex";
+                        document.querySelector(`#folder-item-${idx} a`).innerText = filingSuggestion.data.suggestion.folderName;
+                        document.querySelector(`#folder-item-${idx} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
+                        document.querySelector(`#folder-item-${idx} a`).setAttribute("target", "_blank");
+                        document.querySelector(`#folder-item-${idx} .file-name`).setAttribute("title", "Recommended folder for filing");
+                        document.querySelector(`#folder-item-${idx} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
                       } else {
-                        alert(`Error when uploading ${file.name}`);
-                        document.getElementById(`file-item-${idx}`).remove();
+                        console.error(filingSuggestion);
                       }
                       idx++;
                     }
 
-                    const interval = setInterval(() => {
-                      const jobs = [...jobIds];
-                      for(const job of jobs) {
-                        const getJob = AIPlusAPI.getJob(job.ingest.jobId);
-                        if(getJob.status != null && getJob.status.toLowerCase() == "completed") {
-                          jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
-                          document.querySelector(`#remove-file-btn-${job.idx}`).style.display = "block";
-                          document.querySelector(`#loader-file-${job.idx}`).style.display = "none";
-                        } else if(getJob.status != null && getJob.status.toLowerCase() == "failed") {
-                          jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
-                        }
+                    // const interval = setInterval(() => {
+                    //   const jobs = [...jobIds];
+                    //   for(const job of jobs) {
+                    //     const getJob = AIPlusAPI.getJob(job.ingest.jobId);
+                    //     if(getJob.status != null && getJob.status.toLowerCase() == "completed") {
+                    //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
+                    //       document.querySelector(`#remove-file-btn-${job.idx}`).style.display = "block";
+                    //       document.querySelector(`#loader-file-${job.idx}`).style.display = "none";
+                    //     } else if(getJob.status != null && getJob.status.toLowerCase() == "failed") {
+                    //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
+                    //     }
 
-                        if(jobIds.length === 0) {
-                          clearInterval(interval);
-                        }
-                      }
-                    }, 3000);
+                    //     if(jobIds.length === 0) {
+                    //       clearInterval(interval);
+                    //     }
+                    //   }
+                    // }, 3000);
                   }
 
                   //handle counter
@@ -16024,7 +16047,7 @@ csui.define("csui/lib/othelp", [], function () {
                       
                       for(const m of metadata) {
                         if(m.type == "tool_call_end") {
-                          for(const data of m.result.data.files) {
+                          for(const data of m.result.data.files ?? []) {
                             result += this.appendChatItem(data);
                           }
                         }
@@ -16074,16 +16097,19 @@ csui.define("csui/lib/othelp", [], function () {
                           AIPlusUtils.toggleInitialMsg(false);
                           CHAT_ID = e.target.dataset.id;
                           
-                          document.querySelectorAll('.chat-history-item').forEach(e => {
-                            if(e.dataset.id == CHAT_ID) {
-                              e.classList.add("hoverable-active");
-                            } else {
-                              e.classList.remove("hoverable-active");
-                            }
-                          });
+                          this.reRenderChatRooms();
                           
                           await AIPlusAPI.getChats(e.target.dataset.id, 1);
                         });
+                      });
+                    },
+                    reRenderChatRooms: function() {
+                      document.querySelectorAll('.chat-history-item').forEach(e => {
+                        if(e.dataset.id == CHAT_ID) {
+                          e.classList.add("hoverable-active");
+                        } else {
+                          e.classList.remove("hoverable-active");
+                        }
                       });
                     },
                     toggleChatHistoryLoader: function(isVisible) {
@@ -16135,7 +16161,7 @@ csui.define("csui/lib/othelp", [], function () {
                     appendMetadataItem: function(msgId, metadata) {
                       if(metadata) {
                         if(metadata.type == "tool_call_end") {
-                          for(const m of metadata.result.data.files) {
+                          for(const m of metadata.result.data.files ?? []) {
                             document.querySelector(`#${msgId} .chat-items-container`).innerHTML += this.appendChatItem(m);
                           }
                         }
@@ -16256,6 +16282,27 @@ csui.define("csui/lib/othelp", [], function () {
                       AIPlusUtils.finishMessageBox(`msg-${msgId}`);
                       
                       await AIPlusAPI.getChatRooms(1);
+                    },
+                    getFilingSuggestion: async function(file) {
+                      try {
+                        const formData = new FormData();
+                        formData.append("file", file);
+
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/AI/Filing/Suggestion/${userID}`, {
+                          method: "POST",
+                          body: formData,
+                          redirect: "follow",
+                          headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                          }
+                        });
+                    
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        console.error("getJob error:", error);
+                        throw error;
+                      }
                     },
                     getJob: async function(jobId) {
                       try {
@@ -16380,7 +16427,7 @@ csui.define("csui/lib/othelp", [], function () {
                     },
                     ingest: async function(formData) {
                       try {
-                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/documents`, {
+                        const response = await fetch(`${AIPlusConfig.backendUrl}/api/documents`, {
                           method: "POST",
                           body: formData,
                           redirect: "follow",
