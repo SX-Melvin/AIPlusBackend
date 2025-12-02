@@ -6697,8 +6697,9 @@ body.bin-widgets .binf-modal-backdrop {
   }
   
 @keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-180deg); }
+    100% { transform: rotate(-360deg); }
 }
 
 .sidenav {
@@ -6803,4 +6804,28 @@ body.bin-widgets .binf-modal-backdrop {
   top: 0;
   left: 0;
   z-index: 3;
+}
+
+.msger-dropzone:hover {
+    opacity: .4;
+}
+.msger-dropzone {
+    border: 18px dashed whitesmoke!important;
+    position: absolute;
+    background-color: rgba(0,0,0,.2);
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 46px;
+    z-index: 1;
+    display: none;
+    justify-content: center;    /* horizontal center */
+    align-items: center;        /* vertical center */
+    font-size: 26px!important;            /* text size */
+    color: white!important;               /* text color */
+    font-weight: bold!important;          /* make text visible */
+}
+
+.msger-drop-text {
+    pointer-events: none;  /* so dropping still works */
 }

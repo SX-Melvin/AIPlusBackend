@@ -15434,10 +15434,12 @@ csui.define("csui/lib/othelp", [], function () {
 
           async function showAviator() {
               let that = globalthis;
-              var botChatCounter = 0;
               let activeController = false;
               let ticket = that.options.context._user.connector.connection.session.ticket;
               let userID = that.options.context._user.attributes.id;
+              let CHAT_ID = null;
+              let paginations = {chatHistory: {now: 1, max: null}, chat: {now: 1, max: null}};
+              const PERSON_NAME = that.options.context._user.attributes.name;
               const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
               const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
               const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
@@ -15452,10 +15454,7 @@ csui.define("csui/lib/othelp", [], function () {
               const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
               const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
-              let paginations = {chatHistory: {now: 1, max: null}, chat: {now: 1, max: null}};
-              let CHAT_ID = null;
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
-              const PERSON_NAME = that.options.context._user.attributes.name;
 
               function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null) {
                 let msgHTML;
@@ -15472,21 +15471,19 @@ csui.define("csui/lib/othelp", [], function () {
                     msgHTML += `
                     <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
                     <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
-                        <div class="msg-info">
-                        </div>
-    
-                        <div id=chatbottext${botChatCounter} style="white-space: pre-line;" class="msg-text">${text}</div>
+                      <div class="msg-info"></div>
+                      <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
 
-                        ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
+                      ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
 
-                        <div class="msg-container" id=chatbot${botChatCounter} style="flex-direction: row; justify-content: flex-start;">
-                          <div id="chatbotcopy${botChatCounter}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                            <span class='chatbottooltip'>Copy</span>
-                          </div>
-                          <div data-id="${uniqueId}" id="chatbotgenerate${botChatCounter}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                            <span class='chatbottooltip'>Regenerate</span>
-                          </div>
+                      <div class="msg-container" id="chat-tools-${uniqueId}" style="flex-direction: row; justify-content: flex-start;">
+                        <div id="chat-copy-${uniqueId}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                          <span class='chatbottooltip'>Copy</span>
                         </div>
+                        <div data-id="${uniqueId}" id="chat-regenerate-${uniqueId}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                          <span class='chatbottooltip'>Regenerate</span>
+                        </div>
+                      </div>
                     </div>
                     </div>
                 `;
@@ -15499,7 +15496,7 @@ csui.define("csui/lib/othelp", [], function () {
                         <div class="msg-info">
                         </div>
     
-                        <div id=chatbottext${botChatCounter} class="msg-text">
+                        <div class="msg-text">
                           <div class="dot"></div>
                           <div class="dot"></div>
                           <div class="dot"></div>
@@ -15518,7 +15515,7 @@ csui.define("csui/lib/othelp", [], function () {
                         <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
                         </div>
     
-                        <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble"><div id=usertext${botChatCounter} style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
+                        <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
                     </div>
                     </div>
                 `;
@@ -15531,17 +15528,16 @@ csui.define("csui/lib/othelp", [], function () {
                   msgerChat.insertAdjacentHTML("beforeend", msgHTML);
                 }
 
-                let botChatDivEl = document.getElementById(`chatbotcopy${botChatCounter}`);
-                let botChatDivElGenerate = document.getElementById(`chatbotgenerate${botChatCounter}`);
-                const copyTooltip = document.querySelector(`#chatbotcopy${botChatCounter} .chatbottooltip`);
-                let botChatTextDIvEl = document.getElementById(`chatbottext${botChatCounter}`);
-
+                let botChatDivEl = document.getElementById(`chat-copy-${uniqueId}`);
+                
                 if(botChatDivEl) {
+                  const copyTooltip = document.querySelector(`#chat-copy-${uniqueId} .chatbottooltip`);
+
                   botChatDivEl.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     const el = document.createElement("textarea");
-                    el.value = botChatTextDIvEl.textContent;
+                    el.value = document.getElementById(`bot-text-${uniqueId}`).textContent;
                     document.body.appendChild(el);
                     el.select();
                     document.execCommand("copy");
@@ -15557,7 +15553,7 @@ csui.define("csui/lib/othelp", [], function () {
                     });
                   });
                   
-                  botChatDivElGenerate.addEventListener("click", (e) => {
+                  document.getElementById(`chat-regenerate-${uniqueId}`).addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     let userTextDIvEl = document.querySelector(`#msg-${e.target.dataset.id}`).previousElementSibling.querySelector(".msg-text");
@@ -15566,14 +15562,9 @@ csui.define("csui/lib/othelp", [], function () {
                     appendMessage("right", userTextDIvEl.innerHTML);
                     botResponse(userTextDIvEl.innerHTML);
                   });
-
-                  botChatCounter++;
                 }
 
-                // if(!appendOnFirstChild) {
                 msgerChat.scrollTop += 500;
-                // msgerChat.scrollTop = msgerChat.scrollHeight;
-                // }
                 return uniqueId;
               } 
 
@@ -15628,7 +15619,7 @@ csui.define("csui/lib/othelp", [], function () {
                               </header>
                               
                               <div style="margin:5px 5px;height:calc(100% - 70px);overflow:hidden;padding-bottom:110px">
-                              <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+                                <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
                                   <img src="${CHAT_LOGO}" style="width:14px" />
                                   <strong>&nbsp;Chats</strong>
                                 </button>
@@ -15645,8 +15636,13 @@ csui.define("csui/lib/othelp", [], function () {
                                 <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;"></div>
                               </div>
                             </div>
-                              <div class="msger-chat-container" style="position:relative;min-height: 0;">
-                                <div style="position:absolute;background-color:rgba(0,0,0,.2);right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
+
+                            <div class="msger-chat-container" style="position:relative;min-height: 0;">
+                              <div id="msger-dropzone" class="msger-dropzone">
+                                <span class="msger-drop-text">Drop files here</span>
+                              </div>
+                              
+                              <div style="position:absolute;background-color:rgba(0,0,0,.2);bottom:0;right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
                                   <div class="outer-border">
                                     <div class="loader">
                                       <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
@@ -15666,27 +15662,28 @@ csui.define("csui/lib/othelp", [], function () {
                                 </div>
 
                                 <header class="msger-header" style="border-left:1px solid whitesmoke">
-                                  <div class="msger-header-title" id="chatbotmenu">
-                                  <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
-
-                                  <div style="
-                                      font-size: 18px;
-                                      font-weight: 600;
-                                      font-family: 'OpenText Sans';
-                                      color: #2c3e50;
-                                      display:inline-block;
-                                      vertical-align:middle
-                                      ">Aviator</div>
+                                <div class="msger-header-title" id="chatbotmenu">
+                                <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
+                                
+                                <div style="
+                                font-size: 18px;
+                                font-weight: 600;
+                                font-family: 'OpenText Sans';
+                                color: #2c3e50;
+                                display:inline-block;
+                                vertical-align:middle
+                                ">Aviator</div>
                                   </div>
-
+                                  
                                   <div class="msger-header-options">
-                                    <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
-                                      <img src="${CLOSE_ICON}" />
-                                    </button>
+                                  <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
+                                  <img src="${CLOSE_ICON}" />
+                                  </button>
                                   </div>
                                 </header>
 
-                                <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;"></main>
+                                <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>
+                                
                                 <div id="files-container"></div>
                                 <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
                                     <!-- Chat Input -->
@@ -15741,29 +15738,67 @@ csui.define("csui/lib/othelp", [], function () {
                     return aiChatBotEl;
                   }
 
-                  const existingChatbot = document.getElementById("aichatbottable");
                   const nodesTableDiv = document.querySelector("div.binf-widgets");
-                  if(!existingChatbot) {
+                  if(!document.getElementById("aichatbottable")) {
                     nodesTableDiv.appendChild(createChatbotElement());
                   }
-                  document.getElementById("aichatbottable").style.display = "block";
+
+                  // Handle the overlay dropzone area
+                  let dragCounter = 0;
+                  const dropzone = document.getElementById("msger-dropzone");
+                  const existingChatbot = document.getElementById("aichatbottable");
+                  dropzone.addEventListener("dragenter", (e) => {
+                    if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
+                      dragCounter++;
+                      dropzone.style.opacity = ".6";
+                      dropzone.style.display = "flex";
+                    }
+                  });
+
+                  dropzone.addEventListener("dragleave", (e) => {
+                    dragCounter--;
+                    dropzone.style.opacity = "1";
+                    if (dragCounter === 0) {
+                      dropzone.style.display = "none";
+                    }
+                  });
+
+                  dropzone.addEventListener("drop", (e) => {
+                    dragCounter = 0;
+                    dropzone.style.display = "none";
+                    dropzone.style.opacity = "1";
+                  });
+
+                  existingChatbot.addEventListener("dragenter", (e) => {
+                    if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
+                      dragCounter++;
+                      dropzone.style.display = "flex";
+                    }
+                  });
+
+                  existingChatbot.addEventListener("dragleave", (e) => {
+                    dragCounter--;
+                    if (dragCounter === 0) {
+                      dropzone.style.display = "none";
+                    }
+                  });
+
+                  existingChatbot.addEventListener("drop", (e) => {
+                    dragCounter = 0;
+                    dropzone.style.display = "none";
+                  });
+                  // Handle the overlay dropzone area
 
                   document.getElementById('file-input').addEventListener('change', async function(event) {
                     event.preventDefault();
                     handleFiles([event.target.files[0]]);
                   });
 
-                  const dropZone = document.getElementById('chat-wrapper');
+                  const chatWrapper = document.getElementById('chat-wrapper');
                   const fileInput = document.getElementById('file-input');
 
-                  // Prevent default drag behaviors
-                  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                      dropZone.addEventListener(eventName, preventDefaults, false);
-                      document.body.addEventListener(eventName, preventDefaults, false);
-                  });
-
-                  dropZone.addEventListener("scroll", async (e) => {
-                    if (dropZone.scrollTop <= 20) {
+                  chatWrapper.addEventListener("scroll", async (e) => {
+                    if (chatWrapper.scrollTop <= 20) {
                       if(paginations.chat.now < paginations.chat.max) {
                         const container = document.querySelector(".msger-chat");
                         const oldScrollTop = container.scrollTop;
@@ -15774,22 +15809,15 @@ csui.define("csui/lib/othelp", [], function () {
                     }
                   });
 
-                  function preventDefaults(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }
-
-                  // Highlight drop zone when item is dragged over it
-                  ['dragenter', 'dragover'].forEach(eventName => {
-                      dropZone.addEventListener(eventName, () => dropZone.classList.add('hover'), false);
-                  });
-
-                  ['dragleave', 'drop'].forEach(eventName => {
-                      dropZone.addEventListener(eventName, () => dropZone.classList.remove('hover'), false);
-                  });
-
                   // Handle dropped files
-                  dropZone.addEventListener('drop', handleDrop, false);
+                  ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+                    dropzone.addEventListener(eventName, (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }, false);
+                  });
+
+                  dropzone.addEventListener("drop", handleDrop, false);
 
                   function handleDrop(e) {
                     const dt = e.dataTransfer;
@@ -15871,16 +15899,16 @@ csui.define("csui/lib/othelp", [], function () {
                     for(const file of files) {
                       const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file);
                       if(filingSuggestion.data.suggestion != null) {
-                        document.querySelector(`#loader-file-${idx}`).style.display = "none";
-                        document.querySelector(`#folder-item-${idx}`).style.display = "flex";
                         document.querySelector(`#folder-item-${idx} a`).innerText = filingSuggestion.data.suggestion.folderName;
                         document.querySelector(`#folder-item-${idx} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
                         document.querySelector(`#folder-item-${idx} a`).setAttribute("target", "_blank");
                         document.querySelector(`#folder-item-${idx} .file-name`).setAttribute("title", "Recommended folder for filing");
                         document.querySelector(`#folder-item-${idx} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
+                        document.querySelector(`#folder-item-${idx}`).style.display = "flex";
                       } else {
-                        console.error(filingSuggestion);
+                        console.warn("no filing suggestion found: " + filingSuggestion);
                       }
+                      document.querySelector(`#loader-file-${idx}`).style.display = "none";
                       idx++;
                     }
 
@@ -16121,6 +16149,18 @@ csui.define("csui/lib/othelp", [], function () {
                         document.querySelector("#chat-refresh-animation").style.display = "none";
                       }
                     },
+                    toggleChatTools: function(isVisible, id) {
+                      const el = document.getElementById(`chat-tools-${id}`);
+                      if(isVisible) {
+                        if(!el) {
+                          el.style.display = "flex";
+                        }
+                      } else {
+                        if(el) {
+                          el.style.display = "none";
+                        }
+                      }
+                    },
                     toggleInitialMsg: function(isVisible) {
                       const el = document.getElementById("initial-msg");
                       if(isVisible) {
@@ -16237,11 +16277,12 @@ csui.define("csui/lib/othelp", [], function () {
 
                             try {
                               AIPlusUtils.removeLoaderTextbox();
-
+                              
                               if(msgId == null) {
                                 msgId = appendMessage('left', "");
+                                AIPlusUtils.toggleChatTools(false, msgId);
                               }
-                              
+
                               // CHECK Type
                               if(data.type == 'tool_call_end') {
                                 AIPlusUtils.appendMetadataItem(`msg-${msgId}`, data);
@@ -16254,6 +16295,7 @@ csui.define("csui/lib/othelp", [], function () {
                                 AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
                               } else if(data.type == 'done') {
                                 AIPlusUtils.removeLoaderTextbox();
+                                AIPlusUtils.toggleChatTools(true, msgId);
                               } else if(data.type == 'thinking') {
                                 AIPlusUtils.removeLoaderTextbox();
                                 AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
