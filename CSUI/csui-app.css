@@ -6759,7 +6759,7 @@ body.bin-widgets .binf-modal-backdrop {
     display: flex;
   }
 
-  .dropdown-content {
+.dropdown-content {
     display: none;
     position: absolute;
     background-color: #f1f1f1;
@@ -6768,37 +6768,24 @@ body.bin-widgets .binf-modal-backdrop {
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-  }
-
-  .show {display: block;}
-
-/* .chatmenuText:hover .chatmenuTooltip {
-    display: block;
 }
 
-.chatmenuTooltip {
-    position: absolute;
-    white-space: nowrap;
-    display: none;
-    background: #ffffcc;
-    border: 1px solid black;
-    color: black;
-    padding: 5px;
-    z-index: 1000;
-} */
+.show {display: block;}
 
-/* .chattooltipitem {
-    color: red;
-    cursor: pointer;
-} */
 
 .sideNavbutton:hover .chatmenuTooltip {
     opacity: 1;
 }
 
+.chat-source-section {
+    overflow:auto!important;
+    max-height:300px!important;
+    flex-wrap:wrap!important;
+    display: flex;
+}
 .chat-source {
     border-radius: 5px;
-    padding: 4px!important;
+    padding: 6px!important;
     cursor: pointer; 
     margin-top: 10px!important; 
     display:inline-block;

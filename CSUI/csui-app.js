@@ -15458,7 +15458,7 @@ csui.define("csui/lib/othelp", [], function () {
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
 
-              function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null) {
+              function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = []) {
                 let msgHTML;
                 const msgerChat = get(".msger-chat");
                 const uniqueId = new Date().getTime();
@@ -15486,16 +15486,15 @@ csui.define("csui/lib/othelp", [], function () {
                             <span class='chatbottooltip'>Regenerate</span>
                           </div>
                         </div>
-                        <div data-id="${uniqueId}" id="chat-source-${uniqueId}" class="chat-source hoverable">
+
+                        <div data-id="${uniqueId}" data-id="false" id="chat-source-${uniqueId}" class="chat-source hoverable">
                           <div data-id="${uniqueId}" style="display:flex;align-items:center">
                             <span data-id="${uniqueId}" style="font-size:12px">Source</span>
-                            <img data-id="${uniqueId}" src="${ARROW_DOWN_ICON}" width="14" />
+                            <img data-id="${uniqueId}" src="${ARROW_UP_ICON}" width="14" />
                           </div>
                         </div>
 
-                        <div id="chat-source-section-${uniqueId}">
-
-                        </div>
+                        <div id="chat-source-section-${uniqueId}" style="display:none" class="msger-scroll chat-source-section">${AIPlusUtils.processChatSources(sources)}</div>
                       </div>
                     </div>
                 `;
@@ -15574,8 +15573,28 @@ csui.define("csui/lib/othelp", [], function () {
                     appendMessage("right", userTextDIvEl.innerHTML);
                     botResponse(userTextDIvEl.innerHTML);
                   });
-                }
+                  
+                  document.getElementById(`chat-source-${uniqueId}`).addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
 
+                    const el = document.getElementById(`chat-source-${uniqueId}`);
+                    const section = document.querySelector(`#chat-source-section-${e.target.dataset.id}`);
+
+                    if(el.dataset.active == "true") {
+                      el.dataset.active = "false";
+                      section.style.display = "none";
+                      el.querySelector("img").setAttribute("src", ARROW_UP_ICON);
+                    } else {
+                      el.dataset.active = "true";
+                      section.style.display = "flex";
+                      el.querySelector("img").setAttribute("src", ARROW_DOWN_ICON);
+                    }
+                  });
+  
+                  AIPlusUtils.toggleChatSources(sources.length > 0, uniqueId);
+                }
+                
                 msgerChat.scrollTop += 500;
                 return uniqueId;
               } 
@@ -16032,14 +16051,22 @@ csui.define("csui/lib/othelp", [], function () {
                       botResponse(msgText);
                   });
 
-                  function botResponse(questionToAsk) {
+                  async function botResponse(questionToAsk) {
+                    if(CHAT_ID == null) {
+                      // TODO: CREATE THE SESSION FIRST
+                      const session = await AIPlusAPI.createSession(questionToAsk);
+                      if(session == null) {
+                        return;
+                      }
+                      CHAT_ID = session.sessionId;
+                    }
+
                     AIPlusAPI.ask({
-                      "userId": userID,
-                      "messages": [
-                        {"role": "user", "content": questionToAsk}
-                      ],
-                      "enableTools": document.querySelector("#enable-tools").checked,
-                      "topK": 20
+                      sessionId: CHAT_ID,
+                      userId: userID.toString(),
+                      messages: [
+                        {role: "user", "content": questionToAsk}
+                      ]
                     });
                   }
                   
@@ -16069,10 +16096,22 @@ csui.define("csui/lib/othelp", [], function () {
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
-                    appendChatSource: function(data) {
-                      return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.metadata.nodeId}" title="${data.metadata.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+                    IsToolsEnabled: function() {
+                      return document.querySelector("#enable-tools").checked;
+                    },
+                    processChatSource: function(data) {
+                      let d = data;
+
+                      if(data.metadata) {
+                        d = {
+                          ...d,
+                          ...data.metadata,
+                        }
+                      }
+
+                      return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${d.nodeId}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
                         <img width="16px" src="${FILE_ICON}">
-                        <div class="file-chat-bubble-text">${data.metadata.fileName}</div>
+                        <div class="file-chat-bubble-text">${d.fileName}</div>
                       </a>`;
                     },
                     appendChatItem: function(data) {
@@ -16081,10 +16120,12 @@ csui.define("csui/lib/othelp", [], function () {
                         <div class="file-chat-bubble-text">${data.fileName}</div>
                       </a>`;
                     },
-                    processChatSource: function(id, sources) {
+                    processChatSources: function(sources = []) {
+                      let result = "";
                       for(const source of sources) {
-                        document.querySelector(`#chat-source-section-${id}`).innerHTML += this.appendChatSource(source);
+                        result += this.processChatSource(source);
                       }
+                      return result;
                     },
                     processChatMetadata: function(id, metadata) {
                       let result = `<div id="chat-item-${id}" class="chat-items-container" style="display:flex;flex-wrap:wrap">`;
@@ -16102,7 +16143,7 @@ csui.define("csui/lib/othelp", [], function () {
                             result += this.appendChatItem(data);
                           }
                         } else if(m.type == "sources") {
-                          
+                          // TODO: handle chat sources
                         }
                       }
                       
@@ -16111,18 +16152,19 @@ csui.define("csui/lib/othelp", [], function () {
                     },
                     appendChatRoom: function(rooms, appendMode = false) {
                       const chatRoomContainer = document.querySelector("#chat-room-container");
+
                       if(!appendMode) {
                         chatRoomContainer.innerHTML = ``;
-                        if(rooms?.data?.data == null || rooms?.data?.data?.length == 0) {
+                        if(rooms?.sessions == null || rooms?.sessions?.length == 0) {
                           chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
                         }
                       }
 
-                      for(const chatRoom of rooms.data.data) {
+                      for(const chatRoom of rooms.sessions) {
                         chatRoomContainer.insertAdjacentHTML("beforeend", `
-                          <button data-id="${chatRoom.id}" title="${chatRoom.name}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.id ? "hoverable-active" : ""}">
-                            ${chatRoom.name}
-                            <div title="Delete this conversation" data-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
+                          <button data-id="${chatRoom.sessionId}" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
+                            ${chatRoom.title}
+                            <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
                               <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
                             </div>
                           </button>`);
@@ -16174,6 +16216,16 @@ csui.define("csui/lib/othelp", [], function () {
                         document.querySelector("#chat-refresh-animation").style.display = "none";
                       }
                     },
+                    toggleChatSources: function(isVisible, id) {
+                      const el = document.getElementById(`chat-source-${id}`);
+                      if(el) {
+                        if(isVisible) {
+                          el.style.display = "flex";
+                        } else {
+                          el.style.display = "none";
+                        }
+                      }
+                    },
                     toggleChatTools: function(isVisible, id) {
                       const el = document.getElementById(`chat-tools-${id}`);
                       if(isVisible) {
@@ -16223,6 +16275,11 @@ csui.define("csui/lib/othelp", [], function () {
                     replaceTextMessageBox: function(msgId, msg) {
                       document.querySelector(`#${msgId} .msg-text`).textContent = msg;
                     },
+                    appendChatSourceItem: function(msgId, sources) {
+                      for(const m of sources ?? []) {
+                        document.querySelector(`#chat-source-section-${msgId}`).innerHTML += this.processChatSource(m);
+                      }
+                    },
                     appendMetadataItem: function(msgId, metadata) {
                       if(metadata) {
                         if(metadata.type == "tool_call_end") {
@@ -16234,6 +16291,7 @@ csui.define("csui/lib/othelp", [], function () {
                     },
                     appendTextMessageBox: function(msgId, msg) {
                       document.querySelector(`#${msgId} .msg-text`).textContent += msg;
+                      get(".msger-chat").scrollTop += 500;
                     },
                     finishMessageBox: function (msgId) {
                       document.querySelector(`#${msgId} .msg-container`).style.display = "flex";
@@ -16243,6 +16301,7 @@ csui.define("csui/lib/othelp", [], function () {
                       if(document.getElementById("botloading")) {
                         document.getElementById("botloading").remove();
                       }
+                      get(".msger-chat").scrollTop += 500;
                     }
                   }
                   var AIPlusAPI = {
@@ -16257,16 +16316,13 @@ csui.define("csui/lib/othelp", [], function () {
                       const { signal } = activeController;
                       appendMessage('loading');
 
-                      const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/User/${userID}/Ask`, {
+                      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
                         method: "POST",
                         headers: {
-                          "Content-Type": "application/json"
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${sessionStorage.getItem('aviatorToken')}`
                         },
-                        body: JSON.stringify({
-                          roomId: CHAT_ID,
-                          aiPlusToken: sessionStorage.getItem('aviatorToken'),
-                          data: body
-                        }),
+                        body: JSON.stringify(body),
                         signal
                       });
                     
@@ -16280,6 +16336,7 @@ csui.define("csui/lib/othelp", [], function () {
                       let buffer = "";
                       let msgId = null;
                       let firstMessageHasRendered = false;
+                      let sources = [];
                       
                       // Read chunks as they arrive
                       while (true) {
@@ -16306,11 +16363,13 @@ csui.define("csui/lib/othelp", [], function () {
                               if(msgId == null) {
                                 msgId = appendMessage('left', "");
                                 AIPlusUtils.toggleChatTools(false, msgId);
+                                AIPlusUtils.toggleChatSources(false, msgId);
                               }
 
                               // CHECK Type
                               if(data.type == 'sources') {
-                                AIPlusUtils.appendChatSource(msgId, data.sources ?? []);
+                                AIPlusUtils.appendChatSourceItem(msgId, data.sources ?? []);
+                                sources = data.sources;
                               } else if(data.type == 'tool_call_end') {
                                 AIPlusUtils.appendMetadataItem(`msg-${msgId}`, data);
                               } else if(data.type == 'content') {
@@ -16323,6 +16382,7 @@ csui.define("csui/lib/othelp", [], function () {
                               } else if(data.type == 'done') {
                                 AIPlusUtils.removeLoaderTextbox();
                                 AIPlusUtils.toggleChatTools(true, msgId);
+                                AIPlusUtils.toggleChatSources(sources.length > 0, msgId);
                               } else if(data.type == 'thinking') {
                                 AIPlusUtils.removeLoaderTextbox();
                                 AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
@@ -16332,11 +16392,11 @@ csui.define("csui/lib/othelp", [], function () {
                               }
                               
                               // CHECK additional_data
-                              if(data.additional_data != null) {
-                                if(data.additional_data.type == "chat_room_id") {
-                                  CHAT_ID = data.additional_data.data;
-                                }
-                              }
+                              // if(data.additional_data != null) {
+                              //   if(data.additional_data.type == "chat_room_id") {
+                              //     CHAT_ID = data.additional_data.data;
+                              //   }
+                              // }
                             } catch (error) {
                               console.error(error);
                             }
@@ -16373,6 +16433,33 @@ csui.define("csui/lib/othelp", [], function () {
                         throw error;
                       }
                     },
+                    createSession: async function(name) {
+                      try {
+                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions`, {
+                          method: "POST",
+                          redirect: "follow",
+                          body: JSON.stringify({
+                            settings: {
+                              topK: 10,
+                              enableTools: AIPlusUtils.IsToolsEnabled()
+                            },
+                            title: name,
+                            userId: userID.toString(),
+                          }),
+                          headers: {
+                            "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+                            "Content-Type": "application/json"
+                          }
+                        });
+                        
+                        const result = await response.json();
+                        return result;
+                      } catch (error) {
+                        alert(error);
+                        console.error("createSession error:", error);
+                        throw error;
+                      }
+                    },
                     getJob: async function(jobId) {
                       try {
                         const response = await fetch(`${AIPlusConfig.apiUrl}/api/jobs/${jobId}`, {
@@ -16392,17 +16479,17 @@ csui.define("csui/lib/othelp", [], function () {
                     },
                     deleteChatRoom: async function(id) {
                       try {
-                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/${id}`, {
+                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${id}?userId=${userID}`, {
+                          headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+                          },
                           method: "DELETE",
                           redirect: "follow"
                         });
-                    
-                        const result = await response.json();
                         if(CHAT_ID == id) {
                           clearChats();
                         }
                         await this.getChatRooms(1);
-                        return result;
                       } catch (error) {
                         console.error("getChatRooms error:", error);
                         throw error;
@@ -16413,13 +16500,16 @@ csui.define("csui/lib/othelp", [], function () {
                         AIPlusUtils.toggleChatHistoryLoader(true);
                         if(size == null) size = 30;
 
-                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/User/${userID}?pageNumber=${page}&pageSize=${size}`, {
+                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions?pageNumber=${page}&pageSize=${size}&userId=${userID}&order=desc`, {
+                          headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+                          },
                           method: "GET",
                           redirect: "follow"
                         });
                     
                         const result = await response.json();
-                        paginations.chatHistory.max = result.data.totalPage;
+                        paginations.chatHistory.max = result.pagination.totalPages;
                         paginations.chatHistory.now = page;
                         AIPlusUtils.appendChatRoom(result, appendMode);
                         AIPlusUtils.toggleChatHistoryLoader(false);
@@ -16429,68 +16519,40 @@ csui.define("csui/lib/othelp", [], function () {
                         throw error;
                       }
                     },
-                    createChatByRoom: async function(roomId, body) {
-                      try {
-                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Room/${roomId}/Chat`, {
-                          method: "POST",
-                          redirect: "follow",
-                          headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "text/plain"
-                          },
-                          body: JSON.stringify(body)
-                        });
-                    
-                        const result = await response.json();
-                        return result;
-                      } catch (error) {
-                        console.error("createChatByRoom error:", error);
-                        throw error;
-                      }
-                    },
-                    createChatRoom: async function(name, messages) {
-                      try {
-                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/User/${userID}`, {
-                          method: "POST",
-                          redirect: "follow",
-                          headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "text/plain"
-                          },
-                          body: JSON.stringify({
-                            name,
-                            messages
-                          })
-                        });
-                    
-                        const result = await response.json();
-                        return result;
-                      } catch (error) {
-                        console.error("createChatRoom error:", error);
-                        throw error;
-                      }
-                    },
                     getChats: async function(chatId, page, size = 25, appendMode = true) {
                       try {
                         if(size == null) size = 25;
 
                         AIPlusUtils.toggleLoaderChatContainer(true);
-                        const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Chat/Room/${chatId}/Chats?pageNumber=${page}&pageSize=${size}`, {
+                        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${chatId}?order=desc&includeMessages=true&userId=${userID}`, {
+                          headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+                          },
                           method: "GET",
                           redirect: "follow"
                         });
                         
                         const result = await response.json();
-                        paginations.chat.max = result.data.totalPage;
+                        paginations.chat.max = 1; // NO PAGING FOR NOW
                         paginations.chat.now = page;
-                        for (const chat of result.data.data) {
-                          appendMessage(chat.isHuman ? "right" : "left", chat.message, new Date(chat.createdAt), appendMode, chat.metadata);
+                        let idx = 0;
+
+                        for (const chat of result.messages) {
+                          const nextData = result.messages[idx+1];
+                          let sources = [];
+                          if(nextData != null && nextData.sources != null) {
+                            sources = nextData.sources;
+                          }
+                          appendMessage(chat.role == "user" ? "right" : "left", chat.content, new Date(chat.timestamp), appendMode, null, sources);
+
+                          idx++;
                         }
+
                         AIPlusUtils.toggleLoaderChatContainer(false);
                         return result;
                       } catch (error) {
                         console.error("getChats error:", error);
-                        this.toggleLoaderChatContainer(false);
+                        AIPlusUtils.toggleLoaderChatContainer(false);
                         throw error;
                       }
                     },
