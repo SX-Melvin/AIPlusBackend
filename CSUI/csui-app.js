@@ -15453,6 +15453,8 @@ csui.define("csui/lib/othelp", [], function () {
               const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_folder.svg";
               const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
               const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
+              const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_down.svg";
+              const ARROW_UP_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_up.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
 
@@ -15470,21 +15472,31 @@ csui.define("csui/lib/othelp", [], function () {
                 {
                     msgHTML += `
                     <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
-                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
-                      <div class="msg-info"></div>
-                      <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
+                      <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
+                        <div class="msg-info"></div>
+                        <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
 
-                      ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
+                        ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
 
-                      <div class="msg-container" id="chat-tools-${uniqueId}" style="flex-direction: row; justify-content: flex-start;">
-                        <div id="chat-copy-${uniqueId}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                          <span class='chatbottooltip'>Copy</span>
+                        <div class="msg-container" id="chat-tools-${uniqueId}" style="flex-direction: row; justify-content: flex-start;margin-top: 16px;">
+                          <div id="chat-copy-${uniqueId}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px;">
+                            <span class='chatbottooltip'>Copy</span>
+                          </div>
+                          <div data-id="${uniqueId}" id="chat-regenerate-${uniqueId}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                            <span class='chatbottooltip'>Regenerate</span>
+                          </div>
                         </div>
-                        <div data-id="${uniqueId}" id="chat-regenerate-${uniqueId}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                          <span class='chatbottooltip'>Regenerate</span>
+                        <div data-id="${uniqueId}" id="chat-source-${uniqueId}" class="chat-source hoverable">
+                          <div data-id="${uniqueId}" style="display:flex;align-items:center">
+                            <span data-id="${uniqueId}" style="font-size:12px">Source</span>
+                            <img data-id="${uniqueId}" src="${ARROW_DOWN_ICON}" width="14" />
+                          </div>
+                        </div>
+
+                        <div id="chat-source-section-${uniqueId}">
+
                         </div>
                       </div>
-                    </div>
                     </div>
                 `;
                 } else if(side == "loading") {
@@ -16057,11 +16069,22 @@ csui.define("csui/lib/othelp", [], function () {
                     backendUrl: "/aiplus"
                   }
                   var AIPlusUtils = {
+                    appendChatSource: function(data) {
+                      return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.metadata.nodeId}" title="${data.metadata.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+                        <img width="16px" src="${FILE_ICON}">
+                        <div class="file-chat-bubble-text">${data.metadata.fileName}</div>
+                      </a>`;
+                    },
                     appendChatItem: function(data) {
                       return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.customMetadata.nodeId}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
                         <img width="16px" src="${FILE_ICON}">
                         <div class="file-chat-bubble-text">${data.fileName}</div>
                       </a>`;
+                    },
+                    processChatSource: function(id, sources) {
+                      for(const source of sources) {
+                        document.querySelector(`#chat-source-section-${id}`).innerHTML += this.appendChatSource(source);
+                      }
                     },
                     processChatMetadata: function(id, metadata) {
                       let result = `<div id="chat-item-${id}" class="chat-items-container" style="display:flex;flex-wrap:wrap">`;
@@ -16078,6 +16101,8 @@ csui.define("csui/lib/othelp", [], function () {
                           for(const data of m.result.data.files ?? []) {
                             result += this.appendChatItem(data);
                           }
+                        } else if(m.type == "sources") {
+                          
                         }
                       }
                       
@@ -16284,7 +16309,9 @@ csui.define("csui/lib/othelp", [], function () {
                               }
 
                               // CHECK Type
-                              if(data.type == 'tool_call_end') {
+                              if(data.type == 'sources') {
+                                AIPlusUtils.appendChatSource(msgId, data.sources ?? []);
+                              } else if(data.type == 'tool_call_end') {
                                 AIPlusUtils.appendMetadataItem(`msg-${msgId}`, data);
                               } else if(data.type == 'content') {
                                 if(!firstMessageHasRendered) {

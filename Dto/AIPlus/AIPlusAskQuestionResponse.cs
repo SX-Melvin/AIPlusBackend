@@ -21,6 +21,9 @@ namespace AIPlusBackend.Dto.AIPlus
         
         [JsonProperty("message")]
         public string Message { get; set; }
+
+        [JsonProperty("sources")]
+        public AIPlusAskQuestionResultSource Sources { get; set; }
         
         [JsonProperty("result")]
         public AIPlusAskQuestionResult Result { get; set; }
@@ -67,6 +70,25 @@ namespace AIPlusBackend.Dto.AIPlus
 
         [JsonProperty("customMetadata")]
         public AIPlusAskQuestionResultDataFileCustomMetadata CustomMetadata { get; set; }
+    }
+    public class AIPlusAskQuestionResultSource
+    {
+        [JsonProperty("metadata")]
+        public List<AIPlusAskQuestionResultSourceMetadata> Metadata { get; set; }
+    }
+    public class AIPlusAskQuestionResultSourceMetadata
+    {
+        [JsonProperty("jobId")]
+        public string JobId { get; set; }
+
+        [JsonProperty("fileName")]
+        public string FileName { get; set; }
+
+        [JsonProperty("fileSize")]
+        public string FileSize { get; set; }
+
+        [JsonProperty("nodeId")]
+        public long NodeId { get; set; }
     }
     public class AIPlusAskQuestionResultDataFileCustomMetadata
     {
