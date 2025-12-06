@@ -15454,7 +15454,7 @@ csui.define("csui/lib/othelp", [], function () {
               const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
               const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
               const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_down.svg";
-              const ARROW_UP_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_up.svg";
+              const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_left.svg";
               const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
               let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
 
@@ -15490,7 +15490,7 @@ csui.define("csui/lib/othelp", [], function () {
                         <div data-id="${uniqueId}" data-id="false" id="chat-source-${uniqueId}" class="chat-source hoverable">
                           <div data-id="${uniqueId}" style="display:flex;align-items:center">
                             <span data-id="${uniqueId}" style="font-size:12px">Source</span>
-                            <img data-id="${uniqueId}" src="${ARROW_UP_ICON}" width="14" />
+                            <img data-id="${uniqueId}" src="${ARROW_LEFT_ICON}" width="14" />
                           </div>
                         </div>
 
@@ -15584,7 +15584,7 @@ csui.define("csui/lib/othelp", [], function () {
                     if(el.dataset.active == "true") {
                       el.dataset.active = "false";
                       section.style.display = "none";
-                      el.querySelector("img").setAttribute("src", ARROW_UP_ICON);
+                      el.querySelector("img").setAttribute("src", ARROW_LEFT_ICON);
                     } else {
                       el.dataset.active = "true";
                       section.style.display = "flex";
