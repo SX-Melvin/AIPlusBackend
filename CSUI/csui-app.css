@@ -6694,7 +6694,11 @@ body.bin-widgets .binf-modal-backdrop {
     height: 16px;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
-  }
+}
+.spin {
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
   
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -6776,7 +6780,19 @@ body.bin-widgets .binf-modal-backdrop {
 .sideNavbutton:hover .chatmenuTooltip {
     opacity: 1;
 }
-
+.msg-text code {
+    background-color: inherit!important;
+    border: 1px solid #ccc!important;
+    color: #000!important;
+    display: block!important;
+    font-family: Courier, New Courier, monospace!important;
+    font-size: 14px!important;
+    font-weight: 400!important;
+    line-height: 22px!important;
+    margin: 16px 16px 16px 0!important;
+    padding: 16px!important;
+    width: 90%!important;
+}
 .chat-source-section {
     overflow:auto!important;
     max-height:300px!important;
@@ -6820,7 +6836,19 @@ body.bin-widgets .binf-modal-backdrop {
     color: white!important;               /* text color */
     font-weight: bold!important;          /* make text visible */
 }
-
+.show-all-message-popup {
+    border-radius: 8px!important;
+    position:absolute!important;
+    background-color:white!important;
+    top:58px!important;
+    cursor: pointer!important;
+    left:55%!important;
+    display:none;
+    font-size: 13px!important;
+    padding:8px 10px!important;
+    z-index:2!important;
+    border:1px solid black;
+}
 .msger-drop-text {
     pointer-events: none;  /* so dropping still works */
 }
