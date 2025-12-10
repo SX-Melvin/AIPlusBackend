@@ -15433,1267 +15433,1361 @@ csui.define("csui/lib/othelp", [], function () {
           var wID = "teststst-secure";
 
           async function showAviator() {
-              let that = globalthis;
-              let activeController = false;
-              let ticket = that.options.context._user.connector.connection.session.ticket;
-              let userID = that.options.context._user.attributes.id;
-              let ARCHIVE_MESSAGE_COUNT = 0;
-              let CHAT_ID = null;
-              let paginations = {chatHistory: {now: 1, max: null}};
-              const PERSON_NAME = that.options.context._user.attributes.name;
-              const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
-              const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
-              const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
-              const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
-              const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
-              const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
-              const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_info.svg";
-              const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
-              const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
-              const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
-              const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_folder.svg";
-              const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
-              const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
-              const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_down.svg";
-              const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_left.svg";
-              const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
-              let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
+            let that = globalthis;
+            console.log(that.options.context._user);
+            let activeController = false;
+            let ticket = that.options.context._user.connector.connection.session.ticket;
+            const userID = that.options.context._user.attributes.id;
+            const userHomepageID = userID == 1000 ? 2004 : userID;
+            let ARCHIVE_MESSAGE_COUNT = 0;
+            let CHAT_ID = null;
+            let paginations = {chatHistory: {now: 1, max: null}};
+            const PERSON_NAME = that.options.context._user.attributes.name;
+            const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
+            const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
+            const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
+            const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
+            const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
+            const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
+            const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_info.svg";
+            const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
+            const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
+            const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
+            const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_folder.svg";
+            const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
+            const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
+            const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_down.svg";
+            const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_left.svg";
+            const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
+            let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
 
-              function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = []) {
-                let msgHTML;
-                const msgerChat = get(".msger-chat");
-                const uniqueId = new Date().getTime();
+            function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = [], reason = null) {
+              let msgHTML;
+              const msgerChat = get(".msger-chat");
+              const uniqueId = new Date().getTime();
 
-                if(date == null) {
-                  date = new Date();
-                }
+              if(date == null) {
+                date = new Date();
+              }
 
-                msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
-                if(side == "left")
-                {
-                    msgHTML += `
-                    <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
-                      <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
-                        <div class="msg-info"></div>
-                        <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
+              if(reason == null) {
+                reason = "No reason found";
+              }
 
-                        ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
-
-                        <div class="msg-container" id="chat-tools-${uniqueId}" style="flex-direction: row; justify-content: flex-start;margin-top: 16px;">
-                          <div id="chat-copy-${uniqueId}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px;">
-                            <span class='chatbottooltip'>Copy</span>
-                          </div>
-                          <div data-id="${uniqueId}" id="chat-regenerate-${uniqueId}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
-                            <span class='chatbottooltip'>Regenerate</span>
-                          </div>
-                        </div>
-
-                        <div data-id="${uniqueId}" data-id="false" id="chat-source-${uniqueId}" class="chat-source hoverable">
-                          <div data-id="${uniqueId}" style="display:flex;align-items:center">
-                            <span data-id="${uniqueId}" style="font-size:12px">Source</span>
-                            <img data-id="${uniqueId}" src="${ARROW_LEFT_ICON}" width="14" />
-                          </div>
-                        </div>
-
-                        <div id="chat-source-section-${uniqueId}" style="display:none" class="msger-scroll chat-source-section">${AIPlusUtils.processChatSources(sources)}</div>
-                      </div>
-                    </div>
-                `;
-                } else if(side == "loading") {
-                    msgHTML = `
-                    <div id="botloading" class="msg ${side}-msg">
-                    <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
-    
+              msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
+              if(side == "left")
+              {
+                  msgHTML += `
+                  <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
                     <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
-                        <div class="msg-info">
+                      <div class="msg-info"></div>
+
+                      <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
+                      
+                      <div data-id="${uniqueId}" data-id="false" id="chat-reason-${uniqueId}" class="chat-reason hoverable">
+                        <img data-id="${uniqueId}" src="${INFO_ICON}" width="12" draggable="false" />
+                        <span data-id="${uniqueId}" style="margin-left:4px;">Reasoning</span>
+                        <img data-id="${uniqueId}" class="chevron" draggable="false" src="${ARROW_LEFT_ICON}" width="14" />
+                      </div>
+
+                      <div id="chat-reason-section-${uniqueId}" style="display:none;max-height:400px;overflow:auto" class="msger-scroll chat-reason-section">${AIPlusUtils.parseMarkdown(reason)}</div>
+
+                      ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
+                      
+                      <div class="msg-container" id="chat-tools-${uniqueId}" style="flex-direction: row; justify-content: flex-start;margin-top: 16px;">
+                        <div id="chat-copy-${uniqueId}" class="tooltip" style="background-image: url(${COPY_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px;">
+                          <span class='chatbottooltip'>Copy</span>
                         </div>
-    
-                        <div class="msg-text">
-                          <div class="dot"></div>
-                          <div class="dot"></div>
-                          <div class="dot"></div>
+                        <div data-id="${uniqueId}" id="chat-regenerate-${uniqueId}" class="tooltip" style="background-image: url(${GENERATE_IMG}); cursor: pointer; width: 20px; height: 20px; margin-top: 10px; margin-left: 10px;">
+                          <span class='chatbottooltip'>Regenerate</span>
                         </div>
-                    </div>
-                    </div>`;
-                } else if(side == "right") {
-                    if(that.options.context._user.attributes.photo_url != null) {
-                      msgHTML += `<div class="msg-img" style="background-image: url(${PERSON_IMG}); margin-top: 20px; display: inherit;"></div>`;
-                    }
+                      </div>
 
-                    msgHTML += `
-                    <div style="max-width:85%;">
-                        <div class="msg-info">
-                        <div class="msg-info-name"></div>
-                        <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
+                      <div data-id="${uniqueId}" data-id="false" id="chat-source-${uniqueId}" class="chat-source hoverable">
+                        <div data-id="${uniqueId}" style="display:flex;align-items:center">
+                          <span data-id="${uniqueId}" style="font-size:12px">Source</span>
+                          <img data-id="${uniqueId}" draggable="false" src="${ARROW_LEFT_ICON}" width="14" />
                         </div>
-    
-                        <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
+                      </div>
+
+                      <div id="chat-source-section-${uniqueId}" style="display:none" class="msger-scroll chat-source-section">${AIPlusUtils.processChatSources(sources)}</div>
                     </div>
-                    </div>
-                `;
-                }
-
-                if(appendOnFirstChild) {
-                  AIPlusUtils.toggleInitialMsg(false);
-                  msgerChat.insertAdjacentHTML("afterbegin", msgHTML);
-                } else {
-                  msgerChat.insertAdjacentHTML("beforeend", msgHTML);
-                }
-
-                let botChatDivEl = document.getElementById(`chat-copy-${uniqueId}`);
-                
-                if(botChatDivEl) {
-                  const copyTooltip = document.querySelector(`#chat-copy-${uniqueId} .chatbottooltip`);
-
-                  botChatDivEl.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    const el = document.createElement("textarea");
-                    el.value = document.getElementById(`bot-text-${uniqueId}`).textContent;
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(el);
-                    copyTooltip.textContent = "Copied!";
-
-                    setTimeout(() => {
-                      copyTooltip.textContent = "Copy";
-                    }, 3000);
-                    
-                    botChatDivEl.addEventListener("mouseenter", () => {
-                      copyTooltip.textContent = "Copy";
-                    });
-                  });
-                  
-                  document.getElementById(`chat-regenerate-${uniqueId}`).addEventListener("click", (e) => {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    let userTextDIvEl = document.querySelector(`#msg-${e.target.dataset.id}`).previousElementSibling.querySelector(".msg-text");
-                    document.getElementById('submitquestion').style.display = 'none';
-                    document.getElementById('chatbotstop').style.display = '';
-                    appendMessage("right", userTextDIvEl.innerHTML);
-                    botResponse(userTextDIvEl.innerHTML);
-                  });
-                  
-                  document.getElementById(`chat-source-${uniqueId}`).addEventListener("click", (e) => {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-
-                    const el = document.getElementById(`chat-source-${uniqueId}`);
-                    const section = document.querySelector(`#chat-source-section-${e.target.dataset.id}`);
-
-                    if(el.dataset.active == "true") {
-                      el.dataset.active = "false";
-                      section.style.display = "none";
-                      el.querySelector("img").setAttribute("src", ARROW_LEFT_ICON);
-                    } else {
-                      el.dataset.active = "true";
-                      section.style.display = "flex";
-                      el.querySelector("img").setAttribute("src", ARROW_DOWN_ICON);
-                    }
-                  });
+                  </div>
+              `;
+              } else if(side == "loading") {
+                  msgHTML = `
+                  <div id="botloading" class="msg ${side}-msg">
+                  <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
   
-                  AIPlusUtils.toggleChatSources(sources.length > 0, uniqueId);
-                }
-                
-                msgerChat.scrollTop += 500;
-                return uniqueId;
-              } 
-
-              // Utils
-              function clearChats() {
-                AIPlusUtils.toggleInitialMsg(true);
-                CHAT_ID = null;
-
-                const chat = document.querySelector('.msger-chat');
-                [...chat.children].slice(1).forEach(child => child.remove());
-
-                messageEle.value = "";
-                counterEle.innerHTML = `0/${maxLength}`;
-                if(document.getElementById("submitquestion")) {
-                  document.getElementById("submitquestion").disabled = true;
-                }
-                AIPlusUtils.reRenderChatRooms();
-              }
-              function get(selector, root = document) {
-                  return root.querySelector(selector);
-              }
-
-              function formatDate(date) {
-                const h = "0" + date.getHours();
-                const m = "0" + date.getMinutes();
-
-                return `${h.slice(-2)}:${m.slice(-2)}`;
-              }
-
-              function createChatbotElement() {
-                const aiChatBotEl = document.createElement("div");
-
-                aiChatBotEl.id = "aichatbottable";
-                aiChatBotEl.classList.add("msger-container");
-                aiChatBotEl.innerHTML = `
-                    <section class="msger-table" style="font-size: 14px; font-style: unset;">
-                      <div style="display: flex;height:100%" class="msger-main-content">
-                        <div id="mySidenav" class="sidenav">
-                          <header class="msger-header">
-                            <div class="msger-header-title" id="chatbotmenu">
-                              <div style="
-                                  font-size: 19px;
-                                  font-weight: 600;
-                                  font-family: 'OpenText Sans';
-                                  color: #2c3e50;
-                                  display:inline-block;
-                                  vertical-align:middle
-                                  ">Tools</div>
-                            </div>
-
-                            <button title="Hide sidebar" class="msger-img-btn" style="background-image:url(${DOUBLE_ARROWS})"></button>
-                          </header>
-                          
-                          <div style="margin:5px 5px;height:calc(100% - 70px);overflow:hidden;padding-bottom:110px">
-                            <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
-                              <img src="${CHAT_LOGO}" style="width:14px" />
-                              <strong>&nbsp;Chats</strong>
-                            </button>
-                            <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
-                              <img src="${PROJECT_LOGO}" style="width:14px" />
-                              <strong>&nbsp;Projects</strong>
-                              </button>
-                            <br>
-                            <div class="chat-sidenav-sub-title" style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
-                              <strong>Your chats</strong>
-                              <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
-                              <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
-                            </div>
-                            <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;"></div>
-                          </div>
-                        </div>
-
-                        <div id="show-messages-button" class="show-all-message-popup shadow hoverable" title="Show all previous messages">
-                          Show all messages
-                        </div>
-                        
-                        <div class="msger-chat-container" style="position:relative;min-height: 0;">
-                          <div id="msger-dropzone" class="msger-dropzone">
-                            <span class="msger-drop-text">Drop files here</span>
-                          </div>
-                          
-                          <div style="position:absolute;background-color:rgba(0,0,0,.2);bottom:0;right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
-                            <div class="outer-border">
-                              <div class="loader">
-                                <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
-                                  <path d="M36.5 8.79752C51.7874 8.79752 64.2025 21.2126 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752ZM72.5 36.5C72.5 16.63 56.37 0.5 36.5 0.5C16.63 0.5 0.499999 16.63 0.499999 36.5C0.499999 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5Z" fill="#CFDCFC" style="fill:#CFDCFC;fill:color(display-p3 0.8118 0.8627 0.9882);fill-opacity:1;"></path>
-                                  <clipPath id="smart_loader_1764047844677">
-                                    <path d="M40.6488 4.64876C40.6488 2.35746 38.7913 0.5 36.5 0.5C16.63 0.5 0.500007 16.63 0.500007 36.5C0.500007 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5C72.5 34.2087 70.6425 32.3512 68.3512 32.3512C66.0599 32.3512 64.2025 34.2087 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752C38.7913 8.79752 40.6488 6.94006 40.6488 4.64876Z" style=""></path>
-                                  </clipPath>
-                                  <foreignObject width="73" height="73" clip-path="url(#smart_loader_1764047844677)">
-                                    <div class="spinner-gradient"></div>
-                                  </foreignObject>
-                                </svg>
-                              </div>
-                              <div class="binf-sr-only" aria-live="polite" aria-busy="true">
-                                Loading..
-                              </div>
-                            </div>
-                          </div>
-
-                          <header class="msger-header" style="border-left:1px solid whitesmoke">
-                            <div class="msger-header-title" id="chatbotmenu">
-                            <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
-                            
-                            <div style="
-                            font-size: 18px;
-                            font-weight: 600;
-                            font-family: 'OpenText Sans';
-                            color: #2c3e50;
-                            display:inline-block;
-                            vertical-align:middle
-                            ">Aviator</div>
-                              </div>
-                              
-                              <div class="msger-header-options">
-                              <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
-                              <img src="${CLOSE_ICON}" />
-                              </button>
-                              </div>
-                            </header>
-
-                            <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>
-                            
-                            <div id="files-container"></div>
-                            <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
-                                <!-- Chat Input -->
-                                <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
-                            
-                                <!-- Inline Buttons -->
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                                    <!-- Clear Button with "New Chat" Text -->
-                                    <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
-                                        <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
-                                        <span style="font-size: 14px; color: #333;">New Chat</span>
-                                    </div>
-                            
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                      <div style="display: flex; align-items: center; gap: 4px; margin-right: 10px;">
-                                        <input checked="true" type="checkbox" id="enable-tools" style="width:14px">
-                                        <img src="${REFRESH_BLUE_ICON}" width="14" class="spin" id="enable-tools-loader" style="display:none" />
-                                        <label for="enable-tools"> Enable Tools</label>
-                                        <div style="margin-left:2px" title="Turn on document tools"><img src="${INFO_ICON}" width="12px" /></div>
-                                      </div>
-                                      <div style="margin-right: 10px;" id="counter">0/2000</div>
-                            
-                                        <!-- File Input -->
-                                        <label for="file-input" class="icon-button" style="cursor: pointer;">
-                                            <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
-                                            </svg>
-                                        </label>
-                                        <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
-                            
-                                        <!-- Submit Button -->
-                                        <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
-                                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
-                                            </svg>
-                                        </button>
-                            
-                                        <!-- Stop Button -->
-                                        <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
-                                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-
-                    </section>
-                `;
-
-                return aiChatBotEl;
-              }
-
-              const nodesTableDiv = document.querySelector("div.binf-widgets");
-              console.log(document.getElementById("aichatbottable"));
-              // if(!document.getElementById("aichatbottable")) {
-                nodesTableDiv.appendChild(createChatbotElement());
-              // }
-
-              // Handle the overlay dropzone area
-              let dragCounter = 0;
-              const dropzone = document.getElementById("msger-dropzone");
-              const existingChatbot = document.getElementById("aichatbottable");
-              dropzone.addEventListener("dragenter", (e) => {
-                if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
-                  dragCounter++;
-                  dropzone.style.opacity = ".6";
-                  dropzone.style.display = "flex";
-                }
-              });
-              document.getElementById("enable-tools").addEventListener("change", async (e) => {
-                e.preventDefault();
-                if(CHAT_ID != null) {
-                  await AIPlusAPI.updateSession(CHAT_ID);
-                }
-              });
-              document.getElementById("show-messages-button").addEventListener("click", async (e) => {
-                e.preventDefault();
-                AIPlusUtils.toggleShowMessageButton(false);
-                ARCHIVE_MESSAGE_COUNT = 0;
-                document.getElementById("show-messages-button").style.display = 'none';
-                await AIPlusAPI.getArchiveMessages(CHAT_ID);
-              });
-
-              dropzone.addEventListener("dragleave", (e) => {
-                dragCounter--;
-                dropzone.style.opacity = "1";
-                if (dragCounter === 0) {
-                  dropzone.style.display = "none";
-                }
-              });
-
-              dropzone.addEventListener("drop", (e) => {
-                dragCounter = 0;
-                dropzone.style.display = "none";
-                dropzone.style.opacity = "1";
-              });
-
-              existingChatbot.addEventListener("dragenter", (e) => {
-                if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
-                  dragCounter++;
-                  dropzone.style.display = "flex";
-                }
-              });
-
-              existingChatbot.addEventListener("dragleave", (e) => {
-                dragCounter--;
-                if (dragCounter === 0) {
-                  dropzone.style.display = "none";
-                }
-              });
-
-              existingChatbot.addEventListener("drop", (e) => {
-                dragCounter = 0;
-                dropzone.style.display = "none";
-              });
-              // Handle the overlay dropzone area
-
-              document.getElementById('file-input').addEventListener('change', async function(event) {
-                event.preventDefault();
-                handleFiles([event.target.files[0]]);
-              });
-
-              const chatWrapper = document.getElementById('chat-wrapper');
-              const fileInput = document.getElementById('file-input');
-
-              chatWrapper.addEventListener("scroll", async (e) => {
-                if (chatWrapper.scrollTop <= 20) {
-                  const container = document.querySelector(".msger-chat");
-                  const oldScrollTop = container.scrollTop;
-                  const oldScrollHeight = container.scrollHeight;
-                  if(ARCHIVE_MESSAGE_COUNT > 0) {
-                    AIPlusUtils.toggleShowMessageButton(true);
-                  }
-                  document.querySelector(".msger-chat").scrollTop = oldScrollTop + (container.scrollHeight - oldScrollHeight);
-                }
-              });
-
-              // Handle dropped files
-              ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-                dropzone.addEventListener(eventName, (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }, false);
-              });
-
-              dropzone.addEventListener("drop", handleDrop, false);
-
-              function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                handleFiles(files);
-              }
-
-              async function handleFiles(files) {
-                files = [...files];
-                
-                // Create a DataTransfer to hold the files
-                const dataTransfer = new DataTransfer();
-                files.forEach(file => dataTransfer.items.add(file));
-
-                let idx = 0;
-                fileInput.files = dataTransfer.files;
-
-                // Render each of the file boxes
-                for(const file of files) {
-                  document.getElementById("files-container").innerHTML += `
-                    <div class="file-item-container">
-                      <div class="file-item" id="file-item-${idx}" style="font-size:11px;padding:4px">
-                        <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                          <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
-                        </svg>
-                        <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
-                        <button data-idx="${idx}" title="Remove" id="remove-file-btn-${idx}" class="remove-btn" style="display: none">
-                          <svg class="remove-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
-                          </svg>
-                        </button>
-                        <div id="loader-file-${idx}" style="display:flex">
-                          <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation">
-                        </div>
+                  <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
+                      <div class="msg-info">
                       </div>
-
-                      <div class="file-item" id="folder-item-${idx}" style="font-size:11px;padding:4px;padding-left:10px;display:none">
-                        <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
-                        <span class="file-name"><a target="_blank" href="/"></a></span>
-                        <img src="${INFO_ICON}" class="folder-item-info" width="14" />
+  
+                      <div class="msg-text">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
                       </div>
-                    </div>
-                  `;
-                  idx++;
-                }
-                
-                document.querySelectorAll('.remove-btn').forEach(btn => {
-                  btn.addEventListener('click', e => {
-                    // TODO: Remove Job by ID
-                    const idx = btn.dataset.idx;
-                    document.getElementById(`file-item-${idx}`).remove();
-                  });
-                });
-
-                // Ingest each of the files
-                idx = 0
-                // let jobIds = [];
-                // for(const file of files) {
-                //   const formData = new FormData();
-                //   formData.append('workspaceId', "1");
-                //   formData.append('metadata', "");
-                //   formData.append('priority', "10");
-                //   formData.append('file', file);
-
-                  // const ingest = await AIPlusAPI.ingest(formData);
-                  // if(ingest.jobId != null) {
-                  //   jobIds.push({
-                  //     idx,
-                  //     ingest
-                  //   });
-                  // } else {
-                    //   alert(`Error when uploading ${file.name}`);
-                    //   document.getElementById(`file-item-${idx}`).remove();
-                    // }
-                    
-                    // idx++;
-                // }
-                  
-                for(const file of files) {
-                  const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file);
-                  if(filingSuggestion.data.suggestion != null) {
-                    document.querySelector(`#folder-item-${idx} a`).innerText = filingSuggestion.data.suggestion.folderName;
-                    document.querySelector(`#folder-item-${idx} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
-                    document.querySelector(`#folder-item-${idx} a`).setAttribute("target", "_blank");
-                    document.querySelector(`#folder-item-${idx} .file-name`).setAttribute("title", "Recommended folder for filing");
-                    document.querySelector(`#folder-item-${idx} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
-                    document.querySelector(`#folder-item-${idx}`).style.display = "flex";
-                  } else {
-                    console.warn("no filing suggestion found: " + filingSuggestion);
+                  </div>
+                  </div>`;
+              } else if(side == "right") {
+                  if(that.options.context._user.attributes.photo_url != null) {
+                    msgHTML += `<div class="msg-img" style="background-image: url(${PERSON_IMG}); margin-top: 20px; display: inherit;"></div>`;
                   }
-                  document.querySelector(`#loader-file-${idx}`).style.display = "none";
-                  idx++;
-                }
 
-                // const interval = setInterval(() => {
-                //   const jobs = [...jobIds];
-                //   for(const job of jobs) {
-                //     const getJob = AIPlusAPI.getJob(job.ingest.jobId);
-                //     if(getJob.status != null && getJob.status.toLowerCase() == "completed") {
-                //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
-                //       document.querySelector(`#remove-file-btn-${job.idx}`).style.display = "block";
-                //       document.querySelector(`#loader-file-${job.idx}`).style.display = "none";
-                //     } else if(getJob.status != null && getJob.status.toLowerCase() == "failed") {
-                //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
-                //     }
-
-                //     if(jobIds.length === 0) {
-                //       clearInterval(interval);
-                //     }
-                //   }
-                // }, 3000);
+                  msgHTML += `
+                  <div style="max-width:85%;">
+                      <div class="msg-info">
+                      <div class="msg-info-name"></div>
+                      <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
+                      </div>
+  
+                      <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
+                  </div>
+                  </div>
+              `;
               }
 
-              //handle counter
-              const messageEle = document.getElementById('chatarea');
-              const counterEle = document.getElementById('counter');
+              if(appendOnFirstChild) {
+                AIPlusUtils.toggleInitialMsg(false);
+                msgerChat.insertAdjacentHTML("afterbegin", msgHTML);
+              } else {
+                msgerChat.insertAdjacentHTML("beforeend", msgHTML);
+              }
 
-              messageEle.focus();
-              messageEle.addEventListener('keydown', function(event) {
-                  if (event.key === 'Enter') {
-                  if (event.shiftKey) {
-                      messageEle.value += '\n';
-                  }
-                  else {
-                      document.getElementById("submitquestion").disabled = false;
-                      document.getElementById("submitquestion").click();
-                      messageEle.value = ""
-                  }
-                  event.preventDefault();
-                  }
-              })
-
-              let maxLength = messageEle.getAttribute('maxlength');
-              let currentLength = messageEle.value.length;
-              counterEle.innerHTML = `${currentLength}/${maxLength}`;
+              let botChatDivEl = document.getElementById(`chat-copy-${uniqueId}`);
               
-              //handle clear
-              document.getElementById("clearbtn").addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                clearChats();
-              });
+              if(botChatDivEl) {
+                const copyTooltip = document.querySelector(`#chat-copy-${uniqueId} .chatbottooltip`);
 
-              messageEle.addEventListener('input', function (e) {
+                botChatDivEl.addEventListener("click", (e) => {
                   e.preventDefault();
                   e.stopImmediatePropagation();
-                  const target = e.target;
-                  document.getElementById("chatarea").style.height = (document.getElementById("chatarea").scrollHeight) + "px";
-      
-                  // Get the `maxlength` attribute
-                  const maxLength = target.getAttribute('maxlength');
-      
-                  // Count the current number of characters
-                  const currentLength = target.value.length;
-      
-                  counterEle.innerHTML = `${currentLength}/${maxLength}`;
-                  if(document.getElementById("submitquestion"))
-                  {
-                  if(document.getElementById("submitquestion").disabled == true)
-                  {
-                      document.getElementById("submitquestion").disabled = false;
-                  }
-                  if(currentLength == 0)
-                  {
-                      document.getElementById("submitquestion").disabled = true;
-                  }
-                  }
-              });
-  
-              const msgerInput = get(".msger-input");
-              document.getElementById("submitquestion").addEventListener("click", async event => {
-                  event.preventDefault();
-                  event.stopImmediatePropagation();
+                  const el = document.createElement("textarea");
+                  el.value = document.getElementById(`bot-text-${uniqueId}`).textContent;
+                  document.body.appendChild(el);
+                  el.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(el);
+                  copyTooltip.textContent = "Copied!";
 
-                  let botChatDivElStop = document.getElementById(`chatbotstop`);
-                  botChatDivElStop.style.display = '';
-                  document.getElementById('submitquestion').style.display = 'none';
+                  setTimeout(() => {
+                    copyTooltip.textContent = "Copy";
+                  }, 3000);
                   
-                  botChatDivElStop.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-
-                    document.getElementById('submitquestion').style.display = '';
-                    document.getElementById('chatbotstop').style.display = 'none';
-                    if(document.getElementById("botloading")) {
-                      document.getElementById("botloading").remove();
-                    }
-                    if(activeController != null) {
-                      activeController.abort()
-                    }
-                    activeController = null;
+                  botChatDivEl.addEventListener("mouseenter", () => {
+                    copyTooltip.textContent = "Copy";
                   });
-  
-                  const msgText = msgerInput.value;
-                  if (!msgText) return;
-  
-                  appendMessage("right", msgText);
-                  msgerInput.value = "";
-                  counterEle.innerHTML = `0/${maxLength}`;
-                  botResponse(msgText);
-              });
-
-              async function botResponse(questionToAsk) {
-                if(CHAT_ID == null) {
-                  const session = await AIPlusAPI.createSession(questionToAsk);
-                  if(session == null) {
-                    return;
-                  }
-                  CHAT_ID = session.sessionId;
-                }
-                
-                AIPlusAPI.ask({
-                  sessionId: CHAT_ID,
-                  userId: userID.toString(),
-                  messages: [
-                    {role: "user", "content": questionToAsk}
-                  ]
                 });
+                
+                document.getElementById(`chat-regenerate-${uniqueId}`).addEventListener("click", (e) => {
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
+                  let userTextDIvEl = document.querySelector(`#msg-${e.target.dataset.id}`).previousElementSibling.querySelector(".msg-text");
+                  document.getElementById('submitquestion').style.display = 'none';
+                  document.getElementById('chatbotstop').style.display = '';
+                  appendMessage("right", userTextDIvEl.innerHTML);
+                  botResponse(userTextDIvEl.innerHTML);
+                });
+                
+                document.getElementById(`chat-source-${uniqueId}`).addEventListener("click", (e) => {
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
+
+                  const el = document.getElementById(`chat-source-${uniqueId}`);
+                  const section = document.querySelector(`#chat-source-section-${e.target.dataset.id}`);
+
+                  if(el.dataset.active == "true") {
+                    el.dataset.active = "false";
+                    section.style.display = "none";
+                    el.querySelector("img").setAttribute("src", ARROW_LEFT_ICON);
+                  } else {
+                    el.dataset.active = "true";
+                    section.style.display = "flex";
+                    el.querySelector("img").setAttribute("src", ARROW_DOWN_ICON);
+                  }
+                });
+                
+                document.getElementById(`chat-reason-${uniqueId}`).addEventListener("click", (e) => {
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
+
+                  const el = document.getElementById(`chat-reason-${uniqueId}`);
+                  const section = document.querySelector(`#chat-reason-section-${e.target.dataset.id}`);
+
+                  if(el.dataset.active == "true") {
+                    el.dataset.active = "false";
+                    section.style.display = "none";
+                    el.querySelector(".chevron").setAttribute("src", ARROW_LEFT_ICON);
+                  } else {
+                    el.dataset.active = "true";
+                    section.style.display = "block";
+                    el.querySelector(".chevron").setAttribute("src", ARROW_DOWN_ICON);
+                  }
+                });
+
+                AIPlusUtils.toggleChatSources(sources.length > 0, uniqueId);
               }
               
-              document.getElementById("closeaviator").addEventListener("click", (e) => {
+              msgerChat.scrollTop += 500;
+              return uniqueId;
+            } 
+
+            // Utils
+            function clearChats() {
+              AIPlusUtils.toggleInitialMsg(true);
+              CHAT_ID = null;
+
+              const chat = document.querySelector('.msger-chat');
+              [...chat.children].slice(1).forEach(child => child.remove());
+
+              messageEle.value = "";
+              counterEle.innerHTML = `0/${maxLength}`;
+              if(document.getElementById("submitquestion")) {
+                document.getElementById("submitquestion").disabled = true;
+              }
+              AIPlusUtils.reRenderChatRooms();
+            }
+            function get(selector, root = document) {
+                return root.querySelector(selector);
+            }
+
+            function formatDate(date) {
+              const h = "0" + date.getHours();
+              const m = "0" + date.getMinutes();
+
+              return `${h.slice(-2)}:${m.slice(-2)}`;
+            }
+
+            function createChatbotElement() {
+              const aiChatBotEl = document.createElement("div");
+
+              aiChatBotEl.id = "aichatbottable";
+              aiChatBotEl.classList.add("msger-container");
+              aiChatBotEl.innerHTML = `
+                  <section class="msger-table" style="font-size: 14px; font-style: unset;">
+                    <div style="display: flex;height:100%" class="msger-main-content">
+                      <div id="mySidenav" class="sidenav">
+                        <header class="msger-header">
+                          <div class="msger-header-title" id="chatbotmenu">
+                            <div style="
+                                font-size: 19px;
+                                font-weight: 600;
+                                font-family: 'OpenText Sans';
+                                color: #2c3e50;
+                                display:inline-block;
+                                vertical-align:middle
+                                ">Tools</div>
+                          </div>
+
+                          <button title="Hide sidebar" class="msger-img-btn" style="background-image:url(${DOUBLE_ARROWS})"></button>
+                        </header>
+                        
+                        <div style="margin:5px 5px;height:calc(100% - 70px);overflow:hidden;padding-bottom:110px">
+                          <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+                            <img src="${CHAT_LOGO}" style="width:14px" />
+                            <strong>&nbsp;Chats</strong>
+                          </button>
+                          <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+                            <img src="${PROJECT_LOGO}" style="width:14px" />
+                            <strong>&nbsp;Projects</strong>
+                            </button>
+                          <br>
+                          <div class="chat-sidenav-sub-title" style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
+                            <strong>Your chats</strong>
+                            <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
+                            <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
+                          </div>
+                          <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;"></div>
+                        </div>
+                      </div>
+
+                      <div id="show-messages-button" class="show-all-message-popup shadow hoverable" title="Show all previous messages">
+                        Show all messages
+                      </div>
+                      
+                      <div class="msger-chat-container" style="position:relative;min-height: 0;">
+                        <div id="msger-dropzone" class="msger-dropzone">
+                          <span class="msger-drop-text">Drop files here</span>
+                        </div>
+                        
+                        <div style="position:absolute;background-color:rgba(0,0,0,.2);bottom:0;right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
+                          <div class="outer-border">
+                            <div class="loader">
+                              <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
+                                <path d="M36.5 8.79752C51.7874 8.79752 64.2025 21.2126 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752ZM72.5 36.5C72.5 16.63 56.37 0.5 36.5 0.5C16.63 0.5 0.499999 16.63 0.499999 36.5C0.499999 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5Z" fill="#CFDCFC" style="fill:#CFDCFC;fill:color(display-p3 0.8118 0.8627 0.9882);fill-opacity:1;"></path>
+                                <clipPath id="smart_loader_1764047844677">
+                                  <path d="M40.6488 4.64876C40.6488 2.35746 38.7913 0.5 36.5 0.5C16.63 0.5 0.500007 16.63 0.500007 36.5C0.500007 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5C72.5 34.2087 70.6425 32.3512 68.3512 32.3512C66.0599 32.3512 64.2025 34.2087 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752C38.7913 8.79752 40.6488 6.94006 40.6488 4.64876Z" style=""></path>
+                                </clipPath>
+                                <foreignObject width="73" height="73" clip-path="url(#smart_loader_1764047844677)">
+                                  <div class="spinner-gradient"></div>
+                                </foreignObject>
+                              </svg>
+                            </div>
+                            <div class="binf-sr-only" aria-live="polite" aria-busy="true">
+                              Loading..
+                            </div>
+                          </div>
+                        </div>
+
+                        <header class="msger-header" style="border-left:1px solid whitesmoke">
+                          <div class="msger-header-title" id="chatbotmenu">
+                          <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
+                          
+                          <div style="
+                          font-size: 18px;
+                          font-weight: 600;
+                          font-family: 'OpenText Sans';
+                          color: #2c3e50;
+                          display:inline-block;
+                          vertical-align:middle
+                          ">Aviator</div>
+                            </div>
+                            
+                            <div class="msger-header-options">
+                            <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
+                            <img src="${CLOSE_ICON}" />
+                            </button>
+                            </div>
+                          </header>
+
+                          <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>
+                          
+                          <div id="files-container"></div>
+                          <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
+                              <!-- Chat Input -->
+                              <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
+                          
+                              <!-- Inline Buttons -->
+                              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                                  <!-- Clear Button with "New Chat" Text -->
+                                  <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
+                                      <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
+                                      <span style="font-size: 14px; color: #333;">New Chat</span>
+                                  </div>
+                          
+                                  <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 4px; margin-right: 10px;">
+                                      <input checked="true" type="checkbox" id="enable-tools" style="width:14px">
+                                      <img src="${REFRESH_BLUE_ICON}" width="14" class="spin" id="enable-tools-loader" style="display:none" />
+                                      <label for="enable-tools"> Enable Tools</label>
+                                      <div style="margin-left:2px" title="Used for combining PDF files, getting tables from PDF, removing sensitive content, listing workspace files & finding files by name"><img src="${INFO_ICON}" width="12px" /></div>
+                                    </div>
+                                    <div style="margin-right: 10px;" id="counter">0/2000</div>
+                          
+                                      <!-- File Input -->
+                                      <label for="file-input" class="icon-button" style="cursor: pointer;">
+                                          <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
+                                          </svg>
+                                      </label>
+                                      <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
+                          
+                                      <!-- Submit Button -->
+                                      <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
+                                          <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
+                                          </svg>
+                                      </button>
+                          
+                                      <!-- Stop Button -->
+                                      <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
+                                          <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
+                                          </svg>
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+                  </section>
+              `;
+
+              return aiChatBotEl;
+            }
+
+            const nodesTableDiv = document.querySelector("div.binf-widgets");
+            console.log(document.getElementById("aichatbottable"));
+            // if(!document.getElementById("aichatbottable")) {
+              nodesTableDiv.appendChild(createChatbotElement());
+            // }
+
+            // Handle the overlay dropzone area
+            let dragCounter = 0;
+            const dropzone = document.getElementById("msger-dropzone");
+            const existingChatbot = document.getElementById("aichatbottable");
+            dropzone.addEventListener("dragenter", (e) => {
+              if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
+                dragCounter++;
+                dropzone.style.opacity = ".6";
+                dropzone.style.display = "flex";
+              }
+            });
+            document.getElementById("enable-tools").addEventListener("change", async (e) => {
+              e.preventDefault();
+              if(CHAT_ID != null) {
+                await AIPlusAPI.updateSession(CHAT_ID);
+              }
+            });
+            document.getElementById("show-messages-button").addEventListener("click", async (e) => {
+              e.preventDefault();
+              AIPlusUtils.toggleShowMessageButton(false);
+              ARCHIVE_MESSAGE_COUNT = 0;
+              document.getElementById("show-messages-button").style.display = 'none';
+              await AIPlusAPI.getArchiveMessages(CHAT_ID);
+            });
+
+            dropzone.addEventListener("dragleave", (e) => {
+              dragCounter--;
+              dropzone.style.opacity = "1";
+              if (dragCounter === 0) {
+                dropzone.style.display = "none";
+              }
+            });
+
+            dropzone.addEventListener("drop", (e) => {
+              dragCounter = 0;
+              dropzone.style.display = "none";
+              dropzone.style.opacity = "1";
+            });
+
+            existingChatbot.addEventListener("dragenter", (e) => {
+              if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
+                dragCounter++;
+                dropzone.style.display = "flex";
+              }
+            });
+
+            existingChatbot.addEventListener("dragleave", (e) => {
+              dragCounter--;
+              if (dragCounter === 0) {
+                dropzone.style.display = "none";
+              }
+            });
+
+            existingChatbot.addEventListener("drop", (e) => {
+              dragCounter = 0;
+              dropzone.style.display = "none";
+            });
+            // Handle the overlay dropzone area
+
+            document.getElementById('file-input').addEventListener('change', async function(event) {
+              event.preventDefault();
+              handleFiles([event.target.files[0]]);
+            });
+
+            const chatWrapper = document.getElementById('chat-wrapper');
+            const fileInput = document.getElementById('file-input');
+
+            chatWrapper.addEventListener("scroll", async (e) => {
+              if (chatWrapper.scrollTop <= 20) {
+                const container = document.querySelector(".msger-chat");
+                const oldScrollTop = container.scrollTop;
+                const oldScrollHeight = container.scrollHeight;
+                if(ARCHIVE_MESSAGE_COUNT > 0) {
+                  AIPlusUtils.toggleShowMessageButton(true);
+                }
+                document.querySelector(".msger-chat").scrollTop = oldScrollTop + (container.scrollHeight - oldScrollHeight);
+              }
+            });
+
+            // Handle dropped files
+            ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+              dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }, false);
+            });
+
+            dropzone.addEventListener("drop", handleDrop, false);
+
+            function handleDrop(e) {
+              const dt = e.dataTransfer;
+              const files = dt.files;
+              handleFiles(files);
+            }
+
+            async function handleFiles(files) {
+              files = [...files];
+              
+              // Create a DataTransfer to hold the files
+              const dataTransfer = new DataTransfer();
+              files.forEach(file => dataTransfer.items.add(file));
+
+              const fileList = [];
+              fileInput.files = dataTransfer.files;
+
+              // Render each of the file boxes
+              for(const file of files) {
+                const uniqueId = new Date().getTime();
+                document.getElementById("files-container").innerHTML += `
+                  <div class="file-item-container">
+                    <div class="file-item" id="file-item-${uniqueId}" style="font-size:11px;padding:4px">
+                      <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
+                      </svg>
+                      <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
+                      <button data-idx="${uniqueId}" title="Remove" id="remove-file-btn-${uniqueId}" class="remove-btn" style="display: none">
+                        <svg class="remove-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                          <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
+                        </svg>
+                      </button>
+                      <div id="loader-file-${uniqueId}" style="display:flex">
+                        <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation">
+                      </div>
+                    </div>
+
+                    <div class="file-item" id="folder-item-${uniqueId}" style="font-size:11px;padding:4px;padding-left:10px;display:none">
+                      <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
+                      <span class="file-name"><a target="_blank" href="/"></a></span>
+                      <img src="${INFO_ICON}" class="folder-item-info" width="14" />
+                    </div>
+                  </div>
+                `;
+                fileList.push({file, id: uniqueId});
+              }
+              
+              document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                  document.getElementById(`file-item-${btn.dataset.idx}`).remove();
+                });
+              });
+
+              // Upload each of the files to OTCS
+              idx = 0
+              const jobs = [];
+              for(const file of fileList) {
+                console.log(file);
+                AIPlusUtils.getFileSubType(file);
+                // const node = await AIPlusAPI.uploadToOTCS(file.file);
+                // if(node.id) {
+                //   jobs.push({
+                //     nodeId: node.id,
+                //     id: file.id,
+                //     file: file.file
+                //   });
+                // }
+              }
+              
+              // Ingest each of the files to agent
+              const queues = [];
+              for(const job of jobs) {
+                // const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10);
+                // if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
+                //   queues.push({
+                //     file: job.file,
+                //     id: job.id,
+                //     job: jobResult
+                //   });
+                // }
+              }
+
+              // Suggestion Filing
+              // idx = 0
+              // for(const file of files) {
+              //   const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file);
+              //   if(filingSuggestion.data.suggestion != null) {
+              //     document.querySelector(`#folder-item-${idx} a`).innerText = filingSuggestion.data.suggestion.folderName;
+              //     document.querySelector(`#folder-item-${idx} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
+              //     document.querySelector(`#folder-item-${idx} a`).setAttribute("target", "_blank");
+              //     document.querySelector(`#folder-item-${idx} .file-name`).setAttribute("title", "Recommended folder for filing");
+              //     document.querySelector(`#folder-item-${idx} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
+              //     document.querySelector(`#folder-item-${idx}`).style.display = "flex";
+              //   } else {
+              //     console.warn("no filing suggestion found: " + filingSuggestion);
+              //   }
+              //   document.querySelector(`#loader-file-${idx}`).style.display = "none";
+              //   idx++;
+              // }
+
+              // const interval = setInterval(() => {
+              //   const jobs = [...jobIds];
+              //   for(const job of jobs) {
+              //     const getJob = AIPlusAPI.getJob(job.ingest.jobId);
+              //     if(getJob.status != null && getJob.status.toLowerCase() == "completed") {
+              //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
+              //       document.querySelector(`#remove-file-btn-${job.idx}`).style.display = "block";
+              //       document.querySelector(`#loader-file-${job.idx}`).style.display = "none";
+              //     } else if(getJob.status != null && getJob.status.toLowerCase() == "failed") {
+              //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
+              //     }
+
+              //     if(jobIds.length === 0) {
+              //       clearInterval(interval);
+              //     }
+              //   }
+              // }, 3000);
+            }
+
+            //handle counter
+            const messageEle = document.getElementById('chatarea');
+            const counterEle = document.getElementById('counter');
+
+            messageEle.focus();
+            messageEle.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                if (event.shiftKey) {
+                    messageEle.value += '\n';
+                }
+                else {
+                    document.getElementById("submitquestion").disabled = false;
+                    document.getElementById("submitquestion").click();
+                    messageEle.value = ""
+                }
+                event.preventDefault();
+                }
+            })
+
+            let maxLength = messageEle.getAttribute('maxlength');
+            let currentLength = messageEle.value.length;
+            counterEle.innerHTML = `${currentLength}/${maxLength}`;
+            
+            //handle clear
+            document.getElementById("clearbtn").addEventListener('click', function (e) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              clearChats();
+            });
+
+            messageEle.addEventListener('input', function (e) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
-                document.getElementById("aichatbottable").remove();
-              });
-
-              document.getElementById("chat-room-container").addEventListener("scroll", async () => {
-                const container = document.getElementById("chat-room-container");
-                const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
-
-                if (nearBottom) {
-                  if(paginations.chatHistory.now < paginations.chatHistory.max) {
-                    await AIPlusAPI.getChatRooms(paginations.chatHistory.now + 1, null, true);
-                  }
+                const target = e.target;
+                document.getElementById("chatarea").style.height = (document.getElementById("chatarea").scrollHeight) + "px";
+    
+                // Get the `maxlength` attribute
+                const maxLength = target.getAttribute('maxlength');
+    
+                // Count the current number of characters
+                const currentLength = target.value.length;
+    
+                counterEle.innerHTML = `${currentLength}/${maxLength}`;
+                if(document.getElementById("submitquestion"))
+                {
+                if(document.getElementById("submitquestion").disabled == true)
+                {
+                    document.getElementById("submitquestion").disabled = false;
                 }
-              });
+                if(currentLength == 0)
+                {
+                    document.getElementById("submitquestion").disabled = true;
+                }
+                }
+            });
 
-              document.getElementById("chat-refresh").addEventListener("click", async (e) => {
-                await AIPlusAPI.getChatRooms(1);
-              });
+            const msgerInput = get(".msger-input");
+            document.getElementById("submitquestion").addEventListener("click", async event => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
 
-              var AIPlusConfig = {
-                apiUrl: "https://ai-agent-test.leapcount.com",
-                backendUrl: "/aiplus"
-              }
-              var AIPlusUtils = {
-                toggleShowMessageButton: function(isVisible) {
-                  if(isVisible) {
-                    document.getElementById("show-messages-button").style.display = "block";
-                  } else {
-                    document.getElementById("show-messages-button").style.display = "none";
-                  }
-                },
-                setEnableToolsValue: function(value) {
-                  document.getElementById("enable-tools").checked = value;
-                },
-                isToolsEnabled: function() {
-                  return document.querySelector("#enable-tools").checked;
-                },
-                processChatSource: function(data) {
-                  let d = data;
+                let botChatDivElStop = document.getElementById(`chatbotstop`);
+                botChatDivElStop.style.display = '';
+                document.getElementById('submitquestion').style.display = 'none';
+                
+                botChatDivElStop.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
 
-                  if(data.metadata) {
-                    d = {
-                      ...d,
-                      ...data.metadata,
-                    }
-                  }
-
-                  return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${d.nodeId}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
-                    <img width="16px" src="${FILE_ICON}">
-                    <div class="file-chat-bubble-text">${d.fileName}</div>
-                  </a>`;
-                },
-                appendChatItem: function(data) {
-                  return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.customMetadata.nodeId}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
-                    <img width="16px" src="${FILE_ICON}">
-                    <div class="file-chat-bubble-text">${data.fileName}</div>
-                  </a>`;
-                },
-                processChatSources: function(sources = []) {
-                  let result = "";
-                  for(const source of sources) {
-                    result += this.processChatSource(source);
-                  }
-                  return result;
-                },
-                processChatMetadata: function(id, metadata) {
-                  let result = `<div id="chat-item-${id}" class="chat-items-container" style="display:flex;flex-wrap:wrap">`;
-                  
-                  if(metadata == null) {
-                    result += `</div>`;
-                    return result;
-                  }
-                  
-                  metadata = JSON.parse(metadata);
-                  
-                  for(const m of metadata) {
-                    if(m.type == "tool_call_end") {
-                      for(const data of m.result.data.files ?? []) {
-                        result += this.appendChatItem(data);
-                      }
-                    } else if(m.type == "sources") {
-                      // TODO: handle chat sources
-                    }
-                  }
-                  
-                  result += `</div>`;
-                  return result;
-                },
-                appendChatRoom: function(rooms, appendMode = false) {
-                  const chatRoomContainer = document.querySelector("#chat-room-container");
-
-                  if(!appendMode) {
-                    chatRoomContainer.innerHTML = ``;
-                    if(rooms?.sessions == null || rooms?.sessions?.length == 0) {
-                      chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
-                    }
-                  }
-
-                  for(const chatRoom of rooms.sessions) {
-                    chatRoomContainer.insertAdjacentHTML("beforeend", `
-                      <button data-id="${chatRoom.sessionId}" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
-                        ${chatRoom.title}
-                        <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
-                          <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
-                        </div>
-                      </button>`);
-                  }
-                  
-                  document.querySelectorAll('.chat-history-tooltip').forEach(btn => {
-                    btn.addEventListener("click", async (e) => {
-                      e.stopPropagation();
-                      if(confirm("Delete this chat?")) {
-                        await AIPlusAPI.deleteChatRoom(btn.dataset.id);
-                      }
-                    });
-                  });
-
-                  document.querySelectorAll('.chat-history-item').forEach(btn => {
-                    btn.addEventListener("mouseenter", async (e) => {
-                      document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "block";
-                    });
-                    btn.addEventListener("mouseleave", async (e) => {
-                      document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "none";
-                    });
-
-                    btn.addEventListener("click", async (e) => {
-                      clearChats();
-                      AIPlusUtils.toggleInitialMsg(false);
-                      CHAT_ID = e.target.dataset.id;
-                      
-                      this.reRenderChatRooms();
-                      
-                      await AIPlusAPI.getChats(e.target.dataset.id, 1);
-                    });
-                  });
-                },
-                reRenderChatRooms: function() {
-                  document.querySelectorAll('.chat-history-item').forEach(e => {
-                    if(e.dataset.id == CHAT_ID) {
-                      e.classList.add("hoverable-active");
-                    } else {
-                      e.classList.remove("hoverable-active");
-                    }
-                  });
-                },
-                toggleChatHistoryLoader: function(isVisible) {
-                  if(isVisible) {
-                    document.querySelector("#chat-refresh").style.display = "none";
-                    document.querySelector("#chat-refresh-animation").style.display = "block";
-                  } else {
-                    document.querySelector("#chat-refresh").style.display = "block";
-                    document.querySelector("#chat-refresh-animation").style.display = "none";
-                  }
-                },
-                toggleChatSources: function(isVisible, id) {
-                  const el = document.getElementById(`chat-source-${id}`);
-                  if(el) {
-                    if(isVisible) {
-                      el.style.display = "flex";
-                    } else {
-                      el.style.display = "none";
-                    }
-                  }
-                },
-                toggleChatTools: function(isVisible, id) {
-                  const el = document.getElementById(`chat-tools-${id}`);
-                  if(isVisible) {
-                    if(!el) {
-                      el.style.display = "flex";
-                    }
-                  } else {
-                    if(el) {
-                      el.style.display = "none";
-                    }
-                  }
-                },
-                parseMarkdown: function(text) {
-                  return marked.parse(text.replace(/```/g, "\n```"));
-                },
-                toggleInitialMsg: function(isVisible) {
-                  const el = document.getElementById("initial-msg");
-                  if(isVisible) {
-                    if(!el) {
-                      get('.msger-chat').insertAdjacentHTML("afterbegin", `<div class="msg left-msg" id="initial-msg">
-                        <div class="msg-img"
-                            style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
-                        </div>
-                        <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
-                            <div class="msg-info"></div>
-                            <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
-                                <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
-                        </div>
-                      </div>`);
-                    }
-                  } else {
-                    if(el) {
-                      el.remove();
-                    }
-                  }
-                },
-                toggleLoaderEnableTools: function(isVisible) {
-                  const el = document.querySelector("#enable-tools");
-                  const loader = document.querySelector("#enable-tools-loader");
-                  if(isVisible) {
-                    el.style.display = "inline-block";
-                    loader.style.display = "none";
-                  } else {
-                    loader.style.display = "inline-block";
-                    el.style.display = "none";
-                  }
-                },
-                toggleLoaderChatContainer: function(isVisible) {
-                  const el = document.querySelector("#msger-chat-container-loader");
-                  if(isVisible) {
-                    el.style.display = "block";
-                  } else {
-                    el.style.display = "none";
-                  }
-                },
-                removeLoaderTextbox: function() {
-                  if(document.getElementById("botloading")) {
-                    document.getElementById("botloading").remove();
-                  }
-                },
-                replaceTextMessageBox: function(msgId, msg) {
-                  document.querySelector(`#${msgId} .msg-text`).textContent = msg;
-                },
-                appendChatSourceItem: function(msgId, sources) {
-                  for(const m of sources ?? []) {
-                    document.querySelector(`#chat-source-section-${msgId}`).innerHTML += this.processChatSource(m);
-                  }
-                },
-                appendMetadataItem: function(msgId, metadata) {
-                  if(metadata) {
-                    if(metadata.type == "tool_call_end") {
-                      for(const m of metadata.result.data.files ?? []) {
-                        document.querySelector(`#${msgId} .chat-items-container`).innerHTML += this.appendChatItem(m);
-                      }
-                    }
-                  }
-                },
-                appendTextMessageBox: function(msgId, msg) {
-                  document.querySelector(`#${msgId} .msg-text`).textContent += msg;
-                  get(".msger-chat").scrollTop += 500;
-                },
-                finishMessageBox: function (msgId) {
-                  document.querySelector(`#${msgId} .msg-container`).style.display = "flex";
-                  document.querySelector(`#${msgId} .msg-text`).innerHTML = AIPlusUtils.parseMarkdown(document.querySelector(`#${msgId} .msg-text`).textContent);
                   document.getElementById('submitquestion').style.display = '';
                   document.getElementById('chatbotstop').style.display = 'none';
                   if(document.getElementById("botloading")) {
                     document.getElementById("botloading").remove();
                   }
-                  get(".msger-chat").scrollTop += 500;
+                  if(activeController != null) {
+                    activeController.abort()
+                  }
+                  activeController = null;
+                });
+
+                const msgText = msgerInput.value;
+                if (!msgText) return;
+
+                appendMessage("right", msgText);
+                msgerInput.value = "";
+                counterEle.innerHTML = `0/${maxLength}`;
+                botResponse(msgText);
+            });
+
+            async function botResponse(questionToAsk) {
+              if(CHAT_ID == null) {
+                const session = await AIPlusAPI.createSession(questionToAsk);
+                if(session == null) {
+                  return;
+                }
+                CHAT_ID = session.sessionId;
+              }
+              
+              AIPlusAPI.ask({
+                enableQueryRewrite: true,
+                enableReasoning: true,
+                streamReasoning: true,
+                sessionId: CHAT_ID,
+                userId: userID.toString(),
+                messages: [
+                  {role: "user", "content": questionToAsk}
+                ]
+              });
+            }
+            
+            document.getElementById("closeaviator").addEventListener("click", (e) => {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              document.getElementById("aichatbottable").remove();
+            });
+
+            document.getElementById("chat-room-container").addEventListener("scroll", async () => {
+              const container = document.getElementById("chat-room-container");
+              const nearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
+
+              if (nearBottom) {
+                if(paginations.chatHistory.now < paginations.chatHistory.max) {
+                  await AIPlusAPI.getChatRooms(paginations.chatHistory.now + 1, null, true);
                 }
               }
-              var AIPlusAPI = {
-                ask: async function(body) {
-                  if (activeController) {
-                    activeController.abort();
-                    console.log("Previous chat stream aborted.");
-                  }
-                  
-                  let botMessage = "";
-                  activeController = new AbortController();
-                  const { signal } = activeController;
-                  appendMessage('loading');
+            });
 
-                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${sessionStorage.getItem('aviatorToken')}`
-                    },
-                    body: JSON.stringify(body),
-                    signal
-                  });
+            document.getElementById("chat-refresh").addEventListener("click", async (e) => {
+              await AIPlusAPI.getChatRooms(1);
+            });
+
+            var AIPlusConfig = {
+              otcsApiUrl: "/otcs/cs.exe/api",
+              apiUrl: "https://ai-agent-test.leapcount.com",
+              backendUrl: "/aiplus"
+            }
+            var AIPlusUtils = {
+              toggleShowMessageButton: function(isVisible) {
+                if(isVisible) {
+                  document.getElementById("show-messages-button").style.display = "block";
+                } else {
+                  document.getElementById("show-messages-button").style.display = "none";
+                }
+              },
+              finishFile: function(id) {
+                document.getElementById(`loader-file-${id}`).style.display = "none";
+              },
+              setEnableToolsValue: function(value) {
+                document.getElementById("enable-tools").checked = value;
+              },
+              isToolsEnabled: function() {
+                return document.querySelector("#enable-tools").checked;
+              },
+              processChatSource: function(data) {
+                let d = data;
+
+                if(data.metadata) {
+                  d = {
+                    ...d,
+                    ...data.metadata,
+                  }
+                }
+
+                return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${d.nodeId}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+                  <img width="16px" src="${FILE_ICON}">
+                  <div class="file-chat-bubble-text">${d.fileName}</div>
+                </a>`;
+              },
+              appendChatItem: function(data) {
+                return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.customMetadata.nodeId}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+                  <img width="16px" src="${FILE_ICON}">
+                  <div class="file-chat-bubble-text">${data.fileName}</div>
+                </a>`;
+              },
+              processChatSources: function(sources = []) {
+                let result = "";
+                for(const source of sources) {
+                  result += this.processChatSource(source);
+                }
+                return result;
+              },
+              processChatMetadata: function(id, metadata) {
+                let result = `<div id="chat-item-${id}" class="chat-items-container" style="display:flex;flex-wrap:wrap">`;
                 
-                  if (!response.ok) {
-                    console.error("Error:", response.statusText);
-                    return;
-                  }
-                
-                  const reader = response.body.getReader();
-                  const decoder = new TextDecoder("utf-8");
-                  let buffer = "";
-                  let msgId = null;
-                  let firstMessageHasRendered = false;
-                  let sources = [];
-                  
-                  // Read chunks as they arrive
-                  while (true) {
-                    const { done, value } = await reader.read();
-                    
-                    if (done) {
-                      break;
-                    }
-                    
-                    const chunk = decoder.decode(value, { stream: true });
-                    buffer += chunk;
-                    
-                    const lines = buffer.split("\n");
-                    buffer = lines.pop();
-                    
-                    for(const line of lines) {
-                      try {
-                        const json = line.replace("data: ", "");
-                        const data = JSON.parse(json);
-
-                        try {
-                          AIPlusUtils.removeLoaderTextbox();
-                          
-                          if(msgId == null) {
-                            msgId = appendMessage('left', "");
-                            AIPlusUtils.toggleChatTools(false, msgId);
-                            AIPlusUtils.toggleChatSources(false, msgId);
-                          }
-
-                          // CHECK Type
-                          if(data.type == 'sources') {
-                            AIPlusUtils.appendChatSourceItem(msgId, data.sources ?? []);
-                            sources = data.sources;
-                          } else if(data.type == 'tool_call_end') {
-                            AIPlusUtils.appendMetadataItem(`msg-${msgId}`, data);
-                          } else if(data.type == 'content') {
-                            if(!firstMessageHasRendered) {
-                              AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
-                              firstMessageHasRendered = true;
-                            }
-                            botMessage += data.delta;
-                            AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
-                          } else if(data.type == 'done') {
-                            AIPlusUtils.removeLoaderTextbox();
-                            AIPlusUtils.toggleChatTools(true, msgId);
-                            AIPlusUtils.toggleChatSources(sources.length > 0, msgId);
-                          } else if(data.type == 'thinking') {
-                            AIPlusUtils.removeLoaderTextbox();
-                            AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
-                          } else if(data.type == 'error') {
-                            console.error(data.error);
-                            alert(data.error);
-                          }
-                          
-                          // CHECK additional_data
-                          // if(data.additional_data != null) {
-                          //   if(data.additional_data.type == "chat_room_id") {
-                          //     CHAT_ID = data.additional_data.data;
-                          //   }
-                          // }
-                        } catch (error) {
-                          console.error(error);
-                        }
-                      }
-                      catch(err) {
-                        continue;
-                      }
-                    }
-                  }
-
-                  activeController = null;
-                  AIPlusUtils.finishMessageBox(`msg-${msgId}`);
-                  
-                  await AIPlusAPI.getChatRooms(1);
-                },
-                getFilingSuggestion: async function(file) {
-                  try {
-                    const formData = new FormData();
-                    formData.append("file", file);
-
-                    const response = await fetch(`${AIPlusConfig.backendUrl}/Api/AI/Filing/Suggestion/${userID}`, {
-                      method: "POST",
-                      body: formData,
-                      redirect: "follow",
-                      headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
-                      }
-                    });
-                
-                    const result = await response.json();
-                    return result;
-                  } catch (error) {
-                    console.error("getJob error:", error);
-                    throw error;
-                  }
-                },
-                updateSession: async function(id) {
-                  try {
-                    AIPlusUtils.toggleLoaderEnableTools(false);
-                    const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${id}`, {
-                      method: "PATCH",
-                      redirect: "follow",
-                      body: JSON.stringify({
-                        settings: {
-                          topK: 10,
-                          enableTools: AIPlusUtils.isToolsEnabled()
-                        },
-                        userId: userID.toString(),
-                      }),
-                      headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
-                        "Content-Type": "application/json"
-                      }
-                    });
-                    AIPlusUtils.toggleLoaderEnableTools(true);
-                    
-                    const result = await response.json();
-                    return result;
-                  } catch (error) {
-                    alert(error);
-                    console.error("createSession error:", error);
-                    AIPlusUtils.toggleLoaderEnableTools(true);
-                    throw error;
-                  }
-                },
-                createSession: async function(name) {
-                  try {
-                    const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions`, {
-                      method: "POST",
-                      redirect: "follow",
-                      body: JSON.stringify({
-                        settings: {
-                          topK: 10,
-                          enableTools: AIPlusUtils.isToolsEnabled()
-                        },
-                        title: name,
-                        userId: userID.toString(),
-                      }),
-                      headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
-                        "Content-Type": "application/json"
-                      }
-                    });
-                    
-                    const result = await response.json();
-                    return result;
-                  } catch (error) {
-                    alert(error);
-                    console.error("createSession error:", error);
-                    throw error;
-                  }
-                },
-                getArchiveMessages: async function(sessionId) {
-                  try {
-                    const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${sessionId}/archive?userId=${userID}&order=desc`, {
-                      method: "GET",
-                      redirect: "follow",
-                      headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
-                      }
-                    });
-                    
-                    const result = await response.json();
-                    let idx = 0;
-
-                    for (const chat of result.messages) {
-                      const nextData = result.messages[idx+1];
-                      let sources = [];
-                      if(nextData != null && nextData.sources != null) {
-                        sources = nextData.sources;
-                      }
-                      appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), true, null, sources);
-
-                      idx++;
-                    }
-                    return result;
-                  } catch (error) {
-                    console.error("getJob error:", error);
-                    throw error;
-                  }
-                },
-                getJob: async function(jobId) {
-                  try {
-                    const response = await fetch(`${AIPlusConfig.apiUrl}/api/jobs/${jobId}`, {
-                      method: "GET",
-                      redirect: "follow",
-                      headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
-                      }
-                    });
-                    
-                    const result = await response.json();
-                    return result;
-                  } catch (error) {
-                    console.error("getJob error:", error);
-                    throw error;
-                  }
-                },
-                deleteChatRoom: async function(id) {
-                  try {
-                    await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${id}?userId=${userID}`, {
-                      headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
-                      },
-                      method: "DELETE",
-                      redirect: "follow"
-                    });
-                    if(CHAT_ID == id) {
-                      clearChats();
-                    }
-                    await this.getChatRooms(1);
-                  } catch (error) {
-                    console.error("getChatRooms error:", error);
-                    throw error;
-                  }
-                },
-                getChatRooms: async function(page = 1, size = 30, appendMode = false) {
-                  try {
-                    AIPlusUtils.toggleChatHistoryLoader(true);
-                    if(size == null) size = 30;
-
-                    const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions?pageNumber=${page}&pageSize=${size}&userId=${userID}&order=desc`, {
-                      headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
-                      },
-                      method: "GET",
-                      redirect: "follow"
-                    });
-                
-                    const result = await response.json();
-                    paginations.chatHistory.max = result.pagination.totalPages;
-                    paginations.chatHistory.now = page;
-                    AIPlusUtils.appendChatRoom(result, appendMode);
-                    AIPlusUtils.toggleChatHistoryLoader(false);
-                    return result;
-                  } catch (error) {
-                    console.error("getChatRooms error:", error);
-                    throw error;
-                  }
-                },
-                getChats: async function(chatId, page, size = 25, appendMode = true) {
-                  try {
-                    if(size == null) size = 25;
-
-                    AIPlusUtils.toggleLoaderChatContainer(true);
-                    const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${chatId}?order=desc&includeMessages=true&userId=${userID}`, {
-                      headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
-                      },
-                      method: "GET",
-                      redirect: "follow"
-                    });
-                    
-                    const result = await response.json();
-                    ARCHIVE_MESSAGE_COUNT = result?.summary?.archivedMessageCount ?? 0;
-                    AIPlusUtils.toggleShowMessageButton(false);
-                    AIPlusUtils.setEnableToolsValue(result.settings.enableTools);
-                    let idx = 0;
-
-                    for (const chat of result.messages) {
-                      const nextData = result.messages[idx+1];
-                      let sources = [];
-                      if(nextData != null && nextData.sources != null) {
-                        sources = nextData.sources;
-                      }
-                      appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), appendMode, null, sources);
-
-                      idx++;
-                    }
-
-                    AIPlusUtils.toggleLoaderChatContainer(false);
-                    return result;
-                  } catch (error) {
-                    console.error("getChats error:", error);
-                    AIPlusUtils.toggleLoaderChatContainer(false);
-                    throw error;
-                  }
-                },
-                ingest: async function(formData) {
-                  try {
-                    const response = await fetch(`${AIPlusConfig.backendUrl}/api/documents`, {
-                      method: "POST",
-                      body: formData,
-                      redirect: "follow",
-                      headers: {
-                        "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
-                      }
-                    });
-                
-                    const result = await response.json();
-                    return result;
-                  } catch (error) {
-                    console.error("Ingest error:", error);
-                  }
-                },
-                login: async function() {
-                  const response = await fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {
-                    method: "POST",
-                    redirect: "follow"
-                  });
-
-                  const result = await response.json();
-                  if(result.data.token) {
-                    sessionStorage.setItem("aviatorToken", result.data.token);
-                  }
+                if(metadata == null) {
+                  result += `</div>`;
                   return result;
                 }
+                
+                metadata = JSON.parse(metadata);
+                
+                for(const m of metadata) {
+                  if(m.type == "tool_call_end") {
+                    for(const data of m.result.data.files ?? []) {
+                      result += this.appendChatItem(data);
+                    }
+                  } else if(m.type == "sources") {
+                    // TODO: handle chat sources
+                  }
+                }
+                
+                result += `</div>`;
+                return result;
+              },
+              appendChatRoom: function(rooms, appendMode = false) {
+                const chatRoomContainer = document.querySelector("#chat-room-container");
+
+                if(!appendMode) {
+                  chatRoomContainer.innerHTML = ``;
+                  if(rooms?.sessions == null || rooms?.sessions?.length == 0) {
+                    chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No chats found -</div>`;
+                  }
+                }
+
+                for(const chatRoom of rooms.sessions) {
+                  chatRoomContainer.insertAdjacentHTML("beforeend", `
+                    <button data-id="${chatRoom.sessionId}" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
+                      ${chatRoom.title}
+                      <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
+                        <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
+                      </div>
+                    </button>`);
+                }
+                
+                document.querySelectorAll('.chat-history-tooltip').forEach(btn => {
+                  btn.addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    if(confirm("Delete this chat?")) {
+                      await AIPlusAPI.deleteChatRoom(btn.dataset.id);
+                    }
+                  });
+                });
+
+                document.querySelectorAll('.chat-history-item').forEach(btn => {
+                  btn.addEventListener("mouseenter", async (e) => {
+                    document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "block";
+                  });
+                  btn.addEventListener("mouseleave", async (e) => {
+                    document.querySelector(`#tooltip-${e.target.dataset.id}`).style.display = "none";
+                  });
+
+                  btn.addEventListener("click", async (e) => {
+                    clearChats();
+                    AIPlusUtils.toggleInitialMsg(false);
+                    CHAT_ID = e.target.dataset.id;
+                    
+                    this.reRenderChatRooms();
+                    
+                    await AIPlusAPI.getChats(e.target.dataset.id, 1);
+                  });
+                });
+              },
+              reRenderChatRooms: function() {
+                document.querySelectorAll('.chat-history-item').forEach(e => {
+                  if(e.dataset.id == CHAT_ID) {
+                    e.classList.add("hoverable-active");
+                  } else {
+                    e.classList.remove("hoverable-active");
+                  }
+                });
+              },
+              toggleChatHistoryLoader: function(isVisible) {
+                if(isVisible) {
+                  document.querySelector("#chat-refresh").style.display = "none";
+                  document.querySelector("#chat-refresh-animation").style.display = "block";
+                } else {
+                  document.querySelector("#chat-refresh").style.display = "block";
+                  document.querySelector("#chat-refresh-animation").style.display = "none";
+                }
+              },
+              toggleChatSources: function(isVisible, id) {
+                const el = document.getElementById(`chat-source-${id}`);
+                if(el) {
+                  if(isVisible) {
+                    el.style.display = "flex";
+                  } else {
+                    el.style.display = "none";
+                  }
+                }
+              },
+              toggleChatTools: function(isVisible, id) {
+                const el = document.getElementById(`chat-tools-${id}`);
+                if(isVisible) {
+                  if(!el) {
+                    el.style.display = "flex";
+                  }
+                } else {
+                  if(el) {
+                    el.style.display = "none";
+                  }
+                }
+              },
+              parseMarkdown: function(text) {
+                return marked.parse(text.replace(/```/g, "\n```"));
+              },
+              toggleInitialMsg: function(isVisible) {
+                const el = document.getElementById("initial-msg");
+                if(isVisible) {
+                  if(!el) {
+                    get('.msger-chat').insertAdjacentHTML("afterbegin", `<div class="msg left-msg" id="initial-msg">
+                      <div class="msg-img"
+                          style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
+                      </div>
+                      <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
+                          <div class="msg-info"></div>
+                          <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
+                              <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
+                      </div>
+                    </div>`);
+                  }
+                } else {
+                  if(el) {
+                    el.remove();
+                  }
+                }
+              },
+              toggleLoaderEnableTools: function(isVisible) {
+                const el = document.querySelector("#enable-tools");
+                const loader = document.querySelector("#enable-tools-loader");
+                if(isVisible) {
+                  el.style.display = "inline-block";
+                  loader.style.display = "none";
+                } else {
+                  loader.style.display = "inline-block";
+                  el.style.display = "none";
+                }
+              },
+              toggleLoaderChatContainer: function(isVisible) {
+                const el = document.querySelector("#msger-chat-container-loader");
+                if(isVisible) {
+                  el.style.display = "block";
+                } else {
+                  el.style.display = "none";
+                }
+              },
+              removeLoaderTextbox: function() {
+                if(document.getElementById("botloading")) {
+                  document.getElementById("botloading").remove();
+                }
+              },
+              replaceTextMessageBox: function(msgId, msg) {
+                document.querySelector(`#${msgId} .msg-text`).textContent = msg;
+              },
+              appendChatSourceItem: function(msgId, sources) {
+                for(const m of sources ?? []) {
+                  document.querySelector(`#chat-source-section-${msgId}`).innerHTML += this.processChatSource(m);
+                }
+              },
+              appendMetadataItem: function(msgId, metadata) {
+                if(metadata) {
+                  if(metadata.type == "tool_call_end") {
+                    for(const m of metadata.result.data.files ?? []) {
+                      document.querySelector(`#${msgId} .chat-items-container`).innerHTML += this.appendChatItem(m);
+                    }
+                  }
+                }
+              },
+              getFileSubType: function(file) {
+                let result = 144;
+
+                if(file.type == null || file.type == "") {
+                  const splittedName = file.name.split(".");
+                  
+                  if(splittedName.length > 0) {
+                    const extension = splittedName[splittedName.length - 1];
+    
+                    if(extension) {
+    
+                    }
+                  }
+                  console.log(result);
+                }
+                return result;
+              },
+              appendTextMessageBox: function(msgId, msg) {
+                document.querySelector(`#${msgId} .msg-text`).textContent += msg;
+                get(".msger-chat").scrollTop += 500;
+              },
+              finishMessageBox: function (msgId) {
+                document.querySelector(`#${msgId} .msg-container`).style.display = "flex";
+                document.querySelector(`#${msgId} .msg-text`).innerHTML = AIPlusUtils.parseMarkdown(document.querySelector(`#${msgId} .msg-text`).textContent);
+                document.getElementById('submitquestion').style.display = '';
+                document.getElementById('chatbotstop').style.display = 'none';
+                if(document.getElementById("botloading")) {
+                  document.getElementById("botloading").remove();
+                }
+                get(".msger-chat").scrollTop += 500;
               }
+            }
+            var AIPlusAPI = {
+              uploadToOTCS: async function(file) {
+                try {
+                  const formdata = new FormData();
+                  formdata.append("body", JSON.stringify({
+                    type: AIPlusUtils.getFileSubType(file), 
+                    parent_id: userHomepageID, 
+                    name: file.name
+                  }));
+                  formdata.append("file", file, file.name);
 
-              await AIPlusAPI.login();
+                  const response = await fetch(`${AIPlusConfig.otcsApiUrl}/v1/nodes`, {
+                    method: "POST",
+                    body: formdata,
+                    redirect: "follow",
+                    headers: {
+                      "otcsticket": ticket
+                    }
+                  });
+              
+                  const result = await response.json();
+                  return result;
+                } catch (error) {
+                  console.error(error);
+                }
+              },
+              ask: async function(body) {
+                if (activeController) {
+                  activeController.abort();
+                  console.log("Previous chat stream aborted.");
+                }
+                
+                let botMessage = "";
+                activeController = new AbortController();
+                const { signal } = activeController;
+                appendMessage('loading');
 
-              clearChats();
-              await AIPlusAPI.getChatRooms(1);
-              AIPlusUtils.toggleInitialMsg(true);
+                const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                  },
+                  body: JSON.stringify(body),
+                  signal
+                });
+              
+                if (!response.ok) {
+                  console.error("Error:", response.statusText);
+                  return;
+                }
+              
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                let buffer = "";
+                let msgId = null;
+                let firstMessageHasRendered = false;
+                let sources = [];
+                
+                // Read chunks as they arrive
+                while (true) {
+                  const { done, value } = await reader.read();
+                  
+                  if (done) {
+                    break;
+                  }
+                  
+                  const chunk = decoder.decode(value, { stream: true });
+                  buffer += chunk;
+                  
+                  const lines = buffer.split("\n");
+                  buffer = lines.pop();
+                  
+                  for(const line of lines) {
+                    try {
+                      const json = line.replace("data: ", "");
+                      const data = JSON.parse(json);
+
+                      try {
+                        AIPlusUtils.removeLoaderTextbox();
+                        
+                        if(msgId == null) {
+                          msgId = appendMessage('left', "");
+                          AIPlusUtils.toggleChatTools(false, msgId);
+                          AIPlusUtils.toggleChatSources(false, msgId);
+                        }
+
+                        // CHECK Type
+                        if(data.type == 'sources') {
+                          AIPlusUtils.appendChatSourceItem(msgId, data.sources ?? []);
+                          sources = data.sources;
+                        } else if(data.type == 'tool_call_end') {
+                          AIPlusUtils.appendMetadataItem(`msg-${msgId}`, data);
+                        } else if(data.type == 'content') {
+                          if(!firstMessageHasRendered) {
+                            AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
+                            firstMessageHasRendered = true;
+                          }
+                          botMessage += data.delta;
+                          AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
+                        } else if(data.type == 'done') {
+                          AIPlusUtils.removeLoaderTextbox();
+                          AIPlusUtils.toggleChatTools(true, msgId);
+                          AIPlusUtils.toggleChatSources(sources.length > 0, msgId);
+                        } else if(data.type == 'thinking') {
+                          AIPlusUtils.removeLoaderTextbox();
+                          AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
+                        } else if(data.type == 'error') {
+                          console.error(data.error);
+                          alert(data.error);
+                        }
+                        
+                        // CHECK additional_data
+                        // if(data.additional_data != null) {
+                        //   if(data.additional_data.type == "chat_room_id") {
+                        //     CHAT_ID = data.additional_data.data;
+                        //   }
+                        // }
+                      } catch (error) {
+                        console.error(error);
+                      }
+                    }
+                    catch(err) {
+                      continue;
+                    }
+                  }
+                }
+
+                activeController = null;
+                AIPlusUtils.finishMessageBox(`msg-${msgId}`);
+                
+                await AIPlusAPI.getChatRooms(1);
+              },
+              getFilingSuggestion: async function(file) {
+                try {
+                  const formData = new FormData();
+                  formData.append("file", file);
+
+                  const response = await fetch(`${AIPlusConfig.backendUrl}/Api/AI/Filing/Suggestion/${userID}`, {
+                    method: "POST",
+                    body: formData,
+                    redirect: "follow",
+                    headers: {
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                    }
+                  });
+              
+                  const result = await response.json();
+                  return result;
+                } catch (error) {
+                  console.error("getJob error:", error);
+                  throw error;
+                }
+              },
+              updateSession: async function(id) {
+                try {
+                  AIPlusUtils.toggleLoaderEnableTools(false);
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${id}`, {
+                    method: "PATCH",
+                    redirect: "follow",
+                    body: JSON.stringify({
+                      settings: {
+                        topK: 10,
+                        enableTools: AIPlusUtils.isToolsEnabled()
+                      },
+                      userId: userID.toString(),
+                    }),
+                    headers: {
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+                      "Content-Type": "application/json"
+                    }
+                  });
+                  AIPlusUtils.toggleLoaderEnableTools(true);
+                  
+                  const result = await response.json();
+                  return result;
+                } catch (error) {
+                  alert(error);
+                  console.error("createSession error:", error);
+                  AIPlusUtils.toggleLoaderEnableTools(true);
+                  throw error;
+                }
+              },
+              createSession: async function(name) {
+                try {
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions`, {
+                    method: "POST",
+                    redirect: "follow",
+                    body: JSON.stringify({
+                      settings: {
+                        topK: 10,
+                        enableTools: AIPlusUtils.isToolsEnabled()
+                      },
+                      title: name,
+                      userId: userID.toString(),
+                    }),
+                    headers: {
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+                      "Content-Type": "application/json"
+                    }
+                  });
+                  
+                  const result = await response.json();
+                  return result;
+                } catch (error) {
+                  alert(error);
+                  console.error("createSession error:", error);
+                  throw error;
+                }
+              },
+              getArchiveMessages: async function(sessionId) {
+                try {
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${sessionId}/archive?userId=${userID}&order=desc`, {
+                    method: "GET",
+                    redirect: "follow",
+                    headers: {
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                    }
+                  });
+                  
+                  const result = await response.json();
+                  let idx = 0;
+
+                  for (const chat of result.messages) {
+                    const nextData = result.messages[idx+1];
+                    let sources = [];
+                    if(nextData != null && nextData.sources != null) {
+                      sources = nextData.sources;
+                    }
+                    appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), true, null, sources, chat.reasoning ?? null);
+
+                    idx++;
+                  }
+                  return result;
+                } catch (error) {
+                  console.error("getJob error:", error);
+                  throw error;
+                }
+              },
+              getJob: async function(jobId) {
+                try {
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/jobs/${jobId}`, {
+                    method: "GET",
+                    redirect: "follow",
+                    headers: {
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                    }
+                  });
+                  
+                  const result = await response.json();
+                  return result;
+                } catch (error) {
+                  console.error("getJob error:", error);
+                  throw error;
+                }
+              },
+              deleteChatRoom: async function(id) {
+                try {
+                  await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${id}?userId=${userID}`, {
+                    headers: {
+                      Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+                    },
+                    method: "DELETE",
+                    redirect: "follow"
+                  });
+                  if(CHAT_ID == id) {
+                    clearChats();
+                  }
+                  await this.getChatRooms(1);
+                } catch (error) {
+                  console.error("getChatRooms error:", error);
+                  throw error;
+                }
+              },
+              getChatRooms: async function(page = 1, size = 30, appendMode = false) {
+                try {
+                  AIPlusUtils.toggleChatHistoryLoader(true);
+                  if(size == null) size = 30;
+
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions?pageNumber=${page}&pageSize=${size}&userId=${userID}&order=desc`, {
+                    headers: {
+                      Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+                    },
+                    method: "GET",
+                    redirect: "follow"
+                  });
+              
+                  const result = await response.json();
+                  paginations.chatHistory.max = result.pagination.totalPages;
+                  paginations.chatHistory.now = page;
+                  AIPlusUtils.appendChatRoom(result, appendMode);
+                  AIPlusUtils.toggleChatHistoryLoader(false);
+                  return result;
+                } catch (error) {
+                  console.error("getChatRooms error:", error);
+                  throw error;
+                }
+              },
+              getChats: async function(chatId, page, size = 25, appendMode = true) {
+                try {
+                  if(size == null) size = 25;
+
+                  AIPlusUtils.toggleLoaderChatContainer(true);
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${chatId}?order=desc&includeMessages=true&userId=${userID}`, {
+                    headers: {
+                      Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+                    },
+                    method: "GET",
+                    redirect: "follow"
+                  });
+                  
+                  const result = await response.json();
+                  ARCHIVE_MESSAGE_COUNT = result?.summary?.archivedMessageCount ?? 0;
+                  AIPlusUtils.toggleShowMessageButton(false);
+                  AIPlusUtils.setEnableToolsValue(result.settings.enableTools);
+                  let idx = 0;
+
+                  for (const chat of result.messages) {
+                    const nextData = result.messages[idx+1];
+                    let sources = [];
+                    if(nextData != null && nextData.sources != null) {
+                      sources = nextData.sources;
+                    }
+                    appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), appendMode, null, sources, chat.reasoning ?? null);
+
+                    idx++;
+                  }
+
+                  AIPlusUtils.toggleLoaderChatContainer(false);
+                  return result;
+                } catch (error) {
+                  console.error("getChats error:", error);
+                  AIPlusUtils.toggleLoaderChatContainer(false);
+                  throw error;
+                }
+              },
+              ingest: async function(file, metadata = "", priority = 10) {
+                try {
+                  const formData = new FormData();
+                  formData.append("file", file, file.name);
+                  formData.append("workspaceId", wID);
+                  formData.append("metadata", metadata);
+                  formData.append("priority", priority);
+                  
+                  const response = await fetch(`${AIPlusConfig.apiUrl}/api/documents`, {
+                    method: "POST",
+                    body: formData,
+                    redirect: "follow",
+                    headers: {
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                    }
+                  });
+              
+                  const result = await response.json();
+                  return result;
+                } catch (error) {
+                  console.error("Ingest error:", error);
+                }
+              },
+              login: async function() {
+                const response = await fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {
+                  method: "POST",
+                  redirect: "follow"
+                });
+
+                const result = await response.json();
+                if(result.data.token) {
+                  sessionStorage.setItem("aviatorToken", result.data.token);
+                }
+                return result;
+              }
+            }
+
+            await AIPlusAPI.login();
+
+            clearChats();
+            await AIPlusAPI.getChatRooms(1);
+            AIPlusUtils.toggleInitialMsg(true);
           }
 
           var Menuelement = document.getElementsByTagName("otc-menuitem");
