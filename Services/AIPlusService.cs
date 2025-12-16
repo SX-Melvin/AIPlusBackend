@@ -79,7 +79,6 @@ namespace AIPlusBackend.Services
                     return result;
                 }
 
-                // TODO: Remove this logic
                 var response = await utils.GetFilingSuggestion(wId, token);
                 result.Data = response;
 

@@ -6632,6 +6632,7 @@ body.bin-widgets .binf-modal-backdrop {
 /*# sourceMappingURL=csui-app.css.map */
 
 #files-container {
+    align-items: flex-start!important;
     padding: 0px 14px;
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
@@ -6646,6 +6647,17 @@ body.bin-widgets .binf-modal-backdrop {
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     box-sizing: border-box; /* fixes overflow */
+}
+
+.file-item-folder-suggestion {
+    font-size:11px!important;
+    padding:4px!important;
+    margin-top: 10px!important;
+    padding-left:10px;
+    border: 1px solid whitesmoke!important;
+    border-bottom: 0!important;
+    border-right: 0!important;
+    border-left: 0!important;
 }
 
 .file-item {
@@ -6807,6 +6819,8 @@ body.bin-widgets .binf-modal-backdrop {
     display:inline-block;
 }
 .chat-reason-section {
+    max-height:450px!important;
+    overflow:auto!important;
     font-size: 12px!important;
     font-weight: 500!important;
 }
@@ -6814,19 +6828,18 @@ body.bin-widgets .binf-modal-backdrop {
     padding: 4px 6px!important;
     border-radius: 4px;
     cursor: pointer;
-    margin-bottom: 10px!important;
+    margin-top: 12px!important;
     font-size: 11px!important;
-    display:flex!important;
     align-items:center!important;
 }
 .chatmenuTooltip {
     opacity: 0;
-  position: absolute;
-  background-color: black;
-  color: white;
-  top: 0;
-  left: 0;
-  z-index: 3;
+    position: absolute;
+    background-color: black;
+    color: white;
+    top: 0;
+    left: 0;
+    z-index: 3;
 }
 
 .msger-dropzone:hover {
@@ -6863,4 +6876,5 @@ body.bin-widgets .binf-modal-backdrop {
 }
 .msger-drop-text {
     pointer-events: none;  /* so dropping still works */
+    font-size: 22px!important;
 }

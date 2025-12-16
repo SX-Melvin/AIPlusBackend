@@ -15434,7 +15434,6 @@ csui.define("csui/lib/othelp", [], function () {
 
           async function showAviator() {
             let that = globalthis;
-            console.log(that.options.context._user);
             let activeController = false;
             let ticket = that.options.context._user.connector.connection.session.ticket;
             const userID = that.options.context._user.attributes.id;
@@ -15443,6 +15442,7 @@ csui.define("csui/lib/othelp", [], function () {
             let CHAT_ID = null;
             let paginations = {chatHistory: {now: 1, max: null}};
             const PERSON_NAME = that.options.context._user.attributes.name;
+            const PEN_EDIT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_pen_edit.svg"
             const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
             const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
             const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
@@ -15457,6 +15457,8 @@ csui.define("csui/lib/othelp", [], function () {
             const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
             const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
             const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_down.svg";
+            const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_times_red.svg";
+            const ERROR_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_error.svg";
             const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_left.svg";
             const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
             let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
@@ -15470,10 +15472,6 @@ csui.define("csui/lib/othelp", [], function () {
                 date = new Date();
               }
 
-              if(reason == null) {
-                reason = "No reason found";
-              }
-
               msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
               if(side == "left")
               {
@@ -15484,13 +15482,13 @@ csui.define("csui/lib/othelp", [], function () {
 
                       <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
                       
-                      <div data-id="${uniqueId}" data-id="false" id="chat-reason-${uniqueId}" class="chat-reason hoverable">
+                      <div data-id="${uniqueId}" data-id="false" id="chat-reason-${uniqueId}" class="chat-reason hoverable" style="display:none">
                         <img data-id="${uniqueId}" src="${INFO_ICON}" width="12" draggable="false" />
                         <span data-id="${uniqueId}" style="margin-left:4px;">Reasoning</span>
                         <img data-id="${uniqueId}" class="chevron" draggable="false" src="${ARROW_LEFT_ICON}" width="14" />
                       </div>
 
-                      <div id="chat-reason-section-${uniqueId}" style="display:none;max-height:400px;overflow:auto" class="msger-scroll chat-reason-section">${AIPlusUtils.parseMarkdown(reason)}</div>
+                      <div id="chat-reason-section-${uniqueId}" style="display:none;" class="msger-scroll chat-reason-section">${AIPlusUtils.parseMarkdown(reason)}</div>
 
                       ${AIPlusUtils.processChatMetadata(uniqueId, metadata)}
                       
@@ -15608,6 +15606,11 @@ csui.define("csui/lib/othelp", [], function () {
                   }
                 });
                 
+                if(reason != null && reason.length > 0) {
+                  // Reason isnt empty, add event handler to the element
+                  document.getElementById(`chat-reason-${uniqueId}`).style.display = "flex";
+                }
+
                 document.getElementById(`chat-reason-${uniqueId}`).addEventListener("click", (e) => {
                   e.preventDefault();
                   e.stopImmediatePropagation();
@@ -15708,7 +15711,7 @@ csui.define("csui/lib/othelp", [], function () {
                       
                       <div class="msger-chat-container" style="position:relative;min-height: 0;">
                         <div id="msger-dropzone" class="msger-dropzone">
-                          <span class="msger-drop-text">Drop files here</span>
+                          <center class="msger-drop-text">Drop files here<br /><br />Will be uploaded to your personal folder</center>
                         </div>
                         
                         <div style="position:absolute;background-color:rgba(0,0,0,.2);bottom:0;right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
@@ -15762,7 +15765,7 @@ csui.define("csui/lib/othelp", [], function () {
                               <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                                   <!-- Clear Button with "New Chat" Text -->
                                   <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
-                                      <svg fill="#000000" width="18px" height="18px" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
+                                      <img src="${PEN_EDIT_IMG}" width="14" draggable="false" />
                                       <span style="font-size: 14px; color: #333;">New Chat</span>
                                   </div>
                           
@@ -15771,7 +15774,7 @@ csui.define("csui/lib/othelp", [], function () {
                                       <input checked="true" type="checkbox" id="enable-tools" style="width:14px">
                                       <img src="${REFRESH_BLUE_ICON}" width="14" class="spin" id="enable-tools-loader" style="display:none" />
                                       <label for="enable-tools"> Enable Tools</label>
-                                      <div style="margin-left:2px" title="Used for combining PDF files, getting tables from PDF, removing sensitive content, listing workspace files & finding files by name"><img src="${INFO_ICON}" width="12px" /></div>
+                                      <div style="margin-left:2px" title="Used for combining PDF files, getting tables from PDF, removing sensitive content, listing workspace files & finding files by name"><img src="${INFO_ICON}" draggable="false" width="12px" /></div>
                                     </div>
                                     <div style="margin-right: 10px;" id="counter">0/2000</div>
                           
@@ -15809,34 +15812,44 @@ csui.define("csui/lib/othelp", [], function () {
             }
 
             const nodesTableDiv = document.querySelector("div.binf-widgets");
-            console.log(document.getElementById("aichatbottable"));
-            // if(!document.getElementById("aichatbottable")) {
-              nodesTableDiv.appendChild(createChatbotElement());
-            // }
+            nodesTableDiv.appendChild(createChatbotElement());
 
-            // Handle the overlay dropzone area
-            let dragCounter = 0;
-            const dropzone = document.getElementById("msger-dropzone");
-            const existingChatbot = document.getElementById("aichatbottable");
-            dropzone.addEventListener("dragenter", (e) => {
-              if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
-                dragCounter++;
-                dropzone.style.opacity = ".6";
-                dropzone.style.display = "flex";
-              }
-            });
             document.getElementById("enable-tools").addEventListener("change", async (e) => {
               e.preventDefault();
               if(CHAT_ID != null) {
                 await AIPlusAPI.updateSession(CHAT_ID);
               }
             });
+
             document.getElementById("show-messages-button").addEventListener("click", async (e) => {
               e.preventDefault();
               AIPlusUtils.toggleShowMessageButton(false);
               ARCHIVE_MESSAGE_COUNT = 0;
               document.getElementById("show-messages-button").style.display = 'none';
               await AIPlusAPI.getArchiveMessages(CHAT_ID);
+            });
+
+            // Handle the overlay dropzone area
+            let dragCounter = 0;
+            const dropzone = document.getElementById("msger-dropzone");
+            const existingChatbot = document.getElementById("aichatbottable");
+
+            window.addEventListener("dragover", (e) => {
+              e.preventDefault(); // Required so "drop" will fire
+            });
+
+            window.addEventListener("drop", (e) => {
+              dragCounter = 0;
+              dropzone.style.display = "none";
+              dropzone.style.opacity = "1";
+            });
+
+            dropzone.addEventListener("dragenter", (e) => {
+              if (e.dataTransfer && e.dataTransfer.types.includes("Files")) {
+                dragCounter++;
+                dropzone.style.opacity = ".6";
+                dropzone.style.display = "flex";
+              }
             });
 
             dropzone.addEventListener("dragleave", (e) => {
@@ -15923,26 +15936,39 @@ csui.define("csui/lib/othelp", [], function () {
               for(const file of files) {
                 const uniqueId = new Date().getTime();
                 document.getElementById("files-container").innerHTML += `
-                  <div class="file-item-container">
+                  <div class="file-item-container" id="file-item-container-${uniqueId}">
                     <div class="file-item" id="file-item-${uniqueId}" style="font-size:11px;padding:4px">
                       <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
                       </svg>
                       <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
                       <button data-idx="${uniqueId}" title="Remove" id="remove-file-btn-${uniqueId}" class="remove-btn" style="display: none">
-                        <svg class="remove-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                          <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z" />
-                        </svg>
+                        <img src="${TIMES_RED_ICON}" width="16" />
                       </button>
                       <div id="loader-file-${uniqueId}" style="display:flex">
                         <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation">
                       </div>
                     </div>
 
-                    <div class="file-item" id="folder-item-${uniqueId}" style="font-size:11px;padding:4px;padding-left:10px;display:none">
+                    <div class="file-item" id="file-item-error-${uniqueId}" style="font-size:11px;padding:4px;display:none">
+                      <img src="${ERROR_ICON}" style="margin-right: 10px;" width="14" />
+                      <span class="file-name" style="color:red"></span>
+                    </div>
+
+                    <div class="file-item file-item-folder-suggestion" id="folder-item-${uniqueId}" style="display:none">
                       <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
                       <span class="file-name"><a target="_blank" href="/"></a></span>
                       <img src="${INFO_ICON}" class="folder-item-info" width="14" />
+                    </div>
+
+                    <div class="file-item file-item-folder-suggestion" id="folder-item-loader-${uniqueId}" style="display:none">
+                      <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
+                      <span class="file-name" style="font-style:italic;font-weight:thin">Finding folder...</span>
+                      <div>
+                        <div class="dot-sm"></div>
+                        <div class="dot-sm"></div>
+                        <div class="dot-sm"></div>
+                      </div>
                     </div>
                   </div>
                 `;
@@ -15951,7 +15977,7 @@ csui.define("csui/lib/othelp", [], function () {
               
               document.querySelectorAll('.remove-btn').forEach(btn => {
                 btn.addEventListener('click', e => {
-                  document.getElementById(`file-item-${btn.dataset.idx}`).remove();
+                  document.getElementById(`file-item-container-${btn.dataset.idx}`).remove();
                 });
               });
 
@@ -15959,66 +15985,93 @@ csui.define("csui/lib/othelp", [], function () {
               idx = 0
               const jobs = [];
               for(const file of fileList) {
-                console.log(file);
-                AIPlusUtils.getFileSubType(file);
-                // const node = await AIPlusAPI.uploadToOTCS(file.file);
-                // if(node.id) {
-                //   jobs.push({
-                //     nodeId: node.id,
-                //     id: file.id,
-                //     file: file.file
-                //   });
-                // }
+                console.log(file)
+                const node = await AIPlusAPI.uploadToOTCS(file.file);
+                if(node.id) {
+                  jobs.push({
+                    nodeId: node.id,
+                    id: file.id,
+                    file: file.file
+                  });
+                } else if (node.error) {
+                  AIPlusUtils.showFileError(file.id, "Error when uploading to personal folder: " + node.error)
+                }
               }
               
               // Ingest each of the files to agent
-              const queues = [];
+              let queues = [];
+              let suggestionFilings = [];
               for(const job of jobs) {
-                // const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10);
-                // if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
-                //   queues.push({
-                //     file: job.file,
-                //     id: job.id,
-                //     job: jobResult
-                //   });
-                // }
+                const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10);
+                if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
+                  queues.push({
+                    file: job.file,
+                    id: job.id,
+                    job: jobResult
+                  });
+                } else if (jobResult.error) {
+                  AIPlusUtils.showFileError(job.id, "Error when ingesting file: " + jobResult.message ?? jobResult.error)
+                }
               }
 
-              // Suggestion Filing
-              // idx = 0
-              // for(const file of files) {
-              //   const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file);
-              //   if(filingSuggestion.data.suggestion != null) {
-              //     document.querySelector(`#folder-item-${idx} a`).innerText = filingSuggestion.data.suggestion.folderName;
-              //     document.querySelector(`#folder-item-${idx} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
-              //     document.querySelector(`#folder-item-${idx} a`).setAttribute("target", "_blank");
-              //     document.querySelector(`#folder-item-${idx} .file-name`).setAttribute("title", "Recommended folder for filing");
-              //     document.querySelector(`#folder-item-${idx} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
-              //     document.querySelector(`#folder-item-${idx}`).style.display = "flex";
-              //   } else {
-              //     console.warn("no filing suggestion found: " + filingSuggestion);
-              //   }
-              //   document.querySelector(`#loader-file-${idx}`).style.display = "none";
-              //   idx++;
-              // }
+              const checkJobs = async () => {
+                const jobs = [...queues];
+              
+                for (const job of jobs) {
+                  const getJob = await AIPlusAPI.getJob(job.job.jobId);
+              
+                  if (getJob.status?.toLowerCase() === "completed") {
+                    queues = queues.filter(x => x.job.jobId !== job.job.jobId);
+                    suggestionFilings.push(job);
+                    AIPlusUtils.removeFileLoader(job.id);
+                  } 
+                  else if (getJob.status?.toLowerCase() === "failed") {
+                    queues = queues.filter(x => x.job.jobId !== job.job.jobId);
+                    AIPlusUtils.showFileError(job.id, "Error when ingesting file: " + getJob.error ?? "An unxpected error occurred");
+                  }
+                }
+              
+                if (queues.length > 0) {
+                  setTimeout(checkJobs, 3000);
+                }
+              };
+              
+              const checkSuggestionFiling = async () => {
+                const files = [...suggestionFilings];
+              
+                for (const file of files) {
+                  const fileName = file.file.name?.toLowerCase();
+                  const isEmail = fileName.endsWith(".eml") || fileName.endsWith(".msg");
+                  if(!isEmail) {
+                    suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
+                    continue;
+                  }
 
-              // const interval = setInterval(() => {
-              //   const jobs = [...jobIds];
-              //   for(const job of jobs) {
-              //     const getJob = AIPlusAPI.getJob(job.ingest.jobId);
-              //     if(getJob.status != null && getJob.status.toLowerCase() == "completed") {
-              //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
-              //       document.querySelector(`#remove-file-btn-${job.idx}`).style.display = "block";
-              //       document.querySelector(`#loader-file-${job.idx}`).style.display = "none";
-              //     } else if(getJob.status != null && getJob.status.toLowerCase() == "failed") {
-              //       jobIds = jobIds.filter(x => x.ingest.jobId != job.ingest.jobId);
-              //     }
-
-              //     if(jobIds.length === 0) {
-              //       clearInterval(interval);
-              //     }
-              //   }
-              // }, 3000);
+                  
+                  // If file is email, then proceed
+                  AIPlusUtils.showFileSuggestionLoader(file.id);
+                  const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file.file);
+                  if(filingSuggestion.data.suggestion != null) {
+                    document.querySelector(`#folder-item-${file.id} a`).innerText = filingSuggestion.data.suggestion.folderName;
+                    document.querySelector(`#folder-item-${file.id} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
+                    document.querySelector(`#folder-item-${file.id} a`).setAttribute("target", "_blank");
+                    document.querySelector(`#folder-item-${file.id} .file-name`).setAttribute("title", "Recommended folder for filing");
+                    document.querySelector(`#folder-item-${file.id} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
+                    document.querySelector(`#folder-item-${file.id}`).style.display = "flex";
+                  } else {
+                    console.warn("no filing suggestion found: " + filingSuggestion);
+                  }
+                  suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
+                  AIPlusUtils.removeFileLoader(file.id);
+                }
+                  
+                if (queues.length > 0 || suggestionFilings.length > 0) {
+                  setTimeout(checkSuggestionFiling, 3000);
+                }
+              };
+              
+              checkJobs();
+              checkSuggestionFiling();
             }
 
             //handle counter
@@ -16135,6 +16188,8 @@ csui.define("csui/lib/othelp", [], function () {
               e.preventDefault();
               e.stopImmediatePropagation();
               document.getElementById("aichatbottable").remove();
+              window.removeEventListener("dragover");
+              window.removeEventListener("drop");
             });
 
             document.getElementById("chat-room-container").addEventListener("scroll", async () => {
@@ -16158,6 +16213,23 @@ csui.define("csui/lib/othelp", [], function () {
               backendUrl: "/aiplus"
             }
             var AIPlusUtils = {
+              removeFileLoader: function (id) {
+                document.querySelector(`#remove-file-btn-${id}`).style.display = "block";
+                document.querySelector(`#loader-file-${id}`).style.display = "none";
+                document.querySelector(`#folder-item-loader-${id}`).style.display = "none";
+              },
+              showFileSuggestionLoader: function (id) {
+                this.removeFileLoader(id);
+                document.querySelector(`#folder-item-loader-${id}`).style.display = "flex";
+              },
+              showFileError: function (id, errorMsg) {
+                document.querySelector(`#file-item-error-${id}`).style.display = "flex";
+                document.querySelector(`#file-item-error-${id}`).querySelector("span").innerText = errorMsg;
+                document.querySelector(`#folder-item-${id}`).style.display = "none";
+                document.querySelector(`#remove-file-btn-${id}`).style.display = "block";
+                document.querySelector(`#loader-file-${id}`).style.display = "none";
+                document.querySelector(`#folder-item-loader-${id}`).style.display = "none";
+              },
               toggleShowMessageButton: function(isVisible) {
                 if(isVisible) {
                   document.getElementById("show-messages-button").style.display = "block";
@@ -16210,15 +16282,11 @@ csui.define("csui/lib/othelp", [], function () {
                   return result;
                 }
                 
-                metadata = JSON.parse(metadata);
-                
                 for(const m of metadata) {
-                  if(m.type == "tool_call_end") {
+                  if((m.type == "tool_call_end" || m.tool == "search_files" || m.tool == "list_files") && m.result?.data?.files != null) {
                     for(const data of m.result.data.files ?? []) {
                       result += this.appendChatItem(data);
                     }
-                  } else if(m.type == "sources") {
-                    // TODO: handle chat sources
                   }
                 }
                 
@@ -16314,7 +16382,7 @@ csui.define("csui/lib/othelp", [], function () {
                 }
               },
               parseMarkdown: function(text) {
-                return marked.parse(text.replace(/```/g, "\n```"));
+                return marked.parse((text ?? "").replace(/```/g, "\n```"));
               },
               toggleInitialMsg: function(isVisible) {
                 const el = document.getElementById("initial-msg");
@@ -16369,9 +16437,17 @@ csui.define("csui/lib/othelp", [], function () {
                   document.querySelector(`#chat-source-section-${msgId}`).innerHTML += this.processChatSource(m);
                 }
               },
+              finishChatReasoning: function(msgId) {
+                document.getElementById(`chat-reason-${msgId}`).click();
+              },
+              appendChatReasoning: function(msgId, text) {
+                const chatReasonSection = document.querySelector(`#chat-reason-section-${msgId}`);
+                chatReasonSection.innerHTML = this.parseMarkdown(text);
+                chatReasonSection.scrollTop += 500;
+              },
               appendMetadataItem: function(msgId, metadata) {
                 if(metadata) {
-                  if(metadata.type == "tool_call_end") {
+                  if(metadata.type == "tool_call_end" || metadata.tool == "search_files" || metadata.tool == "list_files") {
                     for(const m of metadata.result.data.files ?? []) {
                       document.querySelector(`#${msgId} .chat-items-container`).innerHTML += this.appendChatItem(m);
                     }
@@ -16387,16 +16463,16 @@ csui.define("csui/lib/othelp", [], function () {
                   if(splittedName.length > 0) {
                     const extension = splittedName[splittedName.length - 1];
     
-                    if(extension) {
-    
+                    if(extension == "msg") {
+                      return 749;
                     }
                   }
                   console.log(result);
                 }
                 return result;
               },
-              appendTextMessageBox: function(msgId, msg) {
-                document.querySelector(`#${msgId} .msg-text`).textContent += msg;
+              appendTextMessageBox: function(msgId, raw = "") {
+                document.querySelector(`#${msgId} .msg-text`).innerHTML = AIPlusUtils.parseMarkdown(raw);
                 get(".msger-chat").scrollTop += 500;
               },
               finishMessageBox: function (msgId) {
@@ -16442,7 +16518,6 @@ csui.define("csui/lib/othelp", [], function () {
                   console.log("Previous chat stream aborted.");
                 }
                 
-                let botMessage = "";
                 activeController = new AbortController();
                 const { signal } = activeController;
                 appendMessage('loading');
@@ -16466,7 +16541,10 @@ csui.define("csui/lib/othelp", [], function () {
                 const decoder = new TextDecoder("utf-8");
                 let buffer = "";
                 let msgId = null;
+                let content = "";
+                let reason = "";
                 let firstMessageHasRendered = false;
+                let firstReasonHasRendered = false;
                 let sources = [];
                 
                 // Read chunks as they arrive
@@ -16498,7 +16576,15 @@ csui.define("csui/lib/othelp", [], function () {
                         }
 
                         // CHECK Type
-                        if(data.type == 'sources') {
+                        if(data.type == 'reasoning') {
+                          if(!firstReasonHasRendered) {
+                            document.querySelector(`#chat-reason-${msgId}`).style.display = "flex";
+                            document.getElementById(`chat-reason-${msgId}`).click();
+                            firstReasonHasRendered = true;
+                          }
+                          reason += data.delta ?? "";
+                          AIPlusUtils.appendChatReasoning(msgId, reason);
+                        } else if (data.type == 'sources') {
                           AIPlusUtils.appendChatSourceItem(msgId, data.sources ?? []);
                           sources = data.sources;
                         } else if(data.type == 'tool_call_end') {
@@ -16506,10 +16592,11 @@ csui.define("csui/lib/othelp", [], function () {
                         } else if(data.type == 'content') {
                           if(!firstMessageHasRendered) {
                             AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
+                            AIPlusUtils.finishChatReasoning(msgId);
                             firstMessageHasRendered = true;
                           }
-                          botMessage += data.delta;
-                          AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, data.delta);
+                          content += data.delta ?? "";
+                          AIPlusUtils.appendTextMessageBox(`msg-${msgId}`, content);
                         } else if(data.type == 'done') {
                           AIPlusUtils.removeLoaderTextbox();
                           AIPlusUtils.toggleChatTools(true, msgId);
@@ -16521,13 +16608,6 @@ csui.define("csui/lib/othelp", [], function () {
                           console.error(data.error);
                           alert(data.error);
                         }
-                        
-                        // CHECK additional_data
-                        // if(data.additional_data != null) {
-                        //   if(data.additional_data.type == "chat_room_id") {
-                        //     CHAT_ID = data.additional_data.data;
-                        //   }
-                        // }
                       } catch (error) {
                         console.error(error);
                       }
@@ -16639,7 +16719,7 @@ csui.define("csui/lib/othelp", [], function () {
                     if(nextData != null && nextData.sources != null) {
                       sources = nextData.sources;
                     }
-                    appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), true, null, sources, chat.reasoning ?? null);
+                    appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), true, chat.toolCalls ?? [], sources, chat.reasoning ?? null);
 
                     idx++;
                   }
@@ -16733,7 +16813,7 @@ csui.define("csui/lib/othelp", [], function () {
                     if(nextData != null && nextData.sources != null) {
                       sources = nextData.sources;
                     }
-                    appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), appendMode, null, sources, chat.reasoning ?? null);
+                    appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), appendMode, chat.toolCalls ?? [], sources, chat.reasoning ?? null);
 
                     idx++;
                   }
@@ -16749,22 +16829,22 @@ csui.define("csui/lib/othelp", [], function () {
               ingest: async function(file, metadata = "", priority = 10) {
                 try {
                   const formData = new FormData();
-                  formData.append("file", file, file.name);
                   formData.append("workspaceId", wID);
                   formData.append("metadata", metadata);
                   formData.append("priority", priority);
+                  formData.append("file", file, file.name);
                   
                   const response = await fetch(`${AIPlusConfig.apiUrl}/api/documents`, {
                     method: "POST",
                     body: formData,
                     redirect: "follow",
                     headers: {
-                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+                      "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+                      // "Content-Type": "multipart/form-data"
                     }
                   });
               
-                  const result = await response.json();
-                  return result;
+                  return await response.json();
                 } catch (error) {
                   console.error("Ingest error:", error);
                 }
@@ -16873,7 +16953,6 @@ csui.define("csui/lib/othelp", [], function () {
               
               addAviatorElementAsIcon();
           }
-          console.log("checkForMenuElement");
           checkForMenuElement();
           // Explorer Insight END
         },
