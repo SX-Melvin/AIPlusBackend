@@ -1,394 +1,3 @@
-.binf-widgets .csui-toolbar {
-    display: flex;
-    flex: 1 1 auto;
-    font-size: inherit;
-    height: inherit;
-    width: 100%
-}
-
-.binf-widgets .csui-toolbar.binf-nav.csui-measuring {
-    overflow: hidden
-}
-
-.binf-widgets .csui-toolbar.binf-nav>li>.custom-view-region>div>div>a>.icon,
-.binf-widgets .csui-toolbar.binf-nav>li>.custom-view-region>div>div>button>.icon,
-.binf-widgets .csui-toolbar.binf-nav>li>a>.csui-svg-icon,
-.binf-widgets .csui-toolbar.binf-nav>li>a>.icon {
-    background-position: 50%;
-    background-repeat: no-repeat;
-    font-size: 16px;
-    height: 2em;
-    margin: auto;
-    width: 2em
-}
-
-.binf-widgets .csui-toolbar .csui-svg-icon-normal {
-    display: block
-}
-
-.binf-widgets .csui-toolbar .csui-svg-icon-active,
-.binf-widgets .csui-toolbar .csui-svg-icon-hover,
-.binf-widgets .csui-toolbar a:hover .csui-svg-icon-active,
-.binf-widgets .csui-toolbar a:hover .csui-svg-icon-normal {
-    display: none
-}
-
-.binf-widgets .csui-toolbar a:hover .csui-svg-icon-hover {
-    display: block
-}
-
-.binf-widgets .csui-toolbar a:active .csui-svg-icon-hover,
-.binf-widgets .csui-toolbar a:active .csui-svg-icon-normal {
-    display: none
-}
-
-.binf-widgets .csui-toolbar a:active .csui-svg-icon-active {
-    display: block
-}
-
-.binf-widgets .csui-tabletoolbar .csui-toolbar.binf-nav>li>.custom-view-region {
-    cursor: pointer;
-    margin: 0 6px;
-    padding: 0
-}
-
-.binf-widgets .csui-tabletoolbar .csui-toolbar.binf-nav>li>.custom-view-region:focus {
-    outline: 1px dotted #333
-}
-
-.binf-widgets .csui-tabletoolbar .csui-toolbar.binf-nav>li>.custom-view-region>div>div>button {
-    margin: 0;
-    padding: 0
-}
-
-.binf-widgets .csui-toolbar.binf-nav>li {
-    align-items: center;
-    display: flex;
-    flex: 0 0 auto;
-    justify-content: center
-}
-
-.binf-widgets .csui-toolbar.binf-nav>li.binf-disabled {
-    cursor: default
-}
-
-.binf-widgets .csui-toolbar.binf-nav>li>.custom-view-region,
-.binf-widgets .csui-toolbar.binf-nav>li>a {
-    align-items: center;
-    display: flex;
-    height: auto;
-    margin: auto 0;
-    min-height: 32px;
-    min-width: 32px
-}
-
-.binf-widgets .metadata-content .metadata-inner-wrapper .csui-table-rowselection-toolbar-view {
-    background-color: #dce4e8
-}
-
-.binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>.custom-view-region,
-.binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a,
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a {
-    background-color: #dce4e8;
-    color: #333;
-    font-size: 14px;
-    line-height: 24px;
-    margin: 0;
-    padding: 4px 20px
-}
-
-.binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a:hover,
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a:hover {
-    background-color: #eef2f4;
-    border-radius: 3px;
-    color: #5c707d
-}
-
-.binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a:active,
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a:active {
-    background-color: #eee;
-    border-radius: 3px;
-    color: #666
-}
-
-.binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a:focus,
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a:focus {
-    box-shadow: inset 0 0 0 1px #2e3d98, inset 0 0 0 2px #fff;
-    outline: none;
-    outline-offset: 0
-}
-
-.binf-widgets .csui-toolbar.binf-nav li.binf-open>a {
-    background-color: #fff;
-    border-radius: 3px;
-    color: #627783
-}
-
-.binf-widgets .csui-more-dropdown-menu li a.csui-toolitem-icon-text {
-    align-items: center;
-    display: flex
-}
-
-.binf-widgets .csui-more-dropdown-menu li a.csui-toolitem-icon-text .icon {
-    display: inline-block
-}
-
-.binf-widgets .csui-more-dropdown-menu li a.csui-toolitem-icon-text .csui-icon-v2,
-.binf-widgets .csui-more-dropdown-menu li a.csui-toolitem-icon-text .icon {
-    height: 18px;
-    margin-right: 4px;
-    width: 18px
-}
-
-.binf-widgets .csui-acc-tab-region.csui-acc-tab-region-active a.csui-toolitem-icononly.csui-acc-focusable:focus-visible,
-.binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a.csui-toolitem-icononly,
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a.csui-toolitem-icononly,
-.binf-widgets .csui-toolbar>li>a.csui-toolitem.csui-toolitem-icononly {
-    box-shadow: none;
-    outline: none
-}
-
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills .csui-toolitem.csui-toolitem-icononly {
-    border-radius: 50%;
-    margin-right: 4px;
-    padding: 0
-}
-
-.binf-widgets .metadata-content .metadata-inner-wrapper .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a.csui-toolitem-textonly:focus {
-    border-radius: 3px;
-    box-shadow: inset 0 0 0 1px #2e3d98, inset 0 0 0 2px #fff;
-    color: #333;
-    outline: none
-}
-
-.binf-widgets .metadata-content .metadata-inner-wrapper .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a.csui-toolitem-textonly:hover {
-    background-color: #f3fbff;
-    color: #627783
-}
-
-.binf-widgets .metadata-content .metadata-inner-wrapper .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a.csui-toolitem-textonly:active {
-    background-color: #ccc;
-    color: #666
-}
-
-.binf-widgets .metadata-content .metadata-inner-wrapper .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a:disabled {
-    background-color: #f9f9f9;
-    color: #999
-}
-
-.binf-widgets .metadata-inner-wrapper .csui-toolbar.binf-nav>li>a.csui-toolitem-icononly:focus {
-    outline: none
-}
-
-.binf-widgets .csui-toolbar.binf-nav.binf-disabled>li>a>.icon {
-    opacity: .5
-}
-
-.binf-widgets .csui-toolbar.binf-nav.binf-disabled>li>a {
-    color: #777;
-    pointer-events: none
-}
-
-.csui-toolbar.binf-nav-pills>li+li {
-    margin-left: 0;
-    margin-right: 0
-}
-
-.csui-toolbar.binf-nav-pills>li>a {
-    border-radius: 3px
-}
-
-.binf-widgets .csui-toolbar.binf-nav .csui-toolbar-hide-child {
-    opacity: 0;
-    width: 0
-}
-
-.binf-widgets .csui-toolbar.binf-nav .csui-toolitem.binf-disabled {
-    color: #777;
-    cursor: default;
-    pointer-events: none
-}
-
-.binf-widgets .csui-toolbar .csui-loading-dots-wrapper {
-    cursor: auto;
-    display: block;
-    height: 100%;
-    margin-left: 0;
-    min-height: 26px;
-    min-width: 46px;
-    padding: 0;
-    position: relative;
-    top: 0
-}
-
-.csui-toolbar .csui-loading-dots {
-    animation-direction: normal;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-    animation-name: bounce_loading;
-    background-color: #7b9ab0;
-    border-radius: 6px;
-    height: 6px;
-    position: absolute;
-    top: calc(50% - 3px);
-    transform: scale(.3);
-    width: 6px
-}
-
-.csui-toolbar .csui-dot-1 {
-    animation-delay: 1.07s;
-    left: 6px
-}
-
-.csui-toolbar .csui-dot-2 {
-    animation-delay: 1.33s;
-    left: 14px
-}
-
-.csui-toolbar .csui-dot-3 {
-    animation-delay: 1.6s;
-    left: 22px
-}
-
-@keyframes bounce_loading {
-    0% {
-        background-color: rgba(46, 61, 152, .98);
-        transform: scale(1)
-    }
-
-    to {
-        background-color: #7b9ab0;
-        transform: scale(.3)
-    }
-}
-
-.binf-widgets .csui-toolbar .binf-dropdown>.binf-dropdown-menu li>a .csui-icon-rightArrow.csui-icon-rightArrow {
-    background-repeat: no-repeat;
-    height: 16px;
-    margin-top: 2px;
-    position: absolute;
-    right: 0;
-    transform: rotate(90deg);
-    width: 16px
-}
-
-.binf-widgets .csui-toolbar.binf-nav>li>a:focus,
-.binf-widgets .csui-toolbar.binf-nav>li>a:hover {
-    background-color: transparent
-}
-
-.binf-widgets .csui-toolbar.binf-nav .csui-toolitem-icononly,
-.binf-widgets .csui-toolbar.binf-nav.binf-nav-pills>li.csui-more-dropdown-wrapper>a.binf-dropdown-toggle {
-    border-radius: 50%;
-    margin: 0 6px;
-    padding: 0
-}
-
-.binf-widgets .csui-toolbar.binf-nav.binf-nav-pills>li.csui-more-dropdown-wrapper>a.binf-dropdown-toggle {
-    height: 32px
-}
-
-.binf-widgets .csui-toolbar.binf-nav.binf-nav-pills>li.csui-more-dropdown-wrapper>a.binf-dropdown-toggle:focus {
-    box-shadow: none
-}
-
-.binf-widgets .csui-toolbar .binf-open>.binf-dropdown-menu {
-    border-radius: 0
-}
-
-.binf-widgets .csui-target-controls .binf-open>.binf-dropdown-menu {
-    margin: 0
-}
-
-.binf-widgets .csui-table-rowselection-toolbar .binf-open>.binf-dropdown-menu,
-.binf-widgets .csui-table-rowselection-toolbar-view .binf-open>.binf-dropdown-menu {
-    max-height: calc(100vh - 160px)
-}
-
-.binf-widgets .csui-rowselection-toolbar .csui-selected-counter-region,
-.binf-widgets .csui-table-rowselection-toolbar .csui-selected-counter-region {
-    padding-right: 10px
-}
-
-.binf-widgets .csui-fav2-table .csui-toolbar {
-    padding-left: 10px
-}
-
-.binf-widgets .binf-dropdown-submenu>a:after {
-    display: none
-}
-
-.binf-widgets .binf-dropdown-submenu.binf-pull-down.binf-open>.binf-dropdown-menu {
-    left: 0;
-    top: 100%
-}
-
-.binf-widgets .binf-dropdown-submenu.binf-pull-down.binf-open.binf-dropup>.binf-dropdown-menu {
-    bottom: 100%;
-    left: 0;
-    top: auto
-}
-
-.binf-widgets .binf-dropdown-submenu.binf-open>.binf-dropdown-menu {
-    margin: 0
-}
-
-.binf-widgets .binf-dropdown-submenu>a .csui-caret {
-    align-self: flex-start;
-    height: 10px;
-    margin-left: 6px;
-    margin-top: 6px;
-    min-width: 10px;
-    width: 10px
-}
-
-.binf-widgets .binf-dropdown-submenu.binf-open.binf-dropdown>.binf-dropdown-menu.csui-fixed-submenu,
-.binf-widgets .binf-dropdown-submenu.binf-open>.binf-dropdown-menu.csui-fixed-submenu,
-.binf-widgets .binf-dropdown-submenu.binf-pull-down.binf-open.binf-dropup>.binf-dropdown-menu.csui-fixed-submenu {
-    bottom: auto;
-    left: auto;
-    right: auto
-}
-
-.binf-widgets.csui-on-ipad .csui-submenu-active.csui-normal-scrolling,
-.binf-widgets.csui-on-macintosh .csui-submenu-active.csui-normal-scrolling {
-    overflow: visible !important
-}
-
-@media(forced-colors:active) {
-
-    .binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a:active,
-    .binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a:hover,
-    .binf-widgets .csui-table-rowselection-toolbar .csui-toolbar.binf-nav.binf-nav-pills>li>a.csui-toolitem:focus,
-    .binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a.csui-toolitem:focus,
-    .binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a:active,
-    .binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a:hover,
-    .binf-widgets .csui-toolbar.binf-nav a.csui-toolitem.csui-toolitem-icononly:focus,
-    .binf-widgets .csui-toolbar.binf-nav a.csui-toolitem.csui-toolitem-icononly:hover,
-    .csui-table-rowselection-toolbar-view .csui-right-toolbar-view .csui-condensed-header-toggle-container button.csui-condensed-header-toggle:focus {
-        outline: 1px solid #000;
-        outline-offset: -2px
-    }
-}
-
-@media only screen and (max-width:640px) {
-
-    .binf-widgets .csui-tabletoolbar .csui-toolbar.binf-nav>li>.custom-view-region,
-    .binf-widgets .csui-toolbar.binf-nav .csui-toolitem-icononly {
-        margin: 0
-    }
-
-    .binf-widgets .csui-table-rowselection-toolbar .csui-selected-counter-region {
-        padding-right: 0
-    }
-
-    .binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>.custom-view-region,
-    .binf-widgets .csui-table-rowselection-toolbar .binf-nav.binf-nav-pills>li>a,
-    .binf-widgets .csui-table-rowselection-toolbar-view .binf-nav.binf-nav-pills>li>a {
-        padding: 4px 10px
-    }
-}
-
 .csui-right-toolbar-view {
     height: 100%
 }
@@ -529,15 +138,15 @@
 }
 
 .csui-conflict-dialog.csui-individual div.binf-list-group-item {
-    -webkit-align-items: initial;
-    display: flex;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     -ms-flex-align: initial;
+    -webkit-align-items: initial;
     align-items: normal;
     background-color: #fff;
     border-radius: 0;
     border-top: 1px solid #f5f5f5;
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     font-style: normal;
     height: inherit;
     margin: 0;
@@ -884,12 +493,12 @@
 }
 
 .cs-dialog.csui-conflict-dialog.csui-individual .binf-modal-body {
-    font-style: oblique;
-    padding: 0;
     word-wrap: break-word;
     background-color: #fff;
+    font-style: oblique;
     line-height: 1.1em;
-    margin: 0
+    margin: 0;
+    padding: 0
 }
 
 .cs-dialog.csui-conflict-dialog.csui-individual button {
@@ -1054,11 +663,11 @@
 }
 
 .cs-dialog.csui-conflict-dialog.csui-batch .binf-modal-body {
-    font-style: oblique;
-    padding: 16px;
     word-wrap: break-word;
     background-color: #fff;
-    line-height: 1.1em
+    font-style: oblique;
+    line-height: 1.1em;
+    padding: 16px
 }
 
 .cs-dialog.csui-conflict-dialog.csui-batch div.csui-dialog-message {
@@ -1167,15 +776,15 @@
 }
 
 .cs-dialog.csui-addversion-confirmation-dialog .binf-modal-body .csui-file-item {
-    -webkit-align-items: initial;
-    display: flex;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     -ms-flex-align: initial;
+    -webkit-align-items: initial;
     align-items: normal;
     background-color: #fff;
     border-radius: 0;
     border-top: 1px solid #f5f5f5;
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     font-style: normal;
     height: inherit;
     padding: 16px 0;
@@ -1207,15 +816,15 @@
 
 .binf-widgets .csui-search-results .binf-popover .csui-search-cell-value,
 .binf-widgets .csui-search-results-table-view .binf-popover .csui-search-cell-value {
+    word-wrap: break-word;
     clear: both;
     color: #333;
     display: block;
     font-weight: 400;
     line-height: 1.42857143;
+    margin: 1px 0;
     padding: 1px 20px;
-    white-space: normal;
-    word-wrap: break-word;
-    margin: 1px 0
+    white-space: normal
 }
 
 .binf-widgets .csui-search-results .binf-popover .csui-search-cell-list,
@@ -2524,16 +2133,16 @@ tr.csui-cut-row>td.csui-table-cell-type .csui-icon {
 }
 
 .binf-widgets .target-browse .smart-start-locations>div.dropdown-locations>.binf-btn-default {
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-align-items: center;
     background-color: #dce4e8;
     border: none;
     border-radius: 3px;
     font-size: 14px;
     height: 32px;
     padding: 0 12px 0 15px;
-    width: auto;
-    -ms-flex-align: center;
-    -webkit-align-items: center
+    width: auto
 }
 
 @media only screen and (max-width:640px) {
@@ -2553,12 +2162,12 @@ tr.csui-cut-row>td.csui-table-cell-type .csui-icon {
 }
 
 .binf-widgets .target-browse .smart-start-locations>.binf-widgets div.dropdown-locations>.binf-widgets button>.binf-widgets div {
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-align-items: center;
     display: flex;
     display: -ms-flexbox;
-    display: -webkit-flex;
-    -ms-flex-align: center;
-    -webkit-align-items: center
+    display: -webkit-flex
 }
 
 .binf-widgets .target-browse .smart-start-locations .binf-dropdown>div.dropdown-locations {
@@ -2604,14 +2213,14 @@ tr.csui-cut-row>td.csui-table-cell-type .csui-icon {
 }
 
 .binf-widgets .target-browse .smart-start-locations .binf-dropdown-menu li a {
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-align-items: center;
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
     font-size: 16px;
-    padding: 8px 16px;
-    -ms-flex-align: center;
-    -webkit-align-items: center
+    padding: 8px 16px
 }
 
 .binf-widgets .target-browse .smart-start-locations .binf-dropdown-menu .binf-divider {
@@ -2720,7 +2329,9 @@ tr.csui-cut-row>td.csui-table-cell-type .csui-icon {
 }
 
 .binf-widgets .target-browse .cs-modal-filter .binf-form-group {
+    -ms-flex-align: center;
     -webkit-align-items: center;
+    align-items: center;
     display: inline-flex;
     flex-direction: row;
     -ms-flex-direction: row;
@@ -2728,8 +2339,6 @@ tr.csui-cut-row>td.csui-table-cell-type .csui-icon {
     height: 100%;
     margin: 0 0 0 24px;
     position: relative;
-    -ms-flex-align: center;
-    align-items: center;
     width: calc(100% - 62px)
 }
 
@@ -3133,15 +2742,15 @@ html[dir=rtl] .cs-modal-filter .smart-inline-search-clear {
 }
 
 .binf-widgets .csui-mp-content .cs-list .binf-list-group-item {
-    align-items: center;
-    display: flex;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     -ms-flex-align: center;
+    align-items: center;
     background-color: transparent;
     border-bottom: 1px solid #fff;
     border-radius: 0;
     border-top: 1px solid #fff;
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
     height: 48px;
     padding: 0 0 0 5px
 }
@@ -3287,12 +2896,12 @@ html[dir=rtl] .binf-widgets .csui-mp-content .cs-list .binf-list-group-item .csu
 }
 
 .binf-widgets .search-location-name {
+    -ms-flex-align: center;
     align-items: center;
+    border-radius: 0;
     display: flex;
     display: -webkit-flex;
     display: -ms-flexbox;
-    -ms-flex-align: center;
-    border-radius: 0;
     height: 3em;
     margin-right: 4px;
     padding-top: 5px;
@@ -3402,15 +3011,15 @@ html[dir=rtl] .binf-widgets .csui-mp-content .cs-list .binf-list-group-item .csu
 }
 
 .binf-widgets .csui-mp-header .csui-folder-name {
+    -ms-flex-align: center;
     -webkit-align-items: center;
+    align-items: center;
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
     flex-direction: row;
     -ms-flex-direction: row;
-    -webkit-flex-direction: row;
-    -ms-flex-align: center;
-    align-items: center
+    -webkit-flex-direction: row
 }
 
 .binf-widgets .csui-mp-header .csui-folder-name,
@@ -4615,9 +4224,9 @@ html[dir=rtl] .binf-widgets.csui-edit-permission-popover-container .binf-popover
 }
 
 .binf-widgets .csui-permissions-apply-dialog.cs-dialog .binf-modal-body .csui-apply-permission-content {
+    word-wrap: break-word;
     line-height: 25px;
-    padding: 10px 16px 0 32px;
-    word-wrap: break-word
+    padding: 10px 16px 0 32px
 }
 
 .binf-widgets .csui-permissions-apply-dialog.cs-dialog .tile-header .binf-modal-title .icon {
@@ -4758,7 +4367,7 @@ html[dir=rtl] .binf-widgets.csui-edit-permission-popover-container .binf-popover
     display: inline-flex;
     display: -webkit-inline-flex;
     line-height: normal;
-    padding-bottom: 8px;
+    padding-bottom: 14px;
     position: relative;
     width: 100%
 }
@@ -4803,7 +4412,7 @@ html[dir=rtl] .binf-widgets.csui-edit-permission-popover-container .binf-popover
 .binf-widgets .csui-permission-attributes .csui-permission-attribute-tree {
     max-height: calc(100vh - 70px);
     overflow: hidden;
-    padding: 13px 0 16px 15px
+    padding: 15px 0 13px 15px
 }
 
 .binf-widgets .binf-modal-content .csui-permission-attributes .csui-permission-attribute-tree {
@@ -4825,8 +4434,69 @@ html[dir=rtl] .binf-widgets.csui-edit-permission-popover-container .binf-popover
     width: calc(100% + 85px)
 }
 
-.csui-tree-child otc-checkbox {
-    cursor: pointer
+.csui-tree-child label:focus {
+    box-shadow: 0 0 0 1px #333
+}
+
+.csui-tree-child label:before {
+    background-color: #fff;
+    background-image: url(../controls/tree/impl/images/checkbox.svg);
+    border-radius: 2px;
+    content: "";
+    cursor: pointer;
+    outline: 0
+}
+
+.csui-tree-child label:after,
+.csui-tree-child label:before {
+    display: inline-block;
+    height: 18px;
+    position: absolute;
+    width: 18px
+}
+
+.csui-tree-child label:after {
+    background-color: #666;
+    color: #fff
+}
+
+.csui-tree-child input[type=checkbox] {
+    cursor: pointer;
+    float: left;
+    height: 18px;
+    margin: 0;
+    opacity: 0;
+    width: 18px;
+    z-index: 1
+}
+
+.csui-tree-child input[type=checkbox]:checked+label:after {
+    background: url(../controls/tree/impl/images/checkbox_selected.svg);
+    content: "";
+    font-family: FontAwesome
+}
+
+.csui-tree-child input[type=checkbox]:disabled+label:before {
+    background-color: #fff;
+    background: url(../controls/tree/impl/images/checkbox_disabled.svg);
+    cursor: not-allowed
+}
+
+.csui-tree-child input[type=checkbox].icon-checkbox-on_disabled+label:before {
+    background-color: #fff;
+    background: url(../controls/tree/impl/images/checkbox_on24_dis.svg);
+    cursor: default
+}
+
+.csui-tree-child input[type=checkbox].icon-checkbox-disabled+label:before {
+    background-color: #fff;
+    background: url(../controls/tree/impl/images/checkbox24_dis.svg);
+    cursor: default
+}
+
+.csui-tree-child input[type=checkbox].icon-checkbox-disabled,
+.csui-tree-child input[type=checkbox].icon-checkbox-on_disabled {
+    cursor: default
 }
 
 .binf-widgets .csui-tree-split.csui-split-fullcontrol,
@@ -5061,19 +4731,6 @@ _:-ms-lang(x) {
     .binf-table.dataTable li.binf-dropdown.binf-open ul,
     .binf-widgets .tile-nav .binf-dropdown-menu {
         border: 1px solid #fff
-    }
-
-    .binf-widgets .binf-dropdown-menu>li>a:focus,
-    .binf-widgets .binf-dropdown-menu>li>a:focus-visible,
-    .binf-widgets .binf-dropdown-menu>li>a:hover {
-        outline: 1px solid;
-        outline-offset: -3px
-    }
-
-    .metadata-header .cs-dropdown-menu .binf-dropdown>.binf-dropdown-toggle:focus,
-    .metadata-header .cs-dropdown-menu .binf-dropdown>.binf-dropdown-toggle:focus-visible {
-        border-radius: 0;
-        outline: 1px solid
     }
 }
 
@@ -6221,10 +5878,6 @@ body.csui-on-ipad .csui-table-column-search>.csui-table-search-icon span {
     cursor: pointer
 }
 
-.binf-table.dataTable>thead .data-table-custom-area {
-    cursor: default
-}
-
 .binf-widgets .binf-table.dataTable {
     display: flex;
     flex: 1 1 100%;
@@ -6879,17 +6532,17 @@ tr.csui-new-item.csui-saved-item {
 }
 
 .csui-nodetable .binf-table.csui-nowrap-table>thead>tr>th>.csui-column-header-menu>.csui-toolbar>.csui-more-dropdown-wrapper>.binf-dropdown-toggle {
-    height: 16px;
-    margin: 4px;
-    min-height: unset;
-    min-width: unset;
+    height: 24px;
+    margin: 0;
+    min-height: 24px;
+    min-width: 24px;
     padding: 0;
-    width: 16px
+    width: 24px
 }
 
 .csui-nodetable .binf-table.csui-nowrap-table>thead>tr>th>.csui-column-header-menu>.csui-toolbar>.csui-more-dropdown-wrapper>.binf-dropdown-toggle>* {
-    height: 16px;
-    width: 16px
+    height: 24px;
+    width: 24px
 }
 
 .csui-nodetable .binf-table.csui-nowrap-table>thead>tr>th .csui-column-resize-handle {
@@ -6975,10 +6628,7 @@ tr.csui-new-item.csui-saved-item {
 }
 
 .csui-nodetable:has(.binf-table.csui-nowrap-table) .csui-column-menu-container {
-    contain: layout;
-    overflow: visible;
-    position: fixed;
-    z-index: 4
+    position: relative
 }
 
 .csui-nodetable:has(.binf-table.csui-nowrap-table) .csui-column-menu-container>* {
@@ -7086,7 +6736,6 @@ tr.csui-new-item.csui-saved-item {
     display: block;
     float: left;
     height: 37px;
-    margin-left: 0;
     margin-right: 7px;
     position: relative;
     width: 16px
@@ -7285,6 +6934,7 @@ tr.csui-new-item.csui-saved-item {
 
 .binf-widgets .cs-description,
 .binf-widgets .csui-summary-colunm .summary {
+    -ms-flex-align: start;
     align-items: flex-start;
     -webkit-align-items: flex-start;
     display: flex;
@@ -7293,19 +6943,18 @@ tr.csui-new-item.csui-saved-item {
     flex-direction: row;
     -webkit-flex-direction: row;
     -ms-flex-direction: row;
-    -ms-flex-align: start;
     font-size: 16px;
     line-height: 16px
 }
 
 .binf-widgets .description,
 .binf-widgets .summary {
+    word-wrap: break-word;
     flex: 1 auto;
     -webkit-flex: 1 auto;
     -ms-flex: 1 0;
     -ms-word-break: break-all;
-    word-break: break-all;
-    word-wrap: break-word
+    word-break: break-all
 }
 
 .binf-widgets .csui-details-row-description .description,
@@ -9876,6 +9525,7 @@ html[dir=rtl] .binf-widgets .csui-thumbnail-overview .binf-popover.binf-left>.bi
 }
 
 .binf-widgets .csui-thumbnail-overview .binf-popover .csui-overview-container .csui-thumbnail-name .csui-thumbnail-name-justify-div {
+    word-wrap: break-word;
     align-content: center;
     align-items: center;
     flex: 1 1 auto;
@@ -9884,8 +9534,7 @@ html[dir=rtl] .binf-widgets .csui-thumbnail-overview .binf-popover.binf-left>.bi
     margin: 0;
     overflow: hidden;
     white-space: normal;
-    word-break: break-word;
-    word-wrap: break-word
+    word-break: break-word
 }
 
 .binf-widgets .csui-thumbnail-overview .binf-popover .csui-overview-container .csui-thumbnail-properties .csui-thumbnail-nodestate-container .csui-thumbnail-nodestate>ul {
@@ -10328,9 +9977,9 @@ screen and (-webkit-min-device-pixel-ratio:2) {
 }
 
 .binf-widgets .binf-list-group-item.csui-member-list-item:focus {
+    -moz-outline-radius: 2px;
     outline: 1px solid #2e3d98;
-    outline-offset: -1.5px;
-    -moz-outline-radius: 2px
+    outline-offset: -1.5px
 }
 
 .binf-widgets .csui-member-list-item>div {
@@ -10408,7 +10057,9 @@ screen and (-webkit-min-device-pixel-ratio:2) {
 }
 
 .csui-restructure-dialog .binf-modal-content .binf-modal-header>div.tile-title {
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-align-items: center;
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
@@ -10418,9 +10069,7 @@ screen and (-webkit-min-device-pixel-ratio:2) {
     height: 100%;
     margin: 0;
     padding: 0 1.5em;
-    width: 100%;
-    -ms-flex-align: center;
-    -webkit-align-items: center
+    width: 100%
 }
 
 .csui-restructure-dialog .binf-modal-content .binf-modal-header>div.tile-title h2 {
@@ -10633,12 +10282,12 @@ screen and (-webkit-min-device-pixel-ratio:2) {
 }
 
 .cs-dialog .binf-modal-header .cs-apply-properties-selector .cs-icon.icon-caret-down {
-    height: 10px;
-    margin-left: 8px;
-    width: 10px;
     margin-Right: 8px;
     display: inline-block;
-    text-align: right
+    height: 10px;
+    margin-left: 8px;
+    text-align: right;
+    width: 10px
 }
 
 .binf-widgets .cs-apply-properties-selector button .cs-icon {
@@ -10722,7 +10371,6 @@ screen and (-webkit-min-device-pixel-ratio:2) {
 }
 
 .binf-widgets .csui-version-control-dialog .binf-modal-body .binf-row .csui-version-reserve {
-    align-items: center;
     display: flex
 }
 
@@ -10730,8 +10378,9 @@ screen and (-webkit-min-device-pixel-ratio:2) {
     padding-left: 0
 }
 
-.binf-widgets .csui-version-control-dialog .binf-modal-body .binf-row .csui-version-reserve otc-checkbox {
-    margin-right: 8px
+.binf-widgets .csui-version-control-dialog .binf-modal-body .binf-row .csui-version-reserve .binf-checkbox-inline input {
+    margin-left: 0;
+    position: relative
 }
 
 .binf-widgets .csui-version-control-dialog .binf-modal-body .binf-row .version-description textarea {
@@ -11528,9 +11177,9 @@ div.csui-version-folder-permissions {
 }
 
 .binf-widgets .csui-search-results .searchDetails {
+    word-wrap: break-word;
     color: #333;
     font-size: inherit;
-    word-wrap: break-word;
     max-width: calc(100% - 50px);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -12354,6 +12003,7 @@ body.csui-on-ipad.binf-widgets .csui-facetbarviewOpened.csui-search-results-cont
 .csui-search-sorting .cs-sort-links .binf-dropdown-menu>li.binf-active>a:focus {
     background-color: #f5f5f5;
     color: #262626;
+    outline: 1px dotted #333;
     text-decoration: none
 }
 
@@ -13520,31 +13170,6 @@ body.csui-on-ipad .grid-rows>.binf-row>.row-xs-full.search-results-container {
     width: auto
 }
 
-@media (forced-colors:active) {
-    .binf-widgets .csui-search-right-header-container .csui-query-save:focus-visible {
-        outline: 1px solid
-    }
-}
-
-@media (forced-colors:active) and (prefers-color-scheme:dark) {
-
-    .binf-widgets .icon-expandArrowDown,
-    .binf-widgets .icon-expandArrowDown:active,
-    .binf-widgets .icon-expandArrowDown:focus,
-    .icon-caret-down,
-    .search-results-item-expand .icon-expandArrowDown {
-        background-image: url(../themes/carbonfiber/image/icons/caret_down_white.svg)
-    }
-
-    .binf-widgets .icon-expandArrowUp,
-    .binf-widgets .icon-expandArrowUp:active,
-    .binf-widgets .icon-expandArrowUp:focus,
-    .icon-caret-up,
-    .search-results-item-expand .icon-expandArrowUp {
-        background-image: url(../themes/carbonfiber/image/icons/caret_up_white.svg)
-    }
-}
-
 .binf-widgets .csui-search-right-header-container .csui-segemented-save-tools {
     display: flex;
     margin-right: 5px
@@ -14097,10 +13722,11 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
 }
 .msger-btn {
     text-align: start!important;
-    background-color: white!important;
+    /* background-color: white!important; */
     border: none!important;
 }
 .chat-sidenav-title {
+    background-color: none!important;
     font-weight: 400!important;
     padding:10px 5px!important;
     border-radius: 5px;
@@ -14165,7 +13791,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     justify-content: space-between;
     padding: 10px !important;
     border-bottom: var(--border) !important;
-    background-color: #dce4e8;
+    background-color: none;
     color: black;
     width: 100%;
 }
@@ -14219,7 +13845,6 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     width: 25px;
     height: 25px;
     margin-right: 10px !important;
-    /* background: #ddd; */
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -14231,6 +13856,19 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     border-radius: 15px;
     background: var(--left-msg-bg);
     width: 90%;
+}
+
+.left-msg .msg-bubble {
+    border:1px solid #d1d1d1!important;
+}
+
+.right-msg .msg-bubble {
+    border:1px solid #154075!important;
+    background-color: #154075!important;
+}
+
+.right-msg .msg-bubble .msg-text {
+    color:#f7f7f7!important;
 }
 
 .msg-info {
@@ -14327,7 +13965,16 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     border: none;
     background-color: white;
 }
-
+.clear-button {
+    display: flex; 
+    align-items: center!important; 
+    gap: 6px; 
+    padding: 10px 14px!important; 
+    background-color: #164f95; 
+    border: 1px solid #ddd; 
+    border-radius: 20px!important; 
+    cursor: pointer;
+}
 
 .msger-chat {
     background-color: #fcfcfe;

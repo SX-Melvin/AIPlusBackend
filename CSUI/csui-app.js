@@ -8,7 +8,7 @@ csui.define(
   ],
   function (x, m, p, y) {
     var s = y.Behavior.extend({
-      constructor: function (d, t) {
+      constructor: function (f, t) {
         y.Behavior.prototype.constructor.apply(this, arguments);
         var i = m.bind(this._destroyExpandedView, this, !1),
           o = m.bind(this._destroyExpandedView, this, !0),
@@ -25,78 +25,78 @@ csui.define(
       onExpand: function () {
         if (!this.expanded) {
           this.expanded = !0;
-          var a = this,
-            d = this.view.completeCollection
+          var l = this,
+            f = this.view.completeCollection
               ? this.view.completeCollection.clone()
               : this.view.collection.clone();
           this.view.currentFilter !== void 0 &&
-            d.setFilter(this.view.currentFilter, { fetch: !1 }),
+            f.setFilter(this.view.currentFilter, { fetch: !1 }),
             this.view.isSearchOpen() && this.view.searchClicked();
-          var t = a.getOption("expandedView"),
+          var t = l.getOption("expandedView"),
             i = t;
           m.isString(t) !== !0 &&
-            (i = t.prototype instanceof p.View ? t : t.call(a.view));
+            (i = t.prototype instanceof p.View ? t : t.call(l.view));
           var o = ["csui/controls/dialog/dialog.view"];
           m.isString(i) && o.push(i),
             x(
               o,
               function (n) {
                 m.isString(i) && (i = arguments[1]);
-                var u = e(a.options, "expandedViewOptions", a.view);
-                (a.expandedView = new i(
+                var u = e(l.options, "expandedViewOptions", l.view);
+                (l.expandedView = new i(
                   m.extend(
                     {
-                      context: a.view.options.context,
-                      collection: d,
-                      orderBy: e(a.options, "orderBy", a.view),
-                      filterBy: a.view.currentFilter,
+                      context: l.view.options.context,
+                      collection: f,
+                      orderBy: e(l.options, "orderBy", l.view),
+                      filterBy: l.view.currentFilter,
                       limited: !1,
                       isExpandedView: !0,
                     },
                     u
                   )
                 )),
-                  (a.dialog = new n({
+                  (l.dialog = new n({
                     iconLeft:
-                      e(a.options, "titleBarIcon", a.view) ||
-                      e(a.view.options, "titleBarIcon", a.view),
+                      e(l.options, "titleBarIcon", l.view) ||
+                      e(l.view.options, "titleBarIcon", l.view),
                     iconNameLeft:
-                      e(a.options, "titleBarIconName", a.view) ||
-                      e(a.view.options, "titleBarIconName", a.view),
+                      e(l.options, "titleBarIconName", l.view) ||
+                      e(l.view.options, "titleBarIconName", l.view),
                     actionIconLeft:
-                      e(a.options, "actionTitleBarIcon", a.view) ||
-                      e(a.view.options, "actionTitleBarIcon", a.view),
+                      e(l.options, "actionTitleBarIcon", l.view) ||
+                      e(l.view.options, "actionTitleBarIcon", l.view),
                     actionIconNameLeft:
-                      e(a.options, "actionTitleBarIconName", a.view) ||
-                      e(a.view.options, "actionTitleBarIconName", a.view),
-                    imageLeftUrl: e(a.options, "titleBarImageUrl", a.view),
-                    imageLeftClass: e(a.options, "titleBarImageClass", a.view),
-                    title: e(a.options, "dialogTitle", a.view),
-                    iconRight: e(a.options, "dialogTitleIconRight", a.view),
+                      e(l.options, "actionTitleBarIconName", l.view) ||
+                      e(l.view.options, "actionTitleBarIconName", l.view),
+                    imageLeftUrl: e(l.options, "titleBarImageUrl", l.view),
+                    imageLeftClass: e(l.options, "titleBarImageClass", l.view),
+                    title: e(l.options, "dialogTitle", l.view),
+                    iconRight: e(l.options, "dialogTitleIconRight", l.view),
                     iconNameRight: e(
-                      a.options,
+                      l.options,
                       "dialogTitleIconNameRight",
-                      a.view
+                      l.view
                     ),
-                    className: r(a.options, "dialogClassName", a.view),
+                    className: r(l.options, "dialogClassName", l.view),
                     largeSize: !0,
-                    view: a.expandedView,
-                    headerView: e(a.options, "headerView", a.view),
+                    view: l.expandedView,
+                    headerView: e(l.options, "headerView", l.view),
                     notabablesBehavior: e(
-                      a.options,
+                      l.options,
                       "notabablesBehavior",
-                      a.view
+                      l.view
                     ),
                   })),
-                  a.bindHistoryBack(),
-                  a
-                    .listenTo(a.dialog, "before:hide", a._expandOtherView)
-                    .listenTo(a.dialog, "destroy", a._enableExpandingAgain),
-                  a._expandOtherView(!1),
-                  a.dialog.show();
+                  l.bindHistoryBack(),
+                  l
+                    .listenTo(l.dialog, "before:hide", l._expandOtherView)
+                    .listenTo(l.dialog, "destroy", l._enableExpandingAgain),
+                  l._expandOtherView(!1),
+                  l.dialog.show();
               },
               function (n) {
-                a.expanded = !1;
+                l.expanded = !1;
               }
             );
         }
@@ -104,44 +104,44 @@ csui.define(
       bindHistoryBack: function () {
         window.addEventListener("popstate", this.boundHistoryBack);
       },
-      historyBack: function (a) {
+      historyBack: function (l) {
         this.dialog && this.dialog.destroy();
       },
-      _destroyExpandedView: function (a) {
+      _destroyExpandedView: function (l) {
         if (this.dialog) {
-          var d = a ? "kill" : "destroy";
-          this.dialog[d](),
+          var f = l ? "kill" : "destroy";
+          this.dialog[f](),
             (this.dialog = void 0),
             window.removeEventListener("popstate", this.boundHistoryBack);
         }
       },
-      _expandOtherView: function (a) {
+      _expandOtherView: function (l) {
         this.options.collapsedView &&
           this.options.collapsedView.triggerMethod(
-            a === !1 ? "go:away" : "go:back"
+            l === !1 ? "go:away" : "go:back"
           );
       },
       _enableExpandingAgain: function () {
         if (((this.expanded = !1), this.view.tabableRegionBehavior)) {
-          var a = this.view.tabableRegionBehavior,
-            d = this.view.ui.tileExpand;
-          a.currentlyFocusedElement &&
-            a.currentlyFocusedElement.prop("tabindex", -1),
-            d && d.prop("tabindex", 0),
-            d.trigger("focus"),
-            a.setInitialTabIndex(),
+          var l = this.view.tabableRegionBehavior,
+            f = this.view.ui.tileExpand;
+          l.currentlyFocusedElement &&
+            l.currentlyFocusedElement.prop("tabindex", -1),
+            f && f.prop("tabindex", 0),
+            f.trigger("focus"),
+            l.setInitialTabIndex(),
             (this.view.currentTabPosition = 2);
         }
       },
     });
-    function e(a, d, t) {
-      if (a != null) {
-        var i = a[d];
-        return m.isFunction(i) ? a[d].call(t) : i;
+    function e(l, f, t) {
+      if (l != null) {
+        var i = l[f];
+        return m.isFunction(i) ? l[f].call(t) : i;
       }
     }
-    function r(a, d, t) {
-      var i = e(a, d, t);
+    function r(l, f, t) {
+      var i = e(l, f, t);
       return i ? (i += " csui-expanded") : (i = "csui-expanded"), i;
     }
     return s;
@@ -168,7 +168,7 @@ csui.define(
     function (x, m, p, y, s) {
       "use strict";
       var e = p.Behavior.extend({
-        constructor: function (d, t) {
+        constructor: function (f, t) {
           p.Behavior.prototype.constructor.apply(this, arguments),
             (this.view = t);
           var i = r.call(this, "model") || t.model || t.options.model;
@@ -182,19 +182,19 @@ csui.define(
             u = this;
           t.getTemplate = function () {
             if (this.model && this.model.error) {
-              var h = r.call(u, "el");
-              if (typeof h != "string" && !r.call(u, "region")) return !1;
+              var d = r.call(u, "el");
+              if (typeof d != "string" && !r.call(u, "region")) return !1;
             }
             return n.apply(t, arguments);
           };
           var c;
           this.listenTo(t, "render", function () {
-            var h = this.model && this.model.error;
-            if (h) {
+            var d = this.model && this.model.error;
+            if (d) {
               if ((c && c.empty(), (c = r.call(this, "region")), !c)) {
-                var f = r.call(this, "el") || t.el;
-                typeof f == "string" && (f = t.$(f)),
-                  (c = new p.Region({ el: f }));
+                var h = r.call(this, "el") || t.el;
+                typeof h == "string" && (h = t.$(h)),
+                  (c = new p.Region({ el: h }));
               }
               c.show(
                 new o(
@@ -202,7 +202,7 @@ csui.define(
                     {
                       model: new m.Model({
                         message: s.itemCannotBeAccessed,
-                        title: h.message,
+                        title: d.message,
                       }),
                     },
                     r.call(this, "errorViewOptions")
@@ -216,17 +216,17 @@ csui.define(
             })
             .listenTo(t, "update:model", this._setupErrorHandling);
         },
-        _setupErrorHandling: function (a) {
+        _setupErrorHandling: function (l) {
           this.model && this.stopListening(this.model),
-            (this.model = a),
+            (this.model = l),
             this.listenTo(this.model, "error", function () {
               this.view.render();
             });
         },
       });
-      function r(a) {
-        var d = this.getOption(a);
-        return x.isFunction(d) ? d.call(this.view) : d;
+      function r(l) {
+        var f = this.getOption(l);
+        return x.isFunction(f) ? f.call(this.view) : f;
       }
       return e;
     }
@@ -237,7 +237,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -317,10 +317,10 @@ csui.define(
     function (x, m, p, y) {
       "use strict";
       var s = p.Behavior.extend({
-        constructor: function (a, d) {
+        constructor: function (l, f) {
           p.Behavior.prototype.constructor.apply(this, arguments),
-            (this.view = d);
-          var t = e.call(this, "model") || d.model || d.options.model;
+            (this.view = f);
+          var t = e.call(this, "model") || f.model || f.options.model;
           this.listenTo(t, "request", this._fetchingCollectionStarted)
             .listenTo(t, "sync", this._fetchingCollectionSucceeded)
             .listenTo(t, "error", this._fetchingCollectionFailed),
@@ -330,23 +330,23 @@ csui.define(
           var i = this.getOption("stateView");
           x.isFunction(i) &&
             !(i.prototype instanceof m.View) &&
-            (i = i.call(d)),
+            (i = i.call(f)),
             (this.stateView = i || y);
-          var o = d.getTemplate,
+          var o = f.getTemplate,
             n = this;
-          d.getTemplate = function () {
+          f.getTemplate = function () {
             if (!t.fetched) {
               var c = e.call(n, "el");
               if (typeof c != "string" && !e.call(n, "region")) return !1;
             }
-            return o.apply(d, arguments);
+            return o.apply(f, arguments);
           };
           var u;
-          this.listenTo(d, "render", function () {
+          this.listenTo(f, "render", function () {
             if (!t.fetched) {
               if ((u && u.empty(), (u = e.call(this, "region")), !u)) {
-                var c = e.call(this, "el") || d.el;
-                typeof c == "string" && (c = d.$(c)),
+                var c = e.call(this, "el") || f.el;
+                typeof c == "string" && (c = f.$(c)),
                   (u = new p.Region({ el: c }));
               }
               u.show(
@@ -361,7 +361,7 @@ csui.define(
                 )
               );
             }
-          }).listenTo(d, "before:destroy", function () {
+          }).listenTo(f, "before:destroy", function () {
             u && u.empty();
           });
         },
@@ -381,8 +381,8 @@ csui.define(
         },
       });
       function e(r) {
-        var a = this.getOption(r);
-        return x.isFunction(a) ? a.call(this.view) : a;
+        var l = this.getOption(r);
+        return x.isFunction(l) ? l.call(this.view) : l;
       }
       return s;
     }
@@ -400,30 +400,30 @@ csui.define(
           "click .tile-expand": "onMoreLinkClick",
         },
         ui: { moreLink: ".cs-more" },
-        constructor: function (r, a) {
+        constructor: function (r, l) {
           p.Behavior.prototype.constructor.apply(this, arguments);
         },
         initialize: function (e, r) {
           if (r.options.limited !== !1) {
-            var a = r.collection,
-              d;
-            a ||
-              ((a = this.getOption("completeCollection")),
-              a instanceof m.Collection ||
-                ((d = this.getOption("completeCollectionOptions")),
-                a.prototype instanceof m.Collection
-                  ? (a = new a(void 0, d))
-                  : ((a = a.call(r)),
-                    a instanceof m.Collection || (a = new a(void 0, d))))),
-              r.options.orderBy && a.setOrder(r.options.orderBy, !1),
-              this.listenTo(a, "add", this._addItem)
-                .listenTo(a, "remove", this._removeItem)
-                .listenTo(a, "reset", this.enableMoreLink)
-                .listenTo(a, "sync", function (i) {
+            var l = r.collection,
+              f;
+            l ||
+              ((l = this.getOption("completeCollection")),
+              l instanceof m.Collection ||
+                ((f = this.getOption("completeCollectionOptions")),
+                l.prototype instanceof m.Collection
+                  ? (l = new l(void 0, f))
+                  : ((l = l.call(r)),
+                    l instanceof m.Collection || (l = new l(void 0, f))))),
+              r.options.orderBy && l.setOrder(r.options.orderBy, !1),
+              this.listenTo(l, "add", this._addItem)
+                .listenTo(l, "remove", this._removeItem)
+                .listenTo(l, "reset", this.enableMoreLink)
+                .listenTo(l, "sync", function (i) {
                   i instanceof m.Collection && this.synchronizeCollections();
                 }),
-              (r.completeCollection = a);
-            var t = m.Collection.extend(a ? { model: a.model } : {});
+              (r.completeCollection = l);
+            var t = m.Collection.extend(l ? { model: l.model } : {});
             (r.collection = new t()),
               this.synchronizeCollections(),
               this.listenTo(
@@ -441,12 +441,12 @@ csui.define(
               this.view.options.filterValue.length > 0
             ) {
               var r = this.view.options.filterValue.toLowerCase().split(" "),
-                a = s(this.options, "filterByProperty", this.view);
+                l = s(this.options, "filterByProperty", this.view);
               (this.view.currentFilter = {}),
-                (this.view.currentFilter[a] =
+                (this.view.currentFilter[l] =
                   this.view.options.filterValue.toLowerCase()),
-                (e = this.view.completeCollection.filter(function (d) {
-                  var t = d.get(a),
+                (e = this.view.completeCollection.filter(function (f) {
+                  var t = f.get(l),
                     i;
                   return (
                     t &&
@@ -488,10 +488,10 @@ csui.define(
           this.view.collection.remove(e);
         },
       });
-      function s(e, r, a) {
+      function s(e, r, l) {
         if (e != null) {
-          var d = e[r];
-          return x.isFunction(d) ? e[r].call(a) : d;
+          var f = e[r];
+          return x.isFunction(f) ? e[r].call(l) : f;
         }
       }
       return y;
@@ -510,9 +510,9 @@ csui.define(
       let y = m.config();
       y = { ...y, ...y?.csui };
       var s = x.Behavior.extend({
-        constructor: function (r = {}, a) {
+        constructor: function (r = {}, l) {
           y.enablePanelResize &&
-            (this.listenTo(a, {
+            (this.listenTo(l, {
               dynamicDomLoaded: this.initializeResizeBehaviour,
             }),
             (this.options = r));
@@ -544,7 +544,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -645,7 +645,7 @@ csui.define(
     ],
     function (x, m, p, y, s, e, r) {
       "use strict";
-      var a = y.Behavior.extend({
+      var l = y.Behavior.extend({
         defaults: { expandButton: ".tile-footer" },
         triggers: {
           "click .cs-more": "expand",
@@ -668,15 +668,15 @@ csui.define(
               );
         },
         _renderExpandButton: function () {
-          var t = d.call(this, "expandButton"),
+          var t = f.call(this, "expandButton"),
             i = this.view.$(t),
-            o = d.call(this, "expandIconTitle"),
+            o = f.call(this, "expandIconTitle"),
             n = o || e.expandIconTooltip,
-            u = d.call(this, "dialogTitle"),
-            c = d.call(this, "expandIconAria"),
-            h = c || m.str.sformat(e.expandIconAria, u),
-            f = { expandIconTitle: n, expandIconAria: h };
-          i.html(s(f));
+            u = f.call(this, "dialogTitle"),
+            c = f.call(this, "expandIconAria"),
+            d = c || m.str.sformat(e.expandIconAria, u),
+            h = { expandIconTitle: n, expandIconAria: d };
+          i.html(s(h));
         },
         _expand: function () {
           if (!(this.expanded || (this.view && this.view.errorExists))) {
@@ -689,18 +689,18 @@ csui.define(
             m.isString(i) && o.push(i),
               x(o, function (u) {
                 m.isString(i) && (i = arguments[1]);
-                var c = d.call(n, "expandedViewOptions"),
-                  h = new i(c);
+                var c = f.call(n, "expandedViewOptions"),
+                  d = new i(c);
                 (n._dialog = new u({
-                  iconLeft: d.call(n, "titleBarIcon"),
-                  imageLeftUrl: d.call(n, "titleBarImageUrl"),
-                  imageLeftClass: d.call(n, "titleBarImageClass"),
-                  title: d.call(n, "dialogTitle"),
-                  iconRight: d.call(n, "dialogTitleIconRight"),
+                  iconLeft: f.call(n, "titleBarIcon"),
+                  imageLeftUrl: f.call(n, "titleBarImageUrl"),
+                  imageLeftClass: f.call(n, "titleBarImageClass"),
+                  title: f.call(n, "dialogTitle"),
+                  iconRight: f.call(n, "dialogTitleIconRight"),
                   className:
-                    "cs-expanded " + (d.call(n, "dialogClassName") || ""),
+                    "cs-expanded " + (f.call(n, "dialogClassName") || ""),
                   largeSize: !0,
-                  view: h,
+                  view: d,
                 })),
                   n
                     .listenTo(n._dialog, "hide", function () {
@@ -721,12 +721,12 @@ csui.define(
           this._dialog && (this._dialog.destroy(), (this._dialog = void 0));
         },
       });
-      function d(t) {
+      function f(t) {
         var i = this.options || {},
           o = i[t];
         return m.isFunction(o) ? i[t].call(this.view) : o;
       }
-      return a;
+      return l;
     }
   ),
   csui.define(
@@ -734,7 +734,7 @@ csui.define(
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -765,7 +765,7 @@ csui.define(
 `
           );
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -778,7 +778,7 @@ csui.define(
             {
               name: "if",
               hash: {},
-              fn: s.program(4, d, 0),
+              fn: s.program(4, f, 0),
               inverse: s.noop,
               loc: {
                 start: { line: 8, column: 4 },
@@ -789,7 +789,7 @@ csui.define(
             ? t
             : "";
         },
-        4: function (s, e, r, a, d) {
+        4: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -841,7 +841,7 @@ csui.define(
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -859,8 +859,8 @@ csui.define(
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
-                inverse: s.program(3, d, 0),
+                fn: s.program(1, f, 0),
+                inverse: s.program(3, f, 0),
                 loc: {
                   start: { line: 3, column: 2 },
                   end: { line: 13, column: 9 },
@@ -970,34 +970,34 @@ csui.define(
         serializeData: function () {
           return x.reduce(
             ["icon", "imageUrl", "imageClass", "title"],
-            function (d, t) {
-              return (d[t] = a.call(this, t)), d;
+            function (f, t) {
+              return (f[t] = l.call(this, t)), f;
             },
             {},
             this
           );
         },
         _renderContentView: function () {
-          var d = a.call(this, "contentView");
-          if (!d)
+          var f = l.call(this, "contentView");
+          if (!f)
             throw new y.Error({
               name: "NoContentViewError",
               message: 'A "contentView" must be specified',
             });
-          var t = a.call(this, "contentViewOptions");
-          (this.contentView = new d(t)),
+          var t = l.call(this, "contentViewOptions");
+          (this.contentView = new f(t)),
             this.propagateEventsToViews(this.contentView),
             this.content.show(this.contentView);
         },
       });
       x.extend(r.prototype, s);
-      function a(d, t) {
+      function l(f, t) {
         var i;
         return (
           t
-            ? (i = t[d])
-            : ((i = a.call(this, d, this.options || {})),
-              i === void 0 && (i = this[d])),
+            ? (i = t[f])
+            : ((i = l.call(this, f, this.options || {})),
+              i === void 0 && (i = this[f])),
           x.isFunction(i) && !(i.prototype instanceof p.View) ? i.call(this) : i
         );
       }
@@ -1024,16 +1024,16 @@ csui.define(
         onRender: function () {
           this._preloadIcons();
         },
-        constructor: function (d) {
+        constructor: function (f) {
           y.ItemView.prototype.constructor.apply(this, arguments);
         },
         _preloadIcons: function () {
           m.each(
             e,
-            function (a) {
+            function (l) {
               this.$el.append(
                 '<span class="csui-icon ' +
-                  a +
+                  l +
                   '" style="position:fixed;top:-100px;left:-100px;"></span>'
               );
             },
@@ -1044,10 +1044,10 @@ csui.define(
       return (
         (r.ensureOnThePage = function () {
           if (!p("#csui-icon-preload").length) {
-            var a = new r(),
-              d = p.fn.binf_modal.getDefaultContainer(),
-              t = new s({ el: d });
-            t.show(a);
+            var l = new r(),
+              f = p.fn.binf_modal.getDefaultContainer(),
+              t = new s({ el: f });
+            t.show(l);
           }
         }),
         r
@@ -1110,8 +1110,8 @@ csui.define(
       "i18n!csui/widgets/html.editor/impl/nls/lang",
       "csui/utils/log",
     ],
-    function (x, m, p, y, s, e, r, a) {
-      var d = {
+    function (x, m, p, y, s, e, r, l) {
+      var f = {
         isEmptyContentElement: function (t) {
           return m.trim(m(t).text());
         },
@@ -1130,15 +1130,15 @@ csui.define(
             var n = i.target.href.match(/^.*\/app\/(.+)$/i),
               u = new p(i.target.href).isAbsolute(),
               c = u ? this.checkDomain(t, i) : !0,
-              h = i.target.href.match(/^.*\/wiki\/(.+)$/i),
-              f =
+              d = i.target.href.match(/^.*\/wiki\/(.+)$/i),
+              h =
                 i.target.href.match(/^.*\/open\/(.+)$/i) ||
                 i.target.href.match(/^.*\/nodes\/(.+)$/i),
               k = i.target.href.match(/^.*objId\=(.+)$/i),
               C,
               S = this;
             !n && c
-              ? h || k
+              ? d || k
                 ? S.renderLinks({
                     event: i,
                     connector: t.connector,
@@ -1146,7 +1146,7 @@ csui.define(
                   }).done(function () {
                     o.resolve();
                   })
-                : (f && ((C = f[1]), this.updateLink(i, C)), o.resolve())
+                : (h && ((C = h[1]), this.updateLink(i, C)), o.resolve())
               : o.resolve();
           }
           return o.promise();
@@ -1171,11 +1171,11 @@ csui.define(
                   (i = parseInt(i[1])),
                   c
                     ._getWikiPageId(t, i, t.event.target.href)
-                    .done(function (f, k) {
-                      (c.id = f),
+                    .done(function (h, k) {
+                      (c.id = h),
                         k
                           ? c.updateLink(t.event, k.id)
-                          : a.info(r.brokenLinkMessage),
+                          : l.info(r.brokenLinkMessage),
                         o.resolve();
                     }))
                 : t.event.target.href.match(/^.*\/wiki\/[0-9]+$/i) &&
@@ -1185,10 +1185,10 @@ csui.define(
                   o.resolve());
           else if (t.event.target.href.match(/^.*objId\=(.+)$/)) {
             t.event.stopPropagation(), t.event.preventDefault();
-            var h = t.event.target.href.match(/^.*objId\=(.+)$/)[1];
-            h !== -1 &&
+            var d = t.event.target.href.match(/^.*objId\=(.+)$/)[1];
+            d !== -1 &&
               ((i = this.getNewNodeModel({
-                attributes: { id: parseInt(h) },
+                attributes: { id: parseInt(d) },
                 connector: t.connector,
               })),
               c.updateLink(t.event, i.attributes.id)),
@@ -1226,20 +1226,20 @@ csui.define(
             ),
             u = m.Deferred(),
             c = t.connector,
-            h = { url: this._getWikiContainerUrl(t, i), type: "GET" };
+            d = { url: this._getWikiContainerUrl(t, i), type: "GET" };
           return (
             c
-              .makeAjaxCall(h)
-              .done(function (f) {
-                (f.targetWikiPageNode = f.results.find(function (k) {
+              .makeAjaxCall(d)
+              .done(function (h) {
+                (h.targetWikiPageNode = h.results.find(function (k) {
                   if (k.name === n) return k;
                 })),
-                  f.targetWikiPageNode && f.targetWikiPageNode.id
-                    ? u.resolve(f.targetWikiPageNode.id, f.targetWikiPageNode)
+                  h.targetWikiPageNode && h.targetWikiPageNode.id
+                    ? u.resolve(h.targetWikiPageNode.id, h.targetWikiPageNode)
                     : u.resolve(-1);
               })
-              .fail(function (f) {
-                u.reject(f);
+              .fail(function (h) {
+                u.reject(h);
               }),
             u.promise()
           );
@@ -1275,7 +1275,7 @@ csui.define(
           );
         },
       };
-      return d;
+      return f;
     }
   ),
   csui.define(
@@ -1315,7 +1315,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -1470,7 +1470,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -1592,7 +1592,7 @@ csui.define(
       "i18n!csui/controls/selected.count/impl/nls/lang",
       "css!csui/controls/selected.count/impl/selected.count",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n) {
       "use strict";
       (t = t(x.id)),
         t.deprecate(
@@ -1611,8 +1611,8 @@ csui.define(
               clearItem: n.clearItem,
             };
           },
-          constructor: function (f) {
-            (this.model = f.model),
+          constructor: function (h) {
+            (this.model = h.model),
               s.ItemView.prototype.constructor.apply(this, arguments);
           },
           onRender: function () {
@@ -1636,22 +1636,22 @@ csui.define(
           onModelChange: function () {
             this.render();
           },
-          onKeyInView: function (h) {
-            this.trigger("keydown:item", h);
+          onKeyInView: function (d) {
+            this.trigger("keydown:item", d);
           },
         }),
         c = s.CompositeView.extend({
           className: "csui-selected-count",
           template: i,
           templateHelpers: function () {
-            var h = this.collection && this.collection.length;
+            var d = this.collection && this.collection.length;
             return {
-              selectedCount: h,
+              selectedCount: d,
               clearAll: n.clearAll,
               clearAllAria: n.clearAllAria,
               selectedLabel: n.selectedLabel,
-              selectedButtonTitle: m.str.sformat(n.selectedButtonTitle, h),
-              selectedButtonAria: m.str.sformat(n.selectedButtonAria, h),
+              selectedButtonTitle: m.str.sformat(n.selectedButtonTitle, d),
+              selectedButtonAria: m.str.sformat(n.selectedButtonAria, d),
             };
           },
           childViewContainer: ".csui-selected-items-dropdown",
@@ -1689,14 +1689,14 @@ csui.define(
           currentlyFocusedElement: function () {
             return this.ui.selectedCountButton;
           },
-          constructor: function h(f) {
-            (f = m.defaults(f, { showOnlyOnSelection: !0 })),
-              (this.collection = f.collection),
-              h.__super__.constructor.apply(this, arguments),
+          constructor: function d(h) {
+            (h = m.defaults(h, { showOnlyOnSelection: !0 })),
+              (this.collection = h.collection),
+              d.__super__.constructor.apply(this, arguments),
               (this.currentlyFocusedIndex = 0),
               (this.showClearAll = !1),
               (this.selectedItemInFocus = !1),
-              (this.scrollableParent = f.scrollableParent),
+              (this.scrollableParent = h.scrollableParent),
               this.listenTo(this.collection, "reset remove add", function () {
                 !this.isDestroyed && this.onCollectionUpdate();
               }),
@@ -1717,17 +1717,17 @@ csui.define(
               this.windowResizeHandler &&
                 p(window).off("resize", this.windowResizeHandler);
           },
-          onClickClearAll: function (h) {
+          onClickClearAll: function (d) {
             (this.selectedItemInFocus = !0),
-              a
+              l
                 .confirmQuestion(
                   m.str.sformat(n.dialogTemplate, n.dialogTitle),
                   n.dialogTitle,
                   {}
                 )
                 .always(
-                  m.bind(function (f) {
-                    f
+                  m.bind(function (h) {
+                    h
                       ? this.collection.reset([])
                       : (this.ui.ClearAllButton.trigger("focus"),
                         this._moveTabindexToFocusedElement()),
@@ -1736,9 +1736,9 @@ csui.define(
                 ),
               (this.currentlyFocusedIndex = 0);
           },
-          onMouseUpClearAll: function (h) {
-            h.preventDefault(),
-              h.stopPropagation(),
+          onMouseUpClearAll: function (d) {
+            d.preventDefault(),
+              d.stopPropagation(),
               this.ui.ClearAllButton.trigger("focus");
           },
           isDDOpen: function () {
@@ -1758,17 +1758,17 @@ csui.define(
             this.selectedItemInFocus === !1 &&
               (this.selectedCountViewInFocus = !1);
           },
-          onClickSelectedCount: function (h) {
-            h.preventDefault(), h.stopPropagation();
-            var f = this.$el.find(".binf-open>.binf-dropdown-toggle");
-            f.length > 0 && f.binf_dropdown("toggle"),
+          onClickSelectedCount: function (d) {
+            d.preventDefault(), d.stopPropagation();
+            var h = this.$el.find(".binf-open>.binf-dropdown-toggle");
+            h.length > 0 && h.binf_dropdown("toggle"),
               this.ui.dropdownContainer.hasClass("binf-hidden")
                 ? this._showItemView()
                 : this._hideItemView();
           },
           resetState: function () {
-            var h = this.$el.find(".binf-open>.binf-dropdown-toggle");
-            h.length > 0 && h.binf_dropdown("toggle"), this._hideItemView();
+            var d = this.$el.find(".binf-open>.binf-dropdown-toggle");
+            d.length > 0 && d.binf_dropdown("toggle"), this._hideItemView();
           },
           _showItemView: function () {
             (this.selectedCountViewInFocus = !0),
@@ -1791,31 +1791,31 @@ csui.define(
                 m.bind(this.onDocumentClick, this)
               );
           },
-          onDocumentClick: function (h) {
-            this.$el[0] !== h.target &&
-              !this.$el.has(h.target).length &&
+          onDocumentClick: function (d) {
+            this.$el[0] !== d.target &&
+              !this.$el.has(d.target).length &&
               !this.selectedItemInFocus &&
               this._hideItemView();
           },
           setDropdownCss: function () {
-            var h = this.ui.dropdownContainer.find(
+            var d = this.ui.dropdownContainer.find(
                 ".csui-selected-items-dropdown"
               ),
-              f = p(this.scrollableParent),
+              h = p(this.scrollableParent),
               k,
               C,
               S;
-            if (f && f.length > 0) {
-              (C = f.height()),
+            if (h && h.length > 0) {
+              (C = h.height()),
                 (S =
-                  parseInt(f.css("margin-top")) +
-                  parseInt(f.css("margin-bottom"))),
-                (k = h.offset().top - f.offset().top);
+                  parseInt(h.css("margin-top")) +
+                  parseInt(h.css("margin-bottom"))),
+                (k = d.offset().top - h.offset().top);
               var w = Math.abs(C - S);
-              h.css({ "max-height": w - (24 + k) + "px" });
+              d.css({ "max-height": w - (24 + k) + "px" });
             }
           },
-          _hideItemView: function (h) {
+          _hideItemView: function (d) {
             (this.selectedCountViewInFocus = !1),
               m.isFunction(this.ui.dropdownContainer.addClass) &&
                 this.ui.dropdownContainer.addClass("binf-hidden"),
@@ -1823,15 +1823,15 @@ csui.define(
               this.ui.selectedCountButton.attr("aria-expanded", "false"),
               p(document).off("mouseup.csui.select.count");
           },
-          onRemoveSelectedItem: function (h) {
-            var f = h._index,
+          onRemoveSelectedItem: function (d) {
+            var h = d._index,
               k;
             (this.selectedCountViewInFocus = !0),
-              this.collection.remove(h.model),
+              this.collection.remove(d.model),
               (k = m.sortBy(this.children.toArray(), "cid")),
-              f === this.selectedCount
-                ? k[f - 1] && k[f - 1].$el.trigger("focus")
-                : k[f] && k[f].$el.trigger("focus"),
+              h === this.selectedCount
+                ? k[h - 1] && k[h - 1].$el.trigger("focus")
+                : k[h] && k[h].$el.trigger("focus"),
               this.collection.length === 0 &&
                 this.ui.dropdownContainer.addClass("binf-hidden");
           },
@@ -1868,92 +1868,92 @@ csui.define(
               this.selectedCount > 0 && this._moveTabindexToFocusedElement();
           },
           _moveTabindexToFocusedElement: function () {
-            this._focusableElements = d.findFocusables(this.el);
-            for (var h = 0; h < this._focusableElements.length; h++)
-              this._focusableElements[h].setAttribute("tabindex", "0");
+            this._focusableElements = f.findFocusables(this.el);
+            for (var d = 0; d < this._focusableElements.length; d++)
+              this._focusableElements[d].setAttribute("tabindex", "0");
           },
-          onBlurSelectedCountButton: function (h) {
+          onBlurSelectedCountButton: function (d) {
             this.selectedCountViewInFocus || this._hideItemView();
           },
-          onBlurSelectedCounterView: function (h) {
+          onBlurSelectedCounterView: function (d) {
             this.selectedCountViewInFocus || this._hideItemView();
           },
-          onKeydownSelectedCount: function (h) {
-            switch (h.keyCode) {
+          onKeydownSelectedCount: function (d) {
+            switch (d.keyCode) {
               case 9:
                 if (
-                  h.shiftKey &&
+                  d.shiftKey &&
                   !this.ui.dropdownContainer.hasClass("binf-hidden")
                 )
-                  h.preventDefault(),
-                    h.stopPropagation(),
+                  d.preventDefault(),
+                    d.stopPropagation(),
                     this.ui.ClearAllButton.trigger("focus");
                 else {
-                  var f = m.sortBy(this.children.toArray(), "cid");
+                  var h = m.sortBy(this.children.toArray(), "cid");
                   (this.selectedCountViewInFocus = !0),
                     this.ui.ClearAllButton.is(":focus") &&
-                      (f[this.currentlyFocusedIndex].$el.trigger("focus"),
-                      h.stopPropagation(),
-                      h.preventDefault());
+                      (h[this.currentlyFocusedIndex].$el.trigger("focus"),
+                      d.stopPropagation(),
+                      d.preventDefault());
                 }
                 break;
               case 13:
-                this.ui.ClearAllButton.is(":focus") && this.onClickClearAll(h);
+                this.ui.ClearAllButton.is(":focus") && this.onClickClearAll(d);
                 break;
               case 32:
                 this.ui.selectedCountButton.is(":focus") &&
                   ((this.selectedCountViewInFocus = !0),
-                  this.onClickSelectedCount(h));
+                  this.onClickSelectedCount(d));
                 break;
               case 46:
                 this.ui.ClearAllButton.is(":focus") &&
                   ((this.selectedCountViewInFocus = !0),
-                  this.onClickClearAll(h));
+                  this.onClickClearAll(d));
                 break;
               case 37:
-                h.stopPropagation();
+                d.stopPropagation();
                 break;
               case 39:
-                h.stopPropagation();
+                d.stopPropagation();
                 break;
             }
           },
-          onKeydownItem: function (h, f) {
+          onKeydownItem: function (d, h) {
             var k = m.sortBy(this.children.toArray(), "cid");
-            switch ((f.preventDefault(), f.keyCode)) {
+            switch ((h.preventDefault(), h.keyCode)) {
               case 46:
               case 13:
               case 32:
-                this.onRemoveSelectedItem(h), f.stopPropagation();
+                this.onRemoveSelectedItem(d), h.stopPropagation();
                 break;
               case 40:
                 (this.selectedCountViewInFocus = !0),
-                  h._index !== this.selectedCount - 1 &&
-                    (k[h._index + 1].$el.trigger("focus"),
-                    (this.currentlyFocusedIndex = h._index + 1)),
-                  f.stopPropagation();
+                  d._index !== this.selectedCount - 1 &&
+                    (k[d._index + 1].$el.trigger("focus"),
+                    (this.currentlyFocusedIndex = d._index + 1)),
+                  h.stopPropagation();
                 break;
               case 38:
                 (this.selectedCountViewInFocus = !0),
-                  h._index > 0 &&
-                    (k[h._index - 1].$el.trigger("focus"),
-                    (this.currentlyFocusedIndex = h._index - 1)),
-                  f.stopPropagation();
+                  d._index > 0 &&
+                    (k[d._index - 1].$el.trigger("focus"),
+                    (this.currentlyFocusedIndex = d._index - 1)),
+                  h.stopPropagation();
                 break;
               case 37:
-                f.stopPropagation();
+                h.stopPropagation();
                 break;
               case 39:
-                f.stopPropagation();
+                h.stopPropagation();
                 break;
             }
           },
-          onKeyupItem: function (h) {
-            h.keyCode === 27 &&
+          onKeyupItem: function (d) {
+            d.keyCode === 27 &&
               this.isDDOpen() &&
               ((this.currentlyFocusedIndex = 0),
-              h.preventDefault(),
-              h.stopPropagation(),
+              d.preventDefault(),
+              d.stopPropagation(),
               this._hideItemView(),
               this._focusOnSelectedCountButton());
           },
@@ -1967,7 +1967,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -2111,7 +2111,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -2188,9 +2188,9 @@ csui.define(
       "i18n!csui/controls/selected.count/impl/nls/lang",
       "css!csui/controls/selected.count/impl/selected.count",
     ],
-    function (x, m, p, y, s, e, r, a) {
+    function (x, m, p, y, s, e, r, l) {
       "use strict";
-      var d = p.ItemView.extend({
+      var f = p.ItemView.extend({
           className: "csui-selected-item",
           template: r,
           tagName: "li",
@@ -2200,7 +2200,7 @@ csui.define(
           templateHelpers: function () {
             return {
               name: this.options.model.get("name"),
-              clearItem: a.clearItem,
+              clearItem: l.clearItem,
             };
           },
           constructor: function (o) {
@@ -2220,7 +2220,7 @@ csui.define(
               this.$el.attr(
                 "aria-label",
                 x.str.sformat(
-                  a.unselectAria,
+                  l.unselectAria,
                   this.model.get("name"),
                   this._nodeIconView.$el.attr("aria-label")
                 )
@@ -2244,10 +2244,10 @@ csui.define(
           className: "csui-selected-count",
           template: e,
           templateHelpers: function () {
-            return { clearAll: a.clearAll, clearAllAria: a.clearAllAria };
+            return { clearAll: l.clearAll, clearAllAria: l.clearAllAria };
           },
           childViewContainer: ".csui-selected-items-dropdown",
-          childView: d,
+          childView: f,
           childEvents: {
             "remove:selected:item": "onRemoveSelectedItem",
             "keydown:item": "onKeydownItem",
@@ -2298,8 +2298,8 @@ csui.define(
             (this.selectedItemInFocus = !0),
               s
                 .confirmQuestion(
-                  x.str.sformat(a.dialogTemplate, a.dialogTitle),
-                  a.dialogTitle,
+                  x.str.sformat(l.dialogTemplate, l.dialogTitle),
+                  l.dialogTitle,
                   {}
                 )
                 .always(
@@ -2375,8 +2375,8 @@ csui.define(
                   parseInt(o.css("margin-top")) +
                   parseInt(o.css("margin-bottom")),
                 c = i.offset().top - o.offset().top,
-                h = Math.abs(n - u - 200);
-              i.css({ "max-height": h - (24 + c) + "px" });
+                d = Math.abs(n - u - 200);
+              i.css({ "max-height": d - (24 + c) + "px" });
             }
           },
           _hideItemView: function () {
@@ -2484,7 +2484,7 @@ csui.define(
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           return `<div class="csui-selected-counter-region"></div>
 <div class="csui-selected-dropdown"></div>`;
         },
@@ -2518,9 +2518,9 @@ csui.define(
           selectedLabel: ".csui-selected-counter-region",
           selectedItemsDropdown: ".csui-selected-dropdown",
         },
-        constructor: function (d) {
-          d || (d = {}),
-            (this.options = d),
+        constructor: function (f) {
+          f || (f = {}),
+            (this.options = f),
             (this.options.collection = this.options.collection),
             m.View.prototype.constructor.apply(this, arguments);
         },
@@ -2564,10 +2564,10 @@ csui.define(
       var s = /^key/,
         e = /^(?:mouse|contextmenu)|click/,
         r = /\[object (?:HTML)?Document\]/;
-      function a(o) {
+      function l(o) {
         return r.test(Object.prototype.toString.call(o));
       }
-      function d(o) {
+      function f(o) {
         for (var n = 0; n < window.frames.length; n += 1)
           if (window.frames[n] && window.frames[n].document === o)
             return window.frames[n];
@@ -2623,17 +2623,17 @@ csui.define(
           mouseEvent: function (o, n) {
             var u,
               c,
-              h = a(this.target)
+              d = l(this.target)
                 ? this.target
                 : this.target.ownerDocument || document,
-              f,
+              h,
               k;
             return (
               (n = p.extend(
                 {
                   bubbles: !0,
                   cancelable: o !== "mousemove",
-                  view: d(h),
+                  view: f(d),
                   detail: 0,
                   screenX: 0,
                   screenY: 0,
@@ -2648,8 +2648,8 @@ csui.define(
                 },
                 n
               )),
-              h.createEvent
-                ? ((u = h.createEvent("MouseEvents")),
+              d.createEvent
+                ? ((u = d.createEvent("MouseEvents")),
                   u.initMouseEvent(
                     o,
                     n.bubbles,
@@ -2665,22 +2665,22 @@ csui.define(
                     n.shiftKey,
                     n.metaKey,
                     n.button,
-                    n.relatedTarget || h.body.parentNode
+                    n.relatedTarget || d.body.parentNode
                   ),
                   u.pageX === 0 &&
                     u.pageY === 0 &&
                     Object.defineProperty &&
-                    ((c = a(u.relatedTarget)
+                    ((c = l(u.relatedTarget)
                       ? u.relatedTarget
                       : u.relatedTarget.ownerDocument || document),
-                    (f = c.documentElement),
+                    (h = c.documentElement),
                     (k = c.body),
                     Object.defineProperty(u, "pageX", {
                       get: function () {
                         return (
                           n.clientX +
-                          ((f && f.scrollLeft) || (k && k.scrollLeft) || 0) -
-                          ((f && f.clientLeft) || (k && k.clientLeft) || 0)
+                          ((h && h.scrollLeft) || (k && k.scrollLeft) || 0) -
+                          ((h && h.clientLeft) || (k && k.clientLeft) || 0)
                         );
                       },
                     }),
@@ -2688,13 +2688,13 @@ csui.define(
                       get: function () {
                         return (
                           n.clientY +
-                          ((f && f.scrollTop) || (k && k.scrollTop) || 0) -
-                          ((f && f.clientTop) || (k && k.clientTop) || 0)
+                          ((h && h.scrollTop) || (k && k.scrollTop) || 0) -
+                          ((h && h.clientTop) || (k && k.clientTop) || 0)
                         );
                       },
                     })))
-                : h.createEventObject &&
-                  ((u = h.createEventObject()),
+                : d.createEventObject &&
+                  ((u = d.createEventObject()),
                   p.extend(u, n),
                   (u.button = { 0: 1, 1: 4, 2: 2 }[u.button] || u.button)),
               u
@@ -2707,7 +2707,7 @@ csui.define(
                 {
                   bubbles: !0,
                   cancelable: !0,
-                  view: d(c),
+                  view: f(c),
                   ctrlKey: !1,
                   altKey: !1,
                   shiftKey: !1,
@@ -2717,7 +2717,7 @@ csui.define(
                 },
                 n
               )),
-              (c = a(this.target)
+              (c = l(this.target)
                 ? this.target
                 : this.target.ownerDocument || document),
               c.createEvent)
@@ -2809,7 +2809,7 @@ csui.define(
           u,
           c = p(o);
         return (
-          a(c[0])
+          l(c[0])
             ? ((u = c), (n = { left: 0, top: 0 }))
             : ((u = p(c[0].ownerDocument || document)), (n = c.offset())),
           {
@@ -2823,7 +2823,7 @@ csui.define(
           u,
           c = p(o);
         return (
-          a(c[0])
+          l(c[0])
             ? ((u = c), (n = { left: 0, top: 0 }))
             : ((u = p(c[0].ownerDocument || document)), (n = c.offset())),
           { x: n.left - document.scrollLeft(), y: n.top - document.scrollTop() }
@@ -2835,16 +2835,16 @@ csui.define(
             n = this.target,
             u = this.options,
             c = u.handle === "corner" ? i(n) : t(n),
-            h = Math.floor(c.x),
-            f = Math.floor(c.y),
-            k = { clientX: h, clientY: f },
-            C = u.dx || (u.x !== y ? u.x - h : 0),
-            S = u.dy || (u.y !== y ? u.y - f : 0),
+            d = Math.floor(c.x),
+            h = Math.floor(c.y),
+            k = { clientX: d, clientY: h },
+            C = u.dx || (u.x !== y ? u.x - d : 0),
+            S = u.dy || (u.y !== y ? u.y - h : 0),
             w = u.moves || 3;
           for (this.simulateEvent(n, "mousedown", k); o < w; o++)
-            (h += C / w),
-              (f += S / w),
-              (k = { clientX: Math.round(h), clientY: Math.round(f) }),
+            (d += C / w),
+              (h += S / w),
+              (k = { clientX: Math.round(d), clientY: Math.round(h) }),
               this.simulateEvent(n.ownerDocument, "mousemove", k);
           p.contains(document, n)
             ? (this.simulateEvent(n, "mouseup", k),
@@ -2874,25 +2874,25 @@ csui.define("csui/lib/othelp", [], function () {
     var s =
       s ||
       (function (e, r) {
-        var a;
+        var l;
         if (
-          (typeof window < "u" && window.crypto && (a = window.crypto),
-          !a && typeof window < "u" && window.msCrypto && (a = window.msCrypto),
-          !a && typeof global < "u" && global.crypto && (a = global.crypto),
-          !a && typeof p == "function")
+          (typeof window < "u" && window.crypto && (l = window.crypto),
+          !l && typeof window < "u" && window.msCrypto && (l = window.msCrypto),
+          !l && typeof global < "u" && global.crypto && (l = global.crypto),
+          !l && typeof p == "function")
         )
           try {
-            a = p("crypto");
+            l = p("crypto");
           } catch {}
-        var d = function () {
-            if (a) {
-              if (typeof a.getRandomValues == "function")
+        var f = function () {
+            if (l) {
+              if (typeof l.getRandomValues == "function")
                 try {
-                  return a.getRandomValues(new Uint32Array(1))[0];
+                  return l.getRandomValues(new Uint32Array(1))[0];
                 } catch {}
-              if (typeof a.randomBytes == "function")
+              if (typeof l.randomBytes == "function")
                 try {
-                  return a.randomBytes(4).readInt32LE();
+                  return l.randomBytes(4).readInt32LE();
                 } catch {}
             }
             throw new Error(
@@ -2902,11 +2902,11 @@ csui.define("csui/lib/othelp", [], function () {
           t =
             Object.create ||
             (function () {
-              function v() {}
-              return function (b) {
+              function b() {}
+              return function (v) {
                 var _;
                 return (
-                  (v.prototype = b), (_ = new v()), (v.prototype = null), _
+                  (b.prototype = v), (_ = new b()), (b.prototype = null), _
                 );
               };
             })(),
@@ -2914,27 +2914,27 @@ csui.define("csui/lib/othelp", [], function () {
           o = (i.lib = {}),
           n = (o.Base = (function () {
             return {
-              extend: function (v) {
-                var b = t(this);
+              extend: function (b) {
+                var v = t(this);
                 return (
-                  v && b.mixIn(v),
-                  (!b.hasOwnProperty("init") || this.init === b.init) &&
-                    (b.init = function () {
-                      b.$super.init.apply(this, arguments);
+                  b && v.mixIn(b),
+                  (!v.hasOwnProperty("init") || this.init === v.init) &&
+                    (v.init = function () {
+                      v.$super.init.apply(this, arguments);
                     }),
-                  (b.init.prototype = b),
-                  (b.$super = this),
-                  b
+                  (v.init.prototype = v),
+                  (v.$super = this),
+                  v
                 );
               },
               create: function () {
-                var v = this.extend();
-                return v.init.apply(v, arguments), v;
+                var b = this.extend();
+                return b.init.apply(b, arguments), b;
               },
               init: function () {},
-              mixIn: function (v) {
-                for (var b in v) v.hasOwnProperty(b) && (this[b] = v[b]);
-                v.hasOwnProperty("toString") && (this.toString = v.toString);
+              mixIn: function (b) {
+                for (var v in b) b.hasOwnProperty(v) && (this[v] = b[v]);
+                b.hasOwnProperty("toString") && (this.toString = b.toString);
               },
               clone: function () {
                 return this.init.prototype.extend(this);
@@ -2942,142 +2942,142 @@ csui.define("csui/lib/othelp", [], function () {
             };
           })()),
           u = (o.WordArray = n.extend({
-            init: function (v, b) {
-              (v = this.words = v || []),
-                b != r ? (this.sigBytes = b) : (this.sigBytes = v.length * 4);
+            init: function (b, v) {
+              (b = this.words = b || []),
+                v != r ? (this.sigBytes = v) : (this.sigBytes = b.length * 4);
             },
-            toString: function (v) {
-              return (v || h).stringify(this);
+            toString: function (b) {
+              return (b || d).stringify(this);
             },
-            concat: function (v) {
-              var b = this.words,
-                _ = v.words,
+            concat: function (b) {
+              var v = this.words,
+                _ = b.words,
                 T = this.sigBytes,
-                l = v.sigBytes;
+                a = b.sigBytes;
               if ((this.clamp(), T % 4))
-                for (var g = 0; g < l; g++) {
+                for (var g = 0; g < a; g++) {
                   var I = (_[g >>> 2] >>> (24 - (g % 4) * 8)) & 255;
-                  b[(T + g) >>> 2] |= I << (24 - ((T + g) % 4) * 8);
+                  v[(T + g) >>> 2] |= I << (24 - ((T + g) % 4) * 8);
                 }
-              else for (var g = 0; g < l; g += 4) b[(T + g) >>> 2] = _[g >>> 2];
-              return (this.sigBytes += l), this;
+              else for (var g = 0; g < a; g += 4) v[(T + g) >>> 2] = _[g >>> 2];
+              return (this.sigBytes += a), this;
             },
             clamp: function () {
-              var v = this.words,
-                b = this.sigBytes;
-              (v[b >>> 2] &= 4294967295 << (32 - (b % 4) * 8)),
-                (v.length = e.ceil(b / 4));
+              var b = this.words,
+                v = this.sigBytes;
+              (b[v >>> 2] &= 4294967295 << (32 - (v % 4) * 8)),
+                (b.length = e.ceil(v / 4));
             },
             clone: function () {
-              var v = n.clone.call(this);
-              return (v.words = this.words.slice(0)), v;
+              var b = n.clone.call(this);
+              return (b.words = this.words.slice(0)), b;
             },
-            random: function (v) {
-              for (var b = [], _ = 0; _ < v; _ += 4) b.push(d());
-              return new u.init(b, v);
+            random: function (b) {
+              for (var v = [], _ = 0; _ < b; _ += 4) v.push(f());
+              return new u.init(v, b);
             },
           })),
           c = (i.enc = {}),
-          h = (c.Hex = {
-            stringify: function (v) {
-              for (var b = v.words, _ = v.sigBytes, T = [], l = 0; l < _; l++) {
-                var g = (b[l >>> 2] >>> (24 - (l % 4) * 8)) & 255;
+          d = (c.Hex = {
+            stringify: function (b) {
+              for (var v = b.words, _ = b.sigBytes, T = [], a = 0; a < _; a++) {
+                var g = (v[a >>> 2] >>> (24 - (a % 4) * 8)) & 255;
                 T.push((g >>> 4).toString(16)), T.push((g & 15).toString(16));
               }
               return T.join("");
             },
-            parse: function (v) {
-              for (var b = v.length, _ = [], T = 0; T < b; T += 2)
+            parse: function (b) {
+              for (var v = b.length, _ = [], T = 0; T < v; T += 2)
                 _[T >>> 3] |=
-                  parseInt(v.substr(T, 2), 16) << (24 - (T % 8) * 4);
-              return new u.init(_, b / 2);
+                  parseInt(b.substr(T, 2), 16) << (24 - (T % 8) * 4);
+              return new u.init(_, v / 2);
             },
           }),
-          f = (c.Latin1 = {
-            stringify: function (v) {
-              for (var b = v.words, _ = v.sigBytes, T = [], l = 0; l < _; l++) {
-                var g = (b[l >>> 2] >>> (24 - (l % 4) * 8)) & 255;
+          h = (c.Latin1 = {
+            stringify: function (b) {
+              for (var v = b.words, _ = b.sigBytes, T = [], a = 0; a < _; a++) {
+                var g = (v[a >>> 2] >>> (24 - (a % 4) * 8)) & 255;
                 T.push(String.fromCharCode(g));
               }
               return T.join("");
             },
-            parse: function (v) {
-              for (var b = v.length, _ = [], T = 0; T < b; T++)
-                _[T >>> 2] |= (v.charCodeAt(T) & 255) << (24 - (T % 4) * 8);
-              return new u.init(_, b);
+            parse: function (b) {
+              for (var v = b.length, _ = [], T = 0; T < v; T++)
+                _[T >>> 2] |= (b.charCodeAt(T) & 255) << (24 - (T % 4) * 8);
+              return new u.init(_, v);
             },
           }),
           k = (c.Utf8 = {
-            stringify: function (v) {
+            stringify: function (b) {
               try {
-                return decodeURIComponent(escape(f.stringify(v)));
+                return decodeURIComponent(escape(h.stringify(b)));
               } catch {
                 throw new Error("Malformed UTF-8 data");
               }
             },
-            parse: function (v) {
-              return f.parse(unescape(encodeURIComponent(v)));
+            parse: function (b) {
+              return h.parse(unescape(encodeURIComponent(b)));
             },
           }),
           C = (o.BufferedBlockAlgorithm = n.extend({
             reset: function () {
               (this._data = new u.init()), (this._nDataBytes = 0);
             },
-            _append: function (v) {
-              typeof v == "string" && (v = k.parse(v)),
-                this._data.concat(v),
-                (this._nDataBytes += v.sigBytes);
+            _append: function (b) {
+              typeof b == "string" && (b = k.parse(b)),
+                this._data.concat(b),
+                (this._nDataBytes += b.sigBytes);
             },
-            _process: function (v) {
-              var b,
+            _process: function (b) {
+              var v,
                 _ = this._data,
                 T = _.words,
-                l = _.sigBytes,
+                a = _.sigBytes,
                 g = this.blockSize,
                 I = g * 4,
-                D = l / I;
-              v
+                D = a / I;
+              b
                 ? (D = e.ceil(D))
                 : (D = e.max((D | 0) - this._minBufferSize, 0));
               var A = D * g,
-                B = e.min(A * 4, l);
+                B = e.min(A * 4, a);
               if (A) {
                 for (var M = 0; M < A; M += g) this._doProcessBlock(T, M);
-                (b = T.splice(0, A)), (_.sigBytes -= B);
+                (v = T.splice(0, A)), (_.sigBytes -= B);
               }
-              return new u.init(b, B);
+              return new u.init(v, B);
             },
             clone: function () {
-              var v = n.clone.call(this);
-              return (v._data = this._data.clone()), v;
+              var b = n.clone.call(this);
+              return (b._data = this._data.clone()), b;
             },
             _minBufferSize: 0,
           })),
           S = (o.Hasher = C.extend({
             cfg: n.extend(),
-            init: function (v) {
-              (this.cfg = this.cfg.extend(v)), this.reset();
+            init: function (b) {
+              (this.cfg = this.cfg.extend(b)), this.reset();
             },
             reset: function () {
               C.reset.call(this), this._doReset();
             },
-            update: function (v) {
-              return this._append(v), this._process(), this;
+            update: function (b) {
+              return this._append(b), this._process(), this;
             },
-            finalize: function (v) {
-              v && this._append(v);
-              var b = this._doFinalize();
-              return b;
+            finalize: function (b) {
+              b && this._append(b);
+              var v = this._doFinalize();
+              return v;
             },
             blockSize: 512 / 32,
-            _createHelper: function (v) {
-              return function (b, _) {
-                return new v.init(_).finalize(b);
+            _createHelper: function (b) {
+              return function (v, _) {
+                return new b.init(_).finalize(v);
               };
             },
-            _createHmacHelper: function (v) {
-              return function (b, _) {
-                return new w.HMAC.init(v, _).finalize(b);
+            _createHmacHelper: function (b) {
+              return function (v, _) {
+                return new w.HMAC.init(b, _).finalize(v);
               };
             },
           })),
@@ -3088,28 +3088,28 @@ csui.define("csui/lib/othelp", [], function () {
       (function () {
         var e = s,
           r = e.lib,
-          a = r.WordArray,
-          d = e.enc,
-          t = (d.Base64 = {
+          l = r.WordArray,
+          f = e.enc,
+          t = (f.Base64 = {
             stringify: function (o) {
               var n = o.words,
                 u = o.sigBytes,
                 c = this._map;
               o.clamp();
-              for (var h = [], f = 0; f < u; f += 3)
+              for (var d = [], h = 0; h < u; h += 3)
                 for (
-                  var k = (n[f >>> 2] >>> (24 - (f % 4) * 8)) & 255,
-                    C = (n[(f + 1) >>> 2] >>> (24 - ((f + 1) % 4) * 8)) & 255,
-                    S = (n[(f + 2) >>> 2] >>> (24 - ((f + 2) % 4) * 8)) & 255,
+                  var k = (n[h >>> 2] >>> (24 - (h % 4) * 8)) & 255,
+                    C = (n[(h + 1) >>> 2] >>> (24 - ((h + 1) % 4) * 8)) & 255,
+                    S = (n[(h + 2) >>> 2] >>> (24 - ((h + 2) % 4) * 8)) & 255,
                     w = (k << 16) | (C << 8) | S,
-                    v = 0;
-                  v < 4 && f + v * 0.75 < u;
-                  v++
+                    b = 0;
+                  b < 4 && h + b * 0.75 < u;
+                  b++
                 )
-                  h.push(c.charAt((w >>> (6 * (3 - v))) & 63));
-              var b = c.charAt(64);
-              if (b) for (; h.length % 4; ) h.push(b);
-              return h.join("");
+                  d.push(c.charAt((w >>> (6 * (3 - b))) & 63));
+              var v = c.charAt(64);
+              if (v) for (; d.length % 4; ) d.push(v);
+              return d.join("");
             },
             parse: function (o) {
               var n = o.length,
@@ -3117,11 +3117,11 @@ csui.define("csui/lib/othelp", [], function () {
                 c = this._reverseMap;
               if (!c) {
                 c = this._reverseMap = [];
-                for (var h = 0; h < u.length; h++) c[u.charCodeAt(h)] = h;
+                for (var d = 0; d < u.length; d++) c[u.charCodeAt(d)] = d;
               }
-              var f = u.charAt(64);
-              if (f) {
-                var k = o.indexOf(f);
+              var h = u.charAt(64);
+              if (h) {
+                var k = o.indexOf(h);
                 k !== -1 && (n = k);
               }
               return i(o, n, c);
@@ -3129,21 +3129,21 @@ csui.define("csui/lib/othelp", [], function () {
             _map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
           });
         function i(o, n, u) {
-          for (var c = [], h = 0, f = 0; f < n; f++)
-            if (f % 4) {
-              var k = u[o.charCodeAt(f - 1)] << ((f % 4) * 2),
-                C = u[o.charCodeAt(f)] >>> (6 - (f % 4) * 2),
+          for (var c = [], d = 0, h = 0; h < n; h++)
+            if (h % 4) {
+              var k = u[o.charCodeAt(h - 1)] << ((h % 4) * 2),
+                C = u[o.charCodeAt(h)] >>> (6 - (h % 4) * 2),
                 S = k | C;
-              (c[h >>> 2] |= S << (24 - (h % 4) * 8)), h++;
+              (c[d >>> 2] |= S << (24 - (d % 4) * 8)), d++;
             }
-          return a.create(c, h);
+          return l.create(c, d);
         }
       })(),
       (function (e) {
         var r = s,
-          a = r.lib,
-          d = a.WordArray,
-          t = a.Hasher,
+          l = r.lib,
+          f = l.WordArray,
+          t = l.Hasher,
           i = r.algo,
           o = [];
         (function () {
@@ -3152,22 +3152,22 @@ csui.define("csui/lib/othelp", [], function () {
         })();
         var n = (i.MD5 = t.extend({
           _doReset: function () {
-            this._hash = new d.init([
+            this._hash = new f.init([
               1732584193, 4023233417, 2562383102, 271733878,
             ]);
           },
           _doProcessBlock: function (k, C) {
             for (var S = 0; S < 16; S++) {
               var w = C + S,
-                v = k[w];
+                b = k[w];
               k[w] =
-                (((v << 8) | (v >>> 24)) & 16711935) |
-                (((v << 24) | (v >>> 8)) & 4278255360);
+                (((b << 8) | (b >>> 24)) & 16711935) |
+                (((b << 24) | (b >>> 8)) & 4278255360);
             }
-            var b = this._hash.words,
+            var v = this._hash.words,
               _ = k[C + 0],
               T = k[C + 1],
-              l = k[C + 2],
+              a = k[C + 2],
               g = k[C + 3],
               I = k[C + 4],
               D = k[C + 5],
@@ -3178,81 +3178,81 @@ csui.define("csui/lib/othelp", [], function () {
               P = k[C + 10],
               O = k[C + 11],
               z = k[C + 12],
-              j = k[C + 13],
+              F = k[C + 13],
               U = k[C + 14],
               H = k[C + 15],
-              N = b[0],
-              V = b[1],
-              L = b[2],
-              F = b[3];
-            (N = u(N, V, L, F, _, 7, o[0])),
-              (F = u(F, N, V, L, T, 12, o[1])),
-              (L = u(L, F, N, V, l, 17, o[2])),
-              (V = u(V, L, F, N, g, 22, o[3])),
-              (N = u(N, V, L, F, I, 7, o[4])),
-              (F = u(F, N, V, L, D, 12, o[5])),
-              (L = u(L, F, N, V, A, 17, o[6])),
-              (V = u(V, L, F, N, B, 22, o[7])),
-              (N = u(N, V, L, F, M, 7, o[8])),
-              (F = u(F, N, V, L, E, 12, o[9])),
-              (L = u(L, F, N, V, P, 17, o[10])),
-              (V = u(V, L, F, N, O, 22, o[11])),
-              (N = u(N, V, L, F, z, 7, o[12])),
-              (F = u(F, N, V, L, j, 12, o[13])),
-              (L = u(L, F, N, V, U, 17, o[14])),
-              (V = u(V, L, F, N, H, 22, o[15])),
-              (N = c(N, V, L, F, T, 5, o[16])),
-              (F = c(F, N, V, L, A, 9, o[17])),
-              (L = c(L, F, N, V, O, 14, o[18])),
-              (V = c(V, L, F, N, _, 20, o[19])),
-              (N = c(N, V, L, F, D, 5, o[20])),
-              (F = c(F, N, V, L, P, 9, o[21])),
-              (L = c(L, F, N, V, H, 14, o[22])),
-              (V = c(V, L, F, N, I, 20, o[23])),
-              (N = c(N, V, L, F, E, 5, o[24])),
-              (F = c(F, N, V, L, U, 9, o[25])),
-              (L = c(L, F, N, V, g, 14, o[26])),
-              (V = c(V, L, F, N, M, 20, o[27])),
-              (N = c(N, V, L, F, j, 5, o[28])),
-              (F = c(F, N, V, L, l, 9, o[29])),
-              (L = c(L, F, N, V, B, 14, o[30])),
-              (V = c(V, L, F, N, z, 20, o[31])),
-              (N = h(N, V, L, F, D, 4, o[32])),
-              (F = h(F, N, V, L, M, 11, o[33])),
-              (L = h(L, F, N, V, O, 16, o[34])),
-              (V = h(V, L, F, N, U, 23, o[35])),
-              (N = h(N, V, L, F, T, 4, o[36])),
-              (F = h(F, N, V, L, I, 11, o[37])),
-              (L = h(L, F, N, V, B, 16, o[38])),
-              (V = h(V, L, F, N, P, 23, o[39])),
-              (N = h(N, V, L, F, j, 4, o[40])),
-              (F = h(F, N, V, L, _, 11, o[41])),
-              (L = h(L, F, N, V, g, 16, o[42])),
-              (V = h(V, L, F, N, A, 23, o[43])),
-              (N = h(N, V, L, F, E, 4, o[44])),
-              (F = h(F, N, V, L, z, 11, o[45])),
-              (L = h(L, F, N, V, H, 16, o[46])),
-              (V = h(V, L, F, N, l, 23, o[47])),
-              (N = f(N, V, L, F, _, 6, o[48])),
-              (F = f(F, N, V, L, B, 10, o[49])),
-              (L = f(L, F, N, V, U, 15, o[50])),
-              (V = f(V, L, F, N, D, 21, o[51])),
-              (N = f(N, V, L, F, z, 6, o[52])),
-              (F = f(F, N, V, L, g, 10, o[53])),
-              (L = f(L, F, N, V, P, 15, o[54])),
-              (V = f(V, L, F, N, T, 21, o[55])),
-              (N = f(N, V, L, F, M, 6, o[56])),
-              (F = f(F, N, V, L, H, 10, o[57])),
-              (L = f(L, F, N, V, A, 15, o[58])),
-              (V = f(V, L, F, N, j, 21, o[59])),
-              (N = f(N, V, L, F, I, 6, o[60])),
-              (F = f(F, N, V, L, O, 10, o[61])),
-              (L = f(L, F, N, V, l, 15, o[62])),
-              (V = f(V, L, F, N, E, 21, o[63])),
-              (b[0] = (b[0] + N) | 0),
-              (b[1] = (b[1] + V) | 0),
-              (b[2] = (b[2] + L) | 0),
-              (b[3] = (b[3] + F) | 0);
+              N = v[0],
+              V = v[1],
+              L = v[2],
+              j = v[3];
+            (N = u(N, V, L, j, _, 7, o[0])),
+              (j = u(j, N, V, L, T, 12, o[1])),
+              (L = u(L, j, N, V, a, 17, o[2])),
+              (V = u(V, L, j, N, g, 22, o[3])),
+              (N = u(N, V, L, j, I, 7, o[4])),
+              (j = u(j, N, V, L, D, 12, o[5])),
+              (L = u(L, j, N, V, A, 17, o[6])),
+              (V = u(V, L, j, N, B, 22, o[7])),
+              (N = u(N, V, L, j, M, 7, o[8])),
+              (j = u(j, N, V, L, E, 12, o[9])),
+              (L = u(L, j, N, V, P, 17, o[10])),
+              (V = u(V, L, j, N, O, 22, o[11])),
+              (N = u(N, V, L, j, z, 7, o[12])),
+              (j = u(j, N, V, L, F, 12, o[13])),
+              (L = u(L, j, N, V, U, 17, o[14])),
+              (V = u(V, L, j, N, H, 22, o[15])),
+              (N = c(N, V, L, j, T, 5, o[16])),
+              (j = c(j, N, V, L, A, 9, o[17])),
+              (L = c(L, j, N, V, O, 14, o[18])),
+              (V = c(V, L, j, N, _, 20, o[19])),
+              (N = c(N, V, L, j, D, 5, o[20])),
+              (j = c(j, N, V, L, P, 9, o[21])),
+              (L = c(L, j, N, V, H, 14, o[22])),
+              (V = c(V, L, j, N, I, 20, o[23])),
+              (N = c(N, V, L, j, E, 5, o[24])),
+              (j = c(j, N, V, L, U, 9, o[25])),
+              (L = c(L, j, N, V, g, 14, o[26])),
+              (V = c(V, L, j, N, M, 20, o[27])),
+              (N = c(N, V, L, j, F, 5, o[28])),
+              (j = c(j, N, V, L, a, 9, o[29])),
+              (L = c(L, j, N, V, B, 14, o[30])),
+              (V = c(V, L, j, N, z, 20, o[31])),
+              (N = d(N, V, L, j, D, 4, o[32])),
+              (j = d(j, N, V, L, M, 11, o[33])),
+              (L = d(L, j, N, V, O, 16, o[34])),
+              (V = d(V, L, j, N, U, 23, o[35])),
+              (N = d(N, V, L, j, T, 4, o[36])),
+              (j = d(j, N, V, L, I, 11, o[37])),
+              (L = d(L, j, N, V, B, 16, o[38])),
+              (V = d(V, L, j, N, P, 23, o[39])),
+              (N = d(N, V, L, j, F, 4, o[40])),
+              (j = d(j, N, V, L, _, 11, o[41])),
+              (L = d(L, j, N, V, g, 16, o[42])),
+              (V = d(V, L, j, N, A, 23, o[43])),
+              (N = d(N, V, L, j, E, 4, o[44])),
+              (j = d(j, N, V, L, z, 11, o[45])),
+              (L = d(L, j, N, V, H, 16, o[46])),
+              (V = d(V, L, j, N, a, 23, o[47])),
+              (N = h(N, V, L, j, _, 6, o[48])),
+              (j = h(j, N, V, L, B, 10, o[49])),
+              (L = h(L, j, N, V, U, 15, o[50])),
+              (V = h(V, L, j, N, D, 21, o[51])),
+              (N = h(N, V, L, j, z, 6, o[52])),
+              (j = h(j, N, V, L, g, 10, o[53])),
+              (L = h(L, j, N, V, P, 15, o[54])),
+              (V = h(V, L, j, N, T, 21, o[55])),
+              (N = h(N, V, L, j, M, 6, o[56])),
+              (j = h(j, N, V, L, H, 10, o[57])),
+              (L = h(L, j, N, V, A, 15, o[58])),
+              (V = h(V, L, j, N, F, 21, o[59])),
+              (N = h(N, V, L, j, I, 6, o[60])),
+              (j = h(j, N, V, L, O, 10, o[61])),
+              (L = h(L, j, N, V, a, 15, o[62])),
+              (V = h(V, L, j, N, E, 21, o[63])),
+              (v[0] = (v[0] + N) | 0),
+              (v[1] = (v[1] + V) | 0),
+              (v[2] = (v[2] + L) | 0),
+              (v[3] = (v[3] + j) | 0);
           },
           _doFinalize: function () {
             var k = this._data,
@@ -3260,19 +3260,19 @@ csui.define("csui/lib/othelp", [], function () {
               S = this._nDataBytes * 8,
               w = k.sigBytes * 8;
             C[w >>> 5] |= 128 << (24 - (w % 32));
-            var v = e.floor(S / 4294967296),
-              b = S;
+            var b = e.floor(S / 4294967296),
+              v = S;
             (C[(((w + 64) >>> 9) << 4) + 15] =
-              (((v << 8) | (v >>> 24)) & 16711935) |
-              (((v << 24) | (v >>> 8)) & 4278255360)),
+              (((b << 8) | (b >>> 24)) & 16711935) |
+              (((b << 24) | (b >>> 8)) & 4278255360)),
               (C[(((w + 64) >>> 9) << 4) + 14] =
-                (((b << 8) | (b >>> 24)) & 16711935) |
-                (((b << 24) | (b >>> 8)) & 4278255360)),
+                (((v << 8) | (v >>> 24)) & 16711935) |
+                (((v << 24) | (v >>> 8)) & 4278255360)),
               (k.sigBytes = (C.length + 1) * 4),
               this._process();
-            for (var _ = this._hash, T = _.words, l = 0; l < 4; l++) {
-              var g = T[l];
-              T[l] =
+            for (var _ = this._hash, T = _.words, a = 0; a < 4; a++) {
+              var g = T[a];
+              T[a] =
                 (((g << 8) | (g >>> 24)) & 16711935) |
                 (((g << 24) | (g >>> 8)) & 4278255360);
             }
@@ -3283,42 +3283,42 @@ csui.define("csui/lib/othelp", [], function () {
             return (k._hash = this._hash.clone()), k;
           },
         }));
-        function u(k, C, S, w, v, b, _) {
-          var T = k + ((C & S) | (~C & w)) + v + _;
-          return ((T << b) | (T >>> (32 - b))) + C;
+        function u(k, C, S, w, b, v, _) {
+          var T = k + ((C & S) | (~C & w)) + b + _;
+          return ((T << v) | (T >>> (32 - v))) + C;
         }
-        function c(k, C, S, w, v, b, _) {
-          var T = k + ((C & w) | (S & ~w)) + v + _;
-          return ((T << b) | (T >>> (32 - b))) + C;
+        function c(k, C, S, w, b, v, _) {
+          var T = k + ((C & w) | (S & ~w)) + b + _;
+          return ((T << v) | (T >>> (32 - v))) + C;
         }
-        function h(k, C, S, w, v, b, _) {
-          var T = k + (C ^ S ^ w) + v + _;
-          return ((T << b) | (T >>> (32 - b))) + C;
+        function d(k, C, S, w, b, v, _) {
+          var T = k + (C ^ S ^ w) + b + _;
+          return ((T << v) | (T >>> (32 - v))) + C;
         }
-        function f(k, C, S, w, v, b, _) {
-          var T = k + (S ^ (C | ~w)) + v + _;
-          return ((T << b) | (T >>> (32 - b))) + C;
+        function h(k, C, S, w, b, v, _) {
+          var T = k + (S ^ (C | ~w)) + b + _;
+          return ((T << v) | (T >>> (32 - v))) + C;
         }
         (r.MD5 = t._createHelper(n)), (r.HmacMD5 = t._createHmacHelper(n));
       })(Math),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.WordArray,
-          d = r.Hasher,
+          l = r.WordArray,
+          f = r.Hasher,
           t = e.algo,
           i = [],
-          o = (t.SHA1 = d.extend({
+          o = (t.SHA1 = f.extend({
             _doReset: function () {
-              this._hash = new a.init([
+              this._hash = new l.init([
                 1732584193, 4023233417, 2562383102, 271733878, 3285377520,
               ]);
             },
             _doProcessBlock: function (n, u) {
               for (
                 var c = this._hash.words,
-                  h = c[0],
-                  f = c[1],
+                  d = c[0],
+                  h = c[1],
                   k = c[2],
                   C = c[3],
                   S = c[4],
@@ -3328,25 +3328,25 @@ csui.define("csui/lib/othelp", [], function () {
               ) {
                 if (w < 16) i[w] = n[u + w] | 0;
                 else {
-                  var v = i[w - 3] ^ i[w - 8] ^ i[w - 14] ^ i[w - 16];
-                  i[w] = (v << 1) | (v >>> 31);
+                  var b = i[w - 3] ^ i[w - 8] ^ i[w - 14] ^ i[w - 16];
+                  i[w] = (b << 1) | (b >>> 31);
                 }
-                var b = ((h << 5) | (h >>> 27)) + S + i[w];
+                var v = ((d << 5) | (d >>> 27)) + S + i[w];
                 w < 20
-                  ? (b += ((f & k) | (~f & C)) + 1518500249)
+                  ? (v += ((h & k) | (~h & C)) + 1518500249)
                   : w < 40
-                  ? (b += (f ^ k ^ C) + 1859775393)
+                  ? (v += (h ^ k ^ C) + 1859775393)
                   : w < 60
-                  ? (b += ((f & k) | (f & C) | (k & C)) - 1894007588)
-                  : (b += (f ^ k ^ C) - 899497514),
+                  ? (v += ((h & k) | (h & C) | (k & C)) - 1894007588)
+                  : (v += (h ^ k ^ C) - 899497514),
                   (S = C),
                   (C = k),
-                  (k = (f << 30) | (f >>> 2)),
-                  (f = h),
-                  (h = b);
+                  (k = (h << 30) | (h >>> 2)),
+                  (h = d),
+                  (d = v);
               }
-              (c[0] = (c[0] + h) | 0),
-                (c[1] = (c[1] + f) | 0),
+              (c[0] = (c[0] + d) | 0),
+                (c[1] = (c[1] + h) | 0),
                 (c[2] = (c[2] + k) | 0),
                 (c[3] = (c[3] + C) | 0),
                 (c[4] = (c[4] + S) | 0);
@@ -3355,67 +3355,67 @@ csui.define("csui/lib/othelp", [], function () {
               var n = this._data,
                 u = n.words,
                 c = this._nDataBytes * 8,
-                h = n.sigBytes * 8;
+                d = n.sigBytes * 8;
               return (
-                (u[h >>> 5] |= 128 << (24 - (h % 32))),
-                (u[(((h + 64) >>> 9) << 4) + 14] = Math.floor(c / 4294967296)),
-                (u[(((h + 64) >>> 9) << 4) + 15] = c),
+                (u[d >>> 5] |= 128 << (24 - (d % 32))),
+                (u[(((d + 64) >>> 9) << 4) + 14] = Math.floor(c / 4294967296)),
+                (u[(((d + 64) >>> 9) << 4) + 15] = c),
                 (n.sigBytes = u.length * 4),
                 this._process(),
                 this._hash
               );
             },
             clone: function () {
-              var n = d.clone.call(this);
+              var n = f.clone.call(this);
               return (n._hash = this._hash.clone()), n;
             },
           }));
-        (e.SHA1 = d._createHelper(o)), (e.HmacSHA1 = d._createHmacHelper(o));
+        (e.SHA1 = f._createHelper(o)), (e.HmacSHA1 = f._createHmacHelper(o));
       })(),
       (function (e) {
         var r = s,
-          a = r.lib,
-          d = a.WordArray,
-          t = a.Hasher,
+          l = r.lib,
+          f = l.WordArray,
+          t = l.Hasher,
           i = r.algo,
           o = [],
           n = [];
         (function () {
-          function h(S) {
-            for (var w = e.sqrt(S), v = 2; v <= w; v++) if (!(S % v)) return !1;
+          function d(S) {
+            for (var w = e.sqrt(S), b = 2; b <= w; b++) if (!(S % b)) return !1;
             return !0;
           }
-          function f(S) {
+          function h(S) {
             return ((S - (S | 0)) * 4294967296) | 0;
           }
           for (var k = 2, C = 0; C < 64; )
-            h(k) &&
-              (C < 8 && (o[C] = f(e.pow(k, 1 / 2))),
-              (n[C] = f(e.pow(k, 1 / 3))),
+            d(k) &&
+              (C < 8 && (o[C] = h(e.pow(k, 1 / 2))),
+              (n[C] = h(e.pow(k, 1 / 3))),
               C++),
               k++;
         })();
         var u = [],
           c = (i.SHA256 = t.extend({
             _doReset: function () {
-              this._hash = new d.init(o.slice(0));
+              this._hash = new f.init(o.slice(0));
             },
-            _doProcessBlock: function (h, f) {
+            _doProcessBlock: function (d, h) {
               for (
                 var k = this._hash.words,
                   C = k[0],
                   S = k[1],
                   w = k[2],
-                  v = k[3],
-                  b = k[4],
+                  b = k[3],
+                  v = k[4],
                   _ = k[5],
                   T = k[6],
-                  l = k[7],
+                  a = k[7],
                   g = 0;
                 g < 64;
                 g++
               ) {
-                if (g < 16) u[g] = h[f + g] | 0;
+                if (g < 16) u[g] = d[h + g] | 0;
                 else {
                   var I = u[g - 15],
                     D =
@@ -3429,53 +3429,53 @@ csui.define("csui/lib/othelp", [], function () {
                       (A >>> 10);
                   u[g] = D + u[g - 7] + B + u[g - 16];
                 }
-                var M = (b & _) ^ (~b & T),
+                var M = (v & _) ^ (~v & T),
                   E = (C & S) ^ (C & w) ^ (S & w),
                   P =
                     ((C << 30) | (C >>> 2)) ^
                     ((C << 19) | (C >>> 13)) ^
                     ((C << 10) | (C >>> 22)),
                   O =
-                    ((b << 26) | (b >>> 6)) ^
-                    ((b << 21) | (b >>> 11)) ^
-                    ((b << 7) | (b >>> 25)),
-                  z = l + O + M + n[g] + u[g],
-                  j = P + E;
-                (l = T),
+                    ((v << 26) | (v >>> 6)) ^
+                    ((v << 21) | (v >>> 11)) ^
+                    ((v << 7) | (v >>> 25)),
+                  z = a + O + M + n[g] + u[g],
+                  F = P + E;
+                (a = T),
                   (T = _),
-                  (_ = b),
-                  (b = (v + z) | 0),
-                  (v = w),
+                  (_ = v),
+                  (v = (b + z) | 0),
+                  (b = w),
                   (w = S),
                   (S = C),
-                  (C = (z + j) | 0);
+                  (C = (z + F) | 0);
               }
               (k[0] = (k[0] + C) | 0),
                 (k[1] = (k[1] + S) | 0),
                 (k[2] = (k[2] + w) | 0),
-                (k[3] = (k[3] + v) | 0),
-                (k[4] = (k[4] + b) | 0),
+                (k[3] = (k[3] + b) | 0),
+                (k[4] = (k[4] + v) | 0),
                 (k[5] = (k[5] + _) | 0),
                 (k[6] = (k[6] + T) | 0),
-                (k[7] = (k[7] + l) | 0);
+                (k[7] = (k[7] + a) | 0);
             },
             _doFinalize: function () {
-              var h = this._data,
-                f = h.words,
+              var d = this._data,
+                h = d.words,
                 k = this._nDataBytes * 8,
-                C = h.sigBytes * 8;
+                C = d.sigBytes * 8;
               return (
-                (f[C >>> 5] |= 128 << (24 - (C % 32))),
-                (f[(((C + 64) >>> 9) << 4) + 14] = e.floor(k / 4294967296)),
-                (f[(((C + 64) >>> 9) << 4) + 15] = k),
-                (h.sigBytes = f.length * 4),
+                (h[C >>> 5] |= 128 << (24 - (C % 32))),
+                (h[(((C + 64) >>> 9) << 4) + 14] = e.floor(k / 4294967296)),
+                (h[(((C + 64) >>> 9) << 4) + 15] = k),
+                (d.sigBytes = h.length * 4),
                 this._process(),
                 this._hash
               );
             },
             clone: function () {
-              var h = t.clone.call(this);
-              return (h._hash = this._hash.clone()), h;
+              var d = t.clone.call(this);
+              return (d._hash = this._hash.clone()), d;
             },
           }));
         (r.SHA256 = t._createHelper(c)),
@@ -3484,45 +3484,45 @@ csui.define("csui/lib/othelp", [], function () {
       (function () {
         var e = s,
           r = e.lib,
-          a = r.WordArray,
-          d = e.enc,
+          l = r.WordArray,
+          f = e.enc,
           t =
-            (d.Utf16 =
-            d.Utf16BE =
+            (f.Utf16 =
+            f.Utf16BE =
               {
                 stringify: function (o) {
                   for (
-                    var n = o.words, u = o.sigBytes, c = [], h = 0;
-                    h < u;
-                    h += 2
+                    var n = o.words, u = o.sigBytes, c = [], d = 0;
+                    d < u;
+                    d += 2
                   ) {
-                    var f = (n[h >>> 2] >>> (16 - (h % 4) * 8)) & 65535;
-                    c.push(String.fromCharCode(f));
+                    var h = (n[d >>> 2] >>> (16 - (d % 4) * 8)) & 65535;
+                    c.push(String.fromCharCode(h));
                   }
                   return c.join("");
                 },
                 parse: function (o) {
                   for (var n = o.length, u = [], c = 0; c < n; c++)
                     u[c >>> 1] |= o.charCodeAt(c) << (16 - (c % 2) * 16);
-                  return a.create(u, n * 2);
+                  return l.create(u, n * 2);
                 },
               });
-        d.Utf16LE = {
+        f.Utf16LE = {
           stringify: function (o) {
             for (
-              var n = o.words, u = o.sigBytes, c = [], h = 0;
-              h < u;
-              h += 2
+              var n = o.words, u = o.sigBytes, c = [], d = 0;
+              d < u;
+              d += 2
             ) {
-              var f = i((n[h >>> 2] >>> (16 - (h % 4) * 8)) & 65535);
-              c.push(String.fromCharCode(f));
+              var h = i((n[d >>> 2] >>> (16 - (d % 4) * 8)) & 65535);
+              c.push(String.fromCharCode(h));
             }
             return c.join("");
           },
           parse: function (o) {
             for (var n = o.length, u = [], c = 0; c < n; c++)
               u[c >>> 1] |= i(o.charCodeAt(c) << (16 - (c % 2) * 16));
-            return a.create(u, n * 2);
+            return l.create(u, n * 2);
           },
         };
         function i(o) {
@@ -3533,9 +3533,9 @@ csui.define("csui/lib/othelp", [], function () {
         if (typeof ArrayBuffer == "function") {
           var e = s,
             r = e.lib,
-            a = r.WordArray,
-            d = a.init,
-            t = (a.init = function (i) {
+            l = r.WordArray,
+            f = l.init,
+            t = (l.init = function (i) {
               if (
                 (i instanceof ArrayBuffer && (i = new Uint8Array(i)),
                 (i instanceof Int8Array ||
@@ -3552,84 +3552,84 @@ csui.define("csui/lib/othelp", [], function () {
               ) {
                 for (var o = i.byteLength, n = [], u = 0; u < o; u++)
                   n[u >>> 2] |= i[u] << (24 - (u % 4) * 8);
-                d.call(this, n, o);
-              } else d.apply(this, arguments);
+                f.call(this, n, o);
+              } else f.apply(this, arguments);
             });
-          t.prototype = a;
+          t.prototype = l;
         }
       })(),
       (function (e) {
         var r = s,
-          a = r.lib,
-          d = a.WordArray,
-          t = a.Hasher,
+          l = r.lib,
+          f = l.WordArray,
+          t = l.Hasher,
           i = r.algo,
-          o = d.create([
+          o = f.create([
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 7, 4, 13, 1,
             10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8, 3, 10, 14, 4, 9, 15, 8, 1,
             2, 7, 0, 6, 13, 11, 5, 12, 1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15,
             14, 5, 6, 2, 4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13,
           ]),
-          n = d.create([
+          n = f.create([
             5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12, 6, 11, 3, 7,
             0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2, 15, 5, 1, 3, 7, 14, 6, 9,
             11, 8, 12, 2, 10, 0, 4, 13, 8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13,
             9, 7, 10, 14, 12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11,
           ]),
-          u = d.create([
+          u = f.create([
             11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8, 7, 6, 8, 13,
             11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12, 11, 13, 6, 7, 14, 9, 13,
             15, 14, 8, 13, 6, 5, 12, 7, 5, 11, 12, 14, 15, 14, 15, 9, 8, 9, 14,
             5, 6, 8, 6, 5, 12, 9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8,
             5, 6,
           ]),
-          c = d.create([
+          c = f.create([
             8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6, 9, 13, 15,
             7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11, 9, 7, 15, 11, 8, 6, 6,
             14, 12, 13, 5, 14, 13, 13, 7, 5, 15, 5, 8, 11, 14, 14, 6, 14, 6, 9,
             12, 9, 12, 5, 15, 8, 8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13,
             11, 11,
           ]),
-          h = d.create([0, 1518500249, 1859775393, 2400959708, 2840853838]),
-          f = d.create([1352829926, 1548603684, 1836072691, 2053994217, 0]),
+          d = f.create([0, 1518500249, 1859775393, 2400959708, 2840853838]),
+          h = f.create([1352829926, 1548603684, 1836072691, 2053994217, 0]),
           k = (i.RIPEMD160 = t.extend({
             _doReset: function () {
-              this._hash = d.create([
+              this._hash = f.create([
                 1732584193, 4023233417, 2562383102, 271733878, 3285377520,
               ]);
             },
-            _doProcessBlock: function (T, l) {
+            _doProcessBlock: function (T, a) {
               for (var g = 0; g < 16; g++) {
-                var I = l + g,
+                var I = a + g,
                   D = T[I];
                 T[I] =
                   (((D << 8) | (D >>> 24)) & 16711935) |
                   (((D << 24) | (D >>> 8)) & 4278255360);
               }
               var A = this._hash.words,
-                B = h.words,
-                M = f.words,
+                B = d.words,
+                M = h.words,
                 E = o.words,
                 P = n.words,
                 O = u.words,
                 z = c.words,
-                j,
+                F,
                 U,
                 H,
                 N,
                 V,
                 L,
-                F,
+                j,
                 G,
                 W,
                 q;
-              (L = j = A[0]),
-                (F = U = A[1]),
+              (L = F = A[0]),
+                (j = U = A[1]),
                 (G = H = A[2]),
                 (W = N = A[3]),
                 (q = V = A[4]);
               for (var R, g = 0; g < 80; g += 1)
-                (R = (j + T[l + E[g]]) | 0),
+                (R = (F + T[a + E[g]]) | 0),
                   g < 16
                     ? (R += C(U, H, N) + B[0])
                     : g < 32
@@ -3637,51 +3637,51 @@ csui.define("csui/lib/othelp", [], function () {
                     : g < 48
                     ? (R += w(U, H, N) + B[2])
                     : g < 64
-                    ? (R += v(U, H, N) + B[3])
-                    : (R += b(U, H, N) + B[4]),
+                    ? (R += b(U, H, N) + B[3])
+                    : (R += v(U, H, N) + B[4]),
                   (R = R | 0),
                   (R = _(R, O[g])),
                   (R = (R + V) | 0),
-                  (j = V),
+                  (F = V),
                   (V = N),
                   (N = _(H, 10)),
                   (H = U),
                   (U = R),
-                  (R = (L + T[l + P[g]]) | 0),
+                  (R = (L + T[a + P[g]]) | 0),
                   g < 16
-                    ? (R += b(F, G, W) + M[0])
+                    ? (R += v(j, G, W) + M[0])
                     : g < 32
-                    ? (R += v(F, G, W) + M[1])
+                    ? (R += b(j, G, W) + M[1])
                     : g < 48
-                    ? (R += w(F, G, W) + M[2])
+                    ? (R += w(j, G, W) + M[2])
                     : g < 64
-                    ? (R += S(F, G, W) + M[3])
-                    : (R += C(F, G, W) + M[4]),
+                    ? (R += S(j, G, W) + M[3])
+                    : (R += C(j, G, W) + M[4]),
                   (R = R | 0),
                   (R = _(R, z[g])),
                   (R = (R + q) | 0),
                   (L = q),
                   (q = W),
                   (W = _(G, 10)),
-                  (G = F),
-                  (F = R);
+                  (G = j),
+                  (j = R);
               (R = (A[1] + H + W) | 0),
                 (A[1] = (A[2] + N + q) | 0),
                 (A[2] = (A[3] + V + L) | 0),
-                (A[3] = (A[4] + j + F) | 0),
+                (A[3] = (A[4] + F + j) | 0),
                 (A[4] = (A[0] + U + G) | 0),
                 (A[0] = R);
             },
             _doFinalize: function () {
               var T = this._data,
-                l = T.words,
+                a = T.words,
                 g = this._nDataBytes * 8,
                 I = T.sigBytes * 8;
-              (l[I >>> 5] |= 128 << (24 - (I % 32))),
-                (l[(((I + 64) >>> 9) << 4) + 14] =
+              (a[I >>> 5] |= 128 << (24 - (I % 32))),
+                (a[(((I + 64) >>> 9) << 4) + 14] =
                   (((g << 8) | (g >>> 24)) & 16711935) |
                   (((g << 24) | (g >>> 8)) & 4278255360)),
-                (T.sigBytes = (l.length + 1) * 4),
+                (T.sigBytes = (a.length + 1) * 4),
                 this._process();
               for (var D = this._hash, A = D.words, B = 0; B < 5; B++) {
                 var M = A[B];
@@ -3696,23 +3696,23 @@ csui.define("csui/lib/othelp", [], function () {
               return (T._hash = this._hash.clone()), T;
             },
           }));
-        function C(T, l, g) {
-          return T ^ l ^ g;
+        function C(T, a, g) {
+          return T ^ a ^ g;
         }
-        function S(T, l, g) {
-          return (T & l) | (~T & g);
+        function S(T, a, g) {
+          return (T & a) | (~T & g);
         }
-        function w(T, l, g) {
-          return (T | ~l) ^ g;
+        function w(T, a, g) {
+          return (T | ~a) ^ g;
         }
-        function v(T, l, g) {
-          return (T & g) | (l & ~g);
+        function b(T, a, g) {
+          return (T & g) | (a & ~g);
         }
-        function b(T, l, g) {
-          return T ^ (l | ~g);
+        function v(T, a, g) {
+          return T ^ (a | ~g);
         }
-        function _(T, l) {
-          return (T << l) | (T >>> (32 - l));
+        function _(T, a) {
+          return (T << a) | (T >>> (32 - a));
         }
         (r.RIPEMD160 = t._createHelper(k)),
           (r.HmacRIPEMD160 = t._createHmacHelper(k));
@@ -3720,28 +3720,28 @@ csui.define("csui/lib/othelp", [], function () {
       (function () {
         var e = s,
           r = e.lib,
-          a = r.Base,
-          d = e.enc,
-          t = d.Utf8,
+          l = r.Base,
+          f = e.enc,
+          t = f.Utf8,
           i = e.algo,
-          o = (i.HMAC = a.extend({
+          o = (i.HMAC = l.extend({
             init: function (n, u) {
               (n = this._hasher = new n.init()),
                 typeof u == "string" && (u = t.parse(u));
               var c = n.blockSize,
-                h = c * 4;
-              u.sigBytes > h && (u = n.finalize(u)), u.clamp();
+                d = c * 4;
+              u.sigBytes > d && (u = n.finalize(u)), u.clamp();
               for (
-                var f = (this._oKey = u.clone()),
+                var h = (this._oKey = u.clone()),
                   k = (this._iKey = u.clone()),
-                  C = f.words,
+                  C = h.words,
                   S = k.words,
                   w = 0;
                 w < c;
                 w++
               )
                 (C[w] ^= 1549556828), (S[w] ^= 909522486);
-              (f.sigBytes = k.sigBytes = h), this.reset();
+              (h.sigBytes = k.sigBytes = d), this.reset();
             },
             reset: function () {
               var n = this._hasher;
@@ -3754,78 +3754,78 @@ csui.define("csui/lib/othelp", [], function () {
               var u = this._hasher,
                 c = u.finalize(n);
               u.reset();
-              var h = u.finalize(this._oKey.clone().concat(c));
-              return h;
+              var d = u.finalize(this._oKey.clone().concat(c));
+              return d;
             },
           }));
       })(),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.Base,
-          d = r.WordArray,
+          l = r.Base,
+          f = r.WordArray,
           t = e.algo,
           i = t.SHA1,
           o = t.HMAC,
-          n = (t.PBKDF2 = a.extend({
-            cfg: a.extend({ keySize: 128 / 32, hasher: i, iterations: 1 }),
+          n = (t.PBKDF2 = l.extend({
+            cfg: l.extend({ keySize: 128 / 32, hasher: i, iterations: 1 }),
             init: function (u) {
               this.cfg = this.cfg.extend(u);
             },
             compute: function (u, c) {
               for (
-                var h = this.cfg,
-                  f = o.create(h.hasher, u),
-                  k = d.create(),
-                  C = d.create([1]),
+                var d = this.cfg,
+                  h = o.create(d.hasher, u),
+                  k = f.create(),
+                  C = f.create([1]),
                   S = k.words,
                   w = C.words,
-                  v = h.keySize,
-                  b = h.iterations;
-                S.length < v;
+                  b = d.keySize,
+                  v = d.iterations;
+                S.length < b;
 
               ) {
-                var _ = f.update(c).finalize(C);
-                f.reset();
-                for (var T = _.words, l = T.length, g = _, I = 1; I < b; I++) {
-                  (g = f.finalize(g)), f.reset();
-                  for (var D = g.words, A = 0; A < l; A++) T[A] ^= D[A];
+                var _ = h.update(c).finalize(C);
+                h.reset();
+                for (var T = _.words, a = T.length, g = _, I = 1; I < v; I++) {
+                  (g = h.finalize(g)), h.reset();
+                  for (var D = g.words, A = 0; A < a; A++) T[A] ^= D[A];
                 }
                 k.concat(_), w[0]++;
               }
-              return (k.sigBytes = v * 4), k;
+              return (k.sigBytes = b * 4), k;
             },
           }));
-        e.PBKDF2 = function (u, c, h) {
-          return n.create(h).compute(u, c);
+        e.PBKDF2 = function (u, c, d) {
+          return n.create(d).compute(u, c);
         };
       })(),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.Base,
-          d = r.WordArray,
+          l = r.Base,
+          f = r.WordArray,
           t = e.algo,
           i = t.MD5,
-          o = (t.EvpKDF = a.extend({
-            cfg: a.extend({ keySize: 128 / 32, hasher: i, iterations: 1 }),
+          o = (t.EvpKDF = l.extend({
+            cfg: l.extend({ keySize: 128 / 32, hasher: i, iterations: 1 }),
             init: function (n) {
               this.cfg = this.cfg.extend(n);
             },
             compute: function (n, u) {
               for (
                 var c,
-                  h = this.cfg,
-                  f = h.hasher.create(),
-                  k = d.create(),
+                  d = this.cfg,
+                  h = d.hasher.create(),
+                  k = f.create(),
                   C = k.words,
-                  S = h.keySize,
-                  w = h.iterations;
+                  S = d.keySize,
+                  w = d.iterations;
                 C.length < S;
 
               ) {
-                c && f.update(c), (c = f.update(n).finalize(u)), f.reset();
-                for (var v = 1; v < w; v++) (c = f.finalize(c)), f.reset();
+                c && h.update(c), (c = h.update(n).finalize(u)), h.reset();
+                for (var b = 1; b < w; b++) (c = h.finalize(c)), h.reset();
                 k.concat(c);
               }
               return (k.sigBytes = S * 4), k;
@@ -3838,12 +3838,12 @@ csui.define("csui/lib/othelp", [], function () {
       (function () {
         var e = s,
           r = e.lib,
-          a = r.WordArray,
-          d = e.algo,
-          t = d.SHA256,
-          i = (d.SHA224 = t.extend({
+          l = r.WordArray,
+          f = e.algo,
+          t = f.SHA256,
+          i = (f.SHA224 = t.extend({
             _doReset: function () {
-              this._hash = new a.init([
+              this._hash = new l.init([
                 3238371032, 914150663, 812702999, 4144912697, 4290775857,
                 1750603025, 1694076839, 3204075428,
               ]);
@@ -3858,80 +3858,80 @@ csui.define("csui/lib/othelp", [], function () {
       })(),
       (function (e) {
         var r = s,
-          a = r.lib,
-          d = a.Base,
-          t = a.WordArray,
+          l = r.lib,
+          f = l.Base,
+          t = l.WordArray,
           i = (r.x64 = {}),
-          o = (i.Word = d.extend({
+          o = (i.Word = f.extend({
             init: function (u, c) {
               (this.high = u), (this.low = c);
             },
           })),
-          n = (i.WordArray = d.extend({
+          n = (i.WordArray = f.extend({
             init: function (u, c) {
               (u = this.words = u || []),
                 c != e ? (this.sigBytes = c) : (this.sigBytes = u.length * 8);
             },
             toX32: function () {
               for (
-                var u = this.words, c = u.length, h = [], f = 0;
-                f < c;
-                f++
+                var u = this.words, c = u.length, d = [], h = 0;
+                h < c;
+                h++
               ) {
-                var k = u[f];
-                h.push(k.high), h.push(k.low);
+                var k = u[h];
+                d.push(k.high), d.push(k.low);
               }
-              return t.create(h, this.sigBytes);
+              return t.create(d, this.sigBytes);
             },
             clone: function () {
               for (
-                var u = d.clone.call(this),
+                var u = f.clone.call(this),
                   c = (u.words = this.words.slice(0)),
-                  h = c.length,
-                  f = 0;
-                f < h;
-                f++
+                  d = c.length,
+                  h = 0;
+                h < d;
+                h++
               )
-                c[f] = c[f].clone();
+                c[h] = c[h].clone();
               return u;
             },
           }));
       })(),
       (function (e) {
         var r = s,
-          a = r.lib,
-          d = a.WordArray,
-          t = a.Hasher,
+          l = r.lib,
+          f = l.WordArray,
+          t = l.Hasher,
           i = r.x64,
           o = i.Word,
           n = r.algo,
           u = [],
           c = [],
-          h = [];
+          d = [];
         (function () {
           for (var C = 1, S = 0, w = 0; w < 24; w++) {
             u[C + 5 * S] = (((w + 1) * (w + 2)) / 2) % 64;
-            var v = S % 5,
-              b = (2 * C + 3 * S) % 5;
-            (C = v), (S = b);
+            var b = S % 5,
+              v = (2 * C + 3 * S) % 5;
+            (C = b), (S = v);
           }
           for (var C = 0; C < 5; C++)
             for (var S = 0; S < 5; S++)
               c[C + 5 * S] = S + ((2 * C + 3 * S) % 5) * 5;
           for (var _ = 1, T = 0; T < 24; T++) {
-            for (var l = 0, g = 0, I = 0; I < 7; I++) {
+            for (var a = 0, g = 0, I = 0; I < 7; I++) {
               if (_ & 1) {
                 var D = (1 << I) - 1;
-                D < 32 ? (g ^= 1 << D) : (l ^= 1 << (D - 32));
+                D < 32 ? (g ^= 1 << D) : (a ^= 1 << (D - 32));
               }
               _ & 128 ? (_ = (_ << 1) ^ 113) : (_ <<= 1);
             }
-            h[T] = o.create(l, g);
+            d[T] = o.create(a, g);
           }
         })();
-        var f = [];
+        var h = [];
         (function () {
-          for (var C = 0; C < 25; C++) f[C] = o.create();
+          for (var C = 0; C < 25; C++) h[C] = o.create();
         })();
         var k = (n.SHA3 = t.extend({
           cfg: t.cfg.extend({ outputLength: 512 }),
@@ -3942,34 +3942,34 @@ csui.define("csui/lib/othelp", [], function () {
           },
           _doProcessBlock: function (C, S) {
             for (
-              var w = this._state, v = this.blockSize / 2, b = 0;
-              b < v;
-              b++
+              var w = this._state, b = this.blockSize / 2, v = 0;
+              v < b;
+              v++
             ) {
-              var _ = C[S + 2 * b],
-                T = C[S + 2 * b + 1];
+              var _ = C[S + 2 * v],
+                T = C[S + 2 * v + 1];
               (_ =
                 (((_ << 8) | (_ >>> 24)) & 16711935) |
                 (((_ << 24) | (_ >>> 8)) & 4278255360)),
                 (T =
                   (((T << 8) | (T >>> 24)) & 16711935) |
                   (((T << 24) | (T >>> 8)) & 4278255360));
-              var l = w[b];
-              (l.high ^= T), (l.low ^= _);
+              var a = w[v];
+              (a.high ^= T), (a.low ^= _);
             }
             for (var g = 0; g < 24; g++) {
               for (var I = 0; I < 5; I++) {
                 for (var D = 0, A = 0, B = 0; B < 5; B++) {
-                  var l = w[I + 5 * B];
-                  (D ^= l.high), (A ^= l.low);
+                  var a = w[I + 5 * B];
+                  (D ^= a.high), (A ^= a.low);
                 }
-                var M = f[I];
+                var M = h[I];
                 (M.high = D), (M.low = A);
               }
               for (var I = 0; I < 5; I++)
                 for (
-                  var E = f[(I + 4) % 5],
-                    P = f[(I + 1) % 5],
+                  var E = h[(I + 4) % 5],
+                    P = h[(I + 1) % 5],
                     O = P.high,
                     z = P.low,
                     D = E.high ^ ((O << 1) | (z >>> 31)),
@@ -3978,59 +3978,59 @@ csui.define("csui/lib/othelp", [], function () {
                   B < 5;
                   B++
                 ) {
-                  var l = w[I + 5 * B];
-                  (l.high ^= D), (l.low ^= A);
+                  var a = w[I + 5 * B];
+                  (a.high ^= D), (a.low ^= A);
                 }
-              for (var j = 1; j < 25; j++) {
+              for (var F = 1; F < 25; F++) {
                 var D,
                   A,
-                  l = w[j],
-                  U = l.high,
-                  H = l.low,
-                  N = u[j];
+                  a = w[F],
+                  U = a.high,
+                  H = a.low,
+                  N = u[F];
                 N < 32
                   ? ((D = (U << N) | (H >>> (32 - N))),
                     (A = (H << N) | (U >>> (32 - N))))
                   : ((D = (H << (N - 32)) | (U >>> (64 - N))),
                     (A = (U << (N - 32)) | (H >>> (64 - N))));
-                var V = f[c[j]];
+                var V = h[c[F]];
                 (V.high = D), (V.low = A);
               }
-              var L = f[0],
-                F = w[0];
-              (L.high = F.high), (L.low = F.low);
+              var L = h[0],
+                j = w[0];
+              (L.high = j.high), (L.low = j.low);
               for (var I = 0; I < 5; I++)
                 for (var B = 0; B < 5; B++) {
-                  var j = I + 5 * B,
-                    l = w[j],
-                    G = f[j],
-                    W = f[((I + 1) % 5) + 5 * B],
-                    q = f[((I + 2) % 5) + 5 * B];
-                  (l.high = G.high ^ (~W.high & q.high)),
-                    (l.low = G.low ^ (~W.low & q.low));
+                  var F = I + 5 * B,
+                    a = w[F],
+                    G = h[F],
+                    W = h[((I + 1) % 5) + 5 * B],
+                    q = h[((I + 2) % 5) + 5 * B];
+                  (a.high = G.high ^ (~W.high & q.high)),
+                    (a.low = G.low ^ (~W.low & q.low));
                 }
-              var l = w[0],
-                R = h[g];
-              (l.high ^= R.high), (l.low ^= R.low);
+              var a = w[0],
+                R = d[g];
+              (a.high ^= R.high), (a.low ^= R.low);
             }
           },
           _doFinalize: function () {
             var C = this._data,
               S = C.words,
               w = this._nDataBytes * 8,
-              v = C.sigBytes * 8,
-              b = this.blockSize * 32;
-            (S[v >>> 5] |= 1 << (24 - (v % 32))),
-              (S[((e.ceil((v + 1) / b) * b) >>> 5) - 1] |= 128),
+              b = C.sigBytes * 8,
+              v = this.blockSize * 32;
+            (S[b >>> 5] |= 1 << (24 - (b % 32))),
+              (S[((e.ceil((b + 1) / v) * v) >>> 5) - 1] |= 128),
               (C.sigBytes = S.length * 4),
               this._process();
             for (
               var _ = this._state,
                 T = this.cfg.outputLength / 8,
-                l = T / 8,
+                a = T / 8,
                 g = [],
                 I = 0;
-              I < l;
+              I < a;
               I++
             ) {
               var D = _[I],
@@ -4045,7 +4045,7 @@ csui.define("csui/lib/othelp", [], function () {
                 g.push(B),
                 g.push(A);
             }
-            return new d.init(g, T);
+            return new f.init(g, T);
           },
           clone: function () {
             for (
@@ -4064,10 +4064,10 @@ csui.define("csui/lib/othelp", [], function () {
       (function () {
         var e = s,
           r = e.lib,
-          a = r.Hasher,
-          d = e.x64,
-          t = d.Word,
-          i = d.WordArray,
+          l = r.Hasher,
+          f = e.x64,
+          t = f.Word,
+          i = f.WordArray,
           o = e.algo;
         function n() {
           return t.create.apply(t, arguments);
@@ -4156,9 +4156,9 @@ csui.define("csui/lib/othelp", [], function () {
           ],
           c = [];
         (function () {
-          for (var f = 0; f < 80; f++) c[f] = n();
+          for (var h = 0; h < 80; h++) c[h] = n();
         })();
-        var h = (o.SHA512 = a.extend({
+        var d = (o.SHA512 = l.extend({
           _doReset: function () {
             this._hash = new i.init([
               new t.init(1779033703, 4089235720),
@@ -4171,33 +4171,33 @@ csui.define("csui/lib/othelp", [], function () {
               new t.init(1541459225, 327033209),
             ]);
           },
-          _doProcessBlock: function (f, k) {
+          _doProcessBlock: function (h, k) {
             for (
               var C = this._hash.words,
                 S = C[0],
                 w = C[1],
-                v = C[2],
-                b = C[3],
+                b = C[2],
+                v = C[3],
                 _ = C[4],
                 T = C[5],
-                l = C[6],
+                a = C[6],
                 g = C[7],
                 I = S.high,
                 D = S.low,
                 A = w.high,
                 B = w.low,
-                M = v.high,
-                E = v.low,
-                P = b.high,
-                O = b.low,
+                M = b.high,
+                E = b.low,
+                P = v.high,
+                O = v.low,
                 z = _.high,
-                j = _.low,
+                F = _.low,
                 U = T.high,
                 H = T.low,
-                N = l.high,
-                V = l.low,
+                N = a.high,
+                V = a.low,
                 L = g.high,
-                F = g.low,
+                j = g.low,
                 G = I,
                 W = D,
                 q = A,
@@ -4207,13 +4207,13 @@ csui.define("csui/lib/othelp", [], function () {
                 te = P,
                 Y = O,
                 K = z,
-                $ = j,
+                $ = F,
                 ie = U,
                 se = H,
                 re = N,
                 ce = V,
                 pe = L,
-                ue = F,
+                ue = j,
                 ee = 0;
               ee < 80;
               ee++
@@ -4222,8 +4222,8 @@ csui.define("csui/lib/othelp", [], function () {
                 oe,
                 fe = c[ee];
               if (ee < 16)
-                (oe = fe.high = f[k + ee * 2] | 0),
-                  (Z = fe.low = f[k + ee * 2 + 1] | 0);
+                (oe = fe.high = h[k + ee * 2] | 0),
+                  (Z = fe.low = h[k + ee * 2 + 1] | 0);
               else {
                 var me = c[ee - 15],
                   le = me.high,
@@ -4283,18 +4283,18 @@ csui.define("csui/lib/othelp", [], function () {
                   (($ >>> 18) | (K << 14)) ^
                   (($ << 23) | (K >>> 9)),
                 _e = u[ee],
-                Fe = _e.high,
+                je = _e.high,
                 Se = _e.low,
                 J = ue + Le,
                 ne = pe + Ne + (J >>> 0 < ue >>> 0 ? 1 : 0),
                 J = J + ke,
                 ne = ne + Be + (J >>> 0 < ke >>> 0 ? 1 : 0),
                 J = J + Se,
-                ne = ne + Fe + (J >>> 0 < Se >>> 0 ? 1 : 0),
+                ne = ne + je + (J >>> 0 < Se >>> 0 ? 1 : 0),
                 J = J + Z,
                 ne = ne + oe + (J >>> 0 < Z >>> 0 ? 1 : 0),
                 Ie = Ce + Oe,
-                je = Ve + Pe + (Ie >>> 0 < Ce >>> 0 ? 1 : 0);
+                Fe = Ve + Pe + (Ie >>> 0 < Ce >>> 0 ? 1 : 0);
               (pe = re),
                 (ue = ce),
                 (re = ie),
@@ -4310,65 +4310,65 @@ csui.define("csui/lib/othelp", [], function () {
                 (q = G),
                 (R = W),
                 (W = (J + Ie) | 0),
-                (G = (ne + je + (W >>> 0 < J >>> 0 ? 1 : 0)) | 0);
+                (G = (ne + Fe + (W >>> 0 < J >>> 0 ? 1 : 0)) | 0);
             }
             (D = S.low = D + W),
               (S.high = I + G + (D >>> 0 < W >>> 0 ? 1 : 0)),
               (B = w.low = B + R),
               (w.high = A + q + (B >>> 0 < R >>> 0 ? 1 : 0)),
-              (E = v.low = E + X),
-              (v.high = M + Q + (E >>> 0 < X >>> 0 ? 1 : 0)),
-              (O = b.low = O + Y),
-              (b.high = P + te + (O >>> 0 < Y >>> 0 ? 1 : 0)),
-              (j = _.low = j + $),
-              (_.high = z + K + (j >>> 0 < $ >>> 0 ? 1 : 0)),
+              (E = b.low = E + X),
+              (b.high = M + Q + (E >>> 0 < X >>> 0 ? 1 : 0)),
+              (O = v.low = O + Y),
+              (v.high = P + te + (O >>> 0 < Y >>> 0 ? 1 : 0)),
+              (F = _.low = F + $),
+              (_.high = z + K + (F >>> 0 < $ >>> 0 ? 1 : 0)),
               (H = T.low = H + se),
               (T.high = U + ie + (H >>> 0 < se >>> 0 ? 1 : 0)),
-              (V = l.low = V + ce),
-              (l.high = N + re + (V >>> 0 < ce >>> 0 ? 1 : 0)),
-              (F = g.low = F + ue),
-              (g.high = L + pe + (F >>> 0 < ue >>> 0 ? 1 : 0));
+              (V = a.low = V + ce),
+              (a.high = N + re + (V >>> 0 < ce >>> 0 ? 1 : 0)),
+              (j = g.low = j + ue),
+              (g.high = L + pe + (j >>> 0 < ue >>> 0 ? 1 : 0));
           },
           _doFinalize: function () {
-            var f = this._data,
-              k = f.words,
+            var h = this._data,
+              k = h.words,
               C = this._nDataBytes * 8,
-              S = f.sigBytes * 8;
+              S = h.sigBytes * 8;
             (k[S >>> 5] |= 128 << (24 - (S % 32))),
               (k[(((S + 128) >>> 10) << 5) + 30] = Math.floor(C / 4294967296)),
               (k[(((S + 128) >>> 10) << 5) + 31] = C),
-              (f.sigBytes = k.length * 4),
+              (h.sigBytes = k.length * 4),
               this._process();
             var w = this._hash.toX32();
             return w;
           },
           clone: function () {
-            var f = a.clone.call(this);
-            return (f._hash = this._hash.clone()), f;
+            var h = l.clone.call(this);
+            return (h._hash = this._hash.clone()), h;
           },
           blockSize: 1024 / 32,
         }));
-        (e.SHA512 = a._createHelper(h)),
-          (e.HmacSHA512 = a._createHmacHelper(h));
+        (e.SHA512 = l._createHelper(d)),
+          (e.HmacSHA512 = l._createHmacHelper(d));
       })(),
       (function () {
         var e = s,
           r = e.x64,
-          a = r.Word,
-          d = r.WordArray,
+          l = r.Word,
+          f = r.WordArray,
           t = e.algo,
           i = t.SHA512,
           o = (t.SHA384 = i.extend({
             _doReset: function () {
-              this._hash = new d.init([
-                new a.init(3418070365, 3238371032),
-                new a.init(1654270250, 914150663),
-                new a.init(2438529370, 812702999),
-                new a.init(355462360, 4144912697),
-                new a.init(1731405415, 4290775857),
-                new a.init(2394180231, 1750603025),
-                new a.init(3675008525, 1694076839),
-                new a.init(1203062813, 3204075428),
+              this._hash = new f.init([
+                new l.init(3418070365, 3238371032),
+                new l.init(1654270250, 914150663),
+                new l.init(2438529370, 812702999),
+                new l.init(355462360, 4144912697),
+                new l.init(1731405415, 4290775857),
+                new l.init(2394180231, 1750603025),
+                new l.init(3675008525, 1694076839),
+                new l.init(1203062813, 3204075428),
               ]);
             },
             _doFinalize: function () {
@@ -4382,17 +4382,17 @@ csui.define("csui/lib/othelp", [], function () {
       s.lib.Cipher ||
         (function (e) {
           var r = s,
-            a = r.lib,
-            d = a.Base,
-            t = a.WordArray,
-            i = a.BufferedBlockAlgorithm,
+            l = r.lib,
+            f = l.Base,
+            t = l.WordArray,
+            i = l.BufferedBlockAlgorithm,
             o = r.enc,
             n = o.Utf8,
             u = o.Base64,
             c = r.algo,
-            h = c.EvpKDF,
-            f = (a.Cipher = i.extend({
-              cfg: d.extend(),
+            d = c.EvpKDF,
+            h = (l.Cipher = i.extend({
+              cfg: f.extend(),
               createEncryptor: function (M, E) {
                 return this.create(this._ENC_XFORM_MODE, M, E);
               },
@@ -4436,7 +4436,7 @@ csui.define("csui/lib/othelp", [], function () {
                 };
               })(),
             })),
-            k = (a.StreamCipher = f.extend({
+            k = (l.StreamCipher = h.extend({
               _doFinalize: function () {
                 var M = this._process(!0);
                 return M;
@@ -4444,7 +4444,7 @@ csui.define("csui/lib/othelp", [], function () {
               blockSize: 1,
             })),
             C = (r.mode = {}),
-            S = (a.BlockCipherMode = d.extend({
+            S = (l.BlockCipherMode = f.extend({
               createEncryptor: function (M, E) {
                 return this.Encryptor.create(M, E);
               },
@@ -4460,44 +4460,44 @@ csui.define("csui/lib/othelp", [], function () {
               (M.Encryptor = M.extend({
                 processBlock: function (P, O) {
                   var z = this._cipher,
-                    j = z.blockSize;
-                  E.call(this, P, O, j),
+                    F = z.blockSize;
+                  E.call(this, P, O, F),
                     z.encryptBlock(P, O),
-                    (this._prevBlock = P.slice(O, O + j));
+                    (this._prevBlock = P.slice(O, O + F));
                 },
               })),
                 (M.Decryptor = M.extend({
                   processBlock: function (P, O) {
                     var z = this._cipher,
-                      j = z.blockSize,
-                      U = P.slice(O, O + j);
+                      F = z.blockSize,
+                      U = P.slice(O, O + F);
                     z.decryptBlock(P, O),
-                      E.call(this, P, O, j),
+                      E.call(this, P, O, F),
                       (this._prevBlock = U);
                   },
                 }));
               function E(P, O, z) {
-                var j,
+                var F,
                   U = this._iv;
-                U ? ((j = U), (this._iv = e)) : (j = this._prevBlock);
-                for (var H = 0; H < z; H++) P[O + H] ^= j[H];
+                U ? ((F = U), (this._iv = e)) : (F = this._prevBlock);
+                for (var H = 0; H < z; H++) P[O + H] ^= F[H];
               }
               return M;
             })()),
-            v = (r.pad = {}),
-            b = (v.Pkcs7 = {
+            b = (r.pad = {}),
+            v = (b.Pkcs7 = {
               pad: function (M, E) {
                 for (
                   var P = E * 4,
                     O = P - (M.sigBytes % P),
                     z = (O << 24) | (O << 16) | (O << 8) | O,
-                    j = [],
+                    F = [],
                     U = 0;
                   U < O;
                   U += 4
                 )
-                  j.push(z);
-                var H = t.create(j, O);
+                  F.push(z);
+                var H = t.create(F, O);
                 M.concat(H);
               },
               unpad: function (M) {
@@ -4505,11 +4505,11 @@ csui.define("csui/lib/othelp", [], function () {
                 M.sigBytes -= E;
               },
             }),
-            _ = (a.BlockCipher = f.extend({
-              cfg: f.cfg.extend({ mode: w, padding: b }),
+            _ = (l.BlockCipher = h.extend({
+              cfg: h.cfg.extend({ mode: w, padding: v }),
               reset: function () {
                 var M;
-                f.reset.call(this);
+                h.reset.call(this);
                 var E = this.cfg,
                   P = E.iv,
                   O = E.mode;
@@ -4537,7 +4537,7 @@ csui.define("csui/lib/othelp", [], function () {
               },
               blockSize: 128 / 32,
             })),
-            T = (a.CipherParams = d.extend({
+            T = (l.CipherParams = f.extend({
               init: function (M) {
                 this.mixIn(M);
               },
@@ -4545,8 +4545,8 @@ csui.define("csui/lib/othelp", [], function () {
                 return (M || this.formatter).stringify(this);
               },
             })),
-            l = (r.format = {}),
-            g = (l.OpenSSL = {
+            a = (r.format = {}),
+            g = (a.OpenSSL = {
               stringify: function (M) {
                 var E,
                   P = M.ciphertext,
@@ -4575,15 +4575,15 @@ csui.define("csui/lib/othelp", [], function () {
                 );
               },
             }),
-            I = (a.SerializableCipher = d.extend({
-              cfg: d.extend({ format: g }),
+            I = (l.SerializableCipher = f.extend({
+              cfg: f.extend({ format: g }),
               encrypt: function (M, E, P, O) {
                 O = this.cfg.extend(O);
                 var z = M.createEncryptor(P, O),
-                  j = z.finalize(E),
+                  F = z.finalize(E),
                   U = z.cfg;
                 return T.create({
-                  ciphertext: j,
+                  ciphertext: F,
                   key: P,
                   iv: U.iv,
                   algorithm: M,
@@ -4606,54 +4606,54 @@ csui.define("csui/lib/othelp", [], function () {
             A = (D.OpenSSL = {
               execute: function (M, E, P, O) {
                 O || (O = t.random(64 / 8));
-                var z = h.create({ keySize: E + P }).compute(M, O),
-                  j = t.create(z.words.slice(E), P * 4);
+                var z = d.create({ keySize: E + P }).compute(M, O),
+                  F = t.create(z.words.slice(E), P * 4);
                 return (
-                  (z.sigBytes = E * 4), T.create({ key: z, iv: j, salt: O })
+                  (z.sigBytes = E * 4), T.create({ key: z, iv: F, salt: O })
                 );
               },
             }),
-            B = (a.PasswordBasedCipher = I.extend({
+            B = (l.PasswordBasedCipher = I.extend({
               cfg: I.cfg.extend({ kdf: A }),
               encrypt: function (M, E, P, O) {
                 O = this.cfg.extend(O);
                 var z = O.kdf.execute(P, M.keySize, M.ivSize);
                 O.iv = z.iv;
-                var j = I.encrypt.call(this, M, E, z.key, O);
-                return j.mixIn(z), j;
+                var F = I.encrypt.call(this, M, E, z.key, O);
+                return F.mixIn(z), F;
               },
               decrypt: function (M, E, P, O) {
                 (O = this.cfg.extend(O)), (E = this._parse(E, O.format));
                 var z = O.kdf.execute(P, M.keySize, M.ivSize, E.salt);
                 O.iv = z.iv;
-                var j = I.decrypt.call(this, M, E, z.key, O);
-                return j;
+                var F = I.decrypt.call(this, M, E, z.key, O);
+                return F;
               },
             }));
         })(),
       (s.mode.CFB = (function () {
         var e = s.lib.BlockCipherMode.extend();
         (e.Encryptor = e.extend({
-          processBlock: function (a, d) {
+          processBlock: function (l, f) {
             var t = this._cipher,
               i = t.blockSize;
-            r.call(this, a, d, i, t), (this._prevBlock = a.slice(d, d + i));
+            r.call(this, l, f, i, t), (this._prevBlock = l.slice(f, f + i));
           },
         })),
           (e.Decryptor = e.extend({
-            processBlock: function (a, d) {
+            processBlock: function (l, f) {
               var t = this._cipher,
                 i = t.blockSize,
-                o = a.slice(d, d + i);
-              r.call(this, a, d, i, t), (this._prevBlock = o);
+                o = l.slice(f, f + i);
+              r.call(this, l, f, i, t), (this._prevBlock = o);
             },
           }));
-        function r(a, d, t, i) {
+        function r(l, f, t, i) {
           var o,
             n = this._iv;
           n ? ((o = n.slice(0)), (this._iv = void 0)) : (o = this._prevBlock),
             i.encryptBlock(o, 0);
-          for (var u = 0; u < t; u++) a[d + u] ^= o[u];
+          for (var u = 0; u < t; u++) l[f + u] ^= o[u];
         }
         return e;
       })()),
@@ -4661,13 +4661,13 @@ csui.define("csui/lib/othelp", [], function () {
         var e = s.lib.BlockCipherMode.extend();
         return (
           (e.Encryptor = e.extend({
-            processBlock: function (r, a) {
-              this._cipher.encryptBlock(r, a);
+            processBlock: function (r, l) {
+              this._cipher.encryptBlock(r, l);
             },
           })),
           (e.Decryptor = e.extend({
-            processBlock: function (r, a) {
-              this._cipher.decryptBlock(r, a);
+            processBlock: function (r, l) {
+              this._cipher.decryptBlock(r, l);
             },
           })),
           e
@@ -4675,10 +4675,10 @@ csui.define("csui/lib/othelp", [], function () {
       })()),
       (s.pad.AnsiX923 = {
         pad: function (e, r) {
-          var a = e.sigBytes,
-            d = r * 4,
-            t = d - (a % d),
-            i = a + t - 1;
+          var l = e.sigBytes,
+            f = r * 4,
+            t = f - (l % f),
+            i = l + t - 1;
           e.clamp(),
             (e.words[i >>> 2] |= t << (24 - (i % 4) * 8)),
             (e.sigBytes += t);
@@ -4690,10 +4690,10 @@ csui.define("csui/lib/othelp", [], function () {
       }),
       (s.pad.Iso10126 = {
         pad: function (e, r) {
-          var a = r * 4,
-            d = a - (e.sigBytes % a);
-          e.concat(s.lib.WordArray.random(d - 1)).concat(
-            s.lib.WordArray.create([d << 24], 1)
+          var l = r * 4,
+            f = l - (e.sigBytes % l);
+          e.concat(s.lib.WordArray.random(f - 1)).concat(
+            s.lib.WordArray.create([f << 24], 1)
           );
         },
         unpad: function (e) {
@@ -4713,14 +4713,14 @@ csui.define("csui/lib/othelp", [], function () {
       (s.mode.OFB = (function () {
         var e = s.lib.BlockCipherMode.extend(),
           r = (e.Encryptor = e.extend({
-            processBlock: function (a, d) {
+            processBlock: function (l, f) {
               var t = this._cipher,
                 i = t.blockSize,
                 o = this._iv,
                 n = this._keystream;
               o && ((n = this._keystream = o.slice(0)), (this._iv = void 0)),
                 t.encryptBlock(n, 0);
-              for (var u = 0; u < i; u++) a[d + u] ^= n[u];
+              for (var u = 0; u < i; u++) l[f + u] ^= n[u];
             },
           }));
         return (e.Decryptor = r), e;
@@ -4728,8 +4728,8 @@ csui.define("csui/lib/othelp", [], function () {
       (s.pad.NoPadding = { pad: function () {}, unpad: function () {} }),
       (function (e) {
         var r = s,
-          a = r.lib,
-          d = a.CipherParams,
+          l = r.lib,
+          f = l.CipherParams,
           t = r.enc,
           i = t.Hex,
           o = r.format,
@@ -4739,58 +4739,58 @@ csui.define("csui/lib/othelp", [], function () {
             },
             parse: function (u) {
               var c = i.parse(u);
-              return d.create({ ciphertext: c });
+              return f.create({ ciphertext: c });
             },
           });
       })(),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.BlockCipher,
-          d = e.algo,
+          l = r.BlockCipher,
+          f = e.algo,
           t = [],
           i = [],
           o = [],
           n = [],
           u = [],
           c = [],
+          d = [],
           h = [],
-          f = [],
           k = [],
           C = [];
         (function () {
-          for (var v = [], b = 0; b < 256; b++)
-            b < 128 ? (v[b] = b << 1) : (v[b] = (b << 1) ^ 283);
-          for (var _ = 0, T = 0, b = 0; b < 256; b++) {
-            var l = T ^ (T << 1) ^ (T << 2) ^ (T << 3) ^ (T << 4);
-            (l = (l >>> 8) ^ (l & 255) ^ 99), (t[_] = l), (i[l] = _);
-            var g = v[_],
-              I = v[g],
-              D = v[I],
-              A = (v[l] * 257) ^ (l * 16843008);
+          for (var b = [], v = 0; v < 256; v++)
+            v < 128 ? (b[v] = v << 1) : (b[v] = (v << 1) ^ 283);
+          for (var _ = 0, T = 0, v = 0; v < 256; v++) {
+            var a = T ^ (T << 1) ^ (T << 2) ^ (T << 3) ^ (T << 4);
+            (a = (a >>> 8) ^ (a & 255) ^ 99), (t[_] = a), (i[a] = _);
+            var g = b[_],
+              I = b[g],
+              D = b[I],
+              A = (b[a] * 257) ^ (a * 16843008);
             (o[_] = (A << 24) | (A >>> 8)),
               (n[_] = (A << 16) | (A >>> 16)),
               (u[_] = (A << 8) | (A >>> 24)),
               (c[_] = A);
             var A = (D * 16843009) ^ (I * 65537) ^ (g * 257) ^ (_ * 16843008);
-            (h[l] = (A << 24) | (A >>> 8)),
-              (f[l] = (A << 16) | (A >>> 16)),
-              (k[l] = (A << 8) | (A >>> 24)),
-              (C[l] = A),
-              _ ? ((_ = g ^ v[v[v[D ^ g]]]), (T ^= v[v[T]])) : (_ = T = 1);
+            (d[a] = (A << 24) | (A >>> 8)),
+              (h[a] = (A << 16) | (A >>> 16)),
+              (k[a] = (A << 8) | (A >>> 24)),
+              (C[a] = A),
+              _ ? ((_ = g ^ b[b[b[D ^ g]]]), (T ^= b[b[T]])) : (_ = T = 1);
           }
         })();
         var S = [0, 1, 2, 4, 8, 16, 32, 64, 128, 27, 54],
-          w = (d.AES = a.extend({
+          w = (f.AES = l.extend({
             _doReset: function () {
-              var v;
+              var b;
               if (!(this._nRounds && this._keyPriorReset === this._key)) {
                 for (
-                  var b = (this._keyPriorReset = this._key),
-                    _ = b.words,
-                    T = b.sigBytes / 4,
-                    l = (this._nRounds = T + 6),
-                    g = (l + 1) * 4,
+                  var v = (this._keyPriorReset = this._key),
+                    _ = v.words,
+                    T = v.sigBytes / 4,
+                    a = (this._nRounds = T + 6),
+                    g = (a + 1) * 4,
                     I = (this._keySchedule = []),
                     D = 0;
                   D < g;
@@ -4798,87 +4798,87 @@ csui.define("csui/lib/othelp", [], function () {
                 )
                   D < T
                     ? (I[D] = _[D])
-                    : ((v = I[D - 1]),
+                    : ((b = I[D - 1]),
                       D % T
                         ? T > 6 &&
                           D % T == 4 &&
-                          (v =
-                            (t[v >>> 24] << 24) |
-                            (t[(v >>> 16) & 255] << 16) |
-                            (t[(v >>> 8) & 255] << 8) |
-                            t[v & 255])
-                        : ((v = (v << 8) | (v >>> 24)),
-                          (v =
-                            (t[v >>> 24] << 24) |
-                            (t[(v >>> 16) & 255] << 16) |
-                            (t[(v >>> 8) & 255] << 8) |
-                            t[v & 255]),
-                          (v ^= S[(D / T) | 0] << 24)),
-                      (I[D] = I[D - T] ^ v));
+                          (b =
+                            (t[b >>> 24] << 24) |
+                            (t[(b >>> 16) & 255] << 16) |
+                            (t[(b >>> 8) & 255] << 8) |
+                            t[b & 255])
+                        : ((b = (b << 8) | (b >>> 24)),
+                          (b =
+                            (t[b >>> 24] << 24) |
+                            (t[(b >>> 16) & 255] << 16) |
+                            (t[(b >>> 8) & 255] << 8) |
+                            t[b & 255]),
+                          (b ^= S[(D / T) | 0] << 24)),
+                      (I[D] = I[D - T] ^ b));
                 for (var A = (this._invKeySchedule = []), B = 0; B < g; B++) {
                   var D = g - B;
-                  if (B % 4) var v = I[D];
-                  else var v = I[D - 4];
+                  if (B % 4) var b = I[D];
+                  else var b = I[D - 4];
                   B < 4 || D <= 4
-                    ? (A[B] = v)
+                    ? (A[B] = b)
                     : (A[B] =
-                        h[t[v >>> 24]] ^
-                        f[t[(v >>> 16) & 255]] ^
-                        k[t[(v >>> 8) & 255]] ^
-                        C[t[v & 255]]);
+                        d[t[b >>> 24]] ^
+                        h[t[(b >>> 16) & 255]] ^
+                        k[t[(b >>> 8) & 255]] ^
+                        C[t[b & 255]]);
                 }
               }
             },
-            encryptBlock: function (v, b) {
-              this._doCryptBlock(v, b, this._keySchedule, o, n, u, c, t);
+            encryptBlock: function (b, v) {
+              this._doCryptBlock(b, v, this._keySchedule, o, n, u, c, t);
             },
-            decryptBlock: function (v, b) {
-              var _ = v[b + 1];
-              (v[b + 1] = v[b + 3]),
-                (v[b + 3] = _),
-                this._doCryptBlock(v, b, this._invKeySchedule, h, f, k, C, i);
-              var _ = v[b + 1];
-              (v[b + 1] = v[b + 3]), (v[b + 3] = _);
+            decryptBlock: function (b, v) {
+              var _ = b[v + 1];
+              (b[v + 1] = b[v + 3]),
+                (b[v + 3] = _),
+                this._doCryptBlock(b, v, this._invKeySchedule, d, h, k, C, i);
+              var _ = b[v + 1];
+              (b[v + 1] = b[v + 3]), (b[v + 3] = _);
             },
-            _doCryptBlock: function (v, b, _, T, l, g, I, D) {
+            _doCryptBlock: function (b, v, _, T, a, g, I, D) {
               for (
                 var A = this._nRounds,
-                  B = v[b] ^ _[0],
-                  M = v[b + 1] ^ _[1],
-                  E = v[b + 2] ^ _[2],
-                  P = v[b + 3] ^ _[3],
+                  B = b[v] ^ _[0],
+                  M = b[v + 1] ^ _[1],
+                  E = b[v + 2] ^ _[2],
+                  P = b[v + 3] ^ _[3],
                   O = 4,
                   z = 1;
                 z < A;
                 z++
               ) {
-                var j =
+                var F =
                     T[B >>> 24] ^
-                    l[(M >>> 16) & 255] ^
+                    a[(M >>> 16) & 255] ^
                     g[(E >>> 8) & 255] ^
                     I[P & 255] ^
                     _[O++],
                   U =
                     T[M >>> 24] ^
-                    l[(E >>> 16) & 255] ^
+                    a[(E >>> 16) & 255] ^
                     g[(P >>> 8) & 255] ^
                     I[B & 255] ^
                     _[O++],
                   H =
                     T[E >>> 24] ^
-                    l[(P >>> 16) & 255] ^
+                    a[(P >>> 16) & 255] ^
                     g[(B >>> 8) & 255] ^
                     I[M & 255] ^
                     _[O++],
                   N =
                     T[P >>> 24] ^
-                    l[(B >>> 16) & 255] ^
+                    a[(B >>> 16) & 255] ^
                     g[(M >>> 8) & 255] ^
                     I[E & 255] ^
                     _[O++];
-                (B = j), (M = U), (E = H), (P = N);
+                (B = F), (M = U), (E = H), (P = N);
               }
-              var j =
+              var F =
                   ((D[B >>> 24] << 24) |
                     (D[(M >>> 16) & 255] << 16) |
                     (D[(E >>> 8) & 255] << 8) |
@@ -4902,17 +4902,17 @@ csui.define("csui/lib/othelp", [], function () {
                     (D[(M >>> 8) & 255] << 8) |
                     D[E & 255]) ^
                   _[O++];
-              (v[b] = j), (v[b + 1] = U), (v[b + 2] = H), (v[b + 3] = N);
+              (b[v] = F), (b[v + 1] = U), (b[v + 2] = H), (b[v + 3] = N);
             },
             keySize: 256 / 32,
           }));
-        e.AES = a._createHelper(w);
+        e.AES = l._createHelper(w);
       })(),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.WordArray,
-          d = r.BlockCipher,
+          l = r.WordArray,
+          f = r.BlockCipher,
           t = e.algo,
           i = [
             57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51,
@@ -5460,23 +5460,23 @@ csui.define("csui/lib/othelp", [], function () {
             4160749569, 528482304, 33030144, 2064384, 129024, 8064, 504,
             2147483679,
           ],
-          h = (t.DES = d.extend({
+          d = (t.DES = f.extend({
             _doReset: function () {
-              for (var S = this._key, w = S.words, v = [], b = 0; b < 56; b++) {
-                var _ = i[b] - 1;
-                v[b] = (w[_ >>> 5] >>> (31 - (_ % 32))) & 1;
+              for (var S = this._key, w = S.words, b = [], v = 0; v < 56; v++) {
+                var _ = i[v] - 1;
+                b[v] = (w[_ >>> 5] >>> (31 - (_ % 32))) & 1;
               }
-              for (var T = (this._subKeys = []), l = 0; l < 16; l++) {
-                for (var g = (T[l] = []), I = n[l], b = 0; b < 24; b++)
-                  (g[(b / 6) | 0] |= v[(o[b] - 1 + I) % 28] << (31 - (b % 6))),
-                    (g[4 + ((b / 6) | 0)] |=
-                      v[28 + ((o[b + 24] - 1 + I) % 28)] << (31 - (b % 6)));
+              for (var T = (this._subKeys = []), a = 0; a < 16; a++) {
+                for (var g = (T[a] = []), I = n[a], v = 0; v < 24; v++)
+                  (g[(v / 6) | 0] |= b[(o[v] - 1 + I) % 28] << (31 - (v % 6))),
+                    (g[4 + ((v / 6) | 0)] |=
+                      b[28 + ((o[v + 24] - 1 + I) % 28)] << (31 - (v % 6)));
                 g[0] = (g[0] << 1) | (g[0] >>> 31);
-                for (var b = 1; b < 7; b++) g[b] = g[b] >>> ((b - 1) * 4 + 3);
+                for (var v = 1; v < 7; v++) g[v] = g[v] >>> ((v - 1) * 4 + 3);
                 g[7] = (g[7] << 5) | (g[7] >>> 27);
               }
-              for (var D = (this._invSubKeys = []), b = 0; b < 16; b++)
-                D[b] = T[15 - b];
+              for (var D = (this._invSubKeys = []), v = 0; v < 16; v++)
+                D[v] = T[15 - v];
             },
             encryptBlock: function (S, w) {
               this._doCryptBlock(S, w, this._subKeys);
@@ -5484,35 +5484,35 @@ csui.define("csui/lib/othelp", [], function () {
             decryptBlock: function (S, w) {
               this._doCryptBlock(S, w, this._invSubKeys);
             },
-            _doCryptBlock: function (S, w, v) {
+            _doCryptBlock: function (S, w, b) {
               (this._lBlock = S[w]),
                 (this._rBlock = S[w + 1]),
-                f.call(this, 4, 252645135),
-                f.call(this, 16, 65535),
+                h.call(this, 4, 252645135),
+                h.call(this, 16, 65535),
                 k.call(this, 2, 858993459),
                 k.call(this, 8, 16711935),
-                f.call(this, 1, 1431655765);
-              for (var b = 0; b < 16; b++) {
+                h.call(this, 1, 1431655765);
+              for (var v = 0; v < 16; v++) {
                 for (
-                  var _ = v[b],
+                  var _ = b[v],
                     T = this._lBlock,
-                    l = this._rBlock,
+                    a = this._rBlock,
                     g = 0,
                     I = 0;
                   I < 8;
                   I++
                 )
-                  g |= u[I][((l ^ _[I]) & c[I]) >>> 0];
-                (this._lBlock = l), (this._rBlock = T ^ g);
+                  g |= u[I][((a ^ _[I]) & c[I]) >>> 0];
+                (this._lBlock = a), (this._rBlock = T ^ g);
               }
               var D = this._lBlock;
               (this._lBlock = this._rBlock),
                 (this._rBlock = D),
-                f.call(this, 1, 1431655765),
+                h.call(this, 1, 1431655765),
                 k.call(this, 8, 16711935),
                 k.call(this, 2, 858993459),
-                f.call(this, 16, 65535),
-                f.call(this, 4, 252645135),
+                h.call(this, 16, 65535),
+                h.call(this, 4, 252645135),
                 (S[w] = this._lBlock),
                 (S[w + 1] = this._rBlock);
             },
@@ -5520,16 +5520,16 @@ csui.define("csui/lib/othelp", [], function () {
             ivSize: 64 / 32,
             blockSize: 64 / 32,
           }));
-        function f(S, w) {
-          var v = ((this._lBlock >>> S) ^ this._rBlock) & w;
-          (this._rBlock ^= v), (this._lBlock ^= v << S);
+        function h(S, w) {
+          var b = ((this._lBlock >>> S) ^ this._rBlock) & w;
+          (this._rBlock ^= b), (this._lBlock ^= b << S);
         }
         function k(S, w) {
-          var v = ((this._rBlock >>> S) ^ this._lBlock) & w;
-          (this._lBlock ^= v), (this._rBlock ^= v << S);
+          var b = ((this._rBlock >>> S) ^ this._lBlock) & w;
+          (this._lBlock ^= b), (this._rBlock ^= b << S);
         }
-        e.DES = d._createHelper(h);
-        var C = (t.TripleDES = d.extend({
+        e.DES = f._createHelper(d);
+        var C = (t.TripleDES = f.extend({
           _doReset: function () {
             var S = this._key,
               w = S.words;
@@ -5537,12 +5537,12 @@ csui.define("csui/lib/othelp", [], function () {
               throw new Error(
                 "Invalid key length - 3DES requires the key length to be 64, 128, 192 or >192."
               );
-            var v = w.slice(0, 2),
-              b = w.length < 4 ? w.slice(0, 2) : w.slice(2, 4),
+            var b = w.slice(0, 2),
+              v = w.length < 4 ? w.slice(0, 2) : w.slice(2, 4),
               _ = w.length < 6 ? w.slice(0, 2) : w.slice(4, 6);
-            (this._des1 = h.createEncryptor(a.create(v))),
-              (this._des2 = h.createEncryptor(a.create(b))),
-              (this._des3 = h.createEncryptor(a.create(_)));
+            (this._des1 = d.createEncryptor(l.create(b))),
+              (this._des2 = d.createEncryptor(l.create(v))),
+              (this._des3 = d.createEncryptor(l.create(_)));
           },
           encryptBlock: function (S, w) {
             this._des1.encryptBlock(S, w),
@@ -5558,31 +5558,31 @@ csui.define("csui/lib/othelp", [], function () {
           ivSize: 64 / 32,
           blockSize: 64 / 32,
         }));
-        e.TripleDES = d._createHelper(C);
+        e.TripleDES = f._createHelper(C);
       })(),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.StreamCipher,
-          d = e.algo,
-          t = (d.RC4 = a.extend({
+          l = r.StreamCipher,
+          f = e.algo,
+          t = (f.RC4 = l.extend({
             _doReset: function () {
               for (
                 var n = this._key,
                   u = n.words,
                   c = n.sigBytes,
-                  h = (this._S = []),
-                  f = 0;
-                f < 256;
-                f++
+                  d = (this._S = []),
+                  h = 0;
+                h < 256;
+                h++
               )
-                h[f] = f;
-              for (var f = 0, k = 0; f < 256; f++) {
-                var C = f % c,
+                d[h] = h;
+              for (var h = 0, k = 0; h < 256; h++) {
+                var C = h % c,
                   S = (u[C >>> 2] >>> (24 - (C % 4) * 8)) & 255;
-                k = (k + h[f] + S) % 256;
-                var w = h[f];
-                (h[f] = h[k]), (h[k] = w);
+                k = (k + d[h] + S) % 256;
+                var w = d[h];
+                (d[h] = d[k]), (d[k] = w);
               }
               this._i = this._j = 0;
             },
@@ -5594,27 +5594,27 @@ csui.define("csui/lib/othelp", [], function () {
           }));
         function i() {
           for (
-            var n = this._S, u = this._i, c = this._j, h = 0, f = 0;
-            f < 4;
-            f++
+            var n = this._S, u = this._i, c = this._j, d = 0, h = 0;
+            h < 4;
+            h++
           ) {
             (u = (u + 1) % 256), (c = (c + n[u]) % 256);
             var k = n[u];
             (n[u] = n[c]),
               (n[c] = k),
-              (h |= n[(n[u] + n[c]) % 256] << (24 - f * 8));
+              (d |= n[(n[u] + n[c]) % 256] << (24 - h * 8));
           }
-          return (this._i = u), (this._j = c), h;
+          return (this._i = u), (this._j = c), d;
         }
-        e.RC4 = a._createHelper(t);
-        var o = (d.RC4Drop = t.extend({
+        e.RC4 = l._createHelper(t);
+        var o = (f.RC4Drop = t.extend({
           cfg: t.cfg.extend({ drop: 192 }),
           _doReset: function () {
             t._doReset.call(this);
             for (var n = this.cfg.drop; n > 0; n--) i.call(this);
           },
         }));
-        e.RC4Drop = a._createHelper(o);
+        e.RC4Drop = l._createHelper(o);
       })(),
       (s.mode.CTRGladman = (function () {
         var e = s.lib.BlockCipherMode.extend();
@@ -5634,37 +5634,37 @@ csui.define("csui/lib/othelp", [], function () {
           } else t += 1 << 24;
           return t;
         }
-        function a(t) {
+        function l(t) {
           return (t[0] = r(t[0])) === 0 && (t[1] = r(t[1])), t;
         }
-        var d = (e.Encryptor = e.extend({
+        var f = (e.Encryptor = e.extend({
           processBlock: function (t, i) {
             var o = this._cipher,
               n = o.blockSize,
               u = this._iv,
               c = this._counter;
-            u && ((c = this._counter = u.slice(0)), (this._iv = void 0)), a(c);
-            var h = c.slice(0);
-            o.encryptBlock(h, 0);
-            for (var f = 0; f < n; f++) t[i + f] ^= h[f];
+            u && ((c = this._counter = u.slice(0)), (this._iv = void 0)), l(c);
+            var d = c.slice(0);
+            o.encryptBlock(d, 0);
+            for (var h = 0; h < n; h++) t[i + h] ^= d[h];
           },
         }));
-        return (e.Decryptor = d), e;
+        return (e.Decryptor = f), e;
       })()),
       (function () {
         var e = s,
           r = e.lib,
-          a = r.StreamCipher,
-          d = e.algo,
+          l = r.StreamCipher,
+          f = e.algo,
           t = [],
           i = [],
           o = [],
-          n = (d.Rabbit = a.extend({
+          n = (f.Rabbit = l.extend({
             _doReset: function () {
-              for (var c = this._key.words, h = this.cfg.iv, f = 0; f < 4; f++)
-                c[f] =
-                  (((c[f] << 8) | (c[f] >>> 24)) & 16711935) |
-                  (((c[f] << 24) | (c[f] >>> 8)) & 4278255360);
+              for (var c = this._key.words, d = this.cfg.iv, h = 0; h < 4; h++)
+                c[h] =
+                  (((c[h] << 8) | (c[h] >>> 24)) & 16711935) |
+                  (((c[h] << 24) | (c[h] >>> 8)) & 4278255360);
               var k = (this._X = [
                   c[0],
                   (c[3] << 16) | (c[2] >>> 16),
@@ -5686,70 +5686,70 @@ csui.define("csui/lib/othelp", [], function () {
                   (c[3] & 4294901760) | (c[0] & 65535),
                 ]);
               this._b = 0;
-              for (var f = 0; f < 4; f++) u.call(this);
-              for (var f = 0; f < 8; f++) C[f] ^= k[(f + 4) & 7];
-              if (h) {
-                var S = h.words,
+              for (var h = 0; h < 4; h++) u.call(this);
+              for (var h = 0; h < 8; h++) C[h] ^= k[(h + 4) & 7];
+              if (d) {
+                var S = d.words,
                   w = S[0],
-                  v = S[1],
-                  b =
+                  b = S[1],
+                  v =
                     (((w << 8) | (w >>> 24)) & 16711935) |
                     (((w << 24) | (w >>> 8)) & 4278255360),
                   _ =
-                    (((v << 8) | (v >>> 24)) & 16711935) |
-                    (((v << 24) | (v >>> 8)) & 4278255360),
-                  T = (b >>> 16) | (_ & 4294901760),
-                  l = (_ << 16) | (b & 65535);
-                (C[0] ^= b),
+                    (((b << 8) | (b >>> 24)) & 16711935) |
+                    (((b << 24) | (b >>> 8)) & 4278255360),
+                  T = (v >>> 16) | (_ & 4294901760),
+                  a = (_ << 16) | (v & 65535);
+                (C[0] ^= v),
                   (C[1] ^= T),
                   (C[2] ^= _),
-                  (C[3] ^= l),
-                  (C[4] ^= b),
+                  (C[3] ^= a),
+                  (C[4] ^= v),
                   (C[5] ^= T),
                   (C[6] ^= _),
-                  (C[7] ^= l);
-                for (var f = 0; f < 4; f++) u.call(this);
+                  (C[7] ^= a);
+                for (var h = 0; h < 4; h++) u.call(this);
               }
             },
-            _doProcessBlock: function (c, h) {
-              var f = this._X;
+            _doProcessBlock: function (c, d) {
+              var h = this._X;
               u.call(this),
-                (t[0] = f[0] ^ (f[5] >>> 16) ^ (f[3] << 16)),
-                (t[1] = f[2] ^ (f[7] >>> 16) ^ (f[5] << 16)),
-                (t[2] = f[4] ^ (f[1] >>> 16) ^ (f[7] << 16)),
-                (t[3] = f[6] ^ (f[3] >>> 16) ^ (f[1] << 16));
+                (t[0] = h[0] ^ (h[5] >>> 16) ^ (h[3] << 16)),
+                (t[1] = h[2] ^ (h[7] >>> 16) ^ (h[5] << 16)),
+                (t[2] = h[4] ^ (h[1] >>> 16) ^ (h[7] << 16)),
+                (t[3] = h[6] ^ (h[3] >>> 16) ^ (h[1] << 16));
               for (var k = 0; k < 4; k++)
                 (t[k] =
                   (((t[k] << 8) | (t[k] >>> 24)) & 16711935) |
                   (((t[k] << 24) | (t[k] >>> 8)) & 4278255360)),
-                  (c[h + k] ^= t[k]);
+                  (c[d + k] ^= t[k]);
             },
             blockSize: 128 / 32,
             ivSize: 64 / 32,
           }));
         function u() {
-          for (var c = this._X, h = this._C, f = 0; f < 8; f++) i[f] = h[f];
-          (h[0] = (h[0] + 1295307597 + this._b) | 0),
-            (h[1] =
-              (h[1] + 3545052371 + (h[0] >>> 0 < i[0] >>> 0 ? 1 : 0)) | 0),
-            (h[2] = (h[2] + 886263092 + (h[1] >>> 0 < i[1] >>> 0 ? 1 : 0)) | 0),
-            (h[3] =
-              (h[3] + 1295307597 + (h[2] >>> 0 < i[2] >>> 0 ? 1 : 0)) | 0),
-            (h[4] =
-              (h[4] + 3545052371 + (h[3] >>> 0 < i[3] >>> 0 ? 1 : 0)) | 0),
-            (h[5] = (h[5] + 886263092 + (h[4] >>> 0 < i[4] >>> 0 ? 1 : 0)) | 0),
-            (h[6] =
-              (h[6] + 1295307597 + (h[5] >>> 0 < i[5] >>> 0 ? 1 : 0)) | 0),
-            (h[7] =
-              (h[7] + 3545052371 + (h[6] >>> 0 < i[6] >>> 0 ? 1 : 0)) | 0),
-            (this._b = h[7] >>> 0 < i[7] >>> 0 ? 1 : 0);
-          for (var f = 0; f < 8; f++) {
-            var k = c[f] + h[f],
+          for (var c = this._X, d = this._C, h = 0; h < 8; h++) i[h] = d[h];
+          (d[0] = (d[0] + 1295307597 + this._b) | 0),
+            (d[1] =
+              (d[1] + 3545052371 + (d[0] >>> 0 < i[0] >>> 0 ? 1 : 0)) | 0),
+            (d[2] = (d[2] + 886263092 + (d[1] >>> 0 < i[1] >>> 0 ? 1 : 0)) | 0),
+            (d[3] =
+              (d[3] + 1295307597 + (d[2] >>> 0 < i[2] >>> 0 ? 1 : 0)) | 0),
+            (d[4] =
+              (d[4] + 3545052371 + (d[3] >>> 0 < i[3] >>> 0 ? 1 : 0)) | 0),
+            (d[5] = (d[5] + 886263092 + (d[4] >>> 0 < i[4] >>> 0 ? 1 : 0)) | 0),
+            (d[6] =
+              (d[6] + 1295307597 + (d[5] >>> 0 < i[5] >>> 0 ? 1 : 0)) | 0),
+            (d[7] =
+              (d[7] + 3545052371 + (d[6] >>> 0 < i[6] >>> 0 ? 1 : 0)) | 0),
+            (this._b = d[7] >>> 0 < i[7] >>> 0 ? 1 : 0);
+          for (var h = 0; h < 8; h++) {
+            var k = c[h] + d[h],
               C = k & 65535,
               S = k >>> 16,
               w = ((((C * C) >>> 17) + C * S) >>> 15) + S * S,
-              v = (((k & 4294901760) * k) | 0) + (((k & 65535) * k) | 0);
-            o[f] = w ^ v;
+              b = (((k & 4294901760) * k) | 0) + (((k & 65535) * k) | 0);
+            o[h] = w ^ b;
           }
           (c[0] =
             (o[0] +
@@ -5776,12 +5776,12 @@ csui.define("csui/lib/othelp", [], function () {
               0),
             (c[7] = (o[7] + ((o[6] << 8) | (o[6] >>> 24)) + o[5]) | 0);
         }
-        e.Rabbit = a._createHelper(n);
+        e.Rabbit = l._createHelper(n);
       })(),
       (s.mode.CTR = (function () {
         var e = s.lib.BlockCipherMode.extend(),
           r = (e.Encryptor = e.extend({
-            processBlock: function (a, d) {
+            processBlock: function (l, f) {
               var t = this._cipher,
                 i = t.blockSize,
                 o = this._iv,
@@ -5789,7 +5789,7 @@ csui.define("csui/lib/othelp", [], function () {
               o && ((n = this._counter = o.slice(0)), (this._iv = void 0));
               var u = n.slice(0);
               t.encryptBlock(u, 0), (n[i - 1] = (n[i - 1] + 1) | 0);
-              for (var c = 0; c < i; c++) a[d + c] ^= u[c];
+              for (var c = 0; c < i; c++) l[f + c] ^= u[c];
             },
           }));
         return (e.Decryptor = r), e;
@@ -5797,16 +5797,16 @@ csui.define("csui/lib/othelp", [], function () {
       (function () {
         var e = s,
           r = e.lib,
-          a = r.StreamCipher,
-          d = e.algo,
+          l = r.StreamCipher,
+          f = e.algo,
           t = [],
           i = [],
           o = [],
-          n = (d.RabbitLegacy = a.extend({
+          n = (f.RabbitLegacy = l.extend({
             _doReset: function () {
               var c = this._key.words,
-                h = this.cfg.iv,
-                f = (this._X = [
+                d = this.cfg.iv,
+                h = (this._X = [
                   c[0],
                   (c[3] << 16) | (c[2] >>> 16),
                   c[1],
@@ -5828,69 +5828,69 @@ csui.define("csui/lib/othelp", [], function () {
                 ]);
               this._b = 0;
               for (var C = 0; C < 4; C++) u.call(this);
-              for (var C = 0; C < 8; C++) k[C] ^= f[(C + 4) & 7];
-              if (h) {
-                var S = h.words,
+              for (var C = 0; C < 8; C++) k[C] ^= h[(C + 4) & 7];
+              if (d) {
+                var S = d.words,
                   w = S[0],
-                  v = S[1],
-                  b =
+                  b = S[1],
+                  v =
                     (((w << 8) | (w >>> 24)) & 16711935) |
                     (((w << 24) | (w >>> 8)) & 4278255360),
                   _ =
-                    (((v << 8) | (v >>> 24)) & 16711935) |
-                    (((v << 24) | (v >>> 8)) & 4278255360),
-                  T = (b >>> 16) | (_ & 4294901760),
-                  l = (_ << 16) | (b & 65535);
-                (k[0] ^= b),
+                    (((b << 8) | (b >>> 24)) & 16711935) |
+                    (((b << 24) | (b >>> 8)) & 4278255360),
+                  T = (v >>> 16) | (_ & 4294901760),
+                  a = (_ << 16) | (v & 65535);
+                (k[0] ^= v),
                   (k[1] ^= T),
                   (k[2] ^= _),
-                  (k[3] ^= l),
-                  (k[4] ^= b),
+                  (k[3] ^= a),
+                  (k[4] ^= v),
                   (k[5] ^= T),
                   (k[6] ^= _),
-                  (k[7] ^= l);
+                  (k[7] ^= a);
                 for (var C = 0; C < 4; C++) u.call(this);
               }
             },
-            _doProcessBlock: function (c, h) {
-              var f = this._X;
+            _doProcessBlock: function (c, d) {
+              var h = this._X;
               u.call(this),
-                (t[0] = f[0] ^ (f[5] >>> 16) ^ (f[3] << 16)),
-                (t[1] = f[2] ^ (f[7] >>> 16) ^ (f[5] << 16)),
-                (t[2] = f[4] ^ (f[1] >>> 16) ^ (f[7] << 16)),
-                (t[3] = f[6] ^ (f[3] >>> 16) ^ (f[1] << 16));
+                (t[0] = h[0] ^ (h[5] >>> 16) ^ (h[3] << 16)),
+                (t[1] = h[2] ^ (h[7] >>> 16) ^ (h[5] << 16)),
+                (t[2] = h[4] ^ (h[1] >>> 16) ^ (h[7] << 16)),
+                (t[3] = h[6] ^ (h[3] >>> 16) ^ (h[1] << 16));
               for (var k = 0; k < 4; k++)
                 (t[k] =
                   (((t[k] << 8) | (t[k] >>> 24)) & 16711935) |
                   (((t[k] << 24) | (t[k] >>> 8)) & 4278255360)),
-                  (c[h + k] ^= t[k]);
+                  (c[d + k] ^= t[k]);
             },
             blockSize: 128 / 32,
             ivSize: 64 / 32,
           }));
         function u() {
-          for (var c = this._X, h = this._C, f = 0; f < 8; f++) i[f] = h[f];
-          (h[0] = (h[0] + 1295307597 + this._b) | 0),
-            (h[1] =
-              (h[1] + 3545052371 + (h[0] >>> 0 < i[0] >>> 0 ? 1 : 0)) | 0),
-            (h[2] = (h[2] + 886263092 + (h[1] >>> 0 < i[1] >>> 0 ? 1 : 0)) | 0),
-            (h[3] =
-              (h[3] + 1295307597 + (h[2] >>> 0 < i[2] >>> 0 ? 1 : 0)) | 0),
-            (h[4] =
-              (h[4] + 3545052371 + (h[3] >>> 0 < i[3] >>> 0 ? 1 : 0)) | 0),
-            (h[5] = (h[5] + 886263092 + (h[4] >>> 0 < i[4] >>> 0 ? 1 : 0)) | 0),
-            (h[6] =
-              (h[6] + 1295307597 + (h[5] >>> 0 < i[5] >>> 0 ? 1 : 0)) | 0),
-            (h[7] =
-              (h[7] + 3545052371 + (h[6] >>> 0 < i[6] >>> 0 ? 1 : 0)) | 0),
-            (this._b = h[7] >>> 0 < i[7] >>> 0 ? 1 : 0);
-          for (var f = 0; f < 8; f++) {
-            var k = c[f] + h[f],
+          for (var c = this._X, d = this._C, h = 0; h < 8; h++) i[h] = d[h];
+          (d[0] = (d[0] + 1295307597 + this._b) | 0),
+            (d[1] =
+              (d[1] + 3545052371 + (d[0] >>> 0 < i[0] >>> 0 ? 1 : 0)) | 0),
+            (d[2] = (d[2] + 886263092 + (d[1] >>> 0 < i[1] >>> 0 ? 1 : 0)) | 0),
+            (d[3] =
+              (d[3] + 1295307597 + (d[2] >>> 0 < i[2] >>> 0 ? 1 : 0)) | 0),
+            (d[4] =
+              (d[4] + 3545052371 + (d[3] >>> 0 < i[3] >>> 0 ? 1 : 0)) | 0),
+            (d[5] = (d[5] + 886263092 + (d[4] >>> 0 < i[4] >>> 0 ? 1 : 0)) | 0),
+            (d[6] =
+              (d[6] + 1295307597 + (d[5] >>> 0 < i[5] >>> 0 ? 1 : 0)) | 0),
+            (d[7] =
+              (d[7] + 3545052371 + (d[6] >>> 0 < i[6] >>> 0 ? 1 : 0)) | 0),
+            (this._b = d[7] >>> 0 < i[7] >>> 0 ? 1 : 0);
+          for (var h = 0; h < 8; h++) {
+            var k = c[h] + d[h],
               C = k & 65535,
               S = k >>> 16,
               w = ((((C * C) >>> 17) + C * S) >>> 15) + S * S,
-              v = (((k & 4294901760) * k) | 0) + (((k & 65535) * k) | 0);
-            o[f] = w ^ v;
+              b = (((k & 4294901760) * k) | 0) + (((k & 65535) * k) | 0);
+            o[h] = w ^ b;
           }
           (c[0] =
             (o[0] +
@@ -5917,21 +5917,21 @@ csui.define("csui/lib/othelp", [], function () {
               0),
             (c[7] = (o[7] + ((o[6] << 8) | (o[6] >>> 24)) + o[5]) | 0);
         }
-        e.RabbitLegacy = a._createHelper(n);
+        e.RabbitLegacy = l._createHelper(n);
       })(),
       (s.pad.ZeroPadding = {
         pad: function (e, r) {
-          var a = r * 4;
-          e.clamp(), (e.sigBytes += a - (e.sigBytes % a || a));
+          var l = r * 4;
+          e.clamp(), (e.sigBytes += l - (e.sigBytes % l || l));
         },
         unpad: function (e) {
           for (
-            var r = e.words, a = e.sigBytes - 1, a = e.sigBytes - 1;
-            a >= 0;
-            a--
+            var r = e.words, l = e.sigBytes - 1, l = e.sigBytes - 1;
+            l >= 0;
+            l--
           )
-            if ((r[a >>> 2] >>> (24 - (a % 4) * 8)) & 255) {
-              e.sigBytes = a + 1;
+            if ((r[l >>> 2] >>> (24 - (l % 4) * 8)) & 255) {
+              e.sigBytes = l + 1;
               break;
             }
         },
@@ -5942,8 +5942,8 @@ csui.define("csui/lib/othelp", [], function () {
   var y = function (s) {
     var e = "product",
       r = "version",
-      a = "https://docsapi.opentext.com/mapperpi",
-      d = {
+      l = "https://docsapi.opentext.com/mapperpi",
+      f = {
         tboolean:
           "touch bookmarks toc bookmarkEntries sectionNumbers caseSensitive highContrast autoHideToc".split(
             " "
@@ -5965,7 +5965,7 @@ csui.define("csui/lib/othelp", [], function () {
         }),
       typeof debug > "u" && (debug = !1),
       typeof trace > "u" && (trace = !1),
-      s && ((e = s.product || e), (r = s.version || r), (a = s.urlRoot || a));
+      s && ((e = s.product || e), (r = s.version || r), (l = s.urlRoot || l));
     try {
       console ||
         (console = {
@@ -5995,24 +5995,24 @@ csui.define("csui/lib/othelp", [], function () {
               : t;
         return this._.generateComplexParam(n, i, o);
       },
-      optionConstants: d,
+      optionConstants: f,
       _: {
         generateComplexParam: function (t, i, o) {
           var n,
             u = [],
             c,
-            h,
-            f = [],
+            d,
+            h = [],
             k = null,
             k = !1,
             C = [],
             S = [],
             w,
-            v,
             b,
+            v,
             _,
             T,
-            l,
+            a,
             g,
             I,
             D,
@@ -6042,8 +6042,8 @@ csui.define("csui/lib/othelp", [], function () {
               ),
               ""
             );
-          (v = o ? o.tenant : null),
-            (b = o ? o.condition : null),
+          (b = o ? o.tenant : null),
+            (v = o ? o.condition : null),
             (_ = (o && o.type) || "ofh1"),
             (T = function (B, M) {
               if (B) {
@@ -6054,58 +6054,58 @@ csui.define("csui/lib/othelp", [], function () {
             }),
             (n = "");
           for (w in i.documents)
-            (l = i.documents[w]),
-              l.active && l.active === !0 && (k && delete l.active, (k = !0)),
-              l.exclude === !0 && u.push(l),
-              this.fixApp(l),
-              T(l.version, S),
-              l.err || C.push(l);
+            (a = i.documents[w]),
+              a.active && a.active === !0 && (k && delete a.active, (k = !0)),
+              a.exclude === !0 && u.push(a),
+              this.fixApp(a),
+              T(a.version, S),
+              a.err || C.push(a);
           if (typeof o == "object" && o.options) {
             debug && console.log("Complex params options: ", o.options),
               (k = { find: 1, search: 10, sort: 100 }),
-              (l = 0),
+              (a = 0),
               (D = 1);
-            for (w in d.tboolean)
-              (I = d.tboolean[w]),
+            for (w in f.tboolean)
+              (I = f.tboolean[w]),
                 (I = o.options[I]),
-                typeof I == "boolean" && (l += I ? D : 0),
+                typeof I == "boolean" && (a += I ? D : 0),
                 (D *= 2);
-            (l = l.toString(16)),
-              l != "0" && (n += 2 > l.length ? "0" + l : l),
-              (l = 0);
+            (a = a.toString(16)),
+              a != "0" && (n += 2 > a.length ? "0" + a : a),
+              (a = 0);
             for (w in o.options)
-              if ((I = d.nameValuePair[w])) {
+              if ((I = f.nameValuePair[w])) {
                 for (D = o.options[w], A = 0; A < I.length; A++)
                   if (I[A] == D) {
-                    l += (A + 1) * k[w];
+                    a += (A + 1) * k[w];
                     break;
                   }
               }
             if (
-              (0 < l &&
-                l != 121 &&
-                ((l = l.toString(16)),
+              (0 < a &&
+                a != 121 &&
+                ((a = a.toString(16)),
                 (n +=
-                  (n.length === 0 ? "00" : "") + (2 > l.length ? "0" + l : l))),
+                  (n.length === 0 ? "00" : "") + (2 > a.length ? "0" + a : a))),
               typeof o.options.query == "string" &&
                 (n += "S" + encodeURI(o.options.query)),
               o.options.flags &&
                 (c = ("" + o.options.flags).replace(/[^a-zA-Z0-9]/g, "")),
               o.options.custom)
             )
-              for (l in ((h = ""), o.options.custom))
-                0 <= ",ml,t,o,f,key,type,".indexOf("," + l + ",") ||
+              for (a in ((d = ""), o.options.custom))
+                0 <= ",ml,t,o,f,key,type,".indexOf("," + a + ",") ||
                   ((I =
                     "" +
-                    l.replace(/[^a-zA-Z0-9]/g, "") +
+                    a.replace(/[^a-zA-Z0-9]/g, "") +
                     "=" +
-                    encodeURIComponent(o.options.custom[l])),
-                  (h += "&" + I));
+                    encodeURIComponent(o.options.custom[a])),
+                  (d += "&" + I));
           }
           for (
             debug &&
-              console.log("Complex params: ", v, b, _, JSON.stringify(C), n),
-              o = a + "?ml=",
+              console.log("Complex params: ", b, v, _, JSON.stringify(C), n),
+              o = l + "?ml=",
               o += this.altArray(t),
               S.length == 1 && (o = o + "," + S[0]),
               w = 0;
@@ -6121,25 +6121,25 @@ csui.define("csui/lib/othelp", [], function () {
               C[w].PageID && (k += "." + C[w].PageID),
               C[w].exclude && (k += "_"),
               C[w].active && (k += "~"),
-              T(k, f);
+              T(k, h);
           return (
             debug &&
               (console.log("Complex params: ", S, o, JSON.stringify(u)),
-              console.log("Compressable: ", JSON.stringify(f))),
+              console.log("Compressable: ", JSON.stringify(h))),
             (k = this.compress(
-              { docs: f, preserve: i.preserve, locale: t },
+              { docs: h, preserve: i.preserve, locale: t },
               t[0]
             )),
             debug && console.log("Compressed:", k),
-            v && (k += "&t=" + encodeURIComponent(v)),
-            b && (k += "&c=" + encodeURIComponent(b)),
+            b && (k += "&t=" + encodeURIComponent(b)),
+            v && (k += "&c=" + encodeURIComponent(v)),
             n &&
               (0 < parseInt(n, 16) || 0 <= n.indexOf("S")) &&
               (k += "&o=" + n),
             c && (k += "&f=" + c),
-            h && (k += h),
+            d && (k += d),
             (t = this.generateKey()),
-            a + "?type=" + _ + "&ml=" + (k + ("&key=" + t))
+            l + "?type=" + _ + "&ml=" + (k + ("&key=" + t))
           );
         },
         compress: function (t, i) {
@@ -6148,47 +6148,47 @@ csui.define("csui/lib/othelp", [], function () {
             u;
           n = null;
           var c = [],
-            h,
-            f = "NotAPossibleValue",
-            k = f,
+            d,
+            h = "NotAPossibleValue",
+            k = h,
             C = !0,
-            S = f,
+            S = h,
             w = !0,
-            v;
+            b;
           o || (o = i),
             (o && o !== null) || (o = "en"),
             (n = t.docs),
             t.preserve !== !0 && (n = n.sort()),
             (u = this.altArray(o)),
             (c = []),
-            (h = null),
-            (k = f = "NotAPossibleValue"),
+            (d = null),
+            (k = h = "NotAPossibleValue"),
             (C = !0),
-            (S = f),
+            (S = h),
             (w = !0);
-          for (v in n)
-            (h = this.parseRevnum(n[v])),
-              c.push(h),
+          for (b in n)
+            (d = this.parseRevnum(n[b])),
+              c.push(d),
               C &&
-                k != h.help &&
-                (k == f ? (k = h.help) : k != h.help && (C = !1)),
+                k != d.help &&
+                (k == h ? (k = d.help) : k != d.help && (C = !1)),
               w &&
-                S != h.release &&
-                (S == f ? (S = h.release) : S != h.release && (w = !1));
+                S != d.release &&
+                (S == h ? (S = d.release) : S != d.release && (w = !1));
           2 > n.length && (w = C = !1),
             w && S !== null && (u = u + "-" + S.toUpperCase()),
             C && k !== null && ((u += "-"), (u += k)),
-            (k = f = v = null);
-          for (h in c)
-            (n = c[h]),
-              v === null || v != n.product
-                ? ((u += "$"), (v = n.product), (f = k = null), (u += v))
+            (k = h = b = null);
+          for (d in c)
+            (n = c[d]),
+              b === null || b != n.product
+                ? ((u += "$"), (b = n.product), (h = k = null), (u += b))
                 : (u += ","),
               (S = n.version),
               w ||
                 n.release === null ||
                 (n.release && (S += "-" + n.release.toUpperCase())),
-              (f === null || f != S) && ((u += S), (f = S), (k = null)),
+              (h === null || h != S) && ((u += S), (h = S), (k = null)),
               (S = ""),
               n.docType && (S += n.docType),
               n.locale !== null &&
@@ -6273,36 +6273,36 @@ csui.define("csui/lib/othelp", [], function () {
           var n = null,
             u = null,
             c = null,
-            h = null,
-            f;
+            d = null,
+            h;
           if (
             (o &&
-              ((n = o.product), (u = o.version), (c = o.module), (h = o.type)),
-            typeof h == "string" && h.length === 0 && (h = null),
+              ((n = o.product), (u = o.version), (c = o.module), (d = o.type)),
+            typeof d == "string" && d.length === 0 && (d = null),
             (o = this.generateKey()),
             (n = n || e),
             (u = u || r),
-            (f = a),
+            (h = l),
             typeof c != "string" &&
-              typeof h != "string" &&
-              0 < f.indexOf("mapperpi") &&
-              (f = f.substring(0, f.length - 2)),
-            (f = f + "?" + ("product=" + encodeURIComponent(n))),
-            (f += "&version=" + encodeURIComponent(u)),
-            (f += "&locale=" + encodeURIComponent(t)),
-            (f += "&context=" + encodeURIComponent(i)),
-            typeof c == "string" && typeof h == "string")
+              typeof d != "string" &&
+              0 < h.indexOf("mapperpi") &&
+              (h = h.substring(0, h.length - 2)),
+            (h = h + "?" + ("product=" + encodeURIComponent(n))),
+            (h += "&version=" + encodeURIComponent(u)),
+            (h += "&locale=" + encodeURIComponent(t)),
+            (h += "&context=" + encodeURIComponent(i)),
+            typeof c == "string" && typeof d == "string")
           )
-            (f += "&module=" + encodeURIComponent(c)),
-              (f += "&type=" + encodeURIComponent(h));
-          else if ((!c && h) || (!h && c))
+            (h += "&module=" + encodeURIComponent(c)),
+              (h += "&type=" + encodeURIComponent(d));
+          else if ((!c && d) || (!d && c))
             return (
               console.error(
                 "'module' and 'type' need to be either BOTH or NEITHER defined"
               ),
               ""
             );
-          return (f += "&key=" + o), debug && console.log(f), f;
+          return (h += "&key=" + o), debug && console.log(h), h;
         },
         generateKey: function () {
           var t = this.generatePassPhrase();
@@ -6435,7 +6435,7 @@ csui.define("csui/lib/othelp", [], function () {
       x.PLUGINS.customAttachmentsPlugin = function (m) {
         function p() {
           m.events.on("image.beforeUpload", function (e, r) {
-            const { getImageId: a, connectionUrl: d } = m.opts.externalParams,
+            const { getImageId: l, connectionUrl: f } = m.opts.externalParams,
               t = e[0];
             var i = new FileReader(),
               o = Math.random().toString(36).substring(2, 15),
@@ -6443,9 +6443,9 @@ csui.define("csui/lib/othelp", [], function () {
             return (
               (m.opts.imageUploadParams.name = n),
               (i.onload = async function (u) {
-                const c = await a(t),
-                  h = `${d}?func=doc.fetch&nodeId=${c}&viewType=1`;
-                m.image.insert(h, !1, {}, r),
+                const c = await l(t),
+                  d = `${f}?func=doc.fetch&nodeId=${c}&viewType=1`;
+                m.image.insert(d, !1, {}, r),
                   m.events.trigger("contentChanged");
               }),
               i.readAsDataURL(e[0]),
@@ -6455,10 +6455,10 @@ csui.define("csui/lib/othelp", [], function () {
             m.events.on("popups.show.image.edit", function () {
               const e = m.image.get()[0],
                 r = m.popups.get("image.edit")[0],
-                a = m.opts.iframe
+                l = m.opts.iframe
                   ? m.$iframe.closest(".csui-normal-scrolling")[0]
                   : m.$el[0].closest(".csui-normal-scrolling");
-              s(e, r, a);
+              s(e, r, l);
             }),
             m.events.on("popups.hide.image.edit", function () {
               m.toolbar.enable(),
@@ -6467,23 +6467,23 @@ csui.define("csui/lib/othelp", [], function () {
           function y() {
             m.popups.hide("image.edit");
           }
-          function s(e, r, a) {
-            let d = 0;
+          function s(e, r, l) {
+            let f = 0;
             const t = e.getBoundingClientRect(),
               i = r.getBoundingClientRect(),
-              o = a?.getBoundingClientRect(),
+              o = l?.getBoundingClientRect(),
               n = m.opts.iframe ? m.$iframe[0].getBoundingClientRect().top : 0,
               u = t.top + n,
               c = u + t.height,
-              h = Math.max(u, o.top),
-              f = Math.min(c, o.bottom);
-            i.height < h
-              ? (d = h - i.height + window.scrollY)
-              : window.innerHeight - f > i.height
-              ? (d = f + window.scrollY)
-              : (d =
-                  h > 0 ? h + window.scrollY : f - i.height + window.scrollY),
-              (r.style.top = `${d}px`);
+              d = Math.max(u, o.top),
+              h = Math.min(c, o.bottom);
+            i.height < d
+              ? (f = d - i.height + window.scrollY)
+              : window.innerHeight - h > i.height
+              ? (f = h + window.scrollY)
+              : (f =
+                  d > 0 ? d + window.scrollY : h - i.height + window.scrollY),
+              (r.style.top = `${f}px`);
           }
         }
         return { _init: p };
@@ -6523,7 +6523,7 @@ csui.define("csui/lib/othelp", [], function () {
                 .show()
                 .done(function (e) {
                   const r = e.nodes[0],
-                    a =
+                    l =
                       y.opts.csLink.getUrl &&
                       typeof y.opts.csLink.getUrl == "function"
                         ? y.opts.csLink.getUrl(r)
@@ -6532,8 +6532,8 @@ csui.define("csui/lib/othelp", [], function () {
                     y.opts.externalParams.enableSaveButton(),
                     y.selection.restore(),
                     s
-                      ? y.format.apply("a", { href: a }, y.selection.text())
-                      : y.link.insert(a, r.get("name"));
+                      ? y.format.apply("a", { href: l }, y.selection.text())
+                      : y.link.insert(l, r.get("name"));
                 })
                 .fail(function (e) {})
                 .always(function (e) {
@@ -6595,8 +6595,8 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s) {
       var e = p.extend({
         className: "fr-source-code-view",
-        constructor: function (a = {}) {
-          x.defaults(a, {
+        constructor: function (l = {}) {
+          x.defaults(l, {
             buttons: [
               {
                 id: "froalaOkButton",
@@ -6614,11 +6614,11 @@ csui.define("csui/lib/othelp", [], function () {
             ],
             title: s.sourceDialogTitle,
             view: new y({
-              model: new m.Model({ data: a.data, options: a }),
+              model: new m.Model({ data: l.data, options: l }),
               mode: "writeonly",
             }),
           }),
-            p.prototype.constructor.call(this, a);
+            p.prototype.constructor.call(this, l);
         },
         _okAction: function () {
           const r = this.options.view.model;
@@ -6695,11 +6695,11 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return "froala-save-cancel";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -6715,7 +6715,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 1, column: 12 },
@@ -6834,9 +6834,9 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s, e) {
       "use strict";
       m.PLUGINS.customFloatingspace = function (r) {
-        let a, d;
+        let l, f;
         function t() {
-          const f = x("body"),
+          const h = x("body"),
             k = {
               saveLabel: y.saveTitle,
               cancelLabel: y.cancelTitle,
@@ -6844,30 +6844,30 @@ csui.define("csui/lib/othelp", [], function () {
               saveAria: y.saveAria,
               isFroala: !0,
             };
-          f.append(p(k)),
-            f.find(".csui-html-edit-save").on(
+          h.append(p(k)),
+            h.find(".csui-html-edit-save").on(
               "click",
               s.bind(function () {
                 r.opts.externalParams.disableSaveButton(),
                   this.events.trigger("onSave");
               }, r)
             ),
-            f.find(".csui-html-edit-cancel").on(
+            h.find(".csui-html-edit-cancel").on(
               "click",
               s.bind(function () {
                 this.events.trigger("cancel");
               }, r)
             );
         }
-        function i(f) {
+        function i(h) {
           const k = window.innerWidth,
             C = r.$box[0].getBoundingClientRect(),
             S = k - C.right,
             w = C.left;
-          let v = C.width + Math.max(S, w),
-            b = (v - f) / v;
+          let b = C.width + Math.max(S, w),
+            v = (b - h) / b;
           return (
-            C.width / k > 0.8 && ((b = 1), (v = Math.min(C.width, v))), v * b
+            C.width / k > 0.8 && ((v = 1), (b = Math.min(C.width, b))), b * v
           );
         }
         function o() {
@@ -6876,51 +6876,51 @@ csui.define("csui/lib/othelp", [], function () {
             C = x(".csui-html-editor-action-buttons"),
             S = C.outerWidth(),
             w = C.outerHeight();
-          let v = {};
-          a ||
-            (a = r.$box
+          let b = {};
+          l ||
+            (l = r.$box
               .parents()
               .closest(r.opts.externalParams.widgetSelector)[0]);
-          let b = d || i(S);
-          const _ = a.getBoundingClientRect(),
+          let v = f || i(S);
+          const _ = l.getBoundingClientRect(),
             T = window.innerWidth,
-            l = document.documentElement.scrollTop;
+            a = document.documentElement.scrollTop;
           let g = k.outerHeight(),
             I,
             D = !1;
           _.top > g + w
-            ? ((I = _.top + l - g), (D = !0))
-            : (I = _.top + l + _.height);
-          const A = window.getComputedStyle(a),
+            ? ((I = _.top + a - g), (D = !0))
+            : (I = _.top + a + _.height);
+          const A = window.getComputedStyle(l),
             B = parseFloat(A.paddingRight);
           let M = _.left,
             E = T - _.right;
           const P = e.settings.rtl,
             O = r.$sc[0].querySelector(".fr-popup.fr-active");
-          (v.position = "absolute"),
-            (v.zIndex = O ? 1070 : 1069),
-            (v.top = `${I}px`),
-            (v.borderRadius = "1px"),
-            (v.display = "none"),
-            (v["max-width"] = `${b}px`),
-            (v.width = "max-content"),
-            k.css(v),
-            d || ((b = k.outerWidth()), (d = b)),
+          (b.position = "absolute"),
+            (b.zIndex = O ? 1070 : 1069),
+            (b.top = `${I}px`),
+            (b.borderRadius = "1px"),
+            (b.display = "none"),
+            (b["max-width"] = `${v}px`),
+            (b.width = "max-content"),
+            k.css(b),
+            f || ((v = k.outerWidth()), (f = v)),
             E < M
-              ? (M = _.right - b - B)
-              : M === E && (M = _.left + (_.width - b) / 2),
+              ? (M = _.right - v - B)
+              : M === E && (M = _.left + (_.width - v) / 2),
             (M = Math.max(M, 0)),
             P
-              ? ((v.right = `${Math.max(T - M - b, 0)}px`), (v.left = "auto"))
-              : ((v.left = `${M}px`), (v.right = "auto")),
-            (v.display = "block"),
-            k.css(v),
+              ? ((b.right = `${Math.max(T - M - v, 0)}px`), (b.left = "auto"))
+              : ((b.left = `${M}px`), (b.right = "auto")),
+            (b.display = "block"),
+            k.css(b),
             (g = k.outerHeight()),
             _.top > g + w
-              ? ((I = _.top + l - g), (D = !0))
-              : (I = _.top + l + _.height),
+              ? ((I = _.top + a - g), (D = !0))
+              : (I = _.top + a + _.height),
             k.css("top", `${I}px`);
-          let z, j;
+          let z, F;
           function U() {
             return I + (g - w) / 2;
           }
@@ -6937,63 +6937,63 @@ csui.define("csui/lib/othelp", [], function () {
           }
           P
             ? M - S >= 5
-              ? ((z = U()), (j = M - S - 5), j < 0 && (j = 5), H(z, j, null))
-              : T - (M + b + S) >= 5
-              ? ((z = U()), (j = T - (M + b + S + 5)), H(z, null, j))
+              ? ((z = U()), (F = M - S - 5), F < 0 && (F = 5), H(z, F, null))
+              : T - (M + v + S) >= 5
+              ? ((z = U()), (F = T - (M + v + S + 5)), H(z, null, F))
               : D
               ? ((z = I + g - 20),
                 k.css("top", `${I - w}px`),
-                (j = T - (M + b)),
-                H(z, null, j))
-              : ((z = I + g + 5), (j = T - (M + b)), H(z, null, j))
-            : T - M >= b + S + 5
-            ? ((z = U()), (j = M + b + 5), H(z, j, null))
+                (F = T - (M + v)),
+                H(z, null, F))
+              : ((z = I + g + 5), (F = T - (M + v)), H(z, null, F))
+            : T - M >= v + S + 5
+            ? ((z = U()), (F = M + v + 5), H(z, F, null))
             : M >= S + 5
-            ? ((z = U()), (j = M - S - 5), H(z, j, null))
+            ? ((z = U()), (F = M - S - 5), H(z, F, null))
             : D
             ? (k.css("top", `${I - w}px`),
               (z = I + g - 20),
-              (j = M),
-              H(z, j, null))
-            : ((z = I + g + 5), (j = 0), H(z, j, null));
+              (F = M),
+              H(z, F, null))
+            : ((z = I + g + 5), (F = 0), H(z, F, null));
         }
         function n() {
-          const f =
+          const h =
             r.$tb[0].querySelector(".fr-dropdown.fr-active") ||
             (r.$sc[0].querySelector(".fr-popup.fr-active") && 1070);
-          r.$tb.css("zIndex", f || 1069);
+          r.$tb.css("zIndex", h || 1069);
         }
         function u() {
-          const f = x(".fr-tooltip");
-          f.length &&
-            (f.css({ right: "auto" }), r.$tb.off("mouseenter", ".fr-command"));
+          const h = x(".fr-tooltip");
+          h.length &&
+            (h.css({ right: "auto" }), r.$tb.off("mouseenter", ".fr-command"));
         }
         function c() {
           x("body").append(r.$tb), t(), o();
-          const f = s.debounce(() => {
-            (d = null), o();
+          const h = s.debounce(() => {
+            (f = null), o();
           }, 110);
           r.$box
             .closest(".csui-normal-scrolling")
             .on("scroll wheel", function () {
               r.popups.hideAll();
             }),
-            x(window).on("resize.customFloatingspace", f),
+            x(window).on("resize.customFloatingspace", h),
             x(window).on("scroll.customFloatingspace", o),
             x(".fr-toolbar").on("mouseenter", ".fr-command", u),
             x(".fr-dropdown").on("blur click", r.button.bulkRefresh),
             r.events.on("buttons.refresh", n),
-            r.events.on("destroy", h),
-            window.addEventListener("popstate", h);
+            r.events.on("destroy", d),
+            window.addEventListener("popstate", d);
         }
-        function h() {
+        function d() {
           x(window).off("resize.customFloatingspace"),
             x(window).off("scroll.customFloatingspace"),
             x(".fr-toolbar").remove(),
             x(".csui-html-editor-action-buttons").remove(),
             x(".csui-rich-text-mask").remove(),
             r.popups.hideAll(),
-            window.removeEventListener("popstate", h);
+            window.removeEventListener("popstate", d);
         }
         return { _init: c };
       };
@@ -7009,11 +7009,11 @@ csui.define("csui/lib/othelp", [], function () {
           return !!e.match(/\.(mp4|mkv|ogg|webm|m4v|ogv|mov).*/gi);
         }
         function y(e, r) {
-          const a = `<video width="640" controls>
+          const l = `<video width="640" controls>
                             <source src="${e}" type="video/mp4">
                             Your browser does not support the video tag.
                           </video>`;
-          r.video.insert(a);
+          r.video.insert(l);
         }
         function s() {
           m.events.on("commands.after", function (e) {
@@ -7022,8 +7022,8 @@ csui.define("csui/lib/othelp", [], function () {
                 '.fr-video-by-url-layer input[type="text"]'
               );
               if (r) {
-                const a = r.value;
-                p(a) && (y(a, this), this.popups.hide("video.insert"));
+                const l = r.value;
+                p(l) && (y(l, this), this.popups.hide("video.insert"));
               }
             }
           });
@@ -7050,7 +7050,7 @@ csui.define("csui/lib/othelp", [], function () {
       "use strict";
       const e =
         "PYC4mA3B12C11A8E7D6D3eMRPYa1c1REe1BGQOQIc1CDBREJImD6F5F4D4E1B9A5C3F5E4==";
-      return function (a, d) {
+      return function (l, f) {
         let t = {
           key: e,
           attribution: !1,
@@ -7115,6 +7115,7 @@ csui.define("csui/lib/othelp", [], function () {
           scrollableContainer: "body",
           pluginsEnabled: [
             "align",
+            "charCounter",
             "codeBeautifier",
             "colors",
             "entities",
@@ -7167,7 +7168,7 @@ csui.define("csui/lib/othelp", [], function () {
           dontConvertExternalCss: !0,
           htmlRemoveTags: ["script"],
         };
-        (d.customHtmlGet = function (n, u) {
+        (f.customHtmlGet = function (n, u) {
           const c = this;
           if (!c.$wp)
             return c.$oel
@@ -7175,9 +7176,9 @@ csui.define("csui/lib/othelp", [], function () {
               .removeClass("fr-view")
               .removeAttr("contenteditable")
               .get(0).outerHTML;
-          var h = "";
+          var d = "";
           c.events.trigger("html.beforeGet");
-          var f = [],
+          var h = [],
             k = {},
             C,
             S,
@@ -7186,7 +7187,7 @@ csui.define("csui/lib/othelp", [], function () {
             let W = function (q, R) {
               return q[3] - R[3];
             };
-            var v = new RegExp(
+            var b = new RegExp(
               "^".concat(c.opts.htmlIgnoreCSSProperties.join("$|^"), "$"),
               "gi"
             );
@@ -7223,18 +7224,18 @@ csui.define("csui/lib/othelp", [], function () {
                   Q = c.doc.styleSheets[C]?.href;
                 if (!(Q && R.test(Q))) continue;
               }
-              var b = void 0,
+              var v = void 0,
                 _ = 0;
               try {
-                (b = c.doc.styleSheets[C].cssRules),
+                (v = c.doc.styleSheets[C].cssRules),
                   c.doc.styleSheets[C].ownerNode &&
                     c.doc.styleSheets[C].ownerNode.nodeType === "STYLE" &&
                     (_ = 1);
               } catch {}
-              if (b) {
-                for (var T = 0, l = b.length; T < l; T++)
-                  if (b[T].selectorText && b[T].style.cssText.length > 0) {
-                    var g = b[T].selectorText
+              if (v) {
+                for (var T = 0, a = v.length; T < a; T++)
+                  if (v[T].selectorText && v[T].style.cssText.length > 0) {
+                    var g = v[T].selectorText
                         .replace(/body \s tbody \.fr-view /g, "")
                         .replace(/::/g, ":"),
                       I = void 0;
@@ -7250,14 +7251,14 @@ csui.define("csui/lib/othelp", [], function () {
                             "fr-original-style",
                             I[S].getAttribute("style")
                           ),
-                          f.push(I[S]))
+                          h.push(I[S]))
                         : I[S].getAttribute("fr-original-style") ||
                           (I[S].setAttribute("fr-original-style", ""),
-                          f.push(I[S])),
+                          h.push(I[S])),
                         k[I[S]] || (k[I[S]] = {});
                       for (
-                        var D = _ * 1e3 + q(b[T].selectorText),
-                          A = b[T].style.cssText.split(";"),
+                        var D = _ * 1e3 + q(v[T].selectorText),
+                          A = v[T].style.cssText.split(";"),
                           B = 0;
                         B < A.length;
                         B++
@@ -7265,7 +7266,7 @@ csui.define("csui/lib/othelp", [], function () {
                         var M = A[B].trim().split(":")[0];
                         if (
                           M &&
-                          !M.match(v) &&
+                          !M.match(b) &&
                           ((!k[I[S]][M] ||
                             (k[I[S]][M] &&
                               I[S].getAttribute("fr-original-style") == "")) &&
@@ -7292,43 +7293,43 @@ csui.define("csui/lib/othelp", [], function () {
               var O = w[C];
               O[0].style[O[1]] = O[2].replace(/!important/, "");
             }
-            for (C = 0; C < f.length; C++)
+            for (C = 0; C < h.length; C++)
               if (
-                (f[C].getAttribute("class") &&
-                  (f[C].setAttribute(
+                (h[C].getAttribute("class") &&
+                  (h[C].setAttribute(
                     "fr-original-class",
-                    f[C].getAttribute("class")
+                    h[C].getAttribute("class")
                   ),
-                  f[C].removeAttribute("class")),
-                (f[C].getAttribute("fr-original-style") || "").trim().length >
+                  h[C].removeAttribute("class")),
+                (h[C].getAttribute("fr-original-style") || "").trim().length >
                   0)
               ) {
-                var z = f[C].getAttribute("fr-original-style").split(";");
+                var z = h[C].getAttribute("fr-original-style").split(";");
                 for (S = 0; S < z.length; S++)
                   if (z[S].indexOf(":") > 0) {
-                    var j = z[S].split(":"),
-                      U = j[0];
-                    j.splice(0, 1), (f[C].style[U.trim()] = j.join(":").trim());
+                    var F = z[S].split(":"),
+                      U = F[0];
+                    F.splice(0, 1), (h[C].style[U.trim()] = F.join(":").trim());
                   }
               }
           }
           if (c.node.isEmpty(c.el))
             c.opts.fullPage &&
-              ((h = getDoctype(c.iframe_document)),
-              (h += "<html"
+              ((d = getDoctype(c.iframe_document)),
+              (d += "<html"
                 .concat(c.node.attributes(c.$html.get(0)), ">")
                 .concat(
                   c.$html.find("head").get(0).outerHTML,
                   "<body></body></html>"
                 )));
           else if ((typeof n > "u" && (n = !1), !c.opts.fullPage))
-            (h = c.$el.html()),
+            (d = c.$el.html()),
               c.opts.iframe &&
                 c.$html &&
                 c.$html.find(".fr-element").length > 0 &&
-                (h = c.$html.find(".fr-element").html());
+                (d = c.$html.find(".fr-element").html());
           else {
-            (h = getDoctype(c.iframe_document)), c.$el.removeClass("fr-view");
+            (d = getDoctype(c.iframe_document)), c.$el.removeClass("fr-view");
             var H = c.opts.heightMin,
               N = c.opts.height,
               V = c.opts.heightMax;
@@ -7336,13 +7337,13 @@ csui.define("csui/lib/othelp", [], function () {
               (c.opts.height = null),
               (c.opts.heightMax = null),
               c.size.refresh(),
-              (h += "<html"
+              (d += "<html"
                 .concat(c.node.attributes(c.$html.get(0)), ">")
                 .concat(c.$html.html(), "</html>")),
               c.opts.iframe &&
                 c.$html &&
                 c.$html.find(".fr-element").length > 0 &&
-                (h = c.$html.find(".fr-element").html()),
+                (d = c.$html.find(".fr-element").html()),
               (c.opts.heightMin = H),
               (c.opts.height = N),
               (c.opts.heightMax = V),
@@ -7350,61 +7351,61 @@ csui.define("csui/lib/othelp", [], function () {
               c.$el.addClass("fr-view");
           }
           if (!c.opts.useClasses && !u)
-            for (C = 0; C < f.length; C++)
-              f[C].getAttribute("fr-original-class") &&
-                (f[C].setAttribute(
+            for (C = 0; C < h.length; C++)
+              h[C].getAttribute("fr-original-class") &&
+                (h[C].setAttribute(
                   "class",
-                  f[C].getAttribute("fr-original-class")
+                  h[C].getAttribute("fr-original-class")
                 ),
-                f[C].removeAttribute("fr-original-class")),
-                f[C].getAttribute("fr-original-style") !== null &&
-                typeof f[C].getAttribute("fr-original-style") < "u"
-                  ? (f[C].getAttribute("fr-original-style").length !== 0
-                      ? f[C].setAttribute(
+                h[C].removeAttribute("fr-original-class")),
+                h[C].getAttribute("fr-original-style") !== null &&
+                typeof h[C].getAttribute("fr-original-style") < "u"
+                  ? (h[C].getAttribute("fr-original-style").length !== 0
+                      ? h[C].setAttribute(
                           "style",
-                          f[C].getAttribute("fr-original-style")
+                          h[C].getAttribute("fr-original-style")
                         )
-                      : f[C].removeAttribute("style"),
-                    f[C].removeAttribute("fr-original-style"))
-                  : f[C].removeAttribute("style");
+                      : h[C].removeAttribute("style"),
+                    h[C].removeAttribute("fr-original-style"))
+                  : h[C].removeAttribute("style");
           c.opts.fullPage &&
-            ((h = h.replace(
+            ((d = d.replace(
               /<style data-fr-style="true">(?:[\w\W]*?)<\/style>/g,
               ""
             )),
-            (h = h.replace(/<link([^>]*)data-fr-style="true"([^>]*)>/g, "")),
-            (h = h.replace(
+            (d = d.replace(/<link([^>]*)data-fr-style="true"([^>]*)>/g, "")),
+            (d = d.replace(
               /<style(?:[\w\W]*?)class="firebugResetStyles"(?:[\w\W]*?)>(?:[\w\W]*?)<\/style>/g,
               ""
             )),
-            (h = h.replace(
+            (d = d.replace(
               /<body((?:[\w\W]*?)) spellcheck="true"((?:[\w\W]*?))>((?:[\w\W]*?))<\/body>/g,
               "<body$1$2>$3</body>"
             )),
-            (h = h.replace(
+            (d = d.replace(
               /<body((?:[\w\W]*?)) contenteditable="(true|false)"((?:[\w\W]*?))>((?:[\w\W]*?))<\/body>/g,
               "<body$1$3>$4</body>"
             )),
-            (h = h.replace(
+            (d = d.replace(
               /<body((?:[\w\W]*?)) dir="([\w]*)"((?:[\w\W]*?))>((?:[\w\W]*?))<\/body>/g,
               "<body$1$3>$4</body>"
             )),
-            (h = h.replace(
+            (d = d.replace(
               /<body((?:[\w\W]*?))class="([\w\W]*?)(fr-rtl|fr-ltr)([\w\W]*?)"((?:[\w\W]*?))>((?:[\w\W]*?))<\/body>/g,
               '<body$1class="$2$4"$5>$6</body>'
             )),
-            (h = h.replace(
+            (d = d.replace(
               /<body((?:[\w\W]*?)) class=""((?:[\w\W]*?))>((?:[\w\W]*?))<\/body>/g,
               "<body$1$2>$3</body>"
             ))),
-            c.opts.htmlSimpleAmpersand && (h = h.replace(/&amp;/gi, "&")),
+            c.opts.htmlSimpleAmpersand && (d = d.replace(/&amp;/gi, "&")),
             c.events.trigger("html.afterGet"),
             n ||
-              (h = h.replace(
+              (d = d.replace(
                 /<span[^>]*? class\s*=\s*["']?fr-marker["']?[^>]+>\u200b<\/span>/gi,
                 ""
               )),
-            (h = c.clean.invisibleSpaces(h));
+            (d = c.clean.invisibleSpaces(d));
           function L(W) {
             var q = W.parentNode;
             if (
@@ -7443,7 +7444,7 @@ csui.define("csui/lib/othelp", [], function () {
                 c.node.isDeletable(W.parentNode) &&
                 L(W.parentNode);
           }
-          function F(W) {
+          function j(W) {
             if (
               (c.events.trigger("html.processGet", [W]),
               W &&
@@ -7508,11 +7509,11 @@ csui.define("csui/lib/othelp", [], function () {
               }
             }
           }
-          h = c.clean.exec(h, F);
-          var G = c.events.chainTrigger("html.get", h);
+          d = c.clean.exec(d, j);
+          var G = c.events.chainTrigger("html.get", d);
           return (
-            typeof G == "string" && (h = G),
-            (h = h.replace(
+            typeof G == "string" && (d = G),
+            (d = d.replace(
               /<pre(?:[\w\W]*?)>(?:[\w\W]*?)<\/pre>/g,
               function (W) {
                 return W.replace(
@@ -7522,17 +7523,17 @@ csui.define("csui/lib/othelp", [], function () {
                 );
               }
             )),
-            (h = h.replace(
+            (d = d.replace(
               /<meta((?:[\w\W]*?)) data-fr-http-equiv="/g,
               '<meta$1 http-equiv="'
             )),
-            h
+            d
           );
         }),
-          (d = d || {});
+          (f = f || {});
         const i = ["image", "insertImage"];
-        d.externalParams.imageBrowseEnabled && t.pluginsEnabled.push(...i),
-          (d = m.extend({}, t, d));
+        f.externalParams.imageBrowseEnabled && t.pluginsEnabled.push(...i),
+          (f = m.extend({}, t, f));
         const o = function (n) {
           csui.require(
             [
@@ -7540,7 +7541,7 @@ csui.define("csui/lib/othelp", [], function () {
               "css!csui/lib/froala_editor/css/froala_editor.pkgd.min",
             ],
             function (u) {
-              return n(new u(a, d));
+              return n(new u(l, f));
             }
           );
         };
@@ -7550,13 +7551,13 @@ csui.define("csui/lib/othelp", [], function () {
             o(n);
             return;
           }
-          const h = `csui/lib/froala_editor/js/languages/${c}`;
+          const d = `csui/lib/froala_editor/js/languages/${c}`;
           x(
-            [h],
-            function (f) {
-              (d.language = c), o(n);
+            [d],
+            function (h) {
+              (f.language = c), o(n);
             },
-            function (f) {
+            function (h) {
               o(n);
             }
           );
@@ -7583,7 +7584,7 @@ csui.define("csui/lib/othelp", [], function () {
       var s = x.config(),
         e = new p.Model(m.extend({ location: "left" }, s.logo)),
         r = new p.Collection([]),
-        a = new p.Collection(
+        l = new p.Collection(
           [
             {
               id: "csui/widgets/navigation.header/controls/progressbar.maximize/progressbar.maximize.view",
@@ -7618,10 +7619,10 @@ csui.define("csui/lib/othelp", [], function () {
         m.filter(y, function (i) {
           return (
             (i.id.indexOf("iwatch/") === 0 || i.id.indexOf("conws/") === 0) &&
-            a.add(i)
+            l.add(i)
           );
         });
-      var d = m.reduce(
+      var f = m.reduce(
         m.values(s.masks || {}),
         function (i, o) {
           return {
@@ -7631,20 +7632,20 @@ csui.define("csui/lib/othelp", [], function () {
         },
         { blacklist: [], whitelist: [] }
       );
-      d = {
-        blacklist: m.unique(d.blacklist),
-        whitelist: m.unique(d.whitelist),
+      f = {
+        blacklist: m.unique(f.blacklist),
+        whitelist: m.unique(f.whitelist),
       };
       function t(i) {
         return (
-          !m.contains(d.blacklist, i.id) &&
-          (!d.whitelist.length || m.contains(d.whitelist, i.id))
+          !m.contains(f.blacklist, i.id) &&
+          (!f.whitelist.length || m.contains(f.whitelist, i.id))
         );
       }
       return (
         r.remove(r.reject(t)),
-        a.remove(a.reject(t)),
-        { logo: e, leftSide: r, rightSide: a }
+        l.remove(l.reject(t)),
+        { logo: e, leftSide: r, rightSide: l }
       );
     }
   ),
@@ -7654,7 +7655,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -7739,7 +7740,6 @@ csui.define("csui/lib/othelp", [], function () {
       "use strict";
       return {
         mixin: function (r) {
-          const a = "[data-theme] .binf-widgets ";
           return x.extend(r, {
             output: {},
             BRANDING_CONFIG_STYLESHEET_NAME: "BRANDINGCONFIG_CSS_FILE.css",
@@ -7756,227 +7756,225 @@ csui.define("csui/lib/othelp", [], function () {
             SUCCESS_WITHOUT_CSS: "success without CSS",
             NO_RESULT_FOUND: "no result found",
             brandingStylesheet: `
-            ${a},
-            ${a} .csui-navbar.binf-navbar, 
-            ${a}.csui-pman-header-config .pman-header-preview-panel,
-            ${a} #breadcrumb-wrap .csui-perspective-breadcrumb,
-            ${a} #breadcrumb-wrap .breadcrumb-inner.breadcrumb-inner-header,        
-            ${a} .csui-perspective-breadcrumb,
-            ${a} .csui-image-picker .csui-brand-image-logo {
+            .binf-widgets,
+            .binf-widgets .csui-navbar.binf-navbar, 
+            .binf-widgets.csui-pman-header-config .pman-header-preview-panel,
+            .binf-widgets #breadcrumb-wrap .csui-perspective-breadcrumb,
+            .binf-widgets #breadcrumb-wrap .breadcrumb-inner.breadcrumb-inner-header,        
+            .binf-widgets .csui-perspective-breadcrumb,
+            .binf-widgets .csui-image-picker .csui-brand-image-logo {
               background: [CUSTOM_BRANDING_BGCOLOR];
             }
-            ${a} .csui-perspective-view .banner-content-sidebar-perspective.cs-perspective #content-region, ${a} .csui-perspective-view .banner-content-sidebar-perspective.cs-perspective #sidebar-region{
+            .binf-widgets .csui-perspective-view .banner-content-sidebar-perspective.cs-perspective #content-region, .binf-widgets .csui-perspective-view .banner-content-sidebar-perspective.cs-perspective #sidebar-region{
               background: [LANDING_PAGE_BGCOLOR];
             }
-            ${a} .csui-perspective-view .banner-content-sidebar-perspective.cs-perspective #main{
+            .binf-widgets .csui-perspective-view .banner-content-sidebar-perspective.cs-perspective #main{
               background-color: [LANDING_PAGE_BGCOLOR];
             }
         `,
             getSupportAssetVolumeID: function () {
-              const t = (this.context || this.options.context).getObject(p),
-                i = {
-                  url: `${t.getConnectionUrl().getApiBase()}volumes/${
+              const f = (this.context || this.options.context).getObject(p),
+                t = {
+                  url: `${f.getConnectionUrl().getApiBase()}volumes/${
                     this.SUB_TYPE
                   }`,
                 };
-              return t.makeAjaxCall(i);
+              return f.makeAjaxCall(t);
             },
-            fetchBrandingConfigFolderDetails: function (d, t, i) {
-              let o = m.Deferred();
-              const u = (this.context || this.options.context).getObject(p),
-                c = {
-                  url: `${u.getConnectionUrl().getApiBase("v2")}app/container/${
-                    d.id
+            fetchBrandingConfigFolderDetails: function (l, f, t) {
+              let i = m.Deferred();
+              const n = (this.context || this.options.context).getObject(p),
+                u = {
+                  url: `${n.getConnectionUrl().getApiBase("v2")}app/container/${
+                    l.id
                   }`,
                 };
               return (
-                u
-                  .makeAjaxCall(c)
-                  .then((h) => {
-                    const f =
-                      Array.isArray(h.results.contents) &&
-                      h.results.contents.filter(
-                        (k) => k.name === this.BRANDING_CONFIG.FOLDER_NAME
+                n
+                  .makeAjaxCall(u)
+                  .then((c) => {
+                    const d =
+                      Array.isArray(c.results.contents) &&
+                      c.results.contents.filter(
+                        (h) => h.name === this.BRANDING_CONFIG.FOLDER_NAME
                       );
-                    if (f.length > 0) {
-                      const { size: k, id: C } = f[0];
-                      if (k > 0)
-                        this.getItemsFromNode(C)
-                          .done((S) => {
-                            const w = S.results?.contents;
-                            this.deleteItemsFromBranding(w, t, i)
-                              .done(() => o.resolve(f[0]))
-                              .fail((v) => o.reject(v));
+                    if (d.length > 0) {
+                      const { size: h, id: k } = d[0];
+                      if (h > 0)
+                        this.getItemsFromNode(k)
+                          .done((C) => {
+                            const S = C.results?.contents;
+                            this.deleteItemsFromBranding(S, f, t)
+                              .done(() => i.resolve(d[0]))
+                              .fail((w) => i.reject(w));
                           })
-                          .fail((S) => o.reject(S));
-                      else return o.resolve(f[0]);
+                          .fail((C) => i.reject(C));
+                      else return i.resolve(d[0]);
                     } else
-                      this.createBrandingConfigFolder(d).done((k) =>
-                        o.resolve(k)
+                      this.createBrandingConfigFolder(l).done((h) =>
+                        i.resolve(h)
                       );
                   })
-                  .fail(function (h) {
-                    return o.reject(h);
+                  .fail(function (c) {
+                    return i.reject(c);
+                  }),
+                i.promise()
+              );
+            },
+            getItemsFromNode: function (l) {
+              const t = (this.context || this.options.context).getObject(p),
+                i = {
+                  url: `${t
+                    .getConnectionUrl()
+                    .getApiBase("v2")}app/container/${l}`,
+                };
+              return t.makeAjaxCall(i);
+            },
+            getDetailsForBrandingConfig: function () {
+              let l = m.Deferred();
+              const t = (this.context || this.options.context).getObject(p),
+                i = {
+                  url: `${t
+                    .getConnectionUrl()
+                    .getApiBase("v2")}server/settings/branding`,
+                };
+              return (
+                t
+                  .makeAjaxCall(i)
+                  .then((o) => {
+                    if (o?.results?.value)
+                      try {
+                        const n = o.results.value;
+                        return (
+                          n.brandLogoUri &&
+                            (n.brandLogoUri = `${t
+                              .getConnectionUrl()
+                              .getOrigin()}${n.brandLogoUri}`),
+                          l.resolve({ statusMsg: this.SUCCESS, data: n })
+                        );
+                      } catch {
+                        return l.reject({ statusMsg: this.ERROR });
+                      }
+                    else return l.reject({ statusMsg: this.ERROR });
+                  })
+                  .fail(function (o) {
+                    return l.reject(o);
+                  }),
+                l.promise()
+              );
+            },
+            deleteItemsFromBranding: function (l, f, t) {
+              let i = m.Deferred();
+              if ((l.length === 0 || t) && !f)
+                return i.resolve({ statusMsg: "Nothing to be deleted" });
+              let o = [],
+                n = [];
+              const c = (this.context || this.options.context).getObject(p);
+              return (
+                (n = l.map((d) => d.id)),
+                n.forEach((d) => {
+                  o.push(i);
+                  const h = {
+                    method: "DELETE",
+                    url: `${c.getConnectionUrl().getApiBase()}nodes/${d}`,
+                  };
+                  c.makeAjaxCall(h)
+                    .then((k) => i.resolve(k))
+                    .fail(function (k) {
+                      return i.reject(k);
+                    });
+                }),
+                m.whenAll.apply(m, o)
+              );
+            },
+            createBrandingConfigFolder: function ({ id: l, container: f }) {
+              const i = (this.context || this.options.context).getObject(p);
+              let o = m.Deferred();
+              const n = {
+                  type: this.BRANDING_CONFIG.FOLDER_TYPE,
+                  type_name: this.BRANDING_CONFIG.FOLDER_TYPE_NAME,
+                  container: f,
+                  name: this.BRANDING_CONFIG.FOLDER_NAME,
+                  parent_id: l,
+                },
+                u = {
+                  method: "POST",
+                  url: `${i.getConnectionUrl().getApiBase()}nodes`,
+                  data: n,
+                };
+              return (
+                i
+                  .makeAjaxCall(u)
+                  .then((c) => o.resolve(c))
+                  .fail(function (c) {
+                    return o.reject(c);
                   }),
                 o.promise()
               );
             },
-            getItemsFromNode: function (d) {
-              const i = (this.context || this.options.context).getObject(p),
-                o = {
-                  url: `${i
-                    .getConnectionUrl()
-                    .getApiBase("v2")}app/container/${d}`,
-                };
-              return i.makeAjaxCall(o);
-            },
-            getDetailsForBrandingConfig: function () {
-              let d = m.Deferred();
-              const i = (this.context || this.options.context).getObject(p),
-                o = {
-                  url: `${i
-                    .getConnectionUrl()
-                    .getApiBase("v2")}server/settings/branding`,
-                };
-              return (
-                i
-                  .makeAjaxCall(o)
-                  .then((n) => {
-                    if (n?.results?.value)
-                      try {
-                        const u = n.results.value;
-                        return (
-                          u.brandLogoUri &&
-                            (u.brandLogoUri = `${i
-                              .getConnectionUrl()
-                              .getOrigin()}${u.brandLogoUri}`),
-                          d.resolve({ statusMsg: this.SUCCESS, data: u })
-                        );
-                      } catch {
-                        return d.reject({ statusMsg: this.ERROR });
-                      }
-                    else return d.reject({ statusMsg: this.ERROR });
-                  })
-                  .fail(function (n) {
-                    return d.reject(n);
-                  }),
-                d.promise()
-              );
-            },
-            deleteItemsFromBranding: function (d, t, i) {
-              let o = m.Deferred();
-              if ((d.length === 0 || i) && !t)
-                return o.resolve({ statusMsg: "Nothing to be deleted" });
-              let n = [],
-                u = [];
-              const h = (this.context || this.options.context).getObject(p);
-              return (
-                (u = d.map((f) => f.id)),
-                u.forEach((f) => {
-                  n.push(o);
-                  const k = {
-                    method: "DELETE",
-                    url: `${h.getConnectionUrl().getApiBase()}nodes/${f}`,
-                  };
-                  h.makeAjaxCall(k)
-                    .then((C) => o.resolve(C))
-                    .fail(function (C) {
-                      return o.reject(C);
-                    });
-                }),
-                m.whenAll.apply(m, n)
-              );
-            },
-            createBrandingConfigFolder: function ({ id: d, container: t }) {
+            uploadConfigInBrandingFolder: function (l, f) {
+              let t = m.Deferred();
               const o = (this.context || this.options.context).getObject(p);
-              let n = m.Deferred();
-              const u = {
-                  type: this.BRANDING_CONFIG.FOLDER_TYPE,
-                  type_name: this.BRANDING_CONFIG.FOLDER_TYPE_NAME,
-                  container: t,
-                  name: this.BRANDING_CONFIG.FOLDER_NAME,
-                  parent_id: d,
-                },
-                c = {
-                  method: "POST",
-                  url: `${o.getConnectionUrl().getApiBase()}nodes`,
-                  data: u,
-                };
-              return (
-                o
-                  .makeAjaxCall(c)
-                  .then((h) => n.resolve(h))
-                  .fail(function (h) {
-                    return n.reject(h);
-                  }),
-                n.promise()
-              );
-            },
-            uploadConfigInBrandingFolder: function (d, t) {
-              let i = m.Deferred();
-              const n = (this.context || this.options.context).getObject(p);
-              return !d || !t || !(d instanceof File)
-                ? i.resolve({ statusMsg: this.IMG_NO_UPLOAD })
-                : new y({ type: 144 }, { connector: n }).save(
+              return !l || !f || !l instanceof File
+                ? t.resolve({ statusMsg: this.IMG_NO_UPLOAD })
+                : new y({ type: 144 }, { connector: o }).save(
                     {
-                      name: d.name,
+                      name: l.name,
                       type: 1305,
-                      parent_id: t.id,
+                      parent_id: f.id,
                       advanced_versioning: !1,
                     },
-                    { files: { file: d } }
+                    { files: { file: l } }
                   );
             },
-            getBlodURL: function (d) {
-              return !d || !(d instanceof Blob)
-                ? void 0
-                : URL.createObjectURL(d);
+            getBlodURL: function (l) {
+              return !l || !l instanceof Blob ? void 0 : URL.createObjectURL(l);
             },
-            uploadBrandingConfigSettings: function (d) {
-              const i = (this.context || this.options.context).getObject(p),
-                o = {
+            uploadBrandingConfigSettings: function (l) {
+              const t = (this.context || this.options.context).getObject(p),
+                i = {
                   method: "POST",
-                  url: `${i
+                  url: `${t
                     .getConnectionUrl()
                     .getApiBase("v2")}server/settings/branding`,
-                  data: { value: JSON.stringify(d) },
+                  data: { value: JSON.stringify(l) },
                 };
-              return i.makeAjaxCall(o);
+              return t.makeAjaxCall(i);
             },
-            getNodeDetails: function (d) {
-              const i = (this.context || this.options.context).getObject(p),
-                o = {
-                  url: `${i
+            getNodeDetails: function (l) {
+              const t = (this.context || this.options.context).getObject(p),
+                i = {
+                  url: `${t
                     .getConnectionUrl()
-                    .getApiBase("v2")}/nodes/${d}/nodes?fields=properties`,
+                    .getApiBase("v2")}/nodes/${l}/nodes?fields=properties`,
                 };
-              return i.makeAjaxCall(o);
+              return t.makeAjaxCall(i);
             },
-            getFileDetails: function (d) {
-              const i = (this.context || this.options.context).getObject(p);
-              var o = new s(i.connection.url).getCgiScript();
-              const u = {
-                url: `${o}?func=doc.fetchcsui&nodeid=${d}`,
+            getFileDetails: function (l) {
+              const t = (this.context || this.options.context).getObject(p);
+              var i = new s(t.connection.url).getCgiScript();
+              const n = {
+                url: `${i}?func=doc.fetchcsui&nodeid=${l}`,
                 dataType: "binary",
               };
-              return i.makeAjaxCall(u);
+              return t.makeAjaxCall(n);
             },
-            createStyleSheet: function (d) {
-              if (!d) return;
-              const { customBrandingBgColor: t, breadcrumbColor: i } = d;
-              let o = this.brandingStylesheet.trim();
-              const n = new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/);
-              n.test(t) &&
-                ((o = o.replaceAll("[CUSTOM_BRANDING_BGCOLOR]", t)),
-                (o = o.replaceAll("[LANDING_PAGE_BGCOLOR]", t))),
-                n.test(t) && (o = o.replaceAll("[BREADCRUMB_COLOR]", i));
-              const u = URL.createObjectURL(
-                new Blob([o], {
+            createStyleSheet: function (l) {
+              if (!l) return;
+              const { customBrandingBgColor: f, breadcrumbColor: t } = l;
+              let i = this.brandingStylesheet.trim();
+              const o = new RegExp(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/);
+              o.test(f) &&
+                ((i = i.replaceAll("[CUSTOM_BRANDING_BGCOLOR]", f)),
+                (i = i.replaceAll("[LANDING_PAGE_BGCOLOR]", f))),
+                o.test(f) && (i = i.replaceAll("[BREADCRUMB_COLOR]", t));
+              const n = URL.createObjectURL(
+                new Blob([i], {
                   type: "text/css",
                   name: this.BRANDING_CONFIG_STYLESHEET_NAME,
                 })
               );
-              if (!matchMedia("(forced-colors: active)")?.matches) return u;
+              if (!matchMedia("(forced-colors: active)")?.matches) return n;
             },
           });
         },
@@ -8078,22 +8076,22 @@ csui.define("csui/lib/othelp", [], function () {
       s,
       e,
       r,
-      a,
-      d,
+      l,
+      f,
       t,
       i,
       o,
       n,
       u,
       c,
+      d,
       h,
-      f,
       k,
       C,
       S,
       w,
-      v,
-      b
+      b,
+      v
     ) {
       "use strict";
       var _ = m.config();
@@ -8126,7 +8124,7 @@ csui.define("csui/lib/othelp", [], function () {
             e.LayoutView.call(this, g),
             this.propagateEventsToRegions(),
             (this.headerConfig = null),
-            (this.user = g.user || this.options.context.getModel(a)),
+            (this.user = g.user || this.options.context.getModel(l)),
             (this.applicationScope =
               g.applicationScope || this.options.context.getModel(t)),
             (this.brandingConfigData = this.options.context.getModel(S)),
@@ -8181,25 +8179,25 @@ csui.define("csui/lib/othelp", [], function () {
               "change:branding",
               this._applyBrandingStyles
             ),
-            Array.isArray(b) && b.length > 0 && this._cacheAssets();
+            Array.isArray(v) && v.length > 0 && this._cacheAssets();
         },
         _onRenderPage: function () {
           if (this.options.isPerspectiveEdit) {
             const g = this.user?.get("headerconfig");
             if (this.headerConfig?.options?.header?.widgets) {
-              var l = [];
+              var a = [];
               p.each(this.headerConfig.options.header.widgets, function (I) {
                 var D = { options: I.options, view: I.view };
-                l.push(D);
+                a.push(D);
               }),
-                (this.headerConfig.options.header.widgets = l);
+                (this.headerConfig.options.header.widgets = a);
             }
             (this.headerConfig = p.clone(g)), this.render();
           }
         },
         _applyBrandingStyles: function () {
           if ((this.applyIconTheme(), this.options.isPerspectiveEdit)) {
-            const l = this._addBrandingStyling(
+            const a = this._addBrandingStyling(
                 this.options.context?.previewBranding,
                 !0
               ),
@@ -8210,24 +8208,24 @@ csui.define("csui/lib/othelp", [], function () {
             const D = document.createElement("link");
             (D.id = I),
               (D.rel = "stylesheet"),
-              (D.href = l),
+              (D.href = a),
               y(".pman-mode-edit").append(D);
           } else {
-            const l = this.brandingConfigData?.get("brandLogoUri"),
+            const a = this.brandingConfigData?.get("brandLogoUri"),
               g = this.brandingConfigData?.get("brandingCSS");
-            this.loadLogo(l), this.loadBrandingCSSFile(g);
+            this.loadLogo(a), this.loadBrandingCSSFile(g);
           }
         },
-        _addBrandingStyling: function (l, g) {
-          if (!l) return;
-          const I = l.get("brandingSettingCodes");
+        _addBrandingStyling: function (a, g) {
+          if (!a) return;
+          const I = a.get("brandingSettingCodes");
           return this.createStyleSheet(I, g);
         },
         applyIconTheme: function () {
-          const l = this.options.context,
+          const a = this.options.context,
             g =
-              l?.previewBranding?.get("brandingSettingCodes")?.iconThemes ??
-              l?.navigationHeaderView?.brandingConfigData?.get(
+              a?.previewBranding?.get("brandingSettingCodes")?.iconThemes ??
+              a?.navigationHeaderView?.brandingConfigData?.get(
                 "brandingSettingCodes"
               )?.iconThemes;
           (this.themeCode = g),
@@ -8246,7 +8244,7 @@ csui.define("csui/lib/othelp", [], function () {
         },
         _adjustControls: function () {
           for (
-            var l = this.el.offsetWidth,
+            var a = this.el.offsetWidth,
               g = this.el.getElementsByClassName("binf-navbar-left")[0],
               I = 0,
               D = this.el.getElementsByClassName("binf-navbar-right")[0],
@@ -8257,16 +8255,16 @@ csui.define("csui/lib/othelp", [], function () {
               P = E && window.getComputedStyle(E).position === "absolute",
               O = M === "left" ? 53 : -240,
               z = B.offsetWidth + O,
-              j = 0;
-            j < D.childElementCount;
-            j++
+              F = 0;
+            F < D.childElementCount;
+            F++
           )
-            A += D.children[j].offsetWidth || 0;
-          for (j = 0; j < g.childElementCount; j++)
-            I += g.children[j].offsetWidth || 0;
+            A += D.children[F].offsetWidth || 0;
+          for (F = 0; F < g.childElementCount; F++)
+            I += g.children[F].offsetWidth || 0;
           var U = !(P && M !== "left"
-            ? I + z / 2 < l / 2 && A + z / 2 < l / 2
-            : l > I + A + z);
+            ? I + z / 2 < a / 2 && A + z / 2 < a / 2
+            : a > I + A + z);
           if (
             (U
               ? B.classList.add("binf-logo-hide")
@@ -8293,7 +8291,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         onRender: function () {
-          var l = this.options.context,
+          var a = this.options.context,
             g = this;
           r.setProgresspanelMessageRegionView(this, {
             classes: "csui-global-message",
@@ -8321,7 +8319,7 @@ csui.define("csui/lib/othelp", [], function () {
                   selector: E,
                 }),
                 O = new M({
-                  context: l,
+                  context: a,
                   parentView: g,
                   themeCode: g.themeCode,
                   highContrast: c,
@@ -8329,34 +8327,34 @@ csui.define("csui/lib/othelp", [], function () {
               P.show(O);
             }
           }
-          h.channel("branding:logo").trigger("update:logo");
+          d.channel("branding:logo").trigger("update:logo");
         },
-        loadBrandingCSSFile: function (l) {
+        loadBrandingCSSFile: function (a) {
           const g = "csuiBrandingCSSURL";
-          if ((document.getElementById(g)?.remove(), !l)) return;
+          if ((document.getElementById(g)?.remove(), !a)) return;
           const I = document.createElement("link");
           (I.id = g),
             (I.rel = "stylesheet"),
-            (I.href = l),
+            (I.href = a),
             document.body.appendChild(I);
         },
-        loadLogo: function (l) {
-          if (!l) {
+        loadLogo: function (a) {
+          if (!a) {
             this.ui.logo.removeAttr("style");
             return;
           }
-          const g = `background-image: url(${l}); background-size: contain`;
+          const g = `background-image: url(${a}); background-size: contain`;
           this.ui.logo.attr("style", g);
         },
         _resolveComponents: function () {
           if (this._controlsResolved) return this._controlsResolved;
-          function l(A) {
+          function a(A) {
             var B = y.Deferred();
             return x([A], B.resolve, B.reject), B.promise();
           }
           var g = i.leftSide.models.concat(i.rightSide.models),
             I = g.map(function (A) {
-              return l(A.id);
+              return a(A.id);
             }),
             D = y.Deferred();
           return (
@@ -8371,11 +8369,11 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         _showSystemMessage: function () {
-          const l = localStorage.getItem("shownSystemMsg");
+          const a = localStorage.getItem("shownSystemMsg");
           var g = this;
-          l ||
+          a ||
             (localStorage.setItem("shownSystemMsg", !0),
-            v.enableFeatureInSmartView() &&
+            b.enableFeatureInSmartView() &&
               csui.require(
                 [
                   "csui/models/system.messages/system.message.server.adaptor.mixin",
@@ -8391,44 +8389,44 @@ csui.define("csui/lib/othelp", [], function () {
               ));
         },
         addLinkToIcon: function () {
-          var l =
+          var a =
               this.options &&
               this.options.context &&
               this.options.context._user &&
               this.options.context._user.connector,
-            g = new f((l && l.connection.url) || location.href),
+            g = new h((a && a.connection.url) || location.href),
             I = k.getHomeUrl(g);
           return I;
         },
-        onClickHomeIcon: function (l) {
-          C.isControlClick(l) ||
-            (l.preventDefault(), this.applicationScope.set("id", ""));
+        onClickHomeIcon: function (a) {
+          C.isControlClick(a) ||
+            (a.preventDefault(), this.applicationScope.set("id", ""));
         },
-        onKeydownHomeIcon: function (l) {
-          (l.keyCode === 32 || l.keyCode === 13) && this.onClickHomeIcon(l);
+        onKeydownHomeIcon: function (a) {
+          (a.keyCode === 32 || a.keyCode === 13) && this.onClickHomeIcon(a);
         },
         _toggleVisibility: function () {
           if (!this._isRendered) return;
-          const l = this.ui.csuiLogo;
+          const a = this.ui.csuiLogo;
           this.applicationScope.id
-            ? (l.attr("role", "link"),
-              l.attr("data-href", this.addLinkToIcon()),
+            ? (a.attr("role", "link"),
+              a.attr("data-href", this.addLinkToIcon()),
               this.ui.csuiLogo.css("cursor", "pointer"),
-              l.attr("title", n.Home),
-              l.attr("aria-label", n.HomeIconAria),
-              l.attr("tabindex", "0"))
-            : (l.removeAttr("role"),
-              l.removeAttr("data-href"),
+              a.attr("title", n.Home),
+              a.attr("aria-label", n.HomeIconAria),
+              a.attr("tabindex", "0"))
+            : (a.removeAttr("role"),
+              a.removeAttr("data-href"),
               this.ui.csuiLogo.css("cursor", "auto"),
-              l.removeAttr("title"),
-              l.removeAttr("aria-label"),
-              l.attr("tabindex", "-1"));
+              a.removeAttr("title"),
+              a.removeAttr("aria-label"),
+              a.attr("tabindex", "-1"));
         },
         _cacheAssets: function () {
-          const l = this.user.connector?.getConnectionUrl()?.getOrigin(),
+          const a = this.user.connector?.getConnectionUrl()?.getOrigin(),
             g = this.user.connector?.connection?.supportPath,
-            I = g ? l.concat(g) : l;
-          b.forEach((D) => {
+            I = g ? a.concat(g) : a;
+          v.forEach((D) => {
             const A = document.createElement("link");
             (A.rel = "prefetch"),
               (A.as = D.as),
@@ -8437,7 +8435,7 @@ csui.define("csui/lib/othelp", [], function () {
           });
         },
       });
-      return p.extend(T.prototype, d), w.mixin(T.prototype), T;
+      return p.extend(T.prototype, f), w.mixin(T.prototype), T;
     }
   ),
   csui.define(
@@ -8487,16 +8485,16 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y) {
       "use strict";
       const s = { allowedModules: [], ...x.config() },
-        e = (a = []) => {
-          const d = s.allowedModules;
+        e = (l = []) => {
+          const f = s.allowedModules;
           return (
-            d.length > 0 && (a = a.filter((t) => d.indexOf(t.moduleName) > -1)),
-            a
+            f.length > 0 && (l = l.filter((t) => f.indexOf(t.moduleName) > -1)),
+            l
           );
         };
       return {
-        getAllMenuItems: function (a) {
-          let d = m.Deferred(),
+        getAllMenuItems: function (l) {
+          let f = m.Deferred(),
             t = [],
             i = [],
             o = { groups: [], items: [] };
@@ -8504,7 +8502,7 @@ csui.define("csui/lib/othelp", [], function () {
             y?.length &&
               y.forEach((n) => {
                 t.push(
-                  m.when(n(a)).then(function (u) {
+                  m.when(n(l)).then(function (u) {
                     u.items.length > 0
                       ? ((u.items = e(u.items)), i.push(u))
                       : console.debug("No items are found");
@@ -8515,17 +8513,17 @@ csui.define("csui/lib/othelp", [], function () {
               i?.length &&
                 i.forEach((n) => {
                   n?.groups?.length &&
-                    n.groups.forEach(function (h) {
-                      o.groups.some((f) => f.id === h.id) || o.groups.push(h);
+                    n.groups.forEach(function (d) {
+                      o.groups.some((h) => h.id === d.id) || o.groups.push(d);
                     }),
                     n.items.forEach(function (c) {
-                      o.items.some((h) => h.signature === c.signature) ||
+                      o.items.some((d) => d.signature === c.signature) ||
                         o.items.push(c);
                     });
                 }),
-                d.resolve(o);
+                f.resolve(o);
             }),
-            d.promise()
+            f.promise()
           );
         },
       };
@@ -8536,7 +8534,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -8564,7 +8562,7 @@ csui.define("csui/lib/othelp", [], function () {
             '" '
           );
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -8615,7 +8613,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        5: function (s, e, r, a, d) {
+        5: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -8631,7 +8629,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(6, d, 0),
+                fn: s.program(6, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 20, column: 50 },
@@ -8812,10 +8810,10 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        6: function (s, e, r, a, d) {
+        6: function (s, e, r, l, f) {
           return " style='display:none;' ";
         },
-        8: function (s, e, r, a, d) {
+        8: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -8828,7 +8826,7 @@ csui.define("csui/lib/othelp", [], function () {
             {
               name: "if",
               hash: {},
-              fn: s.program(9, d, 0),
+              fn: s.program(9, f, 0),
               inverse: s.noop,
               loc: {
                 start: { line: 39, column: 8 },
@@ -8839,7 +8837,7 @@ csui.define("csui/lib/othelp", [], function () {
             ? t
             : "";
         },
-        9: function (s, e, r, a, d) {
+        9: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -8873,7 +8871,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -8912,7 +8910,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 5, column: 58 },
@@ -8952,7 +8950,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 9, column: 6 },
@@ -8972,8 +8970,8 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "unless",
                 hash: {},
-                fn: s.program(5, d, 0),
-                inverse: s.program(8, d, 0),
+                fn: s.program(5, f, 0),
+                inverse: s.program(8, f, 0),
                 loc: {
                   start: { line: 19, column: 6 },
                   end: { line: 44, column: 17 },
@@ -9030,23 +9028,23 @@ csui.define("csui/lib/othelp", [], function () {
       "module",
       "css!csui/widgets/error.global/impl/error.global",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i) {
+    function (x, m, p, y, s, e, r, l, f, t, i) {
       "use strict";
       t = t(i.id);
       var o = p.ItemView.extend({
         className: "csui-global-error",
-        template: a,
+        template: l,
         templateHelpers: function () {
           return {
-            errorMessage: d.errorMessage,
-            backText: d.backText,
-            backTooltip: d.backTooltip,
-            homeText: d.homeText,
-            homeTooltip: d.homeTooltip,
-            closeText: d.closeText,
-            closeTooltip: d.closeTooltip,
+            errorMessage: f.errorMessage,
+            backText: f.backText,
+            backTooltip: f.backTooltip,
+            homeText: f.homeText,
+            homeTooltip: f.homeTooltip,
+            closeText: f.closeText,
+            closeTooltip: f.closeTooltip,
             msgId: x.uniqueId("msg"),
-            regionAria: d.globalErrorRegionAria,
+            regionAria: f.globalErrorRegionAria,
             noHistory: this.noHistory,
           };
         },
@@ -9074,12 +9072,12 @@ csui.define("csui/lib/othelp", [], function () {
             y.isIE11())
           ) {
             var c = this,
-              h = function () {
+              d = function () {
                 c.render();
               };
-            m(window).on("resize", h),
+            m(window).on("resize", d),
               this.once("before:destroy", function () {
-                m(window).off("resize", h);
+                m(window).off("resize", d);
               });
           }
         },
@@ -9096,10 +9094,10 @@ csui.define("csui/lib/othelp", [], function () {
           n.preventDefault(), n.stopPropagation();
           var u = this.options.context,
             c = u && u.viewStateModel,
-            h = c && c.get(c.CONSTANTS.START_ID);
-          if (h) {
-            var f = u.getModel("nextNode");
-            f.set("id", h);
+            d = c && c.get(c.CONSTANTS.START_ID);
+          if (d) {
+            var h = u.getModel("nextNode");
+            h.set("id", d);
           } else {
             var k = u.getModel(e);
             k.set("id", "");
@@ -9129,8 +9127,8 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/utils/non-attaching.region/non-attaching.region",
       "css!csui/pages/error.page/impl/error.page",
     ],
-    function (x, m, p, y, s, e, r, a) {
-      var d = p.ItemView.extend({
+    function (x, m, p, y, s, e, r, l) {
+      var f = p.ItemView.extend({
         template: !1,
         constructor: function (i) {
           i || (i = {}),
@@ -9150,7 +9148,7 @@ csui.define("csui/lib/othelp", [], function () {
             this.$el.empty().append(this.globalErrorView.el),
             setTimeout(
               x.bind(function () {
-                var t = new a({ el: this.el });
+                var t = new l({ el: this.el });
                 t.show(this, { render: !1 });
               }, this)
             );
@@ -9162,7 +9160,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
       });
-      return d;
+      return f;
     }
   ),
   csui.define("css!csui/pages/start/impl/start.page", [], function () {}),
@@ -9207,25 +9205,25 @@ csui.define("csui/lib/othelp", [], function () {
       s,
       e,
       r,
-      a,
-      d,
+      l,
+      f,
       t,
       i,
       o,
       n,
       u,
       c,
+      d,
       h,
-      f,
       k,
       C,
       S,
       w,
-      v,
       b,
+      v,
       _,
       T,
-      l,
+      a,
       g,
       I
     ) {
@@ -9244,13 +9242,13 @@ csui.define("csui/lib/othelp", [], function () {
       var B = s.ItemView.extend(
         {
           template: !1,
-          behaviors: { TabablesBehavior: { behaviorClass: f } },
+          behaviors: { TabablesBehavior: { behaviorClass: h } },
           constructor: function (E) {
             E || (E = {}),
               (E.el = document.body),
               s.View.prototype.constructor.call(this, E);
             var P = E.context || new r(),
-              O = P.getObject(a);
+              O = P.getObject(l);
             if (
               ((this.context = P),
               !O.connection.credentials &&
@@ -9295,11 +9293,11 @@ csui.define("csui/lib/othelp", [], function () {
                     this.navigationHeader?.el
                       ?.querySelector(".smart-application-header")
                       ?.setAttribute("inert", "");
-                    const N = this.perspectivePanel.el?.querySelectorAll(
-                        "a[href]:not([tabindex='-1']), area[href]:not([tabindex='-1']), input:not([tabindex='-1']), select:not([tabindex='-1']), textarea:not([tabindex='-1']), otc-button:not([tabindex='-1']), button:not([tabindex='-1']), *[tabindex='0'], iframe:not([tabindex='-1']), object:not([tabindex='-1']), embed:not([tabindex='-1'])"
-                      ),
-                      L = Array.from(N).filter(function (F) {
-                        return p(F).is(":visible");
+                    const H =
+                        "a[href]:not([tabindex='-1']), area[href]:not([tabindex='-1']), input:not([tabindex='-1']), select:not([tabindex='-1']), textarea:not([tabindex='-1']), otc-button:not([tabindex='-1']), button:not([tabindex='-1']), *[tabindex='0'], iframe:not([tabindex='-1']), object:not([tabindex='-1']), embed:not([tabindex='-1'])",
+                      N = this.perspectivePanel.el?.querySelectorAll(H),
+                      L = Array.from(N).filter(function (j) {
+                        return p(j).is(":visible");
                       });
                     L.length > 0 && p(L[0]).trigger("focus");
                   }, this),
@@ -9320,11 +9318,6 @@ csui.define("csui/lib/othelp", [], function () {
                       this.listenTo(
                         this.brandingConfig,
                         "change:branding",
-                        m.bind(this._applyBrandingStyles, this)
-                      ),
-                      this.listenToOnce(
-                        this.navigationHeader,
-                        "render:header",
                         m.bind(this._applyBrandingStyles, this)
                       ),
                       this.listenTo(
@@ -9420,8 +9413,8 @@ csui.define("csui/lib/othelp", [], function () {
                 this.navigationHeader,
                 this.perspectivePanel
               );
-            var j = d.getInstance({ context: P, urlCanChange: !0 });
-            j.start(),
+            var F = f.getInstance({ context: P, urlCanChange: !0 });
+            F.start(),
               this.$el.addClass("binf-widgets"),
               t.isAppleMobile() && this.$el.addClass("csui-on-ipad"),
               t.isIOSBrowser() && this.$el.addClass("csui-on-macintosh"),
@@ -9480,7 +9473,7 @@ csui.define("csui/lib/othelp", [], function () {
                   return (
                     (E.data.logoSrc = E.data.brandLogoUri),
                     this.brandingConfig.set(E.data),
-                    this.navigationHeader.trigger("render:header"),
+                    this.brandingConfig.trigger("change:branding"),
                     M.resolve("Success")
                   );
                 })
@@ -9490,7 +9483,7 @@ csui.define("csui/lib/othelp", [], function () {
           },
           onRender: function () {
             if (this._redirecting) return this;
-            v.ensureOnThePage(),
+            b.ensureOnThePage(),
               A?.useV2AppHeader &&
                 this.navigationHeader.el.classList.add("smart-app-header-hide"),
               this._appendView(this.navigationHeader),
@@ -9533,7 +9526,7 @@ csui.define("csui/lib/othelp", [], function () {
                 errorCode: 401,
                 showLogout: !1,
               }),
-              E = new b({ model: M });
+              E = new v({ model: M });
             E.render();
           },
         },
@@ -9542,7 +9535,7 @@ csui.define("csui/lib/othelp", [], function () {
           enableHamburger: A.enableHamburger ?? !1,
         }
       );
-      return m.extend(B.prototype, h), _.mixin(B.prototype), B;
+      return m.extend(B.prototype, d), _.mixin(B.prototype), B;
     }
   ),
   csui.define(
@@ -9564,7 +9557,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y) {
       var s = m.Model.extend({
         defaults: { sequence: 100, important: !1, module: null },
-        constructor: function (d, t) {
+        constructor: function (f, t) {
           m.Model.prototype.constructor.apply(this, arguments),
             this.makeRulesMatching(t);
         },
@@ -9573,81 +9566,81 @@ csui.define("csui/lib/othelp", [], function () {
       var e = m.Collection.extend({
           model: s,
           comparator: "sequence",
-          constructor: function (d, t) {
+          constructor: function (f, t) {
             m.Collection.prototype.constructor.apply(this, arguments);
           },
-          findByApplicationScope: function (a) {
-            return this.find(function (d) {
-              return d.matchRules(a, d.attributes);
+          findByApplicationScope: function (l) {
+            return this.find(function (f) {
+              return f.matchRules(l, f.attributes);
             });
           },
         }),
         r = new e([
           {
             sequence: 50,
-            decides: function (a) {
+            decides: function (l) {
               return (
-                a.context.getModel("applicationScope").id === "properties" &&
-                a.context.viewStateModel &&
-                a.context.viewStateModel.get("state").dropdown === "versions"
+                l.context.getModel("applicationScope").id === "properties" &&
+                l.context.viewStateModel &&
+                l.context.viewStateModel.get("state").dropdown === "versions"
               );
             },
             contextHelpId: "qs-versionpg-bg",
           },
           {
             sequence: 50,
-            decides: function (a) {
+            decides: function (l) {
               return (
-                a.context.getModel("applicationScope").id === "properties" &&
-                a.context.viewStateModel &&
-                a.context.viewStateModel.get("state").dropdown === "audit"
+                l.context.getModel("applicationScope").id === "properties" &&
+                l.context.viewStateModel &&
+                l.context.viewStateModel.get("state").dropdown === "audit"
               );
             },
             contextHelpId: "qs-audithistory-bg",
           },
           {
             sequence: 50,
-            decides: function (a) {
+            decides: function (l) {
               return (
-                a.context.getModel("applicationScope").id === "node" &&
-                a.context.getModel("node").get("type") === 298
+                l.context.getModel("applicationScope").id === "node" &&
+                l.context.getModel("node").get("type") === 298
               );
             },
             contextHelpId: "qs-addtocollection-bg",
           },
           {
             sequence: 50,
-            decides: function (a) {
+            decides: function (l) {
               return (
-                a.context.getModel("applicationScope").id === "node" &&
-                a.context.getModel("node").get("type") === 136
+                l.context.getModel("applicationScope").id === "node" &&
+                l.context.getModel("node").get("type") === 136
               );
             },
             contextHelpId: "compound-documents-so",
           },
           {
             sequence: 50,
-            decides: function (a) {
+            decides: function (l) {
               return (
-                a.context.getModel("applicationScope").id === "node" &&
-                a.context.getModel("node").get("type") === 751
+                l.context.getModel("applicationScope").id === "node" &&
+                l.context.getModel("node").get("type") === 751
               );
             },
             contextHelpId: "qs-itemtypes-bg",
           },
           {
             sequence: 50,
-            decides: function (a) {
+            decides: function (l) {
               return (
-                a.context.viewStateModel.get("session_state") &&
-                a.context.viewStateModel.get("session_state").permissions
+                l.context.viewStateModel.get("session_state") &&
+                l.context.viewStateModel.get("session_state").permissions
               );
             },
             contextHelpId: "qs-permissions-bg",
           },
         ]);
       return (
-        r.map((a) => (a.helpDocId = "cssui250100-h-ugd")),
+        r.map((l) => (l.helpDocId = "cssui240400-h-ugd")),
         y && r.add(x.flatten(y, !0)),
         r
       );
@@ -9658,11 +9651,11 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return "icon-help-black";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -9678,7 +9671,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 1, column: 22 },
@@ -9734,7 +9727,7 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/lib/othelp",
       "hbs!csui/widgets/navigation.header/controls/help/impl/help",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o) {
       "use strict";
       var n =
         window.csui.requirejs.s.contexts._.config.config[
@@ -9766,46 +9759,46 @@ csui.define("csui/lib/othelp", [], function () {
         currentlyFocusedElement: function () {
           return this.$el;
         },
-        constructor: function (h) {
-          y.ItemView.call(this, h),
+        constructor: function (d) {
+          y.ItemView.call(this, d),
             this.listenTo(this, "click:help", this._onClick);
         },
         onShow: function () {
           var c = this;
-          this.$el.on("click", function (h) {
-            s.isControlClick(h) || c.triggerMethod("click:help");
+          this.$el.on("click", function (d) {
+            s.isControlClick(d) || c.triggerMethod("click:help");
           }),
-            this.$el.on("keydown", function (h) {
-              h.keyCode === 32 &&
-                (h.preventDefault(), c.triggerMethod("click:help"));
+            this.$el.on("keydown", function (d) {
+              d.keyCode === 32 &&
+                (d.preventDefault(), c.triggerMethod("click:help"));
             });
         },
         _onClick: function (c) {
-          const h = new t(),
-            f = this.options.context,
+          const d = new t(),
+            h = this.options.context,
             k =
               typeof c == "string" || c instanceof String
                 ? c
-                : f._applicationScope.get("id");
-          var C = d.findByApplicationScope({ context: f });
+                : h._applicationScope.get("id");
+          var C = f.findByApplicationScope({ context: h });
           let S, w;
           C &&
             ((S = C.get("contextHelpId")),
             (w = C.get("helpDocId")),
-            (S = typeof S == "function" ? S({ context: f }) : S)),
-            h.fetch().then(function () {
-              var v,
-                b,
+            (S = typeof S == "function" ? S({ context: h }) : S)),
+            d.fetch().then(function () {
+              var b,
+                v,
                 _,
                 T,
-                l,
+                a,
                 g = [];
-              (v = h.filter(function (I) {
+              (b = d.filter(function (I) {
                 return !!I.get("helpDocId");
               })),
-                (b = new i({ urlRoot: n.help.urlRoot })),
+                (v = new i({ urlRoot: n.help.urlRoot })),
                 (_ = { preserve: n.help.preserve, documents: [] }),
-                m.each(v, function (I) {
+                m.each(b, function (I) {
                   var D = I.get("helpDocId");
                   g[D.match(/[^\d]+|\d+/g)[0]]
                     ? g[D.match(/[^\d]+|\d+/g)[0]].push(I)
@@ -9822,10 +9815,10 @@ csui.define("csui/lib/othelp", [], function () {
                       C && S && !w ? (P = S) : !P && D && k && !S && (P = D[k]);
                     var O = E.get("helpDocId"),
                       z = E.get("helpDocId").lastIndexOf("-"),
-                      j = E.get("helpDocId").substring(z + 1);
-                    B[j]
-                      ? B[j].push({ helpDocId: O, topicId: P })
-                      : ((B[j] = []), (B[j][0] = { helpDocId: O, topicId: P }));
+                      F = E.get("helpDocId").substring(z + 1);
+                    B[F]
+                      ? B[F].push({ helpDocId: O, topicId: P })
+                      : ((B[F] = []), (B[F][0] = { helpDocId: O, topicId: P }));
                   });
                   var M = 0;
                   Object.keys(B).forEach(function (E) {
@@ -9855,13 +9848,13 @@ csui.define("csui/lib/othelp", [], function () {
                       I.topic === void 0 &&
                       (I.topic = "sui-overview-bg");
                 }),
-                (T = b.buildHelpUrl(n.help.language, _, {
+                (T = v.buildHelpUrl(n.help.language, _, {
                   tenant: n.help.tenant,
                   type: n.help.type,
                   options: { search: "allModules" },
                 })),
-                (l = window.open(T, "_blank")),
-                l.focus();
+                (a = window.open(T, "_blank")),
+                a.focus();
             });
         },
       });
@@ -9881,11 +9874,11 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return "csui-icon-home-black";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -9901,7 +9894,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 1, column: 27 },
@@ -9955,7 +9948,7 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/utils/node.links/node.links",
       "hbs!csui/widgets/navigation.header/controls/home/impl/home",
     ],
-    function (x, m, p, y, s, e, r, a, d, t) {
+    function (x, m, p, y, s, e, r, l, f, t) {
       "use strict";
       var i = p.ItemView.extend({
         tagName: "a",
@@ -9980,7 +9973,7 @@ csui.define("csui/lib/othelp", [], function () {
         constructor: function (n) {
           p.ItemView.call(this, n),
             this.listenTo(n.context, "sync error", this._toggleVisibility),
-            (this.applicationScope = n.context.getModel(a));
+            (this.applicationScope = n.context.getModel(l));
         },
         onRender: function () {
           var o =
@@ -9989,7 +9982,7 @@ csui.define("csui/lib/othelp", [], function () {
               this.options.context._user &&
               this.options.context._user.connector,
             n = new y((o && o.connection.url) || location.href),
-            u = d.getHomeUrl(n);
+            u = f.getHomeUrl(n);
           this.$el.attr("href", u);
         },
         onClickHomeIcon: function (o) {
@@ -10023,7 +10016,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -10101,9 +10094,9 @@ csui.define("csui/lib/othelp", [], function () {
       "hbs!csui/widgets/navigation.header/controls/breadcrumbs/impl/breadcrumbs",
       "css!csui/widgets/navigation.header/controls/breadcrumbs/impl/breadcrumbs",
     ],
-    function (x, m, p, y, s, e, r, a) {
+    function (x, m, p, y, s, e, r, l) {
       "use strict";
-      var d = p.ItemView.extend({
+      var f = p.ItemView.extend({
         tagName: "button",
         attributes: { type: "button" },
         className: "breadcrumbs-handle binf-btn",
@@ -10132,7 +10125,7 @@ csui.define("csui/lib/othelp", [], function () {
             i
           );
         },
-        template: a,
+        template: l,
         events: { keydown: "onKeyInView", click: "_toggleBreadCrumbs" },
         behaviors: { TabableRegion: { behaviorClass: s } },
         currentlyFocusedElement: function () {
@@ -10262,7 +10255,7 @@ csui.define("csui/lib/othelp", [], function () {
           }
         },
       });
-      return d;
+      return f;
     }
   ),
   csui.define(
@@ -10271,7 +10264,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -10441,10 +10434,10 @@ csui.define("csui/lib/othelp", [], function () {
         setSlices: function (e) {
           e.preventDefault(), e.stopPropagation();
           var r = this.model.get("sliceId"),
-            a = this.$el.find(".icon-listview-checkmark").length;
+            l = this.$el.find(".icon-listview-checkmark").length;
           (this.options.originatingView.options.sliceString = ""),
             this.options.parentView.removePreviousSelection(),
-            a
+            l
               ? this.$el.find(".csui-slice-option").prop("checked", !1)
               : (this.$el
                   .find(".csui-search-popover-checked")
@@ -10689,18 +10682,18 @@ csui.define("csui/lib/othelp", [], function () {
       "use strict";
       var r = p.View.extend({
         className: "csui-search-form-container",
-        constructor: function (d) {
-          d || (d = {}),
+        constructor: function (f) {
+          f || (f = {}),
             (this.models = new y.Collection()),
-            p.View.prototype.constructor.call(this, d);
+            p.View.prototype.constructor.call(this, f);
         },
-        findButton: function (a, d, t) {
-          var i = x.find(a, function (o) {
-            return o.get("btnType") === d;
+        findButton: function (l, f, t) {
+          var i = x.find(l, function (o) {
+            return o.get("btnType") === f;
           });
           i && i.set("hidden", t);
         },
-        openFormInSidepanel: function (a, d) {
+        openFormInSidepanel: function (l, f) {
           var t = m.Deferred(),
             i = this;
           return (
@@ -10712,14 +10705,14 @@ csui.define("csui/lib/othelp", [], function () {
                 "i18n",
               ],
               function (o, n, u, c) {
-                var h;
-                const f = c && c.settings?.rtl;
-                if (d) {
-                  var k = a.get("schema");
-                  (h = k.title ? k.title : a.get("name")),
+                var d;
+                const h = c && c.settings?.rtl;
+                if (f) {
+                  var k = l.get("schema");
+                  (d = k.title ? k.title : l.get("name")),
                     (i.customSearchForm = new n({
-                      model: a,
-                      searchFormId: d,
+                      model: l,
+                      searchFormId: f,
                       hideSearchButton: !0,
                       showInSearchResultsNewPerspective: !0,
                       context: i.options.options.context,
@@ -10730,10 +10723,10 @@ csui.define("csui/lib/othelp", [], function () {
                 } else
                   i.searchFormsContainerView ||
                     (i.searchFormsContainerView = new u({
-                      searchFormsList: a,
+                      searchFormsList: l,
                       originatingView: i,
                     })),
-                    (h = e.searchFormLabel),
+                    (d = e.searchFormLabel),
                     i.sidePanel &&
                       (i.sidePanel.options.slides[0].content =
                         i.searchFormsContainerView),
@@ -10742,8 +10735,8 @@ csui.define("csui/lib/othelp", [], function () {
                   var C = new o({
                     slides: [
                       {
-                        title: h,
-                        content: d
+                        title: d,
+                        content: f
                           ? i.customSearchForm
                           : i.searchFormsContainerView,
                         footer: {
@@ -10751,7 +10744,7 @@ csui.define("csui/lib/othelp", [], function () {
                             {
                               type: "action",
                               v2Icon: {
-                                iconName: f
+                                iconName: h
                                   ? "csui_action_back_rtl32"
                                   : "csui_action_back32",
                                 states: !0,
@@ -10790,8 +10783,8 @@ csui.define("csui/lib/othelp", [], function () {
                   (i.sidePanel = C), C.show();
                 } else if (i.sidePanel.$el.is(":visible")) {
                   var S = new s({ el: i.sidePanel.ui.body });
-                  (i.sidePanel.slides[0].title = h),
-                    d
+                  (i.sidePanel.slides[0].title = d),
+                    f
                       ? (S.$el
                           .find(".csui-search-forms-list")
                           .addClass("binf-hidden"),
@@ -10812,14 +10805,14 @@ csui.define("csui/lib/othelp", [], function () {
                     i.sidePanel.headerView.update(
                       i.sidePanel.options.slides[0]
                     ),
-                    d && S.show(i.sidePanel.options.slides[0].content);
+                    f && S.show(i.sidePanel.options.slides[0].content);
                 }
                 i.sidePanel.listenTo(
                   i.customSearchForm,
                   "enable:search",
-                  function (b) {
+                  function (v) {
                     i.sidePanel.trigger("update:button", "search-btn", {
-                      disabled: !b,
+                      disabled: !v,
                     });
                   }
                 );
@@ -10831,30 +10824,30 @@ csui.define("csui/lib/othelp", [], function () {
                       x.values
                     )
                   ),
-                  function (b) {
-                    return b;
+                  function (v) {
+                    return v;
                   }
                 );
-                let v = !0;
+                let b = !0;
                 if (w && w.length > 0) {
-                  for (let b of w)
+                  for (let v of w)
                     if (
-                      typeof b == "number" ||
-                      (typeof b == "string" && !/^(anydate|anyvalue)/i.test(b))
+                      typeof v == "number" ||
+                      (typeof v == "string" && !/^(anydate|anyvalue)/i.test(v))
                     ) {
-                      v = !1;
+                      b = !1;
                       break;
                     } else if (
-                      typeof b == "object" &&
-                      Object.values(b).some(
+                      typeof v == "object" &&
+                      Object.values(v).some(
                         (_) => _ && !/^(anydate|anyvalue)/i.test(_)
                       )
                     ) {
-                      v = !1;
+                      b = !1;
                       break;
                     }
                 }
-                v
+                b
                   ? (m(".cs-search")
                       .addClass("binf-disabled")
                       .addClass("csui-search-form-submit-disabled"),
@@ -10863,7 +10856,7 @@ csui.define("csui/lib/othelp", [], function () {
                       .removeClass("binf-disabled")
                       .removeClass("csui-search-form-submit-disabled"),
                     i.customSearchForm?.trigger("enable:search", !0)),
-                  d
+                  f
                     ? (i.options.originatingView.hideBackButton
                         ? i.findButton(
                             i.sidePanel.footerView.leftCollection.models,
@@ -10909,12 +10902,12 @@ csui.define("csui/lib/othelp", [], function () {
                   i.sidePanel.listenTo(
                     i.customSearchForm,
                     "button:click",
-                    function (b) {
-                      if (b.btnType === "search")
+                    function (v) {
+                      if (v.btnType === "search")
                         (i.customSearchForm.options.query =
                           i.options.options.model),
                           i.customSearchForm.loadCustomSearch();
-                      else if (b.btnType === "back") {
+                      else if (v.btnType === "back") {
                         i.openFormInSidepanel(
                           i.options.originatingView.searchboxModel.get(
                             "search_forms"
@@ -10935,24 +10928,24 @@ csui.define("csui/lib/othelp", [], function () {
                           .find(".csui-searchforms-popover-row")[0]
                           .focus(),
                         (i.isKeyPress = !1));
-                    var b = i.options.originatingView.cid;
-                    m(document).off("click." + b + " keydown." + b);
+                    var v = i.options.originatingView.cid;
+                    m(document).off("click." + v + " keydown." + v);
                   }),
                   i.sidePanel.listenTo(i.sidePanel, "before:hide", function () {
-                    var b = i.options.originatingView;
-                    b?.options?.otcEl ||
+                    var v = i.options.originatingView;
+                    v?.options?.otcEl ||
                       m(document).on(
-                        "click." + b.cid + " keydown." + b.cid,
-                        b,
-                        b._hideSearchBar
+                        "click." + v.cid + " keydown." + v.cid,
+                        v,
+                        v._hideSearchBar
                       ),
                       i.options.originatingView?.ui?.input?.attr("tabindex", 0);
                   }),
-                  i.sidePanel.listenTo(i.sidePanel, "keydown", function (b) {
+                  i.sidePanel.listenTo(i.sidePanel, "keydown", function (v) {
                     if (
-                      b.keyCode === 9 &&
-                      b.shiftKey &&
-                      m(b.target)[0].id === "csui-side-panel-cancel"
+                      v.keyCode === 9 &&
+                      v.shiftKey &&
+                      m(v.target)[0].id === "csui-side-panel-cancel"
                     ) {
                       var _ = i;
                       _.searchFormsContainerView &&
@@ -10977,30 +10970,30 @@ csui.define("csui/lib/othelp", [], function () {
             t.promise()
           );
         },
-        isModelFetched: function (a) {
+        isModelFetched: function (l) {
           if (
             ((this.isNewForm = !0),
-            this.models && this.models.length && this.models.get(a))
+            this.models && this.models.length && this.models.get(l))
           ) {
-            var d = JSON.parse(
-              JSON.stringify(this.models.get(a).originalAttributesData)
+            var f = JSON.parse(
+              JSON.stringify(this.models.get(l).originalAttributesData)
             );
-            this.models.get(a).set("data", d),
-              this.openFormInSidepanel(this.models.get(a), a);
+            this.models.get(l).set("data", f),
+              this.openFormInSidepanel(this.models.get(l), l);
           } else {
             var t = this;
             csui.require(
               ["csui/widgets/search.forms/search.form.model"],
               function (i) {
                 var o = new i(
-                  { id: a },
+                  { id: l },
                   { connector: t.options.connector, options: t.options }
                 );
                 o.fetch().then(function (n) {
                   var u = JSON.parse(JSON.stringify(o.attributes.data));
                   (o.originalAttributesData = u),
                     t.models.push(o),
-                    t.openFormInSidepanel(o, a);
+                    t.openFormInSidepanel(o, l);
                 });
               }
             );
@@ -11015,16 +11008,16 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return `    <span class="csui-icon-standard-search"></span>
 `;
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           return `    <span class="csui-icon-query-form-search"></span>
 `;
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -11119,8 +11112,8 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
-                inverse: s.program(3, d, 0),
+                fn: s.program(1, f, 0),
+                inverse: s.program(3, f, 0),
                 loc: {
                   start: { line: 4, column: 2 },
                   end: { line: 8, column: 9 },
@@ -11177,12 +11170,12 @@ csui.define("csui/lib/othelp", [], function () {
         templateContext: function () {
           var r =
               this.model && this.model.has("name") && this.model.get("name"),
-            a = this.model && this.model.has("id") && this.model.get("id"),
-            d = this.model && this.model.cid;
+            l = this.model && this.model.has("id") && this.model.get("id"),
+            f = this.model && this.model.cid;
           return {
             quickLink: this.model.get("type") === "quick",
             searchFormName: r,
-            searchFormId: `${d}_${a}`,
+            searchFormId: `${f}_${l}`,
             searchFormTooltip: x.str.sformat(s.searchFormTooltip, r),
           };
         },
@@ -11190,27 +11183,27 @@ csui.define("csui/lib/othelp", [], function () {
           "click .csui-searchforms-popover-row": "openFormView",
           "keydown .csui-searchforms-popover-row": "openFormView",
         },
-        constructor: function (a) {
-          a || (a = {}),
-            (this.options = a),
-            p.View.prototype.constructor.call(this, a);
+        constructor: function (l) {
+          l || (l = {}),
+            (this.options = l),
+            p.View.prototype.constructor.call(this, l);
         },
         openFormView: function (r) {
           r.preventDefault(), r.stopPropagation();
-          var a = this.model,
-            d = a.get("params") || {};
+          var l = this.model,
+            f = l.get("params") || {};
           if (r.keyCode === 13 || r.keyCode === 32 || r.type === "click") {
-            if (a.get("type") === "quick") {
-              d.location_id1 = "";
+            if (l.get("type") === "quick") {
+              f.location_id1 = "";
               var t = this.options.originatingView;
               t.options &&
                 t.options.data &&
                 t.options.data.searchFromHere &&
                 t.searchOptions &&
                 t.searchOptions.nodeId &&
-                (d.location_id1 = t.searchOptions.nodeId),
-                (d.where = d.where || "*"),
-                this.options.originatingView.trigger("refine:search", r, d);
+                (f.location_id1 = t.searchOptions.nodeId),
+                (f.where = f.where || "*"),
+                this.options.originatingView.trigger("refine:search", r, f);
               return;
             } else if (
               this.model.get("type") === "direct" &&
@@ -11219,8 +11212,8 @@ csui.define("csui/lib/othelp", [], function () {
               this.options.parentView.options.options &&
               this.options.parentView.options.options.fromSearchBox
             ) {
-              x.extend(d, { forcePerspectiveChange: !0, enableSearchForm: !0 }),
-                this.options.originatingView.trigger("refine:search", r, d);
+              x.extend(f, { forcePerspectiveChange: !0, enableSearchForm: !0 }),
+                this.options.originatingView.trigger("refine:search", r, f);
               return;
             }
             if (
@@ -11248,27 +11241,27 @@ csui.define("csui/lib/othelp", [], function () {
         _handleKeyEvents: function (r) {
           switch ((r.preventDefault(), r.keyCode)) {
             case 9:
-              var a = this.options.parentView.options.parentView,
-                d = this.options.parentView;
+              var l = this.options.parentView.options.parentView,
+                f = this.options.parentView;
               if (r.shiftKey)
                 r.shiftKey &&
-                  (a.personalSearchForms &&
-                  d.options.listName !== "personal_search_forms" &&
-                  d.options.listName !== "recent_search_forms"
-                    ? a.personalSearchForms.$el
+                  (l.personalSearchForms &&
+                  f.options.listName !== "personal_search_forms" &&
+                  f.options.listName !== "recent_search_forms"
+                    ? l.personalSearchForms.$el
                         .find(".csui-searchforms-popover-row")[0]
                         .focus()
-                    : a.recentSearchForms &&
-                      d.options.listName !== "recent_search_forms"
-                    ? a.recentSearchForms.$el
+                    : l.recentSearchForms &&
+                      f.options.listName !== "recent_search_forms"
+                    ? l.recentSearchForms.$el
                         .find(".csui-searchforms-popover-row")[0]
                         .focus()
-                    : (a.recentSearchForms &&
-                        d.options.listName === "recent_search_forms") ||
-                      (a.personalSearchForms &&
-                        d.options.listName === "personal_search_forms") ||
-                      (a.systemSearchForms &&
-                        d.options.listName === "system_search_forms")
+                    : (l.recentSearchForms &&
+                        f.options.listName === "recent_search_forms") ||
+                      (l.personalSearchForms &&
+                        f.options.listName === "personal_search_forms") ||
+                      (l.systemSearchForms &&
+                        f.options.listName === "system_search_forms")
                     ? this.options.originatingView.sidePanel
                       ? this.options.originatingView.sidePanel.$el
                           .find(".csui-sidepanel-close")
@@ -11320,22 +11313,22 @@ csui.define("csui/lib/othelp", [], function () {
                   .find(".csui-searchforms-show-more")
                   .focus();
               else if (
-                a.personalSearchForms &&
-                d.options.listName !== "system_search_forms" &&
-                d.options.listName !== "personal_search_forms"
+                l.personalSearchForms &&
+                f.options.listName !== "system_search_forms" &&
+                f.options.listName !== "personal_search_forms"
               )
-                a.personalSearchForms.$el
+                l.personalSearchForms.$el
                   .find(".csui-searchforms-popover-row")[0]
                   .focus();
               else if (
-                a.systemSearchForms &&
-                d.options.listName !== "system_search_forms"
+                l.systemSearchForms &&
+                f.options.listName !== "system_search_forms"
               )
-                a.systemSearchForms.$el
+                l.systemSearchForms.$el
                   .find(".csui-searchforms-popover-row")[0]
                   .focus();
               else {
-                var t = a.options.originatingView.sidePanel.$el.find(
+                var t = l.options.originatingView.sidePanel.$el.find(
                   '[id = "csui-side-panel-cancel"]'
                 );
                 t.addClass("active"),
@@ -11402,12 +11395,7 @@ csui.define("csui/lib/othelp", [], function () {
       var y = m.CollectionView.extend({
         className: "csui-search-form-list",
         childView: p,
-        attributes: function () {
-          return {
-            role: "list",
-            "aria-labelledby": this.options.ariaLabelledBy,
-          };
-        },
+        attributes: { role: "list" },
         childViewOptions: function () {
           return {
             collection: this.options.collection,
@@ -11431,7 +11419,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -11440,18 +11428,35 @@ csui.define("csui/lib/othelp", [], function () {
                 if (Object.prototype.hasOwnProperty.call(n, u)) return n[u];
               };
           return (
-            "  <div " +
+            "  <div aria-labelledby='recent_search_forms_header_" +
+            s.escapeExpression(
+              ((i =
+                (i = o(r, "cId") || (e != null ? o(e, "cId") : e)) != null
+                  ? i
+                  : s.hooks.helperMissing),
+              typeof i == "function"
+                ? i.call(e ?? (s.nullContext || {}), {
+                    name: "cId",
+                    hash: {},
+                    loc: {
+                      start: { line: 2, column: 51 },
+                      end: { line: 2, column: 58 },
+                    },
+                  })
+                : i)
+            ) +
+            "' " +
             ((t = o(r, "if").call(
               e ?? (s.nullContext || {}),
               e != null ? o(e, "fromSearchBox") : e,
               {
                 name: "if",
                 hash: {},
-                fn: s.program(2, d, 0),
+                fn: s.program(2, f, 0),
                 inverse: s.noop,
                 loc: {
-                  start: { line: 2, column: 7 },
-                  end: { line: 2, column: 54 },
+                  start: { line: 2, column: 60 },
+                  end: { line: 2, column: 107 },
                 },
               }
             )) != null
@@ -11483,7 +11488,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(4, d, 0),
+                fn: s.program(4, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 4, column: 33 },
@@ -11510,13 +11515,13 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        2: function (s, e, r, a, d) {
+        2: function (s, e, r, l, f) {
           return ' role="navigation" ';
         },
-        4: function (s, e, r, a, d) {
+        4: function (s, e, r, l, f) {
           return " binf-hidden ";
         },
-        6: function (s, e, r, a, d) {
+        6: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -11570,7 +11575,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        8: function (s, e, r, a, d) {
+        8: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -11578,7 +11583,7 @@ csui.define("csui/lib/othelp", [], function () {
                 if (Object.prototype.hasOwnProperty.call(o, n)) return o[n];
               };
           return (
-            `  <div>
+            `  <div aria-labelledby='personal_search_forms_header'>
     <h2 id='personal_search_forms_header'
         class='csui-search-label'>` +
             s.escapeExpression(
@@ -11595,7 +11600,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        10: function (s, e, r, a, d) {
+        10: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -11603,7 +11608,7 @@ csui.define("csui/lib/othelp", [], function () {
                 if (Object.prototype.hasOwnProperty.call(o, n)) return o[n];
               };
           return (
-            `  <div>
+            `  <div aria-labelledby='system_search_forms_header'>
     <h2 id='system_search_forms_header'
         class='csui-search-label'>` +
             s.escapeExpression(
@@ -11621,7 +11626,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -11637,7 +11642,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 1, column: 0 },
@@ -11647,7 +11652,7 @@ csui.define("csui/lib/othelp", [], function () {
             )) != null
               ? t
               : "") +
-            `  
+            `
 ` +
             ((t = i(r, "if").call(
               e ?? (s.nullContext || {}),
@@ -11655,7 +11660,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(6, d, 0),
+                fn: s.program(6, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 11, column: 0 },
@@ -11675,7 +11680,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(8, d, 0),
+                fn: s.program(8, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 19, column: 0 },
@@ -11695,7 +11700,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(10, d, 0),
+                fn: s.program(10, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 27, column: 0 },
@@ -11732,7 +11737,6 @@ csui.define("csui/lib/othelp", [], function () {
       "use strict";
       var r = p.View.extend({
         className: "csui-search-form-collection",
-        attributes: { role: "application" },
         template: s,
         templateContext: function () {
           return {
@@ -11754,76 +11758,68 @@ csui.define("csui/lib/othelp", [], function () {
           };
         },
         regions: function () {
-          var a = {};
+          var l = {};
           return (
-            m.each(this.options.searchFormsList, function (d, t) {
-              a[t] = "#" + t;
+            m.each(this.options.searchFormsList, function (f, t) {
+              l[t] = "#" + t;
             }),
-            a
+            l
           );
         },
-        constructor: function (d) {
-          d || (d = {}),
-            (this.options = d),
+        constructor: function (f) {
+          f || (f = {}),
+            (this.options = f),
             p.View.prototype.constructor.apply(this, arguments);
         },
         onRender: function () {
           if (
             (m.each(
               this.options.searchFormsList,
-              m.bind(function (a, d) {
-                var t = this._createCollection(a);
-                if (t.length) {
-                  let i = `${d}_header`;
-                  d === "recent_search_forms"
+              m.bind(function (l, f) {
+                var t = this._createCollection(l);
+                t.length &&
+                  (f === "recent_search_forms"
                     ? ((t = this.options.hasQuickSearches
                         ? t
                         : new x.Collection(
-                            t.filter(function (o) {
-                              return o.get("type") !== "quick";
+                            t.filter(function (i) {
+                              return i.get("type") !== "quick";
                             })
                           )),
-                      this.cid && (i = `${d}_header_${this.cid}`),
-                      (this.recentSearchForms = this._createListView(t, d, i)),
-                      this.showChildView(d, this.recentSearchForms))
-                    : d === "system_search_forms"
-                    ? ((this.systemSearchForms = this._createListView(t, d, i)),
-                      this.showChildView(d, this.systemSearchForms))
-                    : d === "personal_search_forms" &&
-                      ((this.personalSearchForms = this._createListView(
-                        t,
-                        d,
-                        i
-                      )),
-                      this.showChildView(d, this.personalSearchForms));
-                }
+                      (this.recentSearchForms = this._createListView(t, f)),
+                      this.showChildView(f, this.recentSearchForms))
+                    : f === "system_search_forms"
+                    ? ((this.systemSearchForms = this._createListView(t, f)),
+                      this.showChildView(f, this.systemSearchForms))
+                    : f === "personal_search_forms" &&
+                      ((this.personalSearchForms = this._createListView(t, f)),
+                      this.showChildView(f, this.personalSearchForms)));
               }, this)
             ),
             this.options.fromSearchBox)
           ) {
-            let a = this.cid;
+            let l = this.cid;
             this.$el
               .find("#recent_search_forms")
-              .attr("id", `recent_search_forms_${a}`);
+              .attr("id", `recent_search_forms_${l}`);
           }
         },
-        _createListView: function (a, d, t) {
-          var i = new y({
+        _createListView: function (l, f) {
+          var t = new y({
             options: this.options,
             originatingView: this.options.originatingView,
-            collection: a,
-            listName: d,
+            collection: l,
+            listName: f,
             parentView: this,
-            ariaLabelledBy: t,
           });
-          return i;
+          return t;
         },
-        _createCollection: function (a) {
-          var d,
+        _createCollection: function (l) {
+          var f,
             t = new x.Collection();
           return (
-            m.each(a, function (i) {
-              (d = new x.Model(i)), t.add(d);
+            m.each(l, function (i) {
+              (f = new x.Model(i)), t.add(f);
             }),
             t
           );
@@ -11859,17 +11855,17 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return `        <div class="csui-search-options-dropdown binf-hidden" >
         <div class="csui-search-options-wrapper csui-normal-scrolling"></div>
         </div>
 `;
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           return "icon-header-search-black";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -11936,7 +11932,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 6, column: 6 },
@@ -12010,7 +12006,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 21, column: 55 },
@@ -12053,7 +12049,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t =
             s.lookupProperty ||
             function (i, o) {
@@ -12089,7 +12085,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -12106,7 +12102,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "each",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 3, column: 2 },
@@ -12136,7 +12132,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -12190,7 +12186,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -12219,7 +12215,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(4, d, 0),
+                fn: s.program(4, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 19, column: 4 },
@@ -12233,7 +12229,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        4: function (s, e, r, a, d) {
+        4: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -12266,7 +12262,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        6: function (s, e, r, a, d) {
+        6: function (s, e, r, l, f) {
           return `  <div class="csui-searchbox-searchform-wrapper csui-searchbox-dd-panel">
     <div class="csui-recent-searchforms-container" >
     </div>
@@ -12274,7 +12270,7 @@ csui.define("csui/lib/othelp", [], function () {
 `;
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -12288,7 +12284,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 1, column: 0 },
@@ -12306,7 +12302,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 13, column: 0 },
@@ -12322,7 +12318,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(6, d, 0),
+                fn: s.program(6, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 27, column: 0 },
@@ -12389,22 +12385,22 @@ csui.define("csui/lib/othelp", [], function () {
       s,
       e,
       r,
-      a,
-      d,
+      l,
+      f,
       t,
       i,
       o,
       n,
       u,
       c,
+      d,
       h,
-      f,
       k,
       C,
       S,
       w,
-      v,
-      b
+      b,
+      v
     ) {
       "use strict";
       var _ = m.defaults({}, x.config(), {
@@ -12425,20 +12421,20 @@ csui.define("csui/lib/othelp", [], function () {
           className: "csui-search-box",
           template: C,
           templateHelpers: function () {
-            var l = {
+            var a = {
               showOptionsDropDown: this.options.data.showOptionsDropDown,
-              placeholder: this.options.data.placeholder || f.placeholder,
-              clearerTitle: f.clearerTitle,
-              startSearchTitle: f.startSearch,
-              searchIconTitle: f.searchIconTitle,
-              searchIconAria: f.searchIconAria,
-              searchBoxTitle: f.searchBoxTitle,
-              searchOptionsTitle: f.searchOptionsTitle,
-              startSearch: f.startSearch,
-              searchLandmarkAria: f.searchLandmarkAria,
+              placeholder: this.options.data.placeholder || h.placeholder,
+              clearerTitle: h.clearerTitle,
+              startSearchTitle: h.startSearch,
+              searchIconTitle: h.searchIconTitle,
+              searchIconAria: h.searchIconAria,
+              searchBoxTitle: h.searchBoxTitle,
+              searchOptionsTitle: h.searchOptionsTitle,
+              startSearch: h.startSearch,
+              searchLandmarkAria: h.searchLandmarkAria,
               highContrast: this.options.highContrast === 2,
             };
-            return { messages: l };
+            return { messages: a };
           },
           slicePopOverTemplate: S,
           sliceDropDownTemplate: w,
@@ -12474,11 +12470,11 @@ csui.define("csui/lib/othelp", [], function () {
             "keydown .csui-searchforms-show-more": "openSearchForm",
             "focus @ui.input": "focusedOnSearchInput",
           },
-          currentlyFocusedElement: function (l) {
+          currentlyFocusedElement: function (a) {
             if (this.$el) {
               var g = this.$el.find("*[data-cstabindex=-1]");
               g.length && g.prop("tabindex", 0);
-              var I = !!l && l.shiftKey;
+              var I = !!a && a.shiftKey;
               !I &&
               this.$el.find(".search-bar").length &&
               this.$el.find(".search-bar").is(":visible")
@@ -12494,10 +12490,10 @@ csui.define("csui/lib/othelp", [], function () {
           constructor: function (g) {
             g || (g = {}),
               (g.data = m.defaults({}, g.data, _)),
-              (this.direction = v.settings.rtl ? "left" : "right");
+              (this.direction = b.settings.rtl ? "left" : "right");
             var I = g.context;
-            g.model || (g.model = I.getModel(a)),
-              (this.applicationScope = I.getModel(d)),
+            g.model || (g.model = I.getModel(l)),
+              (this.applicationScope = I.getModel(f)),
               y.ItemView.prototype.constructor.apply(this, arguments),
               this.listenTo(this.model, "change:where", this._updateInput),
               (this.searchBoxFactory = I.getFactory(r)),
@@ -12548,10 +12544,10 @@ csui.define("csui/lib/othelp", [], function () {
                 originatingView: this,
               }));
           },
-          _refineSearch: function (l, g) {
+          _refineSearch: function (a, g) {
             this.model.clear({ silent: !0 }),
               this.model.set(g),
-              this.hideSearchOptionsDropDown(l);
+              this.hideSearchOptionsDropDown(a);
           },
           updateSearchBarSettings: function () {
             if (
@@ -12566,18 +12562,18 @@ csui.define("csui/lib/othelp", [], function () {
                 ),
                 this.model))
             ) {
-              var l =
+              var a =
                 this.search_bar_settings && this.search_bar_settings.full_text;
-              this.model.set("modifier", l.modifier, { silent: !0 }),
-                this.model.set("lookfor", l.lookfor, { silent: !0 });
+              this.model.set("modifier", a.modifier, { silent: !0 }),
+                this.model.set("lookfor", a.lookfor, { silent: !0 });
             }
           },
-          _shortcutToQuery: function (l) {
-            if (l.ctrlKey && l.keyCode == 114) {
-              var g = l.data;
+          _shortcutToQuery: function (a) {
+            if (a.ctrlKey && a.keyCode == 114) {
+              var g = a.data;
               g.isSearchInputVisible()
                 ? g.ui.input.trigger("focus")
-                : g.searchIconClicked(l);
+                : g.searchIconClicked(a);
             }
           },
           onBeforeDestroy: function () {
@@ -12591,7 +12587,7 @@ csui.define("csui/lib/othelp", [], function () {
           isSearchInputVisible: function () {
             return this.$(".csui-input").is(":visible");
           },
-          handleKeydownNavbar: function (l) {
+          handleKeydownNavbar: function (a) {
             var g = p(".csui-navbar.binf-navbar .binf-container-fluid")
                 .find("*[tabindex]:visible")
                 .toArray(),
@@ -12601,13 +12597,13 @@ csui.define("csui/lib/othelp", [], function () {
                 .find(".csui-help .csui-acc-tab-region")
                 .trigger("focus");
           },
-          _perspectiveSynced: function (l, g) {
+          _perspectiveSynced: function (a, g) {
             this._currentNodeChanged(g);
           },
-          _currentNodeChanged: function (l) {
-            l instanceof e && (l.get("container") || l.get("type") === 5574)
-              ? ((this.searchboxModel.nodeId = l.get("id")),
-                (this.searchboxModel.nodeName = l.get("name")),
+          _currentNodeChanged: function (a) {
+            a instanceof e && (a.get("container") || a.get("type") === 5574)
+              ? ((this.searchboxModel.nodeId = a.get("id")),
+                (this.searchboxModel.nodeName = a.get("name")),
                 this.namedSessionStorage.set(
                   this.searchboxModel.nodeId,
                   this.searchboxModel.nodeName
@@ -12617,13 +12613,13 @@ csui.define("csui/lib/othelp", [], function () {
                 (this.searchboxModel.nodeName = void 0),
                 this.searchboxModel.trigger("change"));
           },
-          _dataSynced: function (l, g) {
+          _dataSynced: function (a, g) {
             this.searchboxModel &&
               ((this.options.data && this.options.data.alwaysFetchDropdown) ||
                 !(this.searchboxModel && this.searchboxModel.fetched)) &&
               this.searchBoxFactory.fetch();
           },
-          onRender: function (l) {
+          onRender: function (a) {
             this.options.data.showSearchInput &&
               (this.$el.find(".search-bar").show(), this.searchIconToClose());
             var g = this.options.data.inputValue || this.model.get("where");
@@ -12634,18 +12630,18 @@ csui.define("csui/lib/othelp", [], function () {
                 (this.triggerMethod("before:show:input", this),
                 this.ui.input.show(),
                 this.triggerMethod("show:input", this)),
-              l &&
-                l.data &&
+              a &&
+                a.data &&
                 this.$el
                   .find(".csui-search-box .csui-header-search-icon")
-                  .removeClass(l.data.options.data.customSearchIconCloseClass)
-                  .addClass(l.data.options.data.customSearchIconClass);
+                  .removeClass(a.data.options.data.customSearchIconCloseClass)
+                  .addClass(a.data.options.data.customSearchIconClass);
           },
-          _createSliceCollection: function (l) {
+          _createSliceCollection: function (a) {
             var g,
               I = new s.Collection();
             return (
-              m.each(l, function (D) {
+              m.each(a, function (D) {
                 (g = new s.Model({
                   sliceId: D.sliceId,
                   sliceDisplayName: D.sliceDisplayName,
@@ -12656,7 +12652,7 @@ csui.define("csui/lib/othelp", [], function () {
               I
             );
           },
-          prepareSlicePopover: function (l) {
+          prepareSlicePopover: function (a) {
             var g = this.searchboxModel.get("slices"),
               I =
                 g && g.length > 3
@@ -12666,7 +12662,7 @@ csui.define("csui/lib/othelp", [], function () {
               (g &&
                 (m.each(g, function (D) {
                   var A = D.sliceDisplayName;
-                  D.sliceTooltip = m.str.sformat(f.searchOptionTooltip, A);
+                  D.sliceTooltip = m.str.sformat(h.searchOptionTooltip, A);
                 }),
                 this.searchSlicesListView ||
                   (this.searchSlicesListView = new o({
@@ -12686,8 +12682,8 @@ csui.define("csui/lib/othelp", [], function () {
               this.searchSlicesListView.getSelectedSlice());
           },
           prepareSearchFormsPopover: function () {
-            var l = this.searchboxModel.get("search_forms"),
-              g = (l && l.recent_search_forms) || [],
+            var a = this.searchboxModel.get("search_forms"),
+              g = (a && a.recent_search_forms) || [],
               I = m.findIndex(g, { type: "quick" }) !== -1;
             this.searchFormsContainerView = new u({
               searchFormsList: { recent_search_forms: g.slice(0, 5) },
@@ -12707,60 +12703,60 @@ csui.define("csui/lib/othelp", [], function () {
               this.searchFormsRegion.$el.length &&
                 this.searchFormsRegion.show(this.searchFormsContainerView));
           },
-          accessibility: function (l) {
+          accessibility: function (a) {
             switch (
               (this.$el
                 .find(".csui-selected-checkbox")
                 .attr("tabindex", "0")
                 .removeClass("active"),
-              l.keyCode)
+              a.keyCode)
             ) {
               case 13:
-                this.selectSearchOption(l), l.preventDefault();
+                this.selectSearchOption(a), a.preventDefault();
                 break;
               case 32:
-                this.selectSearchOption(l), l.preventDefault();
+                this.selectSearchOption(a), a.preventDefault();
                 break;
               case 27:
                 this.$el.find(".csui-selected-checkbox").attr("tabindex", "-1"),
                   this.$el.find(".active").removeClass("active"),
                   this.options.data.showOptionsDropDown &&
-                    this.hideSearchOptionsDropDown(l);
+                    this.hideSearchOptionsDropDown(a);
                 break;
               case 9:
-                if (l.shiftKey) this.ui.input[0].focus();
+                if (a.shiftKey) this.ui.input[0].focus();
                 else {
                   var g = this.$el.find(".csui-search-popover-row-body");
                   p(g[0]).addClass("active"),
                     p(g[0]).find('input[type="radio"]')[0].focus();
                 }
-                l.preventDefault();
+                a.preventDefault();
                 break;
             }
           },
-          keyUpHandler: function (l) {
+          keyUpHandler: function (a) {
             var g = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
-            l.keyCode == 32 && g && (l.stopPropagation(), l.preventDefault());
+            a.keyCode == 32 && g && (a.stopPropagation(), a.preventDefault());
           },
-          hidePopover: function (l) {
+          hidePopover: function (a) {
             this.options.data.showOptionsDropDown &&
               (this.$el.find(".csui-selected-checkbox").attr("tabindex", "-1"),
               this.$el.find(".active").removeClass("active"),
-              this.showOptionsDropdown(l));
+              this.showOptionsDropdown(a));
           },
-          resetPageDefaults: function (l) {
+          resetPageDefaults: function (a) {
             this.model.resetDefaults = !0;
           },
-          searchIconKeyPressed: function (l) {
-            l.keyCode === 32 &&
-              (l.preventDefault(),
+          searchIconKeyPressed: function (a) {
+            a.keyCode === 32 &&
+              (a.preventDefault(),
               this.searchIconToClose(),
-              this.searchIconClicked(l));
+              this.searchIconClicked(a));
           },
-          searchHeaderIconClicked: function (l) {
+          searchHeaderIconClicked: function (a) {
             p(".search-bar").is(":visible")
-              ? (this._hideSearchBar(l), this._hideSearchPanel(l))
-              : (this.searchIconToClose(), this.searchIconClicked(l));
+              ? (this._hideSearchBar(a), this._hideSearchPanel(a))
+              : (this.searchIconToClose(), this.searchIconClicked(a));
             var g = this.options && this.options.parentView;
             g &&
               g.listenToOnce(
@@ -12768,16 +12764,16 @@ csui.define("csui/lib/othelp", [], function () {
                 "control:clicked",
                 m.bind(function () {
                   p(".search-bar").is(":visible") &&
-                    (this._hideSearchBar(l), this._hideSearchPanel(l));
+                    (this._hideSearchBar(a), this._hideSearchPanel(a));
                 }, this)
               );
           },
-          focusedOnSearchInput: function (l) {
+          focusedOnSearchInput: function (a) {
             if (this.skipShowingDropdown || this._isDropdownVisible()) {
               this.skipShowingDropdown = !1;
               return;
             } else
-              l.preventDefault(),
+              a.preventDefault(),
                 this._dataSynced(),
                 this.$el.addClass("csui-search-expanded"),
                 this.ui.input.prop("tabindex", 0),
@@ -12788,7 +12784,7 @@ csui.define("csui/lib/othelp", [], function () {
                     (this.closeDropdown = !1),
                     p(document.activeElement)[0] === this.ui.input[0] &&
                       this.options.data.showOptionsDropDown &&
-                      this.showOptionsDropdown(l))
+                      this.showOptionsDropdown(a))
                   : (this.listenTo(this.searchboxModel, "change", function () {
                       this.showSearchForms(),
                         this.showSlices(),
@@ -12798,7 +12794,7 @@ csui.define("csui/lib/othelp", [], function () {
                           this.applicationScope.get("id") !== "search" &&
                           p(document.activeElement)[0] === this.ui.input[0] &&
                           this.options.data.showOptionsDropDown &&
-                          this.showOptionsDropdown(l);
+                          this.showOptionsDropdown(a);
                     }),
                     this._updateInput(),
                     this.options.data.showOptionsDropDown &&
@@ -12807,7 +12803,7 @@ csui.define("csui/lib/othelp", [], function () {
                       this.searchboxModel.get("search_forms_slice") ||
                         this.prepareSearchFormsPopover()));
           },
-          searchIconClicked: function (l) {
+          searchIconClicked: function (a) {
             this._dataSynced(),
               this.$el.parent().addClass("search-input-open"),
               this.ui.searchIcon.attr("aria-expanded", "true");
@@ -12818,7 +12814,7 @@ csui.define("csui/lib/othelp", [], function () {
                 this,
                 this._hideSearchBar
               ),
-              this.resetPageDefaults(l),
+              this.resetPageDefaults(a),
               this.options.data.showOptionsDropDown &&
                 g &&
                 this.searchboxModel.nodeId !== void 0 &&
@@ -12829,8 +12825,8 @@ csui.define("csui/lib/othelp", [], function () {
               var I = this.ui.input.val().trim();
               I &&
                 (this._setInputValue(I),
-                p(l.currentTarget).attr("title", f.startSearch),
-                p(l.currentTarget).attr("aria-label", f.startSearch),
+                p(a.currentTarget).attr("title", h.startSearch),
+                p(a.currentTarget).attr("aria-label", h.startSearch),
                 this.trigger("hide:breadcrumbspanel"));
               var D = "",
                 A = this.$el.find(".csui-searchbox-option.selected");
@@ -12841,20 +12837,20 @@ csui.define("csui/lib/othelp", [], function () {
                   history.state.search &&
                   (this.previousState = history.state.search),
                 I &&
-                  (this._setSearchQuery(I, this.options.sliceString, D, l),
+                  (this._setSearchQuery(I, this.options.sliceString, D, a),
                   this._updateInput(),
                   this.options.data.searchFromHere ||
                     p(this.ui.dropDown).addClass(
                       "csui-selected-checkbox-hidden"
                     ),
                   this.options.data.showOptionsDropDown &&
-                    this.hideSearchOptionsDropDown(l),
+                    this.hideSearchOptionsDropDown(a),
                   (this.options.data.searchFromHere = !0)),
                 this.previousState &&
                   (this.model.prevSearchState = this.previousState);
             } else
               this.$el.addClass("csui-search-expanded"),
-                b.onTransitionEnd(
+                v.onTransitionEnd(
                   this.$el.parent(),
                   function () {
                     this.isDestroyed ||
@@ -12868,7 +12864,7 @@ csui.define("csui/lib/othelp", [], function () {
                           (this.closeDropdown = !1),
                           p(document.activeElement)[0] === this.ui.input[0] &&
                             this.options.data.showOptionsDropDown &&
-                            this.showOptionsDropdown(l))
+                            this.showOptionsDropdown(a))
                         : this.listenTo(
                             this.searchboxModel,
                             "change",
@@ -12883,7 +12879,7 @@ csui.define("csui/lib/othelp", [], function () {
                                   p(document.activeElement)[0] ===
                                     this.ui.input[0] &&
                                   this.options.data.showOptionsDropDown &&
-                                  this.showOptionsDropdown(l);
+                                  this.showOptionsDropdown(a);
                             }
                           ));
                   },
@@ -12897,26 +12893,26 @@ csui.define("csui/lib/othelp", [], function () {
                   this.searchboxModel.get("search_forms_slice") ||
                     this.prepareSearchFormsPopover()),
                 this.model.attributes.where === "" &&
-                  ((l.currentTarget.title = ""),
-                  p(l.currentTarget).addClass(
+                  ((a.currentTarget.title = ""),
+                  p(a.currentTarget).addClass(
                     this.options.data.customSearchIconNoHoverClass
                   ));
           },
-          inputTyped: function (l) {
+          inputTyped: function (a) {
             var g = this.ui.input.val().trim();
-            if (l.which === 13)
-              l.preventDefault(),
-                l.stopPropagation(),
+            if (a.which === 13)
+              a.preventDefault(),
+                a.stopPropagation(),
                 this._setInputValue(g),
                 g
-                  ? ((this.closeDropdown = !0), this.searchIconClicked(l))
+                  ? ((this.closeDropdown = !0), this.searchIconClicked(a))
                   : (this.closeDropdown = !1),
                 this.previousValue != g && (this.previousValue = g);
-            else if (l.which === 27)
-              l.preventDefault(), l.stopPropagation(), this._hideSearchPanel(l);
+            else if (a.which === 27)
+              a.preventDefault(), a.stopPropagation(), this._hideSearchPanel(a);
             else if (
               ((this.closeDropdown = !1),
-              l.which === 9 && this._isDropdownVisible() && !l.shiftKey)
+              a.which === 9 && this._isDropdownVisible() && !a.shiftKey)
             ) {
               if (this.$el.find(".csui-selected-checkbox").is(":visible"))
                 this.$el
@@ -12931,38 +12927,38 @@ csui.define("csui/lib/othelp", [], function () {
                 p(I[0]).addClass("active"),
                   p(I[0]).find('input[type="radio"]').trigger("focus");
               }
-              l.preventDefault();
+              a.preventDefault();
             } else
-              l.shiftKey && l.key === "Tab"
+              a.shiftKey && a.key === "Tab"
                 ? (this.$el.find(".active").removeClass("active"),
                   this.options.data.showOptionsDropDown &&
-                    this.hideSearchOptionsDropDown(l))
-                : this.inputChanged(l);
+                    this.hideSearchOptionsDropDown(a))
+                : this.inputChanged(a);
           },
-          inputChanged: function (l) {
+          inputChanged: function (a) {
             var g = this.ui.input.val();
             this.ui.clearer.prop("tabindex", g !== "" ? 0 : -1),
               this.ui.formfieldSearch.prop("tabindex", g !== "" ? 0 : -1),
               this.ui.clearer.toggle(!!g.length),
               this.ui.innerSeparator.toggle(!!g.length),
               this.ui.formfieldSearch.toggle(!!g.length),
-              l.keyCode === 13 &&
+              a.keyCode === 13 &&
                 g &&
                 (g ? (this.closeDropdown = !0) : (this.closeDropdown = !1)),
               this.options.data.showOptionsDropDown &&
-                this.showOptionsDropdown(l);
+                this.showOptionsDropdown(a);
           },
-          inputClicked: function (l) {
+          inputClicked: function (a) {
             this.closeDropdown && (this.closeDropdown = !1),
-              this.hidePopover(l);
+              this.hidePopover(a);
           },
-          showOptionsDropdown: function (l) {
+          showOptionsDropdown: function (a) {
             if (
               ((this.hideBackButton = !0),
               !this._isDropdownVisible() &&
                 this.options.data.showOptionsDropDown)
             ) {
-              var g = l || window.event,
+              var g = a || window.event,
                 I = this.getSlices(),
                 D =
                   I && I.length > 3
@@ -13025,7 +13021,7 @@ csui.define("csui/lib/othelp", [], function () {
                 this.showSlices();
             }
           },
-          prepareOptionsdropdown: function (l) {
+          prepareOptionsdropdown: function (a) {
             if (this.options.data.showOptionsDropDown) {
               if (!this.searchboxModel.nodeId) {
                 var g =
@@ -13060,8 +13056,8 @@ csui.define("csui/lib/othelp", [], function () {
                   this.searchboxModel.nodeName &&
                     (this.searchOptions.nodeName =
                       " (" + this.searchboxModel.nodeName + ")"),
-                  (this.searchOptions.select = f.searchOptionsSelect),
-                  (this.searchOptions.fromHere = f.searchFromHere),
+                  (this.searchOptions.select = h.searchOptionsSelect),
+                  (this.searchOptions.fromHere = h.searchFromHere),
                   (this.searchOptions.checked = this.options.data.searchFromHere
                     ? "checked"
                     : "")),
@@ -13071,9 +13067,9 @@ csui.define("csui/lib/othelp", [], function () {
                     this.searchboxModel.attributes
                   )),
                   (this.searchOptions.slices.searchWithinLabel =
-                    f.searchWithinLabel),
-                  (this.searchOptions.slices.showMore = f.showMore),
-                  (this.searchOptions.slices.showMoreAria = f.showMoreAria),
+                    h.searchWithinLabel),
+                  (this.searchOptions.slices.showMore = h.showMore),
+                  (this.searchOptions.slices.showMoreAria = h.showMoreAria),
                   (this.searchOptions.slices.more =
                     this.searchOptions.slices.length > 3));
               var I = this.sliceDropDownTemplate(this.searchOptions);
@@ -13088,11 +13084,11 @@ csui.define("csui/lib/othelp", [], function () {
                     .attr("aria-checked", !0));
             }
           },
-          destroyOptionspopover: function (l) {
+          destroyOptionspopover: function (a) {
             this.ui.dropDown.html(""), this.ui.dropDown.addClass("binf-hidden");
           },
-          selectSearchOption: function (l) {
-            l.type === "keydown" && (l.keyCode === 13 || event.keyCode === 32)
+          selectSearchOption: function (a) {
+            a.type === "keydown" && (a.keyCode === 13 || event.keyCode === 32)
               ? (this.$el
                   .find(".csui-selected-checkbox")
                   .attr("tabindex", "0")
@@ -13100,7 +13096,7 @@ csui.define("csui/lib/othelp", [], function () {
                 this.$el
                   .find('.csui-selected-checkbox input[type="checkbox"]')
                   .trigger("focus"))
-              : l.type === "click" &&
+              : a.type === "click" &&
                 (this.$el.find(".active").removeClass("active"),
                 this.$el
                   .find(".csui-selected-checkbox")
@@ -13133,8 +13129,8 @@ csui.define("csui/lib/othelp", [], function () {
                     .find('.csui-selected-checkbox input[type="checkbox"]')
                     .attr("aria-checked", !0));
           },
-          handleSelectCheckbox: function (l) {
-            if (l.keyCode === 40) {
+          handleSelectCheckbox: function (a) {
+            if (a.keyCode === 40) {
               var g = this.$el.find(".csui-search-popover-row-body"),
                 I = g.index(g.filter(".active"));
               (I = I >= 0 ? I : 0),
@@ -13143,7 +13139,7 @@ csui.define("csui/lib/othelp", [], function () {
                 p(g[I]).find('input[type="radio"]')[0].focus();
             }
           },
-          hideSearchOptionsDropDown: function (l) {
+          hideSearchOptionsDropDown: function (a) {
             var g = this;
             if (
               g.$el.find(".csui-searchbox-option")[0] === document.activeElement
@@ -13151,12 +13147,12 @@ csui.define("csui/lib/othelp", [], function () {
               return !1;
             if (g.options.data.showOptionsDropDown) {
               var I = g;
-              return I.showSearchOptionDropDown(l), !0;
+              return I.showSearchOptionDropDown(a), !0;
             }
           },
-          showSearchOptionDropDown: function (l) {
+          showSearchOptionDropDown: function (a) {
             this.options.data.showOptionsDropDown &&
-              (!this.ui.dropDown.is(":hover") || l.type === "click"
+              (!this.ui.dropDown.is(":hover") || a.type === "click"
                 ? (this.ui.dropDown && this.ui.dropDown.addClass("binf-hidden"),
                   p(document.body).hasClass("binf-search-box-open") &&
                     (p(document.body).removeClass("binf-search-box-open"),
@@ -13169,28 +13165,28 @@ csui.define("csui/lib/othelp", [], function () {
                       .off(" keydown.", this.handleKeydownNavbar)))
                 : this.popoverTimer && clearTimeout(this.popoverTimer));
           },
-          keyDownOnClear: function (l) {
-            (l.keyCode === 13 || l.keyCode === 32) && this.clearerClicked(l);
+          keyDownOnClear: function (a) {
+            (a.keyCode === 13 || a.keyCode === 32) && this.clearerClicked(a);
           },
-          clearerClicked: function (l) {
-            l.preventDefault(),
-              l.stopPropagation(),
+          clearerClicked: function (a) {
+            a.preventDefault(),
+              a.stopPropagation(),
               this._setInputValue(""),
-              this.hidePopover(l),
+              this.hidePopover(a),
               this.ui.input.trigger("focus");
           },
-          keyDownOnFormfieldSearch: function (l) {
-            (l.keyCode === 13 || l.keyCode === 32) &&
-              this.formfieldSearchClicked(l);
+          keyDownOnFormfieldSearch: function (a) {
+            (a.keyCode === 13 || a.keyCode === 32) &&
+              this.formfieldSearchClicked(a);
           },
-          formfieldSearchClicked: function (l) {
-            this.searchIconClicked(l);
+          formfieldSearchClicked: function (a) {
+            this.searchIconClicked(a);
           },
-          _setSearchQuery: function (l, g, I, D) {
+          _setSearchQuery: function (a, g, I, D) {
             this.model.clear({ silent: !0 }),
-              this.options.context.getModel(h).clear({ silent: !0 });
+              this.options.context.getModel(d).clear({ silent: !0 });
             var A = {};
-            g && (A.slice = g), I && (A.location_id1 = I), l && (A.where = l);
+            g && (A.slice = g), I && (A.location_id1 = I), a && (A.where = a);
             var B =
               this.search_bar_settings && this.search_bar_settings.full_text;
             B &&
@@ -13199,7 +13195,7 @@ csui.define("csui/lib/othelp", [], function () {
               this.model.set(A);
           },
           getSlices: function () {
-            var l,
+            var a,
               g,
               I =
                 this.options.model && this.options.model.get("slice")
@@ -13212,19 +13208,19 @@ csui.define("csui/lib/othelp", [], function () {
                     this.searchboxModel.get("slices"),
                     function (D) {
                       if (D.sliceId != I.substring(1, I.length - 1)) return !0;
-                      l = D;
+                      a = D;
                     }
                   ))
                 : (g = this.searchboxModel.get("slices")),
-              l && g.unshift(l),
+              a && g.unshift(a),
               g
             );
           },
           showMore: function () {
-            var l = this._createSliceCollection(this.getSlices());
+            var a = this._createSliceCollection(this.getSlices());
             (this.searchSlicesListView = new o({
               originatingView: this,
-              collection: l,
+              collection: a,
             })),
               this.$el.find(".csui-slices-more").addClass("binf-hidden"),
               this.showSlices(),
@@ -13234,8 +13230,8 @@ csui.define("csui/lib/othelp", [], function () {
                 )[3]
               )[0].focus();
           },
-          _handleSlicesShowMore: function (l) {
-            switch (l.keyCode) {
+          _handleSlicesShowMore: function (a) {
+            switch (a.keyCode) {
               case 27:
                 this.options.data.showOptionsDropDown &&
                   this.hideSearchOptionsDropDown();
@@ -13257,7 +13253,7 @@ csui.define("csui/lib/othelp", [], function () {
                   ).addClass("active");
                 break;
               case 9:
-                l.shiftKey
+                a.shiftKey
                   ? (p(
                       this.searchSlicesListView.$el.find(
                         ".csui-search-popover-row-body"
@@ -13279,10 +13275,10 @@ csui.define("csui/lib/othelp", [], function () {
                       .focus();
                 break;
             }
-            l.preventDefault();
+            a.preventDefault();
           },
-          openSearchForm: function (l) {
-            if (l.keyCode === 13 || l.keyCode === 32 || l.type === "click") {
+          openSearchForm: function (a) {
+            if (a.keyCode === 13 || a.keyCode === 32 || a.type === "click") {
               if (
                 this.$el
                   .find(".csui-searchforms-popover-row")
@@ -13292,17 +13288,17 @@ csui.define("csui/lib/othelp", [], function () {
               this.$el
                 .find(".csui-searchforms-popover-row")
                 .addClass("binf-disabled"),
-                this.hideSearchOptionsDropDown(l);
-              var g = p(l.currentTarget).data("searchformid");
+                this.hideSearchOptionsDropDown(a);
+              var g = p(a.currentTarget).data("searchformid");
               g === "loadAllForms" &&
                 ((this.hideBackButton = !1),
                 (this.searchForms.isKeyPress =
-                  l.keyCode === 13 || l.keyCode === 32),
+                  a.keyCode === 13 || a.keyCode === 32),
                 this.searchForms.openFormInSidepanel(
                   this.searchboxModel.get("search_forms")
                 ));
-            } else if (l.keyCode === 9)
-              if ((l.preventDefault(), l.shiftKey))
+            } else if (a.keyCode === 9)
+              if ((a.preventDefault(), a.shiftKey))
                 if (this.$el.find(".csui-searchforms-popover-row").length) {
                   var I = this;
                   setTimeout(function () {
@@ -13327,22 +13323,22 @@ csui.define("csui/lib/othelp", [], function () {
                     ? this.$el.find(".csui-clearer").focus()
                     : this.$el.find(".csui-header-search-icon").focus();
             else
-              l.keyCode === 27 &&
+              a.keyCode === 27 &&
                 this.options.data.showOptionsDropDown &&
                 this.hideSearchOptionsDropDown();
           },
-          _hideSearchPanel: function (l) {
-            l.data = l.data || this;
-            var g = l || window.event,
+          _hideSearchPanel: function (a) {
+            a.data = a.data || this;
+            var g = a || window.event,
               I = p(".search-bar"),
-              D = l.data,
+              D = a.data,
               A = D.$el.parent();
             p(document)
-              .find("." + l.data.options.data.customSearchIconNoHoverClass)
-              .removeClass(l.data.options.data.customSearchIconNoHoverClass),
+              .find("." + a.data.options.data.customSearchIconNoHoverClass)
+              .removeClass(a.data.options.data.customSearchIconNoHoverClass),
               p(document).find(".csui-input").val(""),
               A.removeClass("search-input-open"),
-              b.onTransitionEnd(
+              v.onTransitionEnd(
                 A,
                 function () {
                   D.options.parentView &&
@@ -13357,15 +13353,15 @@ csui.define("csui/lib/othelp", [], function () {
               ),
               (p(document).find(
                 ".csui-search-box .csui-header-search-icon"
-              )[0].title = f.searchIconTitle),
+              )[0].title = h.searchIconTitle),
               p(
                 p(document).find(".csui-search-box .csui-header-search-icon")[0]
-              ).attr("aria-label", f.searchIconTitle),
+              ).attr("aria-label", h.searchIconTitle),
               p(
                 p(document).find(".csui-search-box .csui-header-search-icon")[0]
               ).attr("aria-expanded", "false"),
-              (l.data.slice = l.data.model.get("slice")),
-              l.data.ui.dropDown.addClass("binf-hidden"),
+              (a.data.slice = a.data.model.get("slice")),
+              a.data.ui.dropDown.addClass("binf-hidden"),
               p(document.body).hasClass("binf-search-box-open") &&
                 (p(document.body).removeClass("binf-search-box-open"),
                 p(document)
@@ -13377,10 +13373,10 @@ csui.define("csui/lib/othelp", [], function () {
                   .off(" keydown.", this.handleKeydownNavbar)),
               p(document)
                 .find(".csui-search-box .csui-header-search-icon")
-                .removeClass(l.data.options.data.customSearchIconCloseClass)
-                .addClass(l.data.options.data.customSearchIconClass),
+                .removeClass(a.data.options.data.customSearchIconCloseClass)
+                .addClass(a.data.options.data.customSearchIconClass),
               p(document).off("click." + this.cid + " keydown." + this.cid);
-            var B = l.data;
+            var B = a.data;
             B.trigger("hide:searchbar"),
               p(".csui-input").prop("tabindex", -1),
               D.$el.find(".active").removeClass("active"),
@@ -13389,19 +13385,19 @@ csui.define("csui/lib/othelp", [], function () {
           _isDropdownVisible: function () {
             return this.ui.dropDown.is(":visible");
           },
-          _hideSearchBar: function (l) {
-            l.data = l.data || this;
-            var g = l || window.event,
+          _hideSearchBar: function (a) {
+            a.data = a.data || this;
+            var g = a || window.event,
               I = p(".search-bar"),
-              D = l.data,
+              D = a.data,
               A = D.$el.parent(),
               B = D.ui.input.val().trim(),
               M = I.find(".csui-search-options-dropdown");
             A.hasClass("search-input-open") &&
             B &&
-            !p(l.target).is(".csui-input") &&
+            !p(a.target).is(".csui-input") &&
             D._isDropdownVisible() &&
-            M.find(l.target).length === 0
+            M.find(a.target).length === 0
               ? (M.addClass("binf-hidden"),
                 p(document)
                   .find(".csui-navbar.binf-navbar")
@@ -13409,9 +13405,9 @@ csui.define("csui/lib/othelp", [], function () {
                 p(document.body).find(".search-box-widget-mask").remove())
               : ((D.applicationScope.get("id") !== "search" &&
                   I.is(":visible")) ||
-                  p(l.target).find(".search-input-open").length ||
-                  p(l.target).siblings().find(".search-input-open").length ||
-                  p(l.target).hasClass("search-input-open")) &&
+                  p(a.target).find(".search-input-open").length ||
+                  p(a.target).siblings().find(".search-input-open").length ||
+                  p(a.target).hasClass("search-input-open")) &&
                 ((g.type === "keydown" &&
                   (g.keyCode === 27 || g.which === 27) &&
                   !p(".search-bar-content .binf-popover").is(":visible")) ||
@@ -13420,19 +13416,19 @@ csui.define("csui/lib/othelp", [], function () {
                     !p(g.target).closest(".csui-header-search-icon").length &&
                     !p(g.target).closest(".esoc-activityfeed-invisiblebutton")
                       .length)) &&
-                D._hideSearchPanel(l);
+                D._hideSearchPanel(a);
           },
           _updateInput: function () {
             if (this._isRendered) {
-              var l = this.model.get("where") || "";
-              this._setInputValue(l);
+              var a = this.model.get("where") || "";
+              this._setInputValue(a);
             }
           },
-          _setInputValue: function (l) {
-            this.ui.input.val(l),
-              this.ui.clearer.toggle(!!l.length),
-              this.ui.innerSeparator.toggle(!!l.length),
-              this.ui.formfieldSearch.toggle(!!l.length),
+          _setInputValue: function (a) {
+            this.ui.input.val(a),
+              this.ui.clearer.toggle(!!a.length),
+              this.ui.innerSeparator.toggle(!!a.length),
+              this.ui.formfieldSearch.toggle(!!a.length),
               this.options.data.showOptionsDropDown &&
                 (this.options.data.nodeName = this.searchboxModel.nodeName);
           },
@@ -13445,20 +13441,20 @@ csui.define("csui/lib/othelp", [], function () {
                 .removeClass(this.options.data.customSearchIconClass)
                 .addClass(this.options.data.customSearchIconCloseClass),
               this.ui.input.addClass("csui-input-focus"),
-              p(this.ui.searchIcon).attr("title", f.closeSearch),
-              p(this.ui.searchIcon).attr("aria-label", f.closeSearch),
+              p(this.ui.searchIcon).attr("title", h.closeSearch),
+              p(this.ui.searchIcon).attr("aria-label", h.closeSearch),
               p(this.ui.searchIcon).removeClass(
                 this.options.data.customSearchIconNoHoverClass
               );
           },
           isTabIPad: function () {
-            const l = navigator.userAgent,
-              g = /iPad/i.test(l);
-            return /Android/i.test(l) || g;
+            const a = navigator.userAgent,
+              g = /iPad/i.test(a);
+            return /Android/i.test(a) || g;
           },
-          showHideTabIPad: function (l) {
+          showHideTabIPad: function (a) {
             this.isTabIPad() &&
-              (l
+              (a
                 ? p(".binf-widgets .csui-logo-left .csui-logo").show()
                 : p(".binf-widgets .csui-logo-left .csui-logo").hide());
           },
@@ -13506,11 +13502,11 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return "favorite_header_icon-black";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -13563,7 +13559,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 2, column: 56 },
@@ -13751,9 +13747,9 @@ csui.define("csui/lib/othelp", [], function () {
         ),
       };
       s && r(s);
-      function r(a) {
-        x.each(a, function (d) {
-          x.each(d, function (t, i) {
+      function r(l) {
+        x.each(l, function (f) {
+          x.each(f, function (t, i) {
             var o = e[i];
             if (!o) throw new Error("Invalid target toolbar: " + i);
             x.each(t, function (n) {
@@ -13841,37 +13837,37 @@ csui.define("csui/lib/othelp", [], function () {
       s,
       e,
       r,
-      a,
-      d,
+      l,
+      f,
       t,
       i,
       o,
       n,
       u,
       c,
+      d,
       h,
-      f,
       k,
       C,
       S,
       w,
-      v,
       b,
+      v,
       _
     ) {
       "use strict";
       var T = p.defaults({}, x.config(), { openInPerspective: !0 }),
-        l = r.extend({
+        a = r.extend({
           templateHelpers: function () {
             return {
-              title: this.options.data.title || b.dialogTitle,
+              title: this.options.data.title || v.dialogTitle,
               icon: this.options.data.titleBarIcon,
-              searchPlaceholder: b.searchPlaceholder,
-              searchTitle: b.searchTitle,
-              searchAria: b.searchAria,
-              expandAria: b.expandAria,
-              openPerspectiveAria: b.openFavoritesView,
-              openPerspectiveTooltip: b.openFavoritesView,
+              searchPlaceholder: v.searchPlaceholder,
+              searchTitle: v.searchTitle,
+              searchAria: v.searchAria,
+              expandAria: v.expandAria,
+              openPerspectiveAria: v.openFavoritesView,
+              openPerspectiveTooltip: v.openFavoritesView,
               enableOpenPerspective: this._enableOpenPerspective,
             };
           },
@@ -13887,7 +13883,7 @@ csui.define("csui/lib/othelp", [], function () {
               titleBarIcon: function () {
                 return this.options.data.titleBarIcon;
               },
-              dialogTitle: b.dialogTitle,
+              dialogTitle: v.dialogTitle,
               dialogTitleIconNameRight: "csui_action_minimize32",
               dialogClassName: "favorites",
             },
@@ -13901,19 +13897,19 @@ csui.define("csui/lib/othelp", [], function () {
               },
               stateView: c,
               stateMessages: {
-                empty: b.emptyListText,
-                loading: b.loadingListText,
-                failed: b.failedListText,
+                empty: v.emptyListText,
+                loading: v.loadingListText,
+                failed: v.failedListText,
               },
             },
           },
           getChildView: function (g) {
-            return this.showFlatList ? a : d;
+            return this.showFlatList ? l : f;
           },
           childViewOptions: function () {
             return {
               templateHelpers: function () {
-                if (this instanceof a)
+                if (this instanceof l)
                   return {
                     name: this.model.get("favorite_name"),
                     enableIcon: !0,
@@ -13928,8 +13924,8 @@ csui.define("csui/lib/othelp", [], function () {
                 return (
                   this.model.childrenCollection &&
                   this.model.childrenCollection.length === 0
-                    ? (g = p.str.sformat(b.favoritesEmptyGroupAria, I))
-                    : (g = p.str.sformat(b.favoritesGroupAria, I)),
+                    ? (g = p.str.sformat(v.favoritesEmptyGroupAria, I))
+                    : (g = p.str.sformat(v.favoritesGroupAria, I)),
                   {
                     icon: "mime_fav_group32",
                     name: I,
@@ -13942,7 +13938,7 @@ csui.define("csui/lib/othelp", [], function () {
                 return {
                   icon: this.model.get("icon"),
                   name: this.model.get("favorite_name"),
-                  text: b.emptyGroupDefaultText,
+                  text: v.emptyGroupDefaultText,
                   showInlineActionBar: this.showInlineActionBar,
                   itemLabel: p.str.sformat(
                     _.itemTitleLabel,
@@ -13976,10 +13972,10 @@ csui.define("csui/lib/othelp", [], function () {
                 I.data.showTitleIcon === !1
                   ? void 0
                   : "title-icon title-favourites");
-            var D = v.getSignatures(w);
+            var D = b.getSignatures(w);
             this.completeCollection =
               I.collection ||
-              I.context.getCollection(h, {
+              I.context.getCollection(d, {
                 detached: !0,
                 permanent: !0,
                 favorites: {
@@ -14003,7 +13999,7 @@ csui.define("csui/lib/othelp", [], function () {
             (this._enableOpenPerspective =
               T.openInPerspective && E && E.get("history")),
               r.prototype.constructor.apply(this, arguments),
-              (this.loadingText = b.loadingText),
+              (this.loadingText = v.loadingText),
               S.imbue(this),
               this.listenTo(
                 this.completeCollection,
@@ -14024,7 +14020,7 @@ csui.define("csui/lib/othelp", [], function () {
                   toolbaritems: w,
                   collection: this.completeCollection.favorites,
                 })),
-              (this.applicationScope = I.context.getModel(f)),
+              (this.applicationScope = I.context.getModel(h)),
               this.listenTo(
                 this,
                 "doc:preview:generic:actions",
@@ -14089,9 +14085,9 @@ csui.define("csui/lib/othelp", [], function () {
               g.$el.attr(
                 "aria-label",
                 p.str.sformat(
-                  _.nameAndTypeAria,
-                  g.model.get("favorite_name"),
-                  g._nodeIconView.model.get("title")
+                  _.typeAndNameAria,
+                  g._nodeIconView.model.get("title"),
+                  g.model.get("favorite_name")
                 )
               ));
           },
@@ -14153,11 +14149,11 @@ csui.define("csui/lib/othelp", [], function () {
                   E.add(z),
                   I.options.filterValue && I.options.filterValue.length > 0)
                 ) {
-                  var j = m.Deferred();
-                  P.push(j.promise()),
+                  var F = m.Deferred();
+                  P.push(F.promise()),
                     I.listenTo(g, "sync", function () {
                       z.childrenCollection.length === 0 && E.remove(z),
-                        j.resolve();
+                        F.resolve();
                     });
                 }
               }),
@@ -14178,7 +14174,7 @@ csui.define("csui/lib/othelp", [], function () {
               : null;
           },
         });
-      return l;
+      return a;
     }
   ),
   csui.define(
@@ -14200,9 +14196,9 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/utils/contexts/factories/favorites2",
       "css!csui/widgets/navigation.header/controls/favorites/impl/favorites",
     ],
-    function (x, m, p, y, s, e, r, a) {
+    function (x, m, p, y, s, e, r, l) {
       "use strict";
-      var d = p.LayoutView.extend({
+      var f = p.LayoutView.extend({
         className: "csui-favorites-view initialLoading",
         template: e,
         templateHelpers: function () {
@@ -14406,7 +14402,7 @@ csui.define("csui/lib/othelp", [], function () {
                 showInlineActionBar: !0,
                 avoidOpenPerspectiveOnHeader: !0,
               });
-            (this.favoritesView = new a(i)),
+            (this.favoritesView = new l(i)),
               this.favoritesView.listenToOnce(
                 this.favoritesView.completeCollection,
                 "request",
@@ -14474,7 +14470,7 @@ csui.define("csui/lib/othelp", [], function () {
           }
         },
       });
-      return x.extend(d.prototype, r), d;
+      return x.extend(f.prototype, r), f;
     }
   ),
   csui.define("csui/widgets/navigation.header/impl/nls/lang", {
@@ -14485,11 +14481,11 @@ csui.define("csui/lib/othelp", [], function () {
   csui.define("csui/widgets/navigation.header/impl/nls/root/lang", {
     profileMenuItemLabel: "Profile",
     switchToClassicMenuItemLabel: "Classic view",
-    personalizePage: "Personalize page",
     signOutMenuItemLabel: "Sign out",
     EditPerspective: "Edit page",
-    editMultiplePerspectives: "Manage home pages",
-    manageBranding: "Manage branding",
+    editMultiplePerspectives: "Edit home pages",
+    CreatePerspective: "Edit page",
+    personalizePage: "Personalize page",
     ContentServerAdministrationMenuItemLabel: "Administration",
     AboutBox: "About",
     RecycleBin: "Recycle bin",
@@ -14512,27 +14508,23 @@ csui.define("csui/lib/othelp", [], function () {
               { signature: "UserProfile", name: m.profileMenuItemLabel },
             ],
             others: [
-              { signature: "EditPerspective", name: m.EditPerspective },
-              { signature: "PersonalizePage", name: m.personalizePage },
-              {
-                signature: "EditMultiplePerspectives",
-                name: m.editMultiplePerspectives,
-              },
-              { signature: "ManageBranding", name: m.manageBranding },
-              {
-                signature: "ContentServerAdministration",
-                name: m.ContentServerAdministrationMenuItemLabel,
-              },
-              { signature: "RecycleBin", name: m.RecycleBin },
-            ],
-            view: [
               {
                 signature: "SwitchToClassic",
                 name: m.switchToClassicMenuItemLabel,
               },
+              { signature: "EditPerspective", name: m.EditPerspective },
+              {
+                signature: "EditMultiplePerspectives",
+                name: m.editMultiplePerspectives,
+              },
+              {
+                signature: "ContentServerAdministration",
+                name: m.ContentServerAdministrationMenuItemLabel,
+              },
+              { signature: "AboutBox", name: m.AboutBox },
+              { signature: "RecycleBin", name: m.RecycleBin },
             ],
             proxy: [],
-            about: [{ signature: "AboutBox", name: m.AboutBox }],
             signout: [{ signature: "SignOut", name: m.signOutMenuItemLabel }],
           },
           { maxItemsShown: 0, dropDownIconName: "csui_action_caret_down32" }
@@ -14541,10 +14533,10 @@ csui.define("csui/lib/othelp", [], function () {
       return (
         s &&
           x.each(s, function (r) {
-            x.each(r, function (a, d) {
-              var t = e[d];
-              if (!t) throw new Error("Invalid target toolbar: " + d);
-              x.each(a, function (i) {
+            x.each(r, function (l, f) {
+              var t = e[f];
+              if (!t) throw new Error("Invalid target toolbar: " + f);
+              x.each(l, function (i) {
                 (i = new y(i)), t.addItem(i);
               });
             });
@@ -14566,12 +14558,12 @@ csui.define("csui/lib/othelp", [], function () {
       var s = p.extend({
         constructor: function () {
           var r = x.config(),
-            a = new y();
-          p.prototype.constructor.call(this, a, { normalize: !1 }),
+            l = new y();
+          p.prototype.constructor.call(this, l, { normalize: !1 }),
             m.each(
               r,
-              function (d, t) {
-                this.extendMask(d);
+              function (f, t) {
+                this.extendMask(f);
               },
               this
             ),
@@ -14587,7 +14579,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -14737,18 +14729,18 @@ csui.define("csui/lib/othelp", [], function () {
       "css!csui/widgets/navigation.header/controls/user.profile/impl/user.profile",
       "csui/lib/jquery.binary.ajax",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c, h, f, k, C, S, w) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c, d, h, k, C, S, w) {
       "use strict";
-      var v =
+      var b =
         window.csui.requirejs.s.contexts._.config.config[
           "csui/utils/contexts/factories/user"
         ] || {};
       r = r(x.id);
-      var b = s.CompositeView.extend({
+      var v = s.CompositeView.extend({
         classname: "binf-dropdown",
         template: C,
         templateHelpers: function () {
-          var _ = a.formatMemberName(this.model);
+          var _ = l.formatMemberName(this.model);
           return {
             profileMenuTitle: w.profileMenuTitle,
             profileMenuAria: m.str.sformat(w.profileMenuAria, _),
@@ -14800,7 +14792,7 @@ csui.define("csui/lib/othelp", [], function () {
           let _ = this._getGroupsUrl();
           _ &&
             this.options.connector.makeAjaxCall({ type: "GET", url: _ }).always(
-              m.bind(function (T, l, g) {
+              m.bind(function (T, a, g) {
                 if (g && g.status === 200) {
                   let I = T.results;
                   this.options.context._groups = I;
@@ -14813,8 +14805,8 @@ csui.define("csui/lib/othelp", [], function () {
                       ) > -1;
                   }),
                     D &&
-                      v?.initialResponse?.data &&
-                      ((v.initialResponse.data.businessAdministrator = D),
+                      b?.initialResponse?.data &&
+                      ((b.initialResponse.data.businessAdministrator = D),
                       this._ensureModels(this.options));
                 }
               }, this)
@@ -14837,14 +14829,14 @@ csui.define("csui/lib/othelp", [], function () {
         },
         _ensureModels: function (_) {
           var T = _.context,
-            l = T.getModel(i);
+            a = T.getModel(i);
           (this.username = "ensured"),
             (this.staticMenuItems = c.profileMenu.collection.toJSON()),
-            (_.model = l),
+            (_.model = a),
             (_.collection = new n(c.profileMenu, {
               status: { context: T },
-              commands: d,
-              mask: new h(),
+              commands: f,
+              mask: new d(),
             }));
         },
         _refreshUser: function () {
@@ -14861,9 +14853,9 @@ csui.define("csui/lib/othelp", [], function () {
                     return g(_);
                   })
                   .value(),
-                l = this;
+                a = this;
               p.whenAll.apply(p, T).always(function (g) {
-                var I = new h();
+                var I = new d();
                 (g = m
                   .chain(g)
                   .flatten()
@@ -14871,22 +14863,22 @@ csui.define("csui/lib/othelp", [], function () {
                   .flatten()
                   .value()),
                   m.each(g, function (D) {
-                    if (D && l.staticMenuItems) {
-                      for (var A = !1, B = 0; B < l.staticMenuItems.length; B++)
-                        if (l.staticMenuItems[B].group === D.group) A = !0;
+                    if (D && a.staticMenuItems) {
+                      for (var A = !1, B = 0; B < a.staticMenuItems.length; B++)
+                        if (a.staticMenuItems[B].group === D.group) A = !0;
                         else if (A) {
-                          l.staticMenuItems.splice(B + 1, 0, D);
+                          a.staticMenuItems.splice(B + 1, 0, D);
                           break;
                         }
                       A ||
-                        l.staticMenuItems.splice(
-                          l.staticMenuItems.length - 1,
+                        a.staticMenuItems.splice(
+                          a.staticMenuItems.length - 1,
                           0,
                           D
                         );
                     }
                   }),
-                  (g = l.staticMenuItems.concat([])),
+                  (g = a.staticMenuItems.concat([])),
                   (g = I.maskItems(g)),
                   c.profileMenu.reset(g);
               });
@@ -14898,19 +14890,19 @@ csui.define("csui/lib/othelp", [], function () {
         },
         _executeAction: function (_) {
           var T = _.get("signature"),
-            l = d.findWhere({ signature: T }),
+            a = f.findWhere({ signature: T }),
             g = this.options.context,
             I = { context: g, toolItem: _, data: _.get("commandData") },
             D = this;
           try {
-            if (!l) throw new Error('Command "' + T + '" not found.');
+            if (!a) throw new Error('Command "' + T + '" not found.');
             this.$el.addClass("binf-disabled"),
-              l
+              a
                 .execute(I)
                 .done(function (A) {})
                 .fail(function (A) {
                   A &&
-                    ((A = new a.Error(A)),
+                    ((A = new l.Error(A)),
                     k.showMessage("error", A.message, A.errorDetails));
                 })
                 .always(function () {
@@ -14920,7 +14912,7 @@ csui.define("csui/lib/othelp", [], function () {
             r.warn(
               `Executing the command "{0}" failed.
 {1}`,
-              l.get("signature"),
+              a.get("signature"),
               A.stack
             ) && console.warn(r.last);
           }
@@ -14934,10 +14926,10 @@ csui.define("csui/lib/othelp", [], function () {
           if (_) {
             var T = { url: _, dataType: "binary" };
             this.connector.makeAjaxCall(T).always(
-              m.bind(function (l, g, I) {
+              m.bind(function (a, g, I) {
                 this.isDestroyed ||
                   (I.status === 200
-                    ? this._showPersonalizedImage(l)
+                    ? this._showPersonalizedImage(a)
                     : this._showDefaultImage());
               }, this)
             );
@@ -14946,8 +14938,8 @@ csui.define("csui/lib/othelp", [], function () {
         _getUserPhotoUrl: function () {
           var _ = this.connector.connection,
             T = new e(_.url).getCgiScript(),
-            l = this.model.get("photo_url");
-          if (l && l.indexOf("?") > 0) return e.combine(T, l);
+            a = this.model.get("photo_url");
+          if (a && a.indexOf("?") > 0) return e.combine(T, a);
         },
         _showPersonalizedImage: function (_) {
           this._releasePhotoUrl(),
@@ -14986,17 +14978,17 @@ csui.define("csui/lib/othelp", [], function () {
         },
         _showDropdown: function (_) {
           var T = this.ui.userProfileMenu.find("> li > a"),
-            l = 0,
+            a = 0,
             g = this.$el.find(document.activeElement);
           g.length > 0 &&
-            ((l = T.index(g[0])),
+            ((a = T.index(g[0])),
             _.keyCode === 38 || _.keyCode === 40
               ? (_.preventDefault(),
-                _.keyCode === 38 && (l = l === -1 ? T.length - 1 : l - 1),
-                _.keyCode === 40 && (l = l === T.length - 1 ? -1 : l + 1),
-                l === -1
+                _.keyCode === 38 && (a = a === -1 ? T.length - 1 : a - 1),
+                _.keyCode === 40 && (a = a === T.length - 1 ? -1 : a + 1),
+                a === -1
                   ? this.ui.profileDropdownToggler.trigger("focus")
-                  : p(T[l]).trigger("focus"))
+                  : p(T[a]).trigger("focus"))
               : _.keyCode === 27 &&
                 p(g).closest("ul").is(".csui-profile-dropdown")
               ? (_.stopPropagation(),
@@ -15021,11 +15013,11 @@ csui.define("csui/lib/othelp", [], function () {
           }, 100);
         },
         _assignUserColor: function () {
-          var _ = f.getUserAvatarColor(this.model.attributes);
+          var _ = h.getUserAvatarColor(this.model.attributes);
           this.ui.defaultImage.css("background", _);
         },
       });
-      return b;
+      return v;
     }
   ),
   csui.define(
@@ -15055,7 +15047,7 @@ csui.define("csui/lib/othelp", [], function () {
     ],
     function (x, m, p, y, s, e, r) {
       "use strict";
-      const a =
+      const l =
         "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIyIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMTIyIDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTYuMTQ3MiAxMC42MTQ4QzE2LjE0NzIgMTQuNDEyNyAxMy45NjMyIDE4LjUzMTkgOC4xMTc3NyAxOC41MzE5QzMuODU0MTMgMTguNTQ3OSAtMS44Mzc3OWUtMDcgMTYuMTM5MSAtMS44Mzc3OWUtMDcgMTAuNjE0OEMtMS44Mzc3OWUtMDcgNi4wMTM5NSAyLjkwNjY2IDIuNDcyOTcgOC42NjM3NyAyLjc4NjEyQzE0Ljc5MDIgMy4xMzEzOSAxNi4xNDcyIDcuODc2NzggMTYuMTQ3MiAxMC42MTQ4Wk01LjIxMTExIDcuNzI0MjNDNC42OTA1NyA4LjU4NzU2IDQuNDMxMjEgOS41ODMxNyA0LjQ2NDM3IDEwLjU5MDdDNC40NjQzNyAxMi45MTkzIDUuNjEyNTggMTUuMDMxIDguMDkzNjggMTUuMDMxQzEwLjU3NDggMTUuMDMxIDExLjY1ODcgMTMuMDg3OSAxMS42NTg3IDEwLjc4MzRDMTEuNzE0NCAxMC4xMTg1IDExLjYzMzUgOS40NDkyNiAxMS40MjA4IDguODE2ODJDMTEuMjA4MiA4LjE4NDM3IDEwLjg2ODMgNy42MDIxNCAxMC40MjIyIDcuMTA1OTZDMTAuMDcyNyA2Ljc5NDA3IDkuNjYwMjYgNi41NjA5NSA5LjIxMjc5IDYuNDIyNDFDOC43NjUzMiA2LjI4Mzg4IDguMjkzMjkgNi4yNDMxNiA3LjgyODcxIDYuMzAzMDFDNy4zMDY0NyA2LjI5MTc5IDYuNzkwMzQgNi40MTY5OCA2LjMzMTI5IDYuNjY2MjJDNS44NzIyMyA2LjkxNTQ2IDUuNDg2MTMgNy4yODAxNCA1LjIxMTExIDcuNzI0MjNWNy43MjQyM1oiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik01NS40MjczIDQuNDgwMkM1NS44MzAzIDMuOTc3NjggNTYuMzQwNSAzLjU3MTY2IDU2LjkyMDcgMy4yOTE4NEM1Ny43ODk3IDIuOTQ4MzEgNTguNzE2MyAyLjc3Mzg5IDU5LjY1MDcgMi43Nzc5NkM2MC41NzU4IDIuNzUwMTUgNjEuNDkzNiAyLjk0ODYgNjIuMzI0NiAzLjM1NjA4QzYzLjkzMDQgNC4xNTkwMiA2NC4zMDc4IDUuNTQwMDggNjQuMzA3OCA3Ljg3NjY1VjE4LjE1NDNINTkuOTE1N1Y5LjcxNTM5QzU5Ljk5MTMgOC45NjAwMyA1OS45MjMyIDguMTk3MTggNTkuNzE1IDcuNDY3MTVDNTkuNTQwMSA3LjA5Njk4IDU5LjI1NjcgNi43ODg4NCA1OC45MDI0IDYuNTgzNzJDNTguNTQ4MSA2LjM3ODYxIDU4LjEzOTggNi4yODYyNSA1Ny43MzE3IDYuMzE4OTRDNTUuNDAzMiA2LjMxODk0IDU1LjQwMzIgOC4xODk4IDU1LjQwMzIgMTAuMDYwN1YxOC4xNTQzSDUwLjk2MjlWMy4xNjMzN0g1NS40MjczVjQuNDgwMloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik00OC44NTkxIDE0LjI3NjNDNDguNDQ5NiAxNS4xMzU0IDQ3LjE0ODggMTguNTMxOSA0MS4zNzU2IDE4LjUzMTlDMzYuOTExMyAxOC41MzE5IDMzLjc3OTggMTUuODAxOSAzMy43Nzk4IDEwLjg3OThDMzMuNzc5OCA3LjI1MDUxIDM1LjU2MjMgMi43ODYxNCA0MS40OTYxIDIuNzg2MTRDNDIuNDg1OSAyLjcwNTMzIDQzLjQ4MTUgMi44Mzg0NyA0NC40MTUzIDMuMTc2NTJDNDUuMzQ5MSAzLjUxNDU3IDQ2LjE5OTIgNC4wNDk2MiA0Ni45MDc5IDQuNzQ1MzJDNDguODY3MSA2Ljg0OTAzIDQ4Ljk3OTUgOS43Nzk3OCA0OS4wMzU3IDExLjQ4MkgzOC4zMDA0QzM4LjMwMDQgMTMuMzUyOSAzOS4zMzYyIDE1LjIyMzcgNDEuNzIwOSAxNS4yMjM3QzQ0LjEwNTYgMTUuMjIzNyA0NC45MzI3IDEzLjYxNzkgNDUuNTE4OCAxMi41NzRMNDguODU5MSAxNC4yNzYzWk00NC40NTg5IDguNzE5ODlDNDQuNDMwMiA3Ljk0MjExIDQ0LjE0ODMgNy4xOTQ5OCA0My42NTYgNi41OTIwOUM0My4wNjQ3IDYuMDU4OTQgNDIuMjkyMSA1Ljc3MTczIDQxLjQ5NjEgNS43ODkxNUM0MS4wNzM5IDUuNzg3NTQgNDAuNjU2IDUuODczOCA0MC4yNjg5IDYuMDQyNDRDMzkuODgxOSA2LjIxMTA5IDM5LjUzNDEgNi40NTg0MyAzOS4yNDc4IDYuNzY4NzRDMzguNzcgNy4zMzI3NSAzOC40NjEgOC4wMjAyIDM4LjM1NjYgOC43NTIwMUw0NC40NTg5IDguNzE5ODlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTEwLjQ3NyA2LjI3MDk5SDExMy40MjRWMy4xNjM2SDExMC41MTdWLTMuMDYyOTllLTA3SDEwNi4xMTdWMy4xNTU1N0gxMDUuMzk0TDEwMy4zNzkgNi4yNzA5OUgxMDYuMDkzVjEzLjQwOTJDMTA2LjA5MyAxNC44NDY0IDEwNi4wOTMgMTUuOTE0NCAxMDYuNzI3IDE2LjgwNTZDMTA3LjY3NSAxOC4xODY3IDEwOS4zNDUgMTguMjc1IDExMC44NyAxOC4yNzVDMTExLjY1MiAxOC4yNjE4IDExMi40MyAxOC4xODM5IDExMy4xOTkgMTguMDQyMlYxNC41ODk1TDExMS41OTMgMTQuNjQ1N0MxMTAuNDEzIDE0LjY0NTcgMTEwLjQxMyAxMy44NDI4IDExMC40NDUgMTIuOTUxNUwxMTAuNDc3IDYuMjcwOTlaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNjYuNTIzNyAtMy4wNjI5OWUtMDdINzAuOTIzOFYzLjE1NTU3SDc1LjUwMDZMNzMuNDg1MiA2LjI3MDk5SDcwLjg2NzZWMTIuOTI3NEM3MC44Njc2IDEzLjg1MDggNzAuODY3NiAxNC42MjE2IDcyLjAxNTggMTQuNjIxNkw3My42MjE3IDE0LjU2NTRWMTguMDE4MUM3Mi44NTMzIDE4LjE1OTggNzIuMDc0NCAxOC4yMzc3IDcxLjI5MzEgMTguMjUwOUM2OS43Njc1IDE4LjI1MDkgNjguMDgxNCAxOC4xNjI2IDY3LjE1IDE2Ljc4MTVDNjYuNTQ3NyAxNS44OTAzIDY2LjUxNTYgMTQuODIyMyA2Ni41MTU2IDEzLjM4NTFMNjYuNTIzNyAtMy4wNjI5OWUtMDdaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTE3LjQ5NSA2LjI3MDk3SDExNi45NDlWMy42MjEyNUgxMTUuOTQ1VjMuMTYzNTdIMTE4LjQ3NVYzLjYyMTI1SDExNy40ODdMMTE3LjQ5NSA2LjI3MDk3Wk0xMjEuNzU5IDYuMjcwOTdIMTIxLjIyMVY0LjM1MTkzVjMuNzE3NjFMMTIxLjA2OCA0LjIzOTUyTDEyMC40MzQgNi4yNzA5N0gxMTkuOTQ0TDExOS4zMTggNC4yMzk1MkwxMTkuMTU3IDMuNzI1NjRWNC4zNTE5M1Y2LjI3MDk3SDExOC42MzVWMy4xNjM1N0gxMTkuMzc0TDEyMC4xNzcgNS42MjA1OEwxMjAuOTQgMy4xNjM1N0gxMjEuNjc4TDEyMS43NTkgNi4yNzA5N1oiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik04OS4zMzU2IDE0LjI4NDNMODguNTMyNyAxNS41ODVDODcuNzI5OCAxNi43NDEzIDg2LjI2MDQgMTguNTIzOCA4Mi4wMDQ4IDE4LjUyMzhDNzcuNTQwNCAxOC41MjM4IDc0LjU0NTQgMTUuNzkzOCA3NC41NDU0IDEwLjg3MThDNzQuNTQ1NCA3LjI0MjQ1IDc2LjMyNzkgMi43NzgwOCA4Mi4yNjE3IDIuNzc4MDhDODMuMjUxNSAyLjY5NzI3IDg0LjI0NzEgMi44MzA0MSA4NS4xODA5IDMuMTY4NDZDODYuMTE0NyAzLjUwNjUyIDg2Ljk2NDggNC4wNDE1NiA4Ny42NzM1IDQuNzM3MjZDODkuNjMyNyA2Ljg0MDk4IDg5Ljc0NTEgOS43NzE3MiA4OS44MDE0IDExLjQ3NEg3OS4wNjZDNzkuMDY2IDEzLjM0NDggNzkuOTY1MyAxNS4yMTU3IDgyLjM1IDE1LjIxNTdDODQuNzM0OCAxNS4yMTU3IDg1LjQ2NTUgMTMuNjA5OCA4Ni4wMTE1IDEyLjU2Nkw4OS4zMzU2IDE0LjI4NDNaTTg1LjE4NDQgOC43MTk4N0M4NS4xNTU3IDcuOTQyMDggODQuODczNyA3LjE5NDk1IDg0LjM4MTUgNi41OTIwN0M4My43OTAyIDYuMDU4OTEgODMuMDE3NiA1Ljc3MTcgODIuMjIxNiA1Ljc4OTEyQzgxLjc5OTQgNS43ODc1MSA4MS4zODE0IDUuODczNzcgODAuOTk0NCA2LjA0MjQyQzgwLjYwNzMgNi4yMTEwNiA4MC4yNTk2IDYuNDU4NCA3OS45NzMzIDYuNzY4NzFDNzkuNDk1NCA3LjMzMjcyIDc5LjE4NjUgOC4wMjAxNyA3OS4wODIgOC43NTE5OEw4NS4xODQ0IDguNzE5ODdaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTA0LjQ2MyAxOC4xNTQ1TDk4Ljk1NDcgMTAuMjYxNkwxMDMuNTQ4IDMuMTU1NTJIOTguNTA1TDk2LjMzNzEgNi41MTE4Mkw5NC4wMDA1IDMuMTU1NTJIODguOTU4TDkzLjkxMjIgMTAuMjYxNkw4OC44MTM1IDE4LjE1NDVIOTMuODU2TDk2LjUyOTggMTQuMDExM0w5OS40MjA0IDE4LjE1NDVIMTA0LjQ2M1oiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yMi4yMzM3IDQuNDgwNDlDMjIuNzE1MiAzLjkxMjY2IDIzLjMyMTggMy40NjQxNiAyNC4wMDU5IDMuMTcwMjFDMjQuNjg5OSAyLjg3NjI1IDI1LjQzMjggMi43NDQ4NCAyNi4xNzYxIDIuNzg2MjhDMjkuODYxNyAyLjc4NjI4IDMyLjQ0NzEgNS41ODA1MiAzMi40NDcxIDEwLjU4MjlDMzIuNDQ3MSAxMy42NTgxIDMxLjMyMyAxOC41MjQgMjYuMDIzNiAxOC41MjRDMjUuMzA2OSAxOC41NDA4IDI0LjU5NTQgMTguMzk3NCAyMy45NDEyIDE4LjEwNDNDMjMuMjg2OSAxNy44MTEyIDIyLjcwNjMgMTcuMzc1OCAyMi4yNDE3IDE2LjgyOThWMjMuMTE2OEgxNy43NzczVjMuMTYzNjZIMjIuMjQxN0wyMi4yMzM3IDQuNDgwNDlaTTI1LjIyODcgNi4yMzg5NEMyNC43ODg2IDYuMjM3MDcgMjQuMzU0MiA2LjMzNzY3IDIzLjk1OTggNi41MzI3OEMyMy41NjU0IDYuNzI3OSAyMy4yMjE4IDcuMDEyMTYgMjIuOTU2MyA3LjM2MzA2QzIyLjI5MjIgOC4zMjc3NCAyMS45NjczIDkuNDg1NzYgMjIuMDMyOSAxMC42NTUxQzIxLjk1MDEgMTEuODk4NCAyMi4zMzA1IDEzLjEyODQgMjMuMTAwOSAxNC4xMDc4QzIzLjM1MTEgMTQuMzkyOSAyMy42NTgzIDE0LjYyMjMgMjQuMDAyNyAxNC43ODE0QzI0LjM0NyAxNC45NDA0IDI0LjcyMDkgMTUuMDI1NSAyNS4xMDAyIDE1LjAzMTJDMjcuMjYwMSAxNS4wMzEyIDI4LjIwNzYgMTIuNzU4OCAyOC4yMDc2IDEwLjU1ODhDMjguMjA3NiA4LjcxMiAyNy42NjE2IDYuNzUyODIgMjUuODQ2OSA2LjMyNzI2QzI1LjY0NTMgNi4yNzMwOSAyNS40Mzc0IDYuMjQ2MDkgMjUuMjI4NyA2LjI0Njk3VjYuMjM4OTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K";
       return m.View.extend({
         tagName: "otc-brand",
@@ -15070,7 +15062,7 @@ csui.define("csui/lib/othelp", [], function () {
             this.logoUrl = s.getHomeUrl(n);
           }
           (this.otcData = {
-            logosrc: "/img/csui/themes/carbonfiber/image/csui/headerbar_content_suite_platform.svg",
+            logosrc: "/img/csui/themes/carbonfiber/image/csui/Smart_View_Logo_Image.svg",
             logourl: this.logoUrl,
             tooltipbrand: "",
             primarytext: "",
@@ -15106,28 +15098,41 @@ csui.define("csui/lib/othelp", [], function () {
             i = this?.options?.context?.brandingConfigData?.get(
               "brandingSettingCodes"
             ),
-            o = t?.customBrandingBgColor ?? i?.customBrandingBgColor ?? "",
-            n = t?.primaryText ?? i?.primaryText ?? "",
-            u = t?.secondaryText ?? i?.secondaryText ?? "",
-            c = t?.versionText ?? i?.versionText ?? "",
+            o = t?.iconThemes ?? i?.iconThemes ?? "default",
+            n = t?.customBrandingBgColor ?? i?.customBrandingBgColor ?? "",
+            u = t?.primaryText ?? i?.primaryText ?? "",
+            c = t?.secondaryText ?? i?.secondaryText ?? "",
+            d = t?.versionText ?? i?.versionText ?? "",
             h =
               this?.options?.context?.previewBranding?.get("brandLogoUri") ??
               this?.options?.context?.brandingConfigData?.get("brandLogoUri");
-          (h = h?.length ? h : a),
+          (h = h?.length ? h : l),
             (this.applicationScope =
               this.options?.applicationScope ??
               this.options.context.getModel(e));
-          let f = this?.applicationScope?.id?.length ? this.logoUrl : "",
-            k = this?.applicationScope?.id?.length ? r.LandingPageBackTo : "";
+          let k = this?.applicationScope?.id?.length ? this.logoUrl : "",
+            C = this?.applicationScope?.id?.length ? r.LandingPageBackTo : "";
           (this.otcData = {
-            logosrc: "/img/csui/themes/carbonfiber/image/csui/headerbar_content_suite_platform.svg",
-            logourl: f,
+            logosrc: "/img/csui/themes/carbonfiber/image/csui/Smart_View_Logo_Image.svg",
+            logourl: k,
             tooltipbrand: "",
             primarytext: "",
             secondarytext: "",
             versiontext: "",
-            backgroundColor: o,
+            iconappearance: o,
           }),
+          //ORIGINAL CODE
+          // (this.otcData = {
+          //   logosrc: h,
+          //   logourl: k,
+          //   tooltipbrand: C,
+          //   primarytext: u,
+          //   secondarytext: c,
+          //   versiontext: d,
+          //   iconappearance: o,
+          //   backgroundColor: n,
+          // }),
+          //ORIGINAL CODE
             this.trigger("data:synced");
         },
       });
@@ -15188,23 +15193,23 @@ csui.define("csui/lib/othelp", [], function () {
       "i18n!csui/controls/app.header/app.header.controls/search.box/impl/nls/lang",
       "css!csui/controls/app.header/app.header.controls/search.box/impl/search.box",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c, h) {
-      var f = m.defaults({}, x.config() ?? {}, { enableSearchBarSettings: !0 });
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c, d) {
+      var h = m.defaults({}, x.config() ?? {}, { enableSearchBarSettings: !0 });
       return y.View.extend({
         template: !1,
         namedSessionStorage: new i(),
         namedLocalStorage: new n("search_bar_settings"),
         performClickAction: !1,
         constructor: function (S = {}) {
-          (S.data = m.defaults({}, S.data ?? {}, f)),
+          (S.data = m.defaults({}, S.data ?? {}, h)),
             y.View.prototype.constructor.apply(this, arguments);
           var w = this.options.context;
           if (!this.options.model) {
-            let v = w.getModel(r);
-            (this.options.model = v), (this.model = v);
+            let b = w.getModel(r);
+            (this.options.model = b), (this.model = b);
           }
-          (this.applicationScope = w.getModel(a)),
-            (this.searchBoxFactory = w.getFactory(d)),
+          (this.applicationScope = w.getModel(l)),
+            (this.searchBoxFactory = w.getFactory(f)),
             (this.searchboxModel = this.searchBoxFactory.property),
             (this.searchForms = new o({
               options: this.options,
@@ -15215,6 +15220,11 @@ csui.define("csui/lib/othelp", [], function () {
             (this.otcData = { query: "", showFromHere: !1, isFetched: !0 }),
             (this.deferred = p.Deferred()),
             this.updateData(),
+            this.listenTo(
+              this.brandingConfigData,
+              "change:branding",
+              this.updateData
+            ),
             this.listenTo(w, "sync:perspective", this._perspectiveSynced),
             this.listenTo(w, "change:current:node", this._currentNodeChanged),
             this.listenTo(this.searchboxModel, "change", this.setOTCData),
@@ -15267,12 +15277,18 @@ csui.define("csui/lib/othelp", [], function () {
           this.otcData.query = C;
         },
         updateData: function () {
+          let C =
+            this.options?.context?.previewBranding?.get("brandingSettingCodes")
+              ?.iconThemes ??
+            this.brandingConfigData?.get("brandingSettingCodes")?.iconThemes ??
+            "default";
           (this.otcData = m.extend(this.otcData, {
-            tooltipstartsearch: h.tooltipstartsearch,
-            tooltipclearkeywords: h.tooltipclearkeywords,
-            tooltipsearchbutton: h.tooltipsearchbutton,
-            tooltipsearchbuttonopen: h.tooltipsearchbuttonopen,
-            arialabelsearchbutton: h.arialabelsearchbutton,
+            iconappearance: C,
+            tooltipstartsearch: d.tooltipstartsearch,
+            tooltipclearkeywords: d.tooltipclearkeywords,
+            tooltipsearchbutton: d.tooltipsearchbutton,
+            tooltipsearchbuttonopen: d.tooltipsearchbuttonopen,
+            arialabelsearchbutton: d.arialabelsearchbutton,
           })),
             this.trigger("data:synced");
         },
@@ -15338,17 +15354,17 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         _setSearchQuery: function (C, S, w) {
-          let v = this._getSliceString();
+          let b = this._getSliceString();
           this.model.clear({ silent: !0 }),
             this.options.context.getModel(c).clear({ silent: !0 });
-          var b = {};
-          v && (b.slice = v), S && (b.location_id1 = S), C && (b.where = C);
+          var v = {};
+          b && (v.slice = b), S && (v.location_id1 = S), C && (v.where = C);
           var _ =
             this.search_bar_settings && this.search_bar_settings.full_text;
           _ &&
             (_.modifier || _.lookfor) &&
-            ((b.modifier = _.modifier), (b.lookfor = _.lookfor)),
-            this.model.set(b);
+            ((v.modifier = _.modifier), (v.lookfor = _.lookfor)),
+            this.model.set(v);
         },
         _dataSynced: function (C, S) {
           var w = this;
@@ -15430,7 +15446,7 @@ csui.define("csui/lib/othelp", [], function () {
         onRender: function () {
           // Explorer Insight START
           var globalthis = this;
-          var wID = "teststst-secure";
+          var wID = "psd_internal-secure";
 
           async function showAviator() {
             let that = globalthis;
@@ -15442,11 +15458,9 @@ csui.define("csui/lib/othelp", [], function () {
             let CHAT_ID = null;
             let paginations = {chatHistory: {now: 1, max: null}};
             const PERSON_NAME = that.options.context._user.attributes.name;
-            const PEN_EDIT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_pen_edit.svg"
             const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
             const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
             const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
-            const DOUBLE_ARROWS = "/img/csui/themes/carbonfiber/image/icons/aviator_double_arrow.svg";
             const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
             const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
             const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_info.svg";
@@ -15477,7 +15491,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                   msgHTML += `
                   <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
-                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
+                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
                       <div class="msg-info"></div>
 
                       <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
@@ -15517,7 +15531,7 @@ csui.define("csui/lib/othelp", [], function () {
                   <div id="botloading" class="msg ${side}-msg">
                   <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
   
-                  <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble">
+                  <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
                       <div class="msg-info">
                       </div>
   
@@ -15540,7 +15554,7 @@ csui.define("csui/lib/othelp", [], function () {
                       <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
                       </div>
   
-                      <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
+                      <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble shadow"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
                   </div>
                   </div>
               `;
@@ -15671,38 +15685,30 @@ csui.define("csui/lib/othelp", [], function () {
                   <section class="msger-table" style="font-size: 14px; font-style: unset;">
                     <div style="display: flex;height:100%" class="msger-main-content">
                       <div id="mySidenav" class="sidenav">
-                        <header class="msger-header">
-                          <div class="msger-header-title" id="chatbotmenu">
-                            <div style="
-                                font-size: 19px;
-                                font-weight: 600;
-                                font-family: 'OpenText Sans';
-                                color: #2c3e50;
-                                display:inline-block;
-                                vertical-align:middle
-                                ">Tools</div>
-                          </div>
+                          
+                        <div style="margin:5px 5px;height:calc(100% - 15px);overflow:hidden;padding-bottom:110px">
+                          <div style="font-size:15px;font-weight:bold;margin-top:10px;margin-bottom:10px;margin-left:4px;">Tools</div>
 
-                          <button title="Hide sidebar" class="msger-img-btn" style="background-image:url(${DOUBLE_ARROWS})"></button>
-                        </header>
-                        
-                        <div style="margin:5px 5px;height:calc(100% - 70px);overflow:hidden;padding-bottom:110px">
-                          <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+                          <button class="hoverable msger-btn chat-sidenav-title" style="display:block;width:100%">
                             <img src="${CHAT_LOGO}" style="width:14px" />
                             <strong>&nbsp;Chats</strong>
                           </button>
-                          <button class="chat-sidenav-title hoverable msger-btn" style="display:block;width:100%">
+
+                          <button class="hoverable msger-btn chat-sidenav-title" style="display:block;width:100%">
                             <img src="${PROJECT_LOGO}" style="width:14px" />
                             <strong>&nbsp;Projects</strong>
-                            </button>
+                          </button>
+
                           <br>
+
                           <div class="chat-sidenav-sub-title" style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
                             <strong>Your chats</strong>
                             <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
                             <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
                           </div>
-                          <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;"></div>
+                          <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;background:#eeeeee"></div>
                         </div>
+
                       </div>
 
                       <div id="show-messages-button" class="show-all-message-popup shadow hoverable" title="Show all previous messages">
@@ -15735,7 +15741,7 @@ csui.define("csui/lib/othelp", [], function () {
 
                         <header class="msger-header" style="border-left:1px solid whitesmoke">
                           <div class="msger-header-title" id="chatbotmenu">
-                          <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
+                            <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
                           
                           <div style="
                           font-size: 18px;
@@ -15757,16 +15763,16 @@ csui.define("csui/lib/othelp", [], function () {
                           <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>
                           
                           <div id="files-container"></div>
-                          <div class="chat-container" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;">
+                          <div class="chat-container shadow" style="display: flex; flex-direction: column; gap: 10px; margin: 10px; padding: 10px; background-color: #f5f5f5; border-radius: 8px; font-family: 'Inter', sans-serif;border:1px solid #d1d1d1">
                               <!-- Chat Input -->
                               <textarea id="chatarea" class="msger-input" rows="1" maxlength="2000" minlength="0" placeholder="Ask me something..." style="width: 100%; padding: 10px; border: none; background: transparent; resize: none; outline: none; font-family: inherit; font-size: 16px; min-height: 20px; max-height: 40px; overflow-y: auto;"></textarea>
                           
                               <!-- Inline Buttons -->
                               <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                                   <!-- Clear Button with "New Chat" Text -->
-                                  <div id="clearbtn" class="clear-button" style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; cursor: pointer;">
-                                      <img src="${PEN_EDIT_IMG}" width="14" draggable="false" />
-                                      <span style="font-size: 14px; color: #333;">New Chat</span>
+                                  <div id="clearbtn" class="clear-button">
+                                      <svg fill="#e4e4e4" width="12" height="12" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
+                                      <span style="font-size: 12px; color: #e4e4e4;">New Chat</span>
                                   </div>
                           
                                   <div style="display: flex; align-items: center; gap: 10px;">
@@ -15781,22 +15787,23 @@ csui.define("csui/lib/othelp", [], function () {
                                       <!-- File Input -->
                                       <label for="file-input" class="icon-button" style="cursor: pointer;">
                                           <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#333"></path>
+                                              <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#054faa"></path>
                                           </svg>
                                       </label>
+
                                       <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
                           
                                       <!-- Submit Button -->
                                       <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
                                           <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#333"></path>
+                                              <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#004395"></path>
                                           </svg>
                                       </button>
                           
                                       <!-- Stop Button -->
                                       <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
                                           <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#333"></path>
+                                              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#004395"></path>
                                           </svg>
                                       </button>
                                   </div>
@@ -16392,7 +16399,7 @@ csui.define("csui/lib/othelp", [], function () {
                       <div class="msg-img"
                           style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
                       </div>
-                      <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble">
+                      <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble shadow">
                           <div class="msg-info"></div>
                           <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
                               <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
@@ -16885,6 +16892,7 @@ csui.define("csui/lib/othelp", [], function () {
                       menustatus = true;
                   }
               }            
+              
               if (menustatus) {
                   var AviatorElement = document.getElementById('aviator');
                   if (AviatorElement) {
@@ -16922,13 +16930,13 @@ csui.define("csui/lib/othelp", [], function () {
                       AviatorButtonElement.setAttribute("iconappearance", "default");
                       AviatorButtonElement.setAttribute("slot", "beforeOverflow");
                       AviatorButtonElement.setAttribute("title", "Aviator");
-                      AviatorButtonElement.style.borderRadius = "16px"; // Setting inline style
+                      AviatorButtonElement.style.borderRadius = "16px";
+                      
+                      const searchIcon = Menuelement.querySelectorAll('otc-button')[0];
+                      Menuelement.insertBefore(AviatorButtonElement, searchIcon);
                       
                       const script = document.createElement("script");
                       script.src = "/img/csui/themes/carbonfiber/marked.min.js";
-
-                      const searchIcon = Menuelement.querySelectorAll('otc-button')[0];
-                      Menuelement.insertBefore(AviatorButtonElement, searchIcon);
                       AviatorButtonElement.appendChild(script);
 
                       AviatorButtonElement.addEventListener('click', function() {
@@ -16984,6 +16992,20 @@ csui.define("csui/lib/othelp", [], function () {
             (this.otcData = { slot: "unknown", state: "default" }),
             (this.progressValues = { from: 0, to: 1 }),
             (this.brandingConfigData = this.options.context.getModel(y)),
+            this.updateData(),
+            this.listenTo(
+              this.brandingConfigData,
+              "change:branding",
+              this.updateData
+            );
+        },
+        updateData: function () {
+          let e =
+            this.options?.context?.previewBranding?.get("brandingSettingCodes")
+              ?.iconThemes ??
+            this.brandingConfigData?.get("brandingSettingCodes")?.iconThemes ??
+            "default";
+          (this.otcData = m.extend(this.otcData, { iconappearance: e })),
             this.trigger("data:synced"),
             this.trigger("update:progress:values", this.progressValues);
         },
@@ -17045,7 +17067,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           return '<div class="csui-favorites-view-container"></div>';
         },
       });
@@ -17089,16 +17111,30 @@ csui.define("csui/lib/othelp", [], function () {
       "use strict";
       var r = y.extend({
         template: s,
-        constructor: function (d) {
-          y.call(this, d),
+        constructor: function (f) {
+          y.call(this, f),
             (this.brandingConfigData = this.options.context.getModel(p)),
             (this.otcData = {
-              icon: "csui_header:csui_header_fav42",
+              icon: "csui_header:csui_li_header_fav42",
               className: "csui-favorites",
               arialabel: e.FavoritesTitleAria,
               title: e.FavoritesIconTitle,
               overflowValue: e.FavoritesIconTitle,
             }),
+            this.updateData(),
+            this.listenTo(
+              this.brandingConfigData,
+              "change:branding",
+              this.updateData
+            );
+        },
+        updateData: function () {
+          let l =
+            this.options?.context?.previewBranding?.get("brandingSettingCodes")
+              ?.iconThemes ??
+            this.brandingConfigData?.get("brandingSettingCodes")?.iconThemes ??
+            "default";
+          (this.otcData = m.extend(this.otcData, { iconappearance: l })),
             this.trigger("data:synced");
         },
         onRender: function () {
@@ -17133,10 +17169,10 @@ csui.define("csui/lib/othelp", [], function () {
         _mouseLeaveButton: function () {
           this.favoritesViewInFocus = !1;
         },
-        documentClick: function (a) {
-          !x(a.target).parents(".csui-favorites-view-container").length &&
-            !x(a.target).parents(".csui-favorites-icon-container").length &&
-            a.target !== this?.el &&
+        documentClick: function (l) {
+          !x(l.target).parents(".csui-favorites-view-container").length &&
+            !x(l.target).parents(".csui-favorites-icon-container").length &&
+            l.target !== this?.el &&
             this._hideFavoritesView();
         },
         _showFavoritesView: function () {
@@ -17163,74 +17199,74 @@ csui.define("csui/lib/othelp", [], function () {
             this.$el.removeClass("showing-favorites-view"),
             this?.options?.otcEl?.removeAttribute("menuopen");
         },
-        onClickFavoritesIcon: function (a) {
-          a.preventDefault(),
-            a.stopPropagation(),
+        onClickFavoritesIcon: function (l) {
+          l.preventDefault(),
+            l.stopPropagation(),
             this.options &&
               this.options.parentView &&
               this.options.parentView.trigger("header:control:clicked");
-          var d = x(".binf-open>.binf-dropdown-toggle");
-          d.length > 0 && d.binf_dropdown("toggle"),
+          var f = x(".binf-open>.binf-dropdown-toggle");
+          f.length > 0 && f.binf_dropdown("toggle"),
             this._ensureFavoritesView(),
             this._toggleFavoritesView(),
-            this._focusOnFavoriteSearch(a);
+            this._focusOnFavoriteSearch(l);
         },
         _focusOnNextElement: function () {
-          let a = document.getElementsByTagName("otc-header-bar");
-          var d = a[0].querySelectorAll("otc-toolbaritem");
-          let t = a[0].querySelector("otc-overflow-container"),
-            i = d[0].nextSibling;
+          let l = document.getElementsByTagName("otc-header-bar");
+          var f = l[0].querySelectorAll("otc-toolbaritem");
+          let t = l[0].querySelector("otc-overflow-container"),
+            i = f[0].nextSibling;
           i?.getAttribute("slot") !== "otc-overflow-slot"
             ? i.focus()
             : t.focus();
         },
-        onKeyInView: function (a) {
-          let d = document.getElementsByTagName("otc-header-bar");
-          var t = d[0].querySelectorAll("otc-toolbaritem");
-          let i = d[0].querySelectorAll("[slot='afterOverflow']");
-          switch (a.keyCode) {
+        onKeyInView: function (l) {
+          let f = document.getElementsByTagName("otc-header-bar");
+          var t = f[0].querySelectorAll("otc-toolbaritem");
+          let i = f[0].querySelectorAll("[slot='afterOverflow']");
+          switch (l.keyCode) {
             case 9:
               var o = x(this?.options?.otcEl).is(":focus");
               o &&
-              a.shiftKey !== !0 &&
+              l.shiftKey !== !0 &&
               !this.ui.favoritesViewContainer.hasClass("binf-hidden")
-                ? this._focusOnFavoriteSearch(a)
-                : !o && a.shiftKey
-                ? (a.preventDefault(),
-                  a.stopPropagation(),
+                ? this._focusOnFavoriteSearch(l)
+                : !o && l.shiftKey
+                ? (l.preventDefault(),
+                  l.stopPropagation(),
                   this?.options?.otcEl?.getAttribute("slot") !==
                   "otc-overflow-slot"
                     ? this._focusOnFavoriteButton()
                     : this._focusOnOverflowButton())
-                : !x(a.target).closest(".tile-header").length &&
+                : !x(l.target).closest(".tile-header").length &&
                   this.favoritesViewInFocus &&
                   (this._hideFavoritesView(),
                   this?.options?.otcEl?.getAttribute("slot") !==
                   "otc-overflow-slot"
                     ? this._focusOnNextElement()
                     : i[0].focus(),
-                  a.preventDefault());
+                  l.preventDefault());
               break;
             case 13:
             case 32:
               this?.options?.otcEl?.getAttribute("slot") === ""
-                ? x(a.target).closest(".tile-header").length ||
-                  (this.triggerMethod("click:favorites:icon", a),
+                ? x(l.target).closest(".tile-header").length ||
+                  (this.triggerMethod("click:favorites:icon", l),
                   this.ui.favoritesViewContainer.hasClass("binf-hidden") ||
-                    this._focusOnFavoriteSearch(a))
-                : x(a.target).closest(".tile-header").length ||
-                  (this.onClickFavoritesIcon(a),
+                    this._focusOnFavoriteSearch(l))
+                : x(l.target).closest(".tile-header").length ||
+                  (this.onClickFavoritesIcon(l),
                   this.ui.favoritesViewContainer.hasClass("binf-hidden") ||
-                    this._focusOnFavoriteSearch(a));
+                    this._focusOnFavoriteSearch(l));
               break;
             case 40:
               this?.options?.otcEl?.getAttribute("slot") === "" &&
                 (!this.favoritesView ||
                 this.ui.favoritesViewContainer.hasClass("binf-hidden")
-                  ? (this.triggerMethod("click:favorites:icon", a),
-                    this._focusOnFavoriteSearch(a))
+                  ? (this.triggerMethod("click:favorites:icon", l),
+                    this._focusOnFavoriteSearch(l))
                   : this.favoritesViewInFocus !== !0 &&
-                    this._focusOnFavoriteSearch(a));
+                    this._focusOnFavoriteSearch(l));
               break;
             case 27:
               this?.options?.otcEl?.getAttribute("slot") !== "otc-overflow-slot"
@@ -17277,16 +17313,21 @@ csui.define("csui/lib/othelp", [], function () {
       "use strict";
       var e = p.extend({
         template: !1,
-        constructor: function (a) {
-          p.call(this, a),
+        constructor: function (l) {
+          p.call(this, l),
             (this.brandingConfigData = this.options.context.getModel(y)),
             (this.otcData = {
-              icon: "csui_header:csui_header_help42",
+              icon: "csui_header:csui_li_header_help42",
               title: s.HelpIconTitle,
               arialabel: s.HelpIconAria,
               overflowValue: s.HelpIconTitle,
             }),
-            this.trigger("data:synced");
+            this.updateData(),
+            this.listenTo(
+              this.brandingConfigData,
+              "change:branding",
+              this.updateData
+            );
         },
         onShow: function () {
           var r = this;
@@ -17295,10 +17336,19 @@ csui.define("csui/lib/othelp", [], function () {
               "click",
               x.bind(this._onClick, this)
             ),
-            m(this.options.otcEl).on("keydown", function (a) {
-              (a.keyCode === 32 || a.keyCode === 13) &&
-                (a.preventDefault(), r.triggerMethod("click:help"));
+            m(this.options.otcEl).on("keydown", function (l) {
+              (l.keyCode === 32 || l.keyCode === 13) &&
+                (l.preventDefault(), r.triggerMethod("click:help"));
             });
+        },
+        updateData: function () {
+          let r =
+            this.options?.context?.previewBranding?.get("brandingSettingCodes")
+              ?.iconThemes ??
+            this.brandingConfigData?.get("brandingSettingCodes")?.iconThemes ??
+            "default";
+          (this.otcData = x.extend(this.otcData, { iconappearance: r })),
+            this.trigger("data:synced");
         },
       });
       return e;
@@ -17332,7 +17382,7 @@ csui.define("csui/lib/othelp", [], function () {
       "css!csui/controls/app.header/app.header.controls/user.profile/impl/user.profile",
       "csui/lib/jquery.binary.ajax",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c, h, f) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c, d, h) {
       "use strict";
       var k =
         window.csui.requirejs.s.contexts._.config.config[
@@ -17347,7 +17397,7 @@ csui.define("csui/lib/othelp", [], function () {
         constructor: function (w) {
           w || (w = {}),
             y.ItemView.prototype.constructor.call(this, w),
-            (this.model = this.options.context.getModel(d)),
+            (this.model = this.options.context.getModel(f)),
             (this.userModel = this.options.context.getModel(t)),
             this.options.context
               .getModel(i, { permanent: !0, detached: !0 })
@@ -17361,15 +17411,13 @@ csui.define("csui/lib/othelp", [], function () {
               initials: this.model?.attributes?.initials ?? "",
               interactive: "",
               image: "",
-              arialabel: f.profileMenuTitle,
-              title: f.profileMenuTitle,
+              arialabel: h.profileMenuTitle,
+              title: h.profileMenuTitle,
               collection: this.collection,
             }),
             this.model.ensureFetched().then(
               m.bind(function () {
-                this._setUserData(),
-                  this._getUserGroups(),
-                  this._refreshActions();
+                this._setUserData(), this._getUserGroups();
               }, this)
             ),
             this.listenTo(this.model, "change", this._setUserData)
@@ -17384,8 +17432,8 @@ csui.define("csui/lib/othelp", [], function () {
             this.listenTo(
               this,
               "execute:action",
-              m.bind(function (v) {
-                this._executeAction(v);
+              m.bind(function (b) {
+                this._executeAction(b);
               }, this)
             ),
             this.listenTo(
@@ -17398,31 +17446,31 @@ csui.define("csui/lib/othelp", [], function () {
         },
         _executeAction: function (S) {
           var w = S.get("signature"),
-            v = a.findWhere({ signature: w }),
-            b = this.options.context,
+            b = l.findWhere({ signature: w }),
+            v = this.options.context,
             _ = {
-              context: b,
+              context: v,
               toolItem: S,
               originatingView: this,
               data: S.get("commandData"),
             },
             T = this;
           try {
-            if (!v) throw new Error('Command "' + w + '" not found.');
-            v.execute(_)
-              .done(function (l) {})
-              .fail(function (l) {
-                l &&
-                  ((l = new r.Error(l)),
-                  c.showMessage("error", l.message, l.errorDetails));
+            if (!b) throw new Error('Command "' + w + '" not found.');
+            b.execute(_)
+              .done(function (a) {})
+              .fail(function (a) {
+                a &&
+                  ((a = new r.Error(a)),
+                  c.showMessage("error", a.message, a.errorDetails));
               })
               .always(function () {});
-          } catch (l) {
+          } catch (a) {
             e.warn(
               `Executing the command "{0}" failed.
 {1}`,
-              v.get("signature"),
-              l.stack
+              b.get("signature"),
+              a.stack
             ) && console.warn(e.last);
           }
         },
@@ -17430,15 +17478,15 @@ csui.define("csui/lib/othelp", [], function () {
           let S = this._getGroupsUrl();
           S &&
             this.options.connector.makeAjaxCall({ type: "GET", url: S }).always(
-              m.bind(function (w, v, b) {
-                if (b && b.status === 200) {
+              m.bind(function (w, b, v) {
+                if (v && v.status === 200) {
                   let _ = w.results;
                   this.options.context._groups = _;
                   let T = !1;
-                  m.each(_, function (l) {
+                  m.each(_, function (a) {
                     T =
                       T ||
-                      l?.data?.properties?.name?.indexOf(
+                      a?.data?.properties?.name?.indexOf(
                         "Business Administrators"
                       ) > -1;
                   }),
@@ -17456,7 +17504,7 @@ csui.define("csui/lib/othelp", [], function () {
               ? new o([])
               : new o(n.profileMenu, {
                   status: { context: this.options.context },
-                  commands: a,
+                  commands: l,
                   mask: new u(),
                 }));
         },
@@ -17469,51 +17517,51 @@ csui.define("csui/lib/othelp", [], function () {
         },
         _refreshActions: function () {
           if (this._isRendered && !this.isDestroyed)
-            if (h) {
+            if (d) {
               var S = this.options,
                 w = m
-                  .chain(h)
+                  .chain(d)
                   .flatten(!0)
-                  .map(function (b) {
-                    return b(S);
+                  .map(function (v) {
+                    return v(S);
                   })
                   .value(),
-                v = this;
-              p.whenAll.apply(p, w).always(function (b) {
+                b = this;
+              p.whenAll.apply(p, w).always(function (v) {
                 var _ = new u();
-                (v.staticMenuItems = n.profileMenu.collection.toJSON()),
-                  (b = m
-                    .chain(b)
+                (b.staticMenuItems = n.profileMenu.collection.toJSON()),
+                  (v = m
+                    .chain(v)
                     .flatten()
                     .pluck("profileMenu")
                     .flatten()
                     .value()),
-                  m.each(b, function (T) {
-                    if (T && v.staticMenuItems) {
-                      for (var l = !1, g = 0; g < v.staticMenuItems.length; g++)
-                        if (v.staticMenuItems[g].group === T.group) l = !0;
-                        else if (l) {
-                          v.staticMenuItems.splice(g + 1, 0, T);
+                  m.each(v, function (T) {
+                    if (T && b.staticMenuItems) {
+                      for (var a = !1, g = 0; g < b.staticMenuItems.length; g++)
+                        if (b.staticMenuItems[g].group === T.group) a = !0;
+                        else if (a) {
+                          b.staticMenuItems.splice(g + 1, 0, T);
                           break;
                         }
-                      l ||
-                        v.staticMenuItems.splice(
-                          v.staticMenuItems.length - 1,
+                      a ||
+                        b.staticMenuItems.splice(
+                          b.staticMenuItems.length - 1,
                           0,
                           T
                         );
                     }
                   }),
-                  (b = v.staticMenuItems.concat([])),
-                  (b = _.maskItems(b)),
-                  n.profileMenu.reset(b),
-                  (v.collection = new o(n.profileMenu, {
-                    status: { context: v.options.context },
-                    commands: a,
+                  (v = b.staticMenuItems.concat([])),
+                  (v = _.maskItems(v)),
+                  n.profileMenu.reset(v),
+                  (b.collection = new o(n.profileMenu, {
+                    status: { context: b.options.context },
+                    commands: l,
                     mask: new u(),
                   })),
-                  (v.otcData.collection = v.collection),
-                  v._setOtcData();
+                  (b.otcData.collection = b.collection),
+                  b._setOtcData();
               });
             } else this.collection.refilter();
         },
@@ -17529,10 +17577,10 @@ csui.define("csui/lib/othelp", [], function () {
           if (S) {
             var w = { url: S, dataType: "binary" };
             this.connector.makeAjaxCall(w).always(
-              m.bind(function (v, b, _) {
+              m.bind(function (b, v, _) {
                 this.isDestroyed ||
                   (_.status === 200
-                    ? this._setPersonalizedImage(v)
+                    ? this._setPersonalizedImage(b)
                     : ((this.otcData.image = ""), this._setOtcData()));
               }, this)
             );
@@ -17541,17 +17589,17 @@ csui.define("csui/lib/othelp", [], function () {
         _getUserPhotoUrl: function () {
           var S = this.connector.connection,
             w = new s(S.url).getCgiScript(),
-            v = this.model.get("photo_url");
-          if (v && v.indexOf("?") > 0) return s.combine(w, v);
+            b = this.model.get("photo_url");
+          if (b && b.indexOf("?") > 0) return s.combine(w, b);
         },
         _setPersonalizedImage: function (S) {
           this._releasePhotoUrl(), (this._photoUrl = URL.createObjectURL(S));
           let w = S;
-          var v = new FileReader();
-          v.readAsDataURL(w),
-            (v.onloadend = m.bind(function () {
-              var b = v.result;
-              (this.otcData.image = b), this._setOtcData();
+          var b = new FileReader();
+          b.readAsDataURL(w),
+            (b.onloadend = m.bind(function () {
+              var v = b.result;
+              (this.otcData.image = v), this._setOtcData();
             }, this));
         },
         _setOtcData: function () {
@@ -17559,7 +17607,7 @@ csui.define("csui/lib/othelp", [], function () {
             image: this.otcData.image ?? "",
             initials: this.model.attributes.initials,
             arialabel: m.str.sformat(
-              f.profileMenuAria,
+              h.profileMenuAria,
               this.model.get("initials"),
               this.model.get("display_name")
             ),
@@ -17581,21 +17629,25 @@ csui.define("csui/lib/othelp", [], function () {
     function () {
       typeof otIconsRepository > "u" && (window.otIconsRepository = {}),
         (window.otIconsRepository.csui_header = {
-          csui_header_fav42: {
+          csui_li_header_fav42: {
             category: "header",
-            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .metaphor--header-header_fav42{fill:#FFFFFF;} </style> <path class="metaphor--header-header_fav42 ot-metaphor" d="M21.157,11.275l2.614,5.3c0.036,0.073,0.089,0.136,0.154,0.183  c0.066,0.048,0.142,0.079,0.222,0.091l5.846,0.849c0.092,0.013,0.179,0.052,0.251,0.112c0.071,0.06,0.124,0.139,0.153,0.228  c0.029,0.089,0.032,0.184,0.01,0.274c-0.022,0.09-0.07,0.173-0.137,0.238l-4.23,4.123c-0.058,0.057-0.102,0.127-0.127,0.204  c-0.025,0.077-0.031,0.159-0.017,0.239l1,5.822c0.016,0.092,0.005,0.186-0.03,0.273c-0.035,0.086-0.094,0.161-0.169,0.216  s-0.165,0.087-0.258,0.094c-0.093,0.007-0.186-0.013-0.269-0.056l-5.228-2.749c-0.072-0.038-0.152-0.057-0.233-0.057  s-0.161,0.02-0.233,0.057l-5.228,2.749c-0.083,0.043-0.175,0.063-0.269,0.056c-0.093-0.007-0.182-0.039-0.258-0.094  s-0.134-0.13-0.169-0.216c-0.035-0.086-0.045-0.181-0.03-0.273l1-5.822c0.014-0.08,0.008-0.162-0.017-0.239  c-0.025-0.077-0.069-0.147-0.127-0.204l-4.23-4.123c-0.067-0.065-0.114-0.148-0.137-0.238c-0.022-0.091-0.019-0.186,0.01-0.274  c0.029-0.089,0.082-0.168,0.153-0.228c0.071-0.06,0.158-0.099,0.25-0.112l5.846-0.849c0.08-0.012,0.156-0.043,0.222-0.091  c0.066-0.048,0.118-0.111,0.154-0.183l2.614-5.3c0.042-0.083,0.106-0.152,0.184-0.201C20.527,11.026,20.618,11,20.711,11  c0.093,0,0.183,0.026,0.262,0.074C21.052,11.123,21.115,11.192,21.157,11.275L21.157,11.275z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="21.0" /></svg>',
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .st0--header-li_header_fav42{fill:#333333;} </style> <path class="st0--header-li_header_fav42 ot-metaphor" d="M21.475,12.142l2.561,5.188c0.077,0.156,0.226,0.265,0.399,0.29l5.726,0.832  c0.435,0.063,0.608,0.598,0.294,0.904l-4.143,4.039c-0.125,0.122-0.182,0.297-0.152,0.469l0.978,5.703  c0.074,0.433-0.38,0.763-0.769,0.559l-5.121-2.692c-0.154-0.081-0.339-0.081-0.493,0l-5.121,2.692  c-0.389,0.204-0.843-0.126-0.769-0.559l0.978-5.703c0.029-0.172-0.028-0.347-0.152-0.469l-4.143-4.039  c-0.315-0.307-0.141-0.841,0.294-0.904l5.726-0.832c0.173-0.025,0.322-0.134,0.399-0.29l2.561-5.188  C20.719,11.748,21.281,11.748,21.475,12.142z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5" /></svg>',
           },
-          csui_header_help42: {
+          csui_li_header_help42: {
             category: "header",
-            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .metaphor--header-header_help42{fill:#FFFFFF;} </style> <path class="metaphor--header-header_help42 ot-metaphor" d="M22.032,24.441c0-1.92,0.698-2.469,2.768-3.915c1.92-1.347,2.943-2.494,2.943-4.564  c0-3.042-2.369-4.963-6.06-4.963c-2.17,0-3.666,0.549-4.738,1.446c-0.898,0.748-1.521,1.746-1.87,2.843  C15.025,15.439,15,15.589,15,15.713c0,0.549,0.449,0.848,0.923,0.973c0.15,0.025,0.299,0.05,0.449,0.05  c0.449,0,0.848-0.225,1.047-0.823c0.573-1.696,1.845-2.868,4.14-2.868c2.369,0,3.791,1.172,3.791,3.017  c0,1.272-0.549,1.92-2.394,3.217c-1.471,0.997-1.746,1.247-2.244,1.895c-0.673,0.848-0.923,1.671-0.923,3.242v0.569  c0,0.648,0.499,1.102,1.147,1.102c0.623,0,1.097-0.453,1.097-1.102V24.441z M20.885,27.559c-0.973,0-1.721,0.673-1.721,1.721  c0,1.047,0.748,1.721,1.721,1.721c0.948,0,1.721-0.673,1.721-1.721C22.606,28.232,21.833,27.559,20.885,27.559z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="21.0" /></svg>',
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .st0--header-li_header_help42{fill:#333333;} </style> <path class="st0--header-li_header_help42 ot-metaphor" d="M22.15,18.903c1.5-1,2.8-1.9,2.8-3.6c0-1.6-1.3-3.1-3.9-3.1  c-1.669-0.079-3.211,0.599-4.377,1.734c-0.497,0.485-1.311,0.421-1.774-0.096l0,0c-0.442-0.494-0.436-1.258,0.037-1.723  c1.686-1.657,4.013-2.6,6.414-2.515c4,0,6.5,2.3,6.5,5.1s-1.9,4.1-3.7,5.3c-1.4,1-2.7,1.8-2.7,3.3c0,0.229,0.058,0.458,0.158,0.675  c0.261,0.57,0.04,1.24-0.531,1.498l0,0c-0.457,0.206-1.015,0.094-1.312-0.31c-0.451-0.611-0.714-1.337-0.714-2.063  C19.05,21.003,20.65,20.003,22.15,18.903z M20.95,28.803c1,0,1.8,0.8,1.8,1.8s-0.8,1.8-1.8,1.8s-1.8-0.8-1.8-1.8  S19.95,28.803,20.95,28.803C20.95,28.703,20.95,28.703,20.95,28.803z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5" /></svg>',
           },
-          csui_header_search42: {
+          csui_li_header_search42: {
             category: "header",
-            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .metaphor--header-header_search42{fill:#FFFFFF;} </style> <path class="metaphor--header-header_search42 ot-metaphor" d="M30.707,29.293l-5.052-5.052c1.09-1.392,1.746-3.14,1.746-5.04c0-4.521-3.679-8.2-8.2-8.2  S11,14.679,11,19.2s3.679,8.2,8.2,8.2c1.901,0,3.648-0.656,5.04-1.746l5.052,5.052C29.488,30.902,29.744,31,30,31  s0.512-0.098,0.707-0.293C31.098,30.316,31.098,29.684,30.707,29.293z M19.2,25.4c-3.419,0-6.2-2.781-6.2-6.2s2.781-6.2,6.2-6.2  s6.2,2.781,6.2,6.2S22.619,25.4,19.2,25.4z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="21.0" /></svg>',
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .st0--header-li_header_search42{fill:#333333;} </style> <path class="st0--header-li_header_search42 ot-metaphor" d="M30.71,29.29l-5.04-5.04c1.08-1.4,1.73-3.15,1.73-5.05c0-4.52-3.68-8.2-8.2-8.2S11,14.68,11,19.2  s3.68,8.2,8.2,8.2c1.9,0,3.65-0.65,5.05-1.73l5.04,5.04C29.49,30.9,29.74,31,30,31s0.51-0.1,0.71-0.29  C31.1,30.32,31.1,29.68,30.71,29.29z M19.2,25.4c-3.42,0-6.2-2.78-6.2-6.2s2.78-6.2,6.2-6.2s6.2,2.78,6.2,6.2  C25.4,22.62,22.62,25.4,19.2,25.4z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5" /></svg>',
           },
-          csui_header_user42: {
+          csui_li_header_searchOpen42: {
             category: "header",
-            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .metaphor--header-header_user42{fill:#FFFFFF;} </style> <path class="metaphor--header-header_user42 ot-metaphor" d="M30,29.509v-0.965c0-0.088,0-0.175,0-0.263v-0.088c-0.088-0.877-0.088-1.316-0.439-2.281  c-0.175-0.614-0.614-1.053-1.316-1.403c-0.702-0.263-1.491-0.439-2.193-0.614c-0.702-0.088-1.316-0.263-1.754-0.439  c-0.263-0.175-0.526-0.351-0.789-0.614c-0.088-0.175-0.263-0.263-0.263-0.439l-0.351-0.351l0.351-0.263  c0.351-0.263,0.614-0.614,0.877-0.965c0.351-0.526,0.614-1.14,0.702-1.93l0.088-0.263l0.263-0.088c0.088,0,0.088-0.088,0.176-0.175  c0.088-0.175,0.175-0.439,0.263-0.614c0.088-0.439,0-0.702-0.088-0.877l-0.088-0.175l0.088-0.351  c0.088-0.351,0.088-0.79,0.088-1.228c-0.088-0.79-0.263-1.491-0.263-1.491c-0.176-0.614-0.614-1.316-1.316-1.754  C23.509,11.439,22.544,11,21.14,11c-1.404,0-2.368,0.526-2.895,0.877c-0.702,0.526-1.228,1.14-1.316,1.754  c0,0.088-0.175,0.789-0.263,1.491c0,0.439,0,0.877,0.088,1.228l0.088,0.351l-0.088,0.088c-0.088,0.175-0.176,0.439-0.088,0.877  c0.088,0.263,0.175,0.526,0.263,0.614s0.176,0.175,0.176,0.175l0.263,0.088l0.088,0.263c0.175,0.702,0.439,1.404,0.702,1.93  c0.263,0.351,0.526,0.702,0.877,0.965l0.351,0.263l-0.175,0.351c-0.088,0.175-0.175,0.351-0.263,0.439  c-0.175,0.263-0.439,0.439-0.789,0.614c-0.439,0.175-1.053,0.351-1.754,0.439c-0.789,0.176-1.579,0.263-2.281,0.614  s-1.14,0.789-1.316,1.403c-0.263,0.965-0.351,1.491-0.439,2.281c0,0.175-0.088,0.263-0.088,0.439v0.965  c0,0.789,0.702,1.491,1.491,1.491h14.737C29.298,31,30,30.386,30,29.509z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="21.0" /></svg>',
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .st0--header-li_header_searchOpen42{fill:#333333;} </style> <path class="st0--header-li_header_searchOpen42 ot-metaphor" d="M17,29.5c-0.3,0-0.5-0.1-0.7-0.3c-0.4-0.4-0.4-1,0-1.4l6.8-6.8l-6.8-6.8c-0.4-0.4-0.4-1,0-1.4  s1-0.4,1.4,0L26,21l-8.2,8.2C17.6,29.4,17.3,29.5,17,29.5z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5" /></svg>',
+          },
+          csui_li_header_user42: {
+            category: "header",
+            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <defs> <clipPath id="circleView"> <circle cx="21" cy="21" r="21" fill="#FFFFFF" /> </clipPath> </defs> <image x="0" y="0" width="42" height="42" clip-path="url(#circleView)" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAqCAYAAADFw8lbAAAAAXNSR0IArs4c6QAAAIRlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAIAAIdpAAQAAAABAAAAWgAAAAAAAABIAAAAAQAAAEgAAAABAAOgAQADAAAAAQABAACgAgAEAAAAAQAAACqgAwAEAAAAAQAAACoAAAAAJyDICAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KGV7hBwAABvVJREFUWAndWWlMVFcU/t6bGbZWBZGgKFiNotVWRAvV1CpqKg7FLXFBSJtqiP2h1FGjadOYoL8MoqDWpj8a11ZbtdJSNjfUWI0WrdaqaN1lEREB2Zlh3uu5M/PKm+XNvBlMf/Qkh3fvPcv95t5zz13g0FPSZ/QGx08mjoIgRoAjBh9G31qIXDVEsRo8nqDVeBZnvm7xtTvOJ8PZK8PRhbkAN5/spxLzxCZikVhLrCE2E3cRsz78iE0kLSWVnwDhZxTveE5tqsk7oHMNwTDiC/K+ipjZMoCM1ZJAiuzHmOnvZvpkEeAmNcbqgCZkahHU+Bk5zCQOJGaj5pIC/LSI7BeCiroGdBjZgCoSE7bSz12PuOCdyMxkP0KRPANlo2jijlCsJZAXNqV2pNXw+Hh6HGbFj8bowf0xtH8oNDwPsyDg/tMXuPmkBvkXb2B/6WVLm52xtSJQPJdA45+C/KxmF3JLk3ugSaujKZ6KSTOSWOfoZPa7byE7fTaGR4Q5ipzqdyprsebbX1BYdstJRg0svh+C4/QozHngSkEZqD5jFDjNRTJyOdXLZk7ENysWkG9lF44dCqKI9G0/YPeJ3x1FrM5CoQW8EI+C7XcdFZym0qIwb3kozNpzVO5L7BSPaVPHY5chxSuQzC/7UWwWyiueWUKCtcmILUotpbRkDJ6yFw/Od8pkLlbs+GU6dOqOktIAi6Fcm8p+Wg02fZLsNUjJDQO7aUkyWGy7IDYoUfDrPIwFC+wG0Vk7POhLUn6P2CkmmePFU8ZhUL9gVvSZhoSHYuH7Y5XsWb/T0DporVzBHmiigY3i58R2v0ZuED9isLzqczlueJQ7W+pfXI9Za/pJSvZANdhIAvs2SdP2jR7oeYU7mLisqvCjo3y2XjLuBmVJRVhKApdTLhmwPPkqaOiAfwdLyR3hEJdjpuENptANVBTTqO52K2EGIqWYV0Fms9uNSOpCAM+lsEo3UE5YSHV2eHBLTW12WcOtrjvhy7Z2d2JJRqNqwWUDOmvFEMpyIyWpu29dk88nNTu3dU2tdnXlChcLWuTWERV0elI0KSt3S3oHBXRXelDqFajaTxcNp9429cJQ6lNV8EWG9SyHSr8tUn0uNtPuMsQKVOToVO5+tUsd3Kn06rwrmTl9b1c+c2pTaGA53Tb14FgWV3W6yD5aii51K1ahX8DYZcbWvDOKcgcBbatilG3qxf4OQsVqUVk5luQcVJSrEaRm7cfp6/fUqFp1OETYph6N6q2AH89dRW2jb6u/sq4ReReue9MdWz310og+9sbSRFPHTuy+0N5TZXRZVbVuJfe0M3CPbUC5SmpVlZ4k610nLklF1V+2qykcmt35IFxitRUoL1aRplc/8xbdhQ6c+cNdB06yPSfL6B5V59TuoYEwilVWoGZ23/a8fTo6XJp7EOdvPXRsdlkv/fMuPv3qkEuZh0YdXf5KrUAnhFwhZa8TZKepCxsOHPPQj1W88eAxsNj2gSpQuP2mFSi7U3M4Qk68itPpY6Oxb02aqr4PrPsICW8PU6UrUzJS+TCx2J3kkw0JEHBapuRUZFeQD2KjMT0mGlNjhiGibx8nHU8NVS9egoXBqWt/4yQxq7slkZ+I4q0Xu4GynSnJcJaMJhKzSxb8dVpMixmOGbEjkDh+JN6MDGfNr5RuPq7B8at3cOzKbdoE7lp2LVsHbHZPoyg3kdXlQIGkVe/QKJcxwZghEThI0zUqSvWmxcx6RH89eorFWfvAwBOJ4IQxFJ83XDtNWnWISzIY6WWD0t5/T9fuV4k0s0boDXvkAK2LSd6iFTIoodZNWJ1jbuv0am3JvfhUbmrvwOR121lqeIoA0xq5E2eg+dvY+SupoaW9a1xG9iu7I8k7dVVm2+rY5ZvFpvZOI0SzHnk7X8j1nIEyaVHuNYre1DtVtZiwOlfpFU7up0dlll/ZoDx8Vk9XJH4+vZk6vaTZLybH7vQrF9Hpen9Yn9c1F7as5Id5vuI6evBYL6+owaS1O8z1za0m8HwqCnLyXBkpvohYlO9duono+KK2DtO8rwt+8/fTafhJo4e68uNTW+b3JUjZtM9E/um9Hwk0kyw9uiT3IyqZsKceHrspHBIHhvYRtqTP4RdNjpWkXn/ZEXHdrnxzTUMzG6hf0aVNx/HsWneO1AGVPFh3rxyqxvQK9Bc+jBulyUxLxIhBnjeCG5QbNxwoQfHlcnNrh5EBLKNRXIXi3POSe3df74BaPXGU4+ZQ7KZSTk6mpsAAndYU0itIFx7cy/LSN6Bvb1TXv0TF80Y8b2xGfUu7iQ4w9JhAb/ZAAdl9h6JthVRWfbT0BSj5t5E+wx+cdiot1Rm0yQ22Mvs/E4IJQgOFSjWVnxA/IkwleC3kLA5nsoPG/5f+AYHJnCJAa4aaAAAAAElFTkSuQmCC" /> <circle class="ot-top-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5" /></svg>',
           },
           // Insight Explorer START
           csui_li_header_aviator42: {
@@ -17604,10 +17656,10 @@ csui.define("csui/lib/othelp", [], function () {
           }
           // Insight Explorer END
         });
-      }
-    ),
-    csui.define(
-      "csui/controls/app.header/app.header.controls/csui.app.header.controls",
+    }
+  ),
+  csui.define(
+    "csui/controls/app.header/app.header.controls/csui.app.header.controls",
     ["csui/themes/carbonfiber/ot-icons/icons_csui_header"],
     function () {
       return [
@@ -17666,39 +17718,39 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/utils/contexts/factories/user",
       "i18n!csui/utils/proxysettings/impl/nls/proxydynamic.lang",
     ],
-    function (x, m, p, y, s, e, r, a) {
+    function (x, m, p, y, s, e, r, l) {
       "use strict";
-      var d;
+      var f;
       function t(i) {
-        if (d || !s.enabled()) return m.Deferred().resolve([]);
+        if (f || !s.enabled()) return m.Deferred().resolve([]);
         var o = m.Deferred(),
           n =
             i.connector.getConnectionUrl().getApiBase("v2") +
             "members/proxies/targets",
           u = { url: n, method: "GET" },
           c = [],
-          h = i.context.getModel(r);
+          d = i.context.getModel(r);
         return (
-          h.get("proxy_proxy_user_id")
-            ? ((d = !0),
+          d.get("proxy_proxy_user_id")
+            ? ((f = !0),
               c.push({
                 profileMenu: {
                   signature: "SwitchToNonProxyUser",
-                  name: p.str.sformat(a.endWorkAs, h.get("display_name")),
+                  name: p.str.sformat(l.endWorkAs, d.get("display_name")),
                   group: "proxy",
                 },
               }),
               y.showMessage(
                 "warning",
-                p.str.sformat(a.workingAs, h.get("display_name")),
-                p.str.sformat(a.workingAsMessage, h.get("display_name"))
+                p.str.sformat(l.workingAs, d.get("display_name")),
+                p.str.sformat(l.workingAsMessage, d.get("display_name"))
               ),
               o.resolve(c))
             : i.connector
                 .makeAjaxCall(u)
-                .then(function (f) {
-                  (d = !0),
-                    p.each(f.results.data, function (k) {
+                .then(function (h) {
+                  (f = !0),
+                    p.each(h.results.data, function (k) {
                       c.push({
                         profileMenu: {
                           groupBy: "proxy",
@@ -17710,19 +17762,19 @@ csui.define("csui/lib/othelp", [], function () {
                         },
                       });
                     }),
-                    f.results.data.length > 0 &&
+                    h.results.data.length > 0 &&
                       c.push({
                         profileMenu: {
                           groupBy: "proxy",
                           signature: "SwitchToProxyUser",
-                          name: a.workAs,
+                          name: l.workAs,
                           group: "proxy",
                           isLabel: !0,
                         },
                       }),
                     o.resolve(c);
                 })
-                .catch(function (f) {
+                .catch(function (h) {
                   o.resolve(c);
                 }),
           o.promise()
@@ -17743,13 +17795,13 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s) {
       "use strict";
       var e;
-      function r(a) {
+      function r(l) {
         if (e) return m.Deferred().resolve([]);
         e = !0;
-        let d = m.Deferred(),
+        let f = m.Deferred(),
           t = [];
         return (
-          a.context.getModel(y).get("type") === 10 &&
+          l.context.getModel(y).get("type") === 10 &&
             (t.push({
               profileMenu: {
                 signature: "SwitchToNonCMUser",
@@ -17758,8 +17810,8 @@ csui.define("csui/lib/othelp", [], function () {
               },
             }),
             p.showMessage("warning", s.cmMode, s.workingAsMessage)),
-          d.resolve(t),
-          d.promise()
+          f.resolve(t),
+          f.promise()
         );
       }
       return r;
@@ -17771,7 +17823,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -17779,7 +17831,7 @@ csui.define("csui/lib/othelp", [], function () {
                 if (Object.prototype.hasOwnProperty.call(o, n)) return o[n];
               };
           return (
-            '<otc-button type="button" class="csui-acc-focusable csui-sidebar-item ' +
+            '<button type="button" class="csui-acc-focusable csui-sidebar-item ' +
             s.escapeExpression(
               ((t =
                 (t =
@@ -17792,8 +17844,8 @@ csui.define("csui/lib/othelp", [], function () {
                     name: "iconClass",
                     hash: {},
                     loc: {
-                      start: { line: 1, column: 70 },
-                      end: { line: 1, column: 83 },
+                      start: { line: 1, column: 66 },
+                      end: { line: 1, column: 79 },
                     },
                   })
                 : t)
@@ -17810,32 +17862,14 @@ csui.define("csui/lib/othelp", [], function () {
                     name: "tooltip",
                     hash: {},
                     loc: {
-                      start: { line: 1, column: 92 },
-                      end: { line: 1, column: 103 },
-                    },
-                  })
-                : t)
-            ) +
-            '" icon="' +
-            s.escapeExpression(
-              ((t =
-                (t = i(r, "iconName") || (e != null ? i(e, "iconName") : e)) !=
-                null
-                  ? t
-                  : s.hooks.helperMissing),
-              typeof t == "function"
-                ? t.call(e ?? (s.nullContext || {}), {
-                    name: "iconName",
-                    hash: {},
-                    loc: {
-                      start: { line: 1, column: 111 },
-                      end: { line: 1, column: 123 },
+                      start: { line: 1, column: 88 },
+                      end: { line: 1, column: 99 },
                     },
                   })
                 : t)
             ) +
             `"> 
-</otc-button>`
+</button>`
           );
         },
       });
@@ -17865,7 +17899,7 @@ csui.define("csui/lib/othelp", [], function () {
         template: m,
         templateContext: function () {
           return {
-            iconClass: "csui-sidebar-" + this.model.get("name") + "-btn",
+            iconClass: this.model.get("iconClass"),
             tooltip: this.model.get("name"),
           };
         },
@@ -17935,9 +17969,6 @@ csui.define("csui/lib/othelp", [], function () {
     widgets: "Widgets",
     titleClearIcon: "Clear",
     sideBarCloseIcon: "Close",
-    help: "Help",
-    widgetSearchPlaceholder: "Search widgets",
-    titleSearchIcon: "Search",
   }),
   csui.define(
     "hbs!csui/perspective.manage/sidebar/impl/pman.sidebar.container",
@@ -17945,7 +17976,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -17955,9 +17986,7 @@ csui.define("csui/lib/othelp", [], function () {
           return (
             `<div class="csui-ribbon-panel csui-normal-scrolling">
     <ul class="csui-pman-sidebar-ribbon"></ul>
-    <button class="icon icon-help" title="` +
-            s.escapeExpression(s.lambda(e != null ? i(e, "help") : e, e)) +
-            `"></button>
+    <button class="icon icon-help" title="Help"></button>
 </div>
 
 <div class="csui-sidebar-slide-container">
@@ -17989,8 +18018,6 @@ csui.define("csui/lib/othelp", [], function () {
             s.escapeExpression(
               s.lambda(e != null ? i(e, "sideBarCloseIcon") : e, e)
             ) +
-            `" tabindex='0' id="` +
-            s.escapeExpression(s.lambda(e != null ? i(e, "title") : e, e)) +
             `"> 
 			</div>
 		</div>
@@ -18033,24 +18060,19 @@ csui.define("csui/lib/othelp", [], function () {
         tagName: "div",
         template: r,
         templateContext: function () {
-          return { sideBarCloseIcon: e.sideBarCloseIcon, help: e.help };
+          return { sideBarCloseIcon: e.sideBarCloseIcon };
         },
         ui: {
           slideTitle: ".csui-sidebar-slide-title",
           slideBody: ".csui-sidebar-slide-body",
           closeIcon: ".csui-sidebar-slide-close",
           helpIcon: ".csui-ribbon-panel .icon-help",
-          sideBarItem: ".csui-sidebar-item",
-          sidebarSlideContainer: ".csui-sidebar-slide-container",
         },
         className: "csui-sidebar-panel",
         events: {
-          "keydown @ui.sidebarSlideContainer": "onKeyDownSidebarPanel",
-          "keydown @ui.sideBarItem": "onOpenPanelKeyDown",
+          keydown: "onOpenPanelKeyDown",
           "click @ui.closeIcon": "closeSlidePanel",
           "click @ui.helpIcon": "onClickHelp",
-          "keydown @ui.helpIcon": "onKeydownHelp",
-          "keydown @ui.closeIcon": "onKeydowncloseIcon",
         },
         childViewContainer: "ul.csui-pman-sidebar-ribbon",
         childView: p,
@@ -18074,24 +18096,21 @@ csui.define("csui/lib/othelp", [], function () {
             o = new y();
           s.filter((n) => n.isEnabled(i.options) && o.add(n)),
             (this.collection = o),
-            (this.helpView = new m(t)),
-            this.listenTo(t.context, "open:rules", this.openSettingsPanel),
-            this.listenTo(t.context, "close:sidepanel", this.closeSlidePanel);
+            (this.helpView = new m(t));
         },
-        onChildShowPanel(d, t, i) {
-          this.openSlidePanel(t, i), this.setActive(d);
+        onChildShowPanel(f, t, i) {
+          this.openSlidePanel(t, i), this.setActive(f);
         },
-        onChildSetActive(d) {
-          this.setActive(d);
+        onChildSetActive(f) {
+          this.setActive(f);
         },
-        openSlidePanel: function (d, t) {
-          this.slideRegion.show(d),
+        openSlidePanel: function (f, t) {
+          this.slideRegion.show(f),
             this.el
               .closest(".csui-sidebar")
               ?.classList.add("csui-sidebar-open"),
             this.ui.slideTitle.text(t),
-            this.ui.slideTitle.attr({ "aria-label": t, title: t }),
-            this.ui.closeIcon.attr({ id: t });
+            this.ui.slideTitle.attr({ "aria-label": t, title: t });
         },
         closeSlidePanel: function () {
           this.el
@@ -18102,97 +18121,19 @@ csui.define("csui/lib/othelp", [], function () {
         onClickHelp: function () {
           this.helpView.triggerMethod("click:help", "editpage");
         },
-        onOpenPanelKeyDown: function (d) {
-          let t = this.el.querySelectorAll(
-              "otc-button:not(:disabled), button:not(:disabled)"
-            ),
-            o = Array.from(
-              this.el.querySelectorAll(".csui-pman-sidebar-ribbon li")
-            ).indexOf(d.target.parentElement);
-          switch (d.key) {
-            case "ArrowUp":
-              o > 0 && t[o - 1].focus(), d.preventDefault();
-              break;
-            case "ArrowDown":
-              d.preventDefault(),
-                o < t.length - 1 && o >= 0 && t[o + 1].focus();
-              break;
-            case "Tab":
-              d.shiftKey && d.key === "Tab"
-                ? this.options?.context?.pmanView?.ui.addPageBtn[0].focus()
-                : this._setFocusOnFirstWidget(),
-                d.preventDefault();
-              break;
-            case "Escape":
-              this.closeSlidePanel();
-              break;
-          }
+        onOpenPanelKeyDown: function (f) {
+          f.key === "Escape" && this.closeSlidePanel();
         },
-        onKeyDownSidebarPanel: function (d) {
-          let t;
-          d.key === "Escape" &&
-            ((t = this.el.querySelector(".csui-ribbon-panel [toggled]")),
-            this.closeSlidePanel(),
-            t.focus());
-        },
-        onKeydownHelp: function (d) {
-          let t = this.el.querySelectorAll("otc-button:not(:disabled)");
-          switch (d.key) {
-            case "ArrowUp":
-              t[t.length - 1].focus();
-              break;
-            case "Tab":
-              this._setFocusOnFirstWidget();
-              break;
-          }
-        },
-        onKeydowncloseIcon: function (d) {
-          switch (d.key) {
-            case "Enter":
-              this.closeSlidePanel(), this._setFocusOnSettingItem(d);
-              break;
-            case "Tab":
-              d.shiftKey && d.key === "Tab" && this._setFocusOnSettingItem(d);
-              break;
-          }
-        },
-        _setFocusOnFirstWidget: function () {
-          let d = document.querySelectorAll(
-              ".cs-perspective-panel .cs-perspective .csui-pman-editable-widget"
-            )[0],
-            t = d.querySelector(".shortcut-group-wrapper");
-          t?.getAttribute("tabindex") === "0"
-            ? t.focus()
-            : d.querySelectorAll(".wrapper-button")[0].focus();
-        },
-        _setFocusOnSettingItem: function (d) {
-          let t = ".csui-sidebar-" + d.target.getAttribute("id") + "-btn";
-          document.querySelector(t).focus(), d.preventDefault();
-        },
-        setActive: function (d) {
+        setActive: function (f) {
           this.clearActive(),
-            d.el
+            f.el
               .querySelector(".csui-sidebar-item")
-              .setAttribute("toggled", ""),
-            this.ui.slideBody[0]
-              ?.querySelectorAll("*[tabindex], button, input.search-widget")[0]
-              ?.focus();
+              .classList.add("binf-active");
         },
         clearActive: function () {
           this.el
             .querySelectorAll(".csui-sidebar-item")
-            .forEach((d) => d.removeAttribute("toggled"));
-        },
-        openSettingsPanel: function () {
-          if (this.children.length === 0) return;
-          const d = this.children.find(
-            (t) => t.model?.get("signature") === "Settings"
-          );
-          if (d) {
-            const t = d.model?.getPanelView(this.options),
-              i = d.model?.getPanelTitle();
-            this.onChildShowPanel(d, t, i);
-          }
+            .forEach((f) => f.classList.remove("binf-active"));
         },
       });
     }
@@ -18202,11 +18143,11 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return "binf-active";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -18223,7 +18164,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 1, column: 31 },
@@ -18238,7 +18179,7 @@ csui.define("csui/lib/othelp", [], function () {
             `"
      draggable="` +
             s.escapeExpression(s.lambda(e != null ? i(e, "draggable") : e, e)) +
-            `" tabindex= "0">
+            `" tabindex= "-1">
   <span>` +
             s.escapeExpression(s.lambda(e != null ? i(e, "title") : e, e)) +
             `</span>
@@ -18285,35 +18226,13 @@ csui.define("csui/lib/othelp", [], function () {
           ),
           "keydown .csui-layout-item": x.debounce(
             function (s) {
-              switch (s.key) {
-                case "Enter":
-                case " ":
-                  this.trigger("change:layout", this);
-                  break;
-                case "ArrowUp":
-                  this.$el.prev().length &&
-                    this.$el
-                      .prev()[0]
-                      .querySelector("*[tabindex], .csui-accordion-header")
-                      .focus();
-                  break;
-                case "ArrowDown":
-                  this.$el.next().length &&
-                    this.$el
-                      .next()[0]
-                      .querySelector("*[tabindex], .csui-accordion-header")
-                      .focus();
-                  break;
-                case "Tab":
-                  s.shiftKey &&
-                    s.key === "Tab" &&
-                    this.$el
-                      .parents(".csui-sidebar-slide-main")[0]
-                      .querySelectorAll(".csui-sidebar-slide-close")[0]
-                      .focus(),
-                    s.preventDefault();
-                  break;
-              }
+              (s.key === "Enter" || s.key === " ") &&
+                (this.trigger("change:layout"),
+                document
+                  .querySelector(
+                    ".binf-widgets.perspective-editing .cs-perspective-with-breadcrumb-view .csui-sidebar .csui-layout-item.binf-active"
+                  )
+                  .attr("tabindex", 0));
             },
             200,
             !0
@@ -18328,7 +18247,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -18401,11 +18320,11 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s, e) {
       "use strict";
       return p.CollectionView.extend({
-        constructor: function (d) {
+        constructor: function (f) {
           if (
-            (d || (d = {}),
-            d.data || (d.data = {}),
-            p.CollectionView.call(this, d),
+            (f || (f = {}),
+            f.data || (f.data = {}),
+            p.CollectionView.call(this, f),
             this.options.data?.items)
           ) {
             if (!this.collection) {
@@ -18422,11 +18341,11 @@ csui.define("csui/lib/othelp", [], function () {
           "change:layout": "child:Change:Layout",
           "set:active": "child:set:active",
         },
-        onChildChangeLayout(a) {
-          this.onChangeLayout(a);
+        onChildChangeLayout(l) {
+          this.onChangeLayout(l);
         },
-        onChildSetActive(a) {
-          this.setActive(a);
+        onChildSetActive(l) {
+          this.setActive(l);
         },
         template: e,
         childViewContainer: ".cs-list-group",
@@ -18434,22 +18353,23 @@ csui.define("csui/lib/othelp", [], function () {
         childViewOptions: function () {
           return this.options;
         },
-        setActive: function (a) {
+        setActive: function (l) {
           this.el
             .querySelectorAll(".csui-layout-item")
-            .forEach((d) => d.classList.remove("binf-active")),
-            a.el
+            .forEach((f) => f.classList.remove("binf-active")),
+            l.el
               .querySelector(".csui-layout-item")
               .classList.add("binf-active");
         },
-        onChangeLayout: function (a) {
-          let d = this,
-            t = a.model.get("type"),
-            i = this.options.perspectiveType;
+        onChangeLayout: function (l) {
+          let f = this,
+            t = l.model.get("type"),
+            i =
+              this.options.context.pmanView.perspective.get("perspective").type;
           (i === "sidepanel-right" || i === "sidepanel-left") &&
           (t === "sidepanel-right" || t === "sidepanel-left")
-            ? (d.setActive(a),
-              d.options.context.pmanView.trigger("swap:layout", t))
+            ? (f.setActive(l),
+              f.options.context.pmanView.trigger("swap:layout", t))
             : csui.require(
                 ["csui/dialogs/modal.alert/modal.alert"],
                 function (o) {
@@ -18466,12 +18386,12 @@ csui.define("csui/lib/othelp", [], function () {
                     }
                   ).done(function (n) {
                     n &&
-                      (d.setActive(a),
-                      d.options.context.pmanView.trigger(
+                      (f.setActive(l),
+                      f.options.context.pmanView.trigger(
                         "change:layout",
-                        a.model.get("type")
+                        l.model.get("type")
                       ),
-                      d.options.context.pmanView.context.trigger(
+                      f.options.context.pmanView.context.trigger(
                         "reset:widget:panel"
                       ));
                   });
@@ -18493,7 +18413,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s) {
       var e = m.extend({ enableNewlayoutOption: !1 }, x.config());
       const r = p?.settings.rtl;
-      var a = [
+      var l = [
         {
           title: y.LcrLayoutTitle,
           type: "left-center-right",
@@ -18503,7 +18423,7 @@ csui.define("csui/lib/othelp", [], function () {
       ];
       return (
         e.enableNewlayoutOption &&
-          a.push(
+          l.push(
             {
               title: y.RSPLayoutTitle,
               type: "sidepanel-right",
@@ -18519,8 +18439,8 @@ csui.define("csui/lib/othelp", [], function () {
                 : "csui-layout-sidepanel-left",
             }
           ),
-        s && (a = m.union(a, s)),
-        a
+        s && (l = m.union(l, s)),
+        l
       );
     }
   ),
@@ -18540,13 +18460,9 @@ csui.define("csui/lib/othelp", [], function () {
           sequence: 1,
           name: y.layouts,
           iconClass: "csui-sidebar-layouts-btn",
-          iconName: "csui_action:action_layouts32",
           panelTitle: y.layouts,
         },
         getPanelView: function (e) {
-          document.body.classList.contains("csui-top-ribbon-enabled") &&
-            p[0].type === "left-center-right" &&
-            p.splice(0, 1);
           let r = e?.data ? e : { data: { items: p } };
           return (
             (r.draggable = !!r.data.draggable),
@@ -18565,7 +18481,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -18596,26 +18512,7 @@ csui.define("csui/lib/othelp", [], function () {
                 : t)
             ) +
             `"
-          placeholder="` +
-            s.escapeExpression(
-              ((t =
-                (t =
-                  i(r, "widgetSearchPlaceholder") ||
-                  (e != null ? i(e, "widgetSearchPlaceholder") : e)) != null
-                  ? t
-                  : s.hooks.helperMissing),
-              typeof t == "function"
-                ? t.call(e ?? (s.nullContext || {}), {
-                    name: "widgetSearchPlaceholder",
-                    hash: {},
-                    loc: {
-                      start: { line: 5, column: 23 },
-                      end: { line: 5, column: 50 },
-                    },
-                  })
-                : t)
-            ) +
-            `" />
+          placeholder="Search widgets" />
      <div class="search-widget cs-search-clear csui-icon formfield_clear" title="` +
             s.escapeExpression(
               s.lambda(e != null ? i(e, "titleClearIcon") : e, e)
@@ -18701,11 +18598,7 @@ csui.define("csui/lib/othelp", [], function () {
       return p.View.extend({
         template: s,
         templateContext: function () {
-          return {
-            titleClearIcon: y.titleClearIcon,
-            widgetSearchPlaceholder: y.widgetSearchPlaceholder,
-            titleSearchIcon: y.titleSearchIcon,
-          };
+          return { titleClearIcon: y.titleClearIcon };
         },
         tagName: "div",
         ui: {
@@ -18714,13 +18607,13 @@ csui.define("csui/lib/othelp", [], function () {
         },
         events: {
           "keyup @ui.searchInput": "onKeyUp",
-          "keydown @ui.searchInput": "onKeyDownsearchInput",
+          "keydown @ui.searchInput": "onKeyDown",
           "click @ui.searchclear": "onClickClear",
           "keydown @ui.searchclear": "onClickClear",
           "input @ui.searchInput": "onSearchInput",
         },
-        constructor: function (a) {
-          (this.options = a || {}),
+        constructor: function (l) {
+          (this.options = l || {}),
             p.View.prototype.constructor.apply(this, arguments);
         },
         onRender: function () {
@@ -18746,24 +18639,21 @@ csui.define("csui/lib/othelp", [], function () {
                 (this.trigger("item:clear"),
                 this.ui.searchInput.removeAttr("aria-activedescendant")));
         },
-        onKeyDownsearchInput: function (r) {
-          switch (r.key) {
-            case "Tab":
-              x(this.ui.searchclear).is(":visible") &&
-                (r.shiftKey && r.key === "Tab"
-                  ? this.updateClearStyle()
-                  : (r.preventDefault(),
-                    r.stopPropagation(),
-                    this.ui.searchclear[0].focus()));
-              break;
-          }
+        onKeyDown: function (r) {
+          r.key === "Tab" &&
+            x(this.ui.searchclear).is(":visible") &&
+            (r.shiftKey
+              ? this.updateClearStyle()
+              : (r.preventDefault(),
+                r.stopPropagation(),
+                this.ui.searchclear[0].focus()));
         },
         onSearchInput: function (r) {
-          let a = x(r.target).val().split(" ").join("").trim().toLowerCase();
+          let l = x(r.target).val().split(" ").join("").trim().toLowerCase();
           this.searchTimeout && clearTimeout(this.searchTimeout),
             (this.searchTimeout = setTimeout(() => {
-              this.trigger("search:performed", a),
-                a.length === 0 && this.trigger("search:closed");
+              this.trigger("search:performed", l),
+                l.length === 0 && this.trigger("search:closed");
             }, 200));
         },
       });
@@ -18780,8 +18670,8 @@ csui.define("csui/lib/othelp", [], function () {
             objectToPrimitive: function (s) {
               var e = m.extend(!0, {}, this.manifest),
                 r = this.manifest.schema.properties[s],
-                a = this.manifest.options.fields[s],
-                d = a && a.items.fields,
+                l = this.manifest.options.fields[s],
+                f = l && l.items.fields,
                 t = x.keys(r.items.properties)[0];
               this.manifest.modifiedItems = e;
               var i = r.items.properties[t];
@@ -18790,14 +18680,14 @@ csui.define("csui/lib/othelp", [], function () {
                 (r.title = i.title),
                 (r.required = r.items.required && r.items.required.length > 0),
                 (r.itemKey = t),
-                d && (delete a.items.fields, (a.items = x.values(d)[0]));
+                f && (delete l.items.fields, (l.items = x.values(f)[0]));
             },
             updateDataToPrimitive: function (s, e) {
               var r = [],
-                a = this.manifest.schema.properties[e].itemKey;
+                l = this.manifest.schema.properties[e].itemKey;
               s[e].length == 0 && r.push(""),
-                s[e].forEach(function (d) {
-                  r.push(d[a]);
+                s[e].forEach(function (f) {
+                  r.push(f[l]);
                 }),
                 (s[e] = r);
             },
@@ -18809,9 +18699,9 @@ csui.define("csui/lib/othelp", [], function () {
                     this.manifest.modifiedItems.options.fields[s].items),
                   (this.manifest.schema.properties[s].items =
                     this.manifest.modifiedItems.schema.properties[s].items));
-                for (var a in e[s]) {
-                  var d = {};
-                  (d[r] = e[s][a]), (e[s][a] = d);
+                for (var l in e[s]) {
+                  var f = {};
+                  (f[r] = e[s][l]), (e[s][l] = f);
                 }
                 return e;
               }
@@ -18829,7 +18719,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -18939,7 +18829,7 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/utils/perspective/perspective.util",
       "css!csui/perspective.manage/impl/options.form",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i) {
+    function (x, m, p, y, s, e, r, l, f, t, i) {
       var o = y.LayoutView.extend(
           {
             template: t,
@@ -18949,7 +18839,7 @@ csui.define("csui/lib/othelp", [], function () {
               return {
                 title: this.options.manifest.title,
                 description: this.options.manifest.description,
-                configNotSupported: d.configNotSupported,
+                configNotSupported: f.configNotSupported,
               };
             },
             ui: {
@@ -19022,24 +18912,24 @@ csui.define("csui/lib/othelp", [], function () {
               var c = this.$el.find(u);
               if (c.length) {
                 c = c.first();
-                var h = c.find(
+                var d = c.find(
                     "input:visible, textarea:visible, button.binf-dropdown-toggle:visible"
                   ),
-                  f = c.find(".cs-browse-icon");
-                h.length &&
-                  (f.length ? f.trigger("focus") : h.first().trigger("focus"));
+                  h = c.find(".cs-browse-icon");
+                d.length &&
+                  (h.length ? h.trigger("focus") : d.first().trigger("focus"));
               }
             },
             _onKeyDown: function (u) {
               var c = !0,
-                h = m(u.target);
+                d = m(u.target);
               switch (u.keyCode) {
                 case 9:
-                  !u.shiftKey && h.parents(".alpaca-container-item-last").length
+                  !u.shiftKey && d.parents(".alpaca-container-item-last").length
                     ? (this._focusField(".alpaca-container-item-first"),
                       (c = !1))
                     : u.shiftKey &&
-                      h.parents(".alpaca-container-item-first").length &&
+                      d.parents(".alpaca-container-item-first").length &&
                       (this._focusField(".alpaca-container-item-last"),
                       (c = !1));
                   break;
@@ -19064,9 +18954,9 @@ csui.define("csui/lib/othelp", [], function () {
                 var u = !0;
                 if (i.hasRequiredFields(this.manifest)) {
                   var c = this._getOptionsData(),
-                    h = this.manifest.schema.required;
-                  x.each(h, function (f) {
-                    c[f] || (u = !1);
+                    d = this.manifest.schema.required;
+                  x.each(d, function (h) {
+                    c[h] || (u = !1);
                   });
                 }
                 return u;
@@ -19082,18 +18972,18 @@ csui.define("csui/lib/othelp", [], function () {
             _prepareFormModel: function () {
               var u = this._getOptionsData(),
                 c = [];
-              for (var h in this.manifest.schema.properties) {
-                if (h !== "businessobjecttypes") break;
-                var f = this.manifest.schema.properties[h];
-                f.type === "array" &&
-                f.items.type === "object" &&
-                x.keys(f.items.properties).length === 1
-                  ? (c.push(h),
-                    this.objectToPrimitive(h),
-                    u[h] && this.updateDataToPrimitive(u, h))
+              for (var d in this.manifest.schema.properties) {
+                if (d !== "businessobjecttypes") break;
+                var h = this.manifest.schema.properties[d];
+                h.type === "array" &&
+                h.items.type === "object" &&
+                x.keys(h.items.properties).length === 1
+                  ? (c.push(d),
+                    this.objectToPrimitive(d),
+                    u[d] && this.updateDataToPrimitive(u, d))
                   : this.manifest.modifiedProperties &&
-                    u[h] &&
-                    this.updateDataToPrimitive(u, h);
+                    u[d] &&
+                    this.updateDataToPrimitive(u, d);
               }
               c.length > 0 && (this.manifest.modifiedProperties = c);
               var k = JSON.parse(JSON.stringify(this.manifest.schema)),
@@ -19108,9 +18998,9 @@ csui.define("csui/lib/othelp", [], function () {
               var u = this.options.widgetConfig.options || {};
               return this._isPreviewWidget() && (u = u.options || {}), u;
             },
-            _addWidgetSizePropertyIfSupported: function (u, c, h) {
+            _addWidgetSizePropertyIfSupported: function (u, c, d) {
               if (this.options.perspectiveView.getSupportedWidgetSizes) {
-                var f = this.options.perspectiveView.getSupportedWidgetSizes(
+                var h = this.options.perspectiveView.getSupportedWidgetSizes(
                   this.manifest,
                   this.options.widgetView
                 );
@@ -19123,36 +19013,36 @@ csui.define("csui/lib/othelp", [], function () {
                       ? this.options.perspectiveView.$el.hasClass(
                           "cs-bcs-perspective-banner"
                         ) && delete u.properties.titlefield
-                      : (f = x.filter(f, function (b) {
-                          return b.kind !== "heroTile";
+                      : (h = x.filter(h, function (v) {
+                          return v.kind !== "heroTile";
                         }))),
-                  !(!f || f.length === 0))
+                  !(!h || h.length === 0))
                 ) {
                   var k = {
-                      title: d.widgetSizeTitle,
-                      description: d.widgetSizeDescription,
+                      title: f.widgetSizeTitle,
+                      description: f.widgetSizeDescription,
                       type: "string",
-                      enum: x.map(f, function (b) {
-                        return b.kind;
+                      enum: x.map(h, function (v) {
+                        return v.kind;
                       }),
                     },
                     C = {
                       type: "select",
-                      optionLabels: x.map(f, function (b) {
-                        return b.label;
+                      optionLabels: x.map(h, function (v) {
+                        return v.label;
                       }),
                       removeDefaultNone: !0,
                     },
-                    S = x.find(f, function (b) {
-                      return b.selected;
+                    S = x.find(h, function (v) {
+                      return v.selected;
                     });
-                  S && (h[o.widgetSizeProperty] = S.kind);
+                  S && (d[o.widgetSizeProperty] = S.kind);
                   var w = {};
                   (w[o.widgetSizeProperty] = k),
                     (u.properties = x.extend(w, u.properties));
-                  var v = {};
-                  (v[o.widgetSizeProperty] = C),
-                    (c.fields = x.extend(v, c.fields)),
+                  var b = {};
+                  (b[o.widgetSizeProperty] = C),
+                    (c.fields = x.extend(b, c.fields)),
                     (u.required = u.required || []),
                     u.required.push(o.widgetSizeProperty);
                 }
@@ -19162,28 +19052,28 @@ csui.define("csui/lib/othelp", [], function () {
           {
             widgetSizeProperty: "__widgetSize",
             _resolveOptionsType: function (u, c) {
-              var h = u.type;
+              var d = u.type;
               return (
-                h || (h = s.getSchemaType(c)),
-                h || (c && s.isArray(c) ? (h = "array") : (h = "object")),
+                d || (d = s.getSchemaType(c)),
+                d || (c && s.isArray(c) ? (d = "array") : (d = "object")),
                 u && u.enum
                   ? u.enum.length > 3
                     ? "select"
                     : "radio"
-                  : s.defaultSchemaFieldMapping[h]
+                  : s.defaultSchemaFieldMapping[d]
               );
             },
-            _normalizeOptions: function (u, c, h) {
-              var f = !0;
+            _normalizeOptions: function (u, c, d) {
+              var h = !0;
               return (
                 x.each(u, function (k, C) {
                   var S = c[C],
-                    w = h[C];
+                    w = d[C];
                   S || (c[C] = S = {});
-                  var v = S.type;
+                  var b = S.type;
                   switch (
-                    (!v && k.type && (v = o._resolveOptionsType(k, w)),
-                    s.getFieldClass(v) || (f = !1),
+                    (!b && k.type && (b = o._resolveOptionsType(k, w)),
+                    s.getFieldClass(b) || (h = !1),
                     k.type)
                   ) {
                     case "array":
@@ -19194,47 +19084,47 @@ csui.define("csui/lib/othelp", [], function () {
                       ) {
                         S.fields.item.type &&
                           !s.getFieldClass(S.fields.item.type) &&
-                          (f = !1),
+                          (h = !1),
                           S.fields.item.fields || (S.fields.item.fields = {}),
-                          (!w || w.length === 0) && (h[C] = w = [{}]);
-                        var b = o._normalizeOptions(
+                          (!w || w.length === 0) && (d[C] = w = [{}]);
+                        var v = o._normalizeOptions(
                           k.items.properties,
                           S.fields.item.fields,
                           w[0]
                         );
-                        b || (f = !1);
+                        v || (h = !1);
                       }
-                      w || (h[C] = [null]);
+                      w || (d[C] = [null]);
                       break;
                     case "object":
-                      w || (h[C] = w = {}), S.fields || (S.fields = {});
+                      w || (d[C] = w = {}), S.fields || (S.fields = {});
                       var _ = o._normalizeOptions(k.properties, S.fields, w);
-                      _ || (f = !1);
+                      _ || (h = !1);
                       break;
                     default:
-                      x.isUndefined(w) && (h[C] = k.default || null);
+                      x.isUndefined(w) && (d[C] = k.default || null);
                       break;
                   }
                 }),
-                f
+                h
               );
             },
           }
         ),
-        n = a.extend({
+        n = l.extend({
           className: function () {
-            var u = a.prototype.className.call(this);
+            var u = l.prototype.className.call(this);
             return u + " perspective-widget-form";
           },
           constructor: function (c) {
-            a.apply(this, arguments);
+            l.apply(this, arguments);
           },
           popover: !1,
           refresh: function (u) {
             this.form && this.form.refresh(u);
           },
           _modifyModel: function () {
-            a.prototype._modifyModel.apply(this, arguments),
+            l.prototype._modifyModel.apply(this, arguments),
               (this.alpaca.options.hideInitValidationError = !1);
           },
         });
@@ -19247,7 +19137,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t =
             s.lookupProperty ||
             function (i, o) {
@@ -19308,7 +19198,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -19326,8 +19216,8 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(2, d, 0),
-                inverse: s.program(4, d, 0),
+                fn: s.program(2, f, 0),
+                inverse: s.program(4, f, 0),
                 loc: {
                   start: { line: 11, column: 20 },
                   end: { line: 11, column: 76 },
@@ -19409,8 +19299,8 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(4, d, 0),
-                inverse: s.program(2, d, 0),
+                fn: s.program(4, f, 0),
+                inverse: s.program(2, f, 0),
                 loc: {
                   start: { line: 21, column: 20 },
                   end: { line: 21, column: 76 },
@@ -19475,14 +19365,14 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        2: function (s, e, r, a, d) {
+        2: function (s, e, r, l, f) {
           return "";
         },
-        4: function (s, e, r, a, d) {
+        4: function (s, e, r, l, f) {
           return " binf-hidden ";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -19492,7 +19382,7 @@ csui.define("csui/lib/othelp", [], function () {
           return (
             '<div class="csui-accordion-header" title="' +
             s.escapeExpression(s.lambda(e != null ? i(e, "title") : e, e)) +
-            `" tabindex="0">
+            `">
   <div class="csui-accordion-header-title">` +
             s.escapeExpression(s.lambda(e != null ? i(e, "title") : e, e)) +
             `</div>
@@ -19509,7 +19399,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "each",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 9, column: 6 },
@@ -19543,7 +19433,7 @@ csui.define("csui/lib/othelp", [], function () {
       "i18n!csui/perspective.manage/impl/nls/lang",
       "hbs!csui/perspective.manage/impl/widget.item",
     ],
-    function (x, m, p, y, s, e, r, a, d) {
+    function (x, m, p, y, s, e, r, l, f) {
       "use strict";
       var t = Object.assign(
           { dragImageOffsetTop: 50, dragImageOffsetLeft: 50 },
@@ -19555,10 +19445,10 @@ csui.define("csui/lib/othelp", [], function () {
               s.ItemView.prototype.constructor.apply(this, arguments);
           },
           className: "csui-module-group",
-          template: d,
+          template: f,
           templateHelpers: function () {
             var o = new y.Collection(this.model.attributes.widgets),
-              n = a.disableTitle,
+              n = l.disableTitle,
               u = 0;
             return (
               o.models.forEach(function (c) {
@@ -19622,12 +19512,12 @@ csui.define("csui/lib/othelp", [], function () {
                   ".perspective-editing .pman-trash-area",
                 ],
                 containment: ".perspective-editing ",
-                helper: function (c, h) {
-                  var f = h.data("widget-index");
+                helper: function (c, d) {
+                  var h = d.data("widget-index");
                   return (
                     (o.widgetDragTemplate = new r({
-                      title: o.model.get("widgets")[f].get("title"),
-                      newWidget: o.model.get("widgets")[f],
+                      title: o.model.get("widgets")[h].get("title"),
+                      newWidget: o.model.get("widgets")[h],
                     })),
                     o.widgetDragTemplate.render(),
                     o.widgetDragTemplate.$el.width("220px"),
@@ -19644,9 +19534,9 @@ csui.define("csui/lib/othelp", [], function () {
                   top: t.dragImageOffsetTop,
                   left: t.dragImageOffsetLeft,
                 },
-                start: function (c, h) {
-                  h.item.css("display", "block"),
-                    h.placeholder.css("display", "block"),
+                start: function (c, d) {
+                  d.item.css("display", "block"),
+                    d.placeholder.css("display", "block"),
                     o.dragStart();
                 },
                 stop: function () {
@@ -19658,12 +19548,12 @@ csui.define("csui/lib/othelp", [], function () {
             var n = p(o.currentTarget).data("widget-index"),
               u = this.model.get("widgets")[n],
               c = o.originalEvent.dataTransfer,
-              h = p(".csui-template-wrapper");
-            h.find(".csui-template-header").text(u.get("title")),
+              d = p(".csui-template-wrapper");
+            d.find(".csui-template-header").text(u.get("title")),
               this._hasNativeDragImageSupport() &&
                 (c.setData("text", JSON.stringify(u.toJSON())),
                 c.setDragImage(
-                  h[0],
+                  d[0],
                   t.dragImageOffsetLeft,
                   t.dragImageOffsetTop
                 )),
@@ -19706,7 +19596,7 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/models/widget/widget.collection",
       "hbs!csui/perspective.manage/impl/widget.item",
     ],
-    function (x, m, p, y, s, e, r, a, d, t) {
+    function (x, m, p, y, s, e, r, l, f, t) {
       "use strict";
       var i = x.config();
       m.defaults(i, { dragImageOffsetTop: 50, dragImageOffsetLeft: 50 });
@@ -19721,10 +19611,7 @@ csui.define("csui/lib/othelp", [], function () {
             (this.context = this.options.pmanView.context);
           var c = this;
           (c.widegtsUpdated = !1),
-            (this.allWidgets = new d(null, {
-              includeView: !1,
-              includeToolItems: !1,
-            })),
+            (this.allWidgets = new f()),
             this.allWidgets.fetch().done(function () {
               (c.collection = c._groupWidgetsByModule()),
                 c.render(),
@@ -19733,25 +19620,25 @@ csui.define("csui/lib/othelp", [], function () {
             this.listenTo(
               this.context,
               "update:widget:panel",
-              m.bind(function (h) {
+              m.bind(function (d) {
                 this.widegtsUpdated = !0;
-                var f =
-                    h.widgetModel && h.widgetModel.type
-                      ? h.widgetModel.type
+                var h =
+                    d.widgetModel && d.widgetModel.type
+                      ? d.widgetModel.type
                       : void 0,
                   k =
-                    h.oldWidgetModel && h.oldWidgetModel.type
-                      ? h.oldWidgetModel.type
+                    d.oldWidgetModel && d.oldWidgetModel.type
+                      ? d.oldWidgetModel.type
                       : void 0;
-                if (f) {
-                  var C = m.indexOf(this.options.existsWidgetTypes, f);
+                if (h) {
+                  var C = m.indexOf(this.options.existsWidgetTypes, h);
                   C >= 0
                     ? this.options.existsWidgetTypes.splice(C, 1)
-                    : this.options.existsWidgetTypes.push(f),
-                    (f = f.replace(/\//g, "-"));
+                    : this.options.existsWidgetTypes.push(h),
+                    (h = h.replace(/\//g, "-"));
                   var S = this.$el.find(
                     'div[data-widget-type="' +
-                      f +
+                      h +
                       '"][data-widget-allow-multiple="false"]'
                   );
                   S.length && S.toggleClass("binf-hidden");
@@ -19772,7 +19659,7 @@ csui.define("csui/lib/othelp", [], function () {
             this.listenTo(
               this.context,
               "reset:widget:panel",
-              m.bind(function (h) {
+              m.bind(function (d) {
                 (this.options.existsWidgetTypes = []),
                   (this.widegtsUpdated = !0);
               }, this)
@@ -19799,36 +19686,36 @@ csui.define("csui/lib/othelp", [], function () {
         _groupWidgetsByModule: function () {
           var n = new y.Collection(),
             u = this.allWidgets.filter(function (c) {
-              var h = c.get("manifest");
+              var d = c.get("manifest");
               if (
-                !h ||
-                !m.has(h, "title") ||
-                !m.has(h, "description") ||
-                h.deprecated
+                !d ||
+                !m.has(d, "title") ||
+                !m.has(d, "description") ||
+                d.deprecated
               )
                 return !1;
-              var f = JSON.parse(JSON.stringify(h.schema || {})),
-                k = JSON.parse(JSON.stringify(h.options || {})),
-                C = e._normalizeOptions(f.properties, k.fields || {}, {});
+              var h = JSON.parse(JSON.stringify(d.schema || {})),
+                k = JSON.parse(JSON.stringify(d.options || {})),
+                C = e._normalizeOptions(h.properties, k.fields || {}, {});
               return !!C;
             });
           return (
             m.each(
               u,
               m.bind(function (c) {
-                var h = m.defaults(c.get("manifest"), {
+                var d = m.defaults(c.get("manifest"), {
                     allowMultiple: !0,
-                    title: a.noTitle,
+                    title: l.noTitle,
                   }),
-                  f = h.allowMultiple;
-                f ||
-                  (f =
+                  h = d.allowMultiple;
+                h ||
+                  (h =
                     p.inArray(c.get("id"), this.options.existsWidgetTypes) ===
                     -1),
                   c.set({
-                    allowMultiple: h.allowMultiple,
-                    canDragAndDrop: f,
-                    title: h.title,
+                    allowMultiple: d.allowMultiple,
+                    canDragAndDrop: h,
+                    title: d.title,
                   });
               }, this)
             ),
@@ -19836,12 +19723,12 @@ csui.define("csui/lib/othelp", [], function () {
               m.groupBy(u, function (c) {
                 return c.serverModule.id;
               }),
-              function (c, h) {
-                var f = m.first(c).serverModule.get("title");
-                (f = f
-                  ? f.replace(/OpenText /, "")
+              function (c, d) {
+                var h = m.first(c).serverModule.get("title");
+                (h = h
+                  ? h.replace(/OpenText /, "")
                   : m.first(c).serverModule.get("id").toUpperCase()),
-                  n.add({ id: h, title: f, widgets: c });
+                  n.add({ id: d, title: h, widgets: c });
               }
             ),
             n
@@ -19906,48 +19793,11 @@ csui.define("csui/lib/othelp", [], function () {
     }
   ),
   csui.define(
-    "css!csui/perspective.manage/sidebar/impl/widget.panel.list",
-    [],
-    function () {}
-  ),
-  csui.define(
-    "csui/perspective.manage/sidebar/widget.panel.list.view",
-    [
-      "csui/lib/underscore",
-      "csui/lib/jquery",
-      "csui/perspective.manage/impl/widget.list.view",
-      "csui/perspective.manage/sidebar/widget.panel.item.view",
-      "css!csui/perspective.manage/sidebar/impl/widget.panel.list.css",
-    ],
-    function (x, m, p, y) {
-      "use strict";
-      return p.extend({
-        constructor: function (r) {
-          (this.options = r || {}),
-            this.options.data || (r.data = {}),
-            p.prototype.constructor.apply(this, arguments);
-        },
-        renderItem: function (e) {
-          let r = this;
-          const a = new y({ model: e, parentView: r, context: this.context });
-          a.render(),
-            this.listenTo(
-              a,
-              "widgets:expanded",
-              x.bind(this.trigger, this, "dom:refresh", this)
-            ),
-            this.options?.query && a.trigger("expand:header"),
-            m(this.el).append(a.el);
-        },
-      });
-    }
-  ),
-  csui.define(
     "hbs!csui/perspective.manage/sidebar/impl/search.widget.item",
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d, t, i) {
+        1: function (s, e, r, l, f, t, i) {
           var o,
             n =
               s.lookupProperty ||
@@ -19964,8 +19814,8 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(2, d, 0, t, i),
-                inverse: s.program(4, d, 0, t, i),
+                fn: s.program(2, f, 0, t, i),
+                inverse: s.program(4, f, 0, t, i),
                 loc: {
                   start: { line: 5, column: 28 },
                   end: { line: 5, column: 84 },
@@ -20067,14 +19917,14 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        2: function (s, e, r, a, d) {
+        2: function (s, e, r, l, f) {
           return "";
         },
-        4: function (s, e, r, a, d) {
+        4: function (s, e, r, l, f) {
           return " binf-hidden ";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d, t, i) {
+        main: function (s, e, r, l, f, t, i) {
           var o,
             n =
               s.lookupProperty ||
@@ -20092,7 +19942,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "each",
                 hash: {},
-                fn: s.program(1, d, 0, t, i),
+                fn: s.program(1, f, 0, t, i),
                 inverse: s.noop,
                 loc: {
                   start: { line: 4, column: 12 },
@@ -20137,10 +19987,10 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s) {
       "use strict";
       return (
-        m.registerHelper("splitTitle", function (r, a) {
-          if (a.length) {
-            let d = "",
-              t = a;
+        m.registerHelper("splitTitle", function (r, l) {
+          if (l.length) {
+            let f = "",
+              t = l;
             const i = r.split(" ");
             return (
               i.forEach(function (o, n) {
@@ -20148,15 +19998,15 @@ csui.define("csui/lib/othelp", [], function () {
                 if (t.length === 0) u += `<span>${o}</span>`;
                 else {
                   const c = o.toLowerCase(),
-                    h = c.indexOf(t);
-                  if (h !== -1)
-                    (u += `<span>${o.substring(0, h)}</span>`),
+                    d = c.indexOf(t);
+                  if (d !== -1)
+                    (u += `<span>${o.substring(0, d)}</span>`),
                       (u += `<span class="csui-search-bold-character">${o.substring(
-                        h,
-                        h + t.length
+                        d,
+                        d + t.length
                       )}</span>`),
-                      (u += `<span>${o.substring(h + t.length)}</span>`);
-                  else if (a.indexOf(c) !== -1) {
+                      (u += `<span>${o.substring(d + t.length)}</span>`);
+                  else if (l.indexOf(c) !== -1) {
                     const k = t.substring(0, o.length),
                       C = c.indexOf(k);
                     C !== -1 &&
@@ -20172,32 +20022,32 @@ csui.define("csui/lib/othelp", [], function () {
                       (t = t.substring(o.length));
                   } else u += `<span>${o}</span>`;
                 }
-                n < i.length - 1 && (u += " "), (d += u);
+                n < i.length - 1 && (u += " "), (f += u);
               }),
-              new m.SafeString(d)
+              new m.SafeString(f)
             );
           }
         }),
         p.extend({
-          constructor: function (a) {
-            a || (a = {}), p.prototype.constructor.apply(this, arguments);
+          constructor: function (l) {
+            l || (l = {}), p.prototype.constructor.apply(this, arguments);
           },
           className: "csui-widget-module-group",
           template: s,
           templateHelpers: function () {
             let r = new x.Collection(this.model.attributes.widgets),
-              a = y.disableTitle,
-              d = 0,
+              l = y.disableTitle,
+              f = 0,
               t = this.model.get("title");
             return (
               r.models.forEach(function (i) {
                 i.set(
                   {
                     draggable: !!i.get("canDragAndDrop"),
-                    disableTitle: a,
+                    disableTitle: l,
                     dataAttr: i.get("id").replace(/\//g, "-"),
                     allowMultiple: !!i.get("allowMultiple"),
-                    index: d++,
+                    index: f++,
                     widgetGroupTitle: t,
                   },
                   { silent: !0 }
@@ -20216,7 +20066,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -20274,117 +20124,135 @@ csui.define("csui/lib/othelp", [], function () {
         templateContext: function () {
           return { noWidgetsFound: p.noWidgetsFound };
         },
+        onRender: function () {
+          document
+            .querySelector(".csui-sidebar-slide-body .cs-module-list")
+            .appendChild(this.el);
+        },
       });
     }
   ),
   csui.define(
-    "csui/perspective.manage/sidebar/widget.search.results.view",
+    "css!csui/perspective.manage/sidebar/impl/widget.panel.list",
+    [],
+    function () {}
+  ),
+  csui.define(
+    "csui/perspective.manage/sidebar/widget.panel.list.view",
     [
       "csui/lib/underscore",
+      "csui/lib/jquery",
       "csui/lib/backbone",
-      "csui/lib/marionette3",
       "csui/perspective.manage/impl/options.form.view",
-      "csui/perspective.manage/sidebar/search.widget.item.view",
       "i18n!csui/perspective.manage/impl/nls/lang",
-      "csui/models/widget/widget.collection",
+      "csui/perspective.manage/impl/widget.list.view",
+      "csui/perspective.manage/sidebar/widget.panel.item.view",
+      "csui/perspective.manage/sidebar/search.widget.item.view",
       "csui/perspective.manage/sidebar/search.no.results.view",
-      "hbs!csui/perspective.manage/impl/widget.item",
+      "css!csui/perspective.manage/sidebar/impl/widget.panel.list.css",
     ],
-    function (x, m, p, y, s, e, r, a, d) {
+    function (x, m, p, y, s, e, r, l, f) {
       "use strict";
-      return p.CollectionView.extend({
-        template: d,
-        className: "cs-module-list",
-        childView: s,
-        emptyView: a,
-        constructor: function (o = {}) {
-          (this.options = o),
-            (this.allWidgets = new r(null, {
-              includeView: !1,
-              includeToolItems: !1,
-            })),
-            (this.collection = new m.Collection()),
-            p.CollectionView.prototype.constructor.call(this, o),
-            (this.context = this.options.pmanView.context),
-            this.fetchAllWidgets();
-        },
-        childViewOptions: function () {
-          return {
-            parentView: this,
-            context: this.context,
-            query: this.options.query,
-          };
-        },
-        fetchAllWidgets: function () {
-          const i = this;
-          this.allWidgets.fetch().done(function () {
-            i.collection.reset(i.setWidgetsByModule().models);
-          });
-        },
-        initiateFilterWidgets: function (i) {
-          this.options.query = i;
-          let o = this.setWidgetsByModule().models;
-          this.collection.reset(o);
+      return e.extend({
+        constructor: function (o) {
+          (this.options = o || {}),
+            this.options.data || (o.data = {}),
+            e.prototype.constructor.apply(this, arguments),
+            (this.noSearchResultsView = new f());
         },
         filterWidgetsBySearch: function (i, o) {
           let u = this.extractWidgetNames(i.models).filter(function (c) {
             return c?.split(" ").join("").toLowerCase().includes(o);
           });
           return i.filter(function (c) {
-            return u.some(function (h) {
-              return c.get("manifest")?.title?.includes(h);
+            return u.some(function (d) {
+              return c.get("manifest").title?.includes(d);
             });
           });
         },
         extractWidgetNames: function (i) {
           return i.map(function (o) {
-            return o.get("manifest")?.title?.trim();
+            return o.get("manifest").title?.trim();
           });
         },
-        setWidgetsByModule: function () {
-          let i = new m.Collection(),
-            o = [];
+        _groupWidgetsByModule: function () {
+          let i = new p.Collection();
           if (this.options?.query?.length) {
-            o = this.filterWidgetsBySearch(this.allWidgets, this.options.query)
-              .filter((u) => {
-                let c = u.get("manifest");
-                if (!c || !c.title || !c.description || c.deprecated) return !1;
-                let h = JSON.parse(JSON.stringify(c.schema || {})),
-                  f = JSON.parse(JSON.stringify(c.options || {}));
-                return !!y._normalizeOptions(h.properties, f.fields || {}, {});
-              })
-              .map((u) => {
-                let c = {
-                    allowMultiple: u.get("manifest").allowMultiple || !0,
-                    title: u.get("manifest").title || e.noTitle,
-                  },
-                  h = c.allowMultiple;
-                return (
-                  h ||
-                    (h = !this.options.existsWidgetTypes.includes(u.get("id"))),
-                  u.set({
-                    allowMultiple: c.allowMultiple,
-                    canDragAndDrop: h,
-                    title: c.title,
-                  }),
-                  u
-                );
-              });
-            const n = {};
-            o.forEach((u) => {
-              let c = u.serverModule.id;
-              n[c] || (n[c] = []), n[c].push(u);
-            });
-            for (let u in n)
-              if (n.hasOwnProperty(u)) {
-                let c = n[u],
-                  h =
-                    c[0].serverModule.get("title")?.replace(/OpenText /, "") ||
-                    u.toUpperCase();
-                i.add({ id: u, title: h, widgets: c });
-              }
+            let n = this.filterWidgetsBySearch(
+              this.allWidgets,
+              this.options.query
+            );
+            n.length || this.renderNoSearchResults(), (this.allWidgets = n);
           }
-          return i;
+          let o = this.allWidgets.filter(function (n) {
+            let u = n.get("manifest");
+            if (
+              !u ||
+              !x.has(u, "title") ||
+              !x.has(u, "description") ||
+              u.deprecated
+            )
+              return !1;
+            let c = JSON.parse(JSON.stringify(u.schema || {})),
+              d = JSON.parse(JSON.stringify(u.options || {}));
+            return !!y._normalizeOptions(c.properties, d.fields || {}, {});
+          });
+          return (
+            x.each(
+              o,
+              x.bind(function (n) {
+                let u = x.defaults(n.get("manifest"), {
+                    allowMultiple: !0,
+                    title: s.noTitle,
+                  }),
+                  c = u.allowMultiple;
+                c ||
+                  (c =
+                    m.inArray(n.get("id"), this.options.existsWidgetTypes) ===
+                    -1),
+                  n.set({
+                    allowMultiple: u.allowMultiple,
+                    canDragAndDrop: c,
+                    title: u.title,
+                  });
+              }, this)
+            ),
+            x.each(
+              x.groupBy(o, function (n) {
+                return n.serverModule.id;
+              }),
+              function (n, u) {
+                let c = x.first(n).serverModule.get("title");
+                (c = c
+                  ? c.replace(/OpenText /, "")
+                  : x.first(n).serverModule.get("id").toUpperCase()),
+                  i.add({ id: u, title: c, widgets: n });
+              }
+            ),
+            i
+          );
+        },
+        renderItem: function (i) {
+          let o = this;
+          const n = this.options.query?.length
+            ? new l({
+                model: i,
+                parentView: o,
+                context: this.context,
+                query: this.options.query,
+              })
+            : new r({ model: i, parentView: o, context: this.context });
+          n.render(),
+            this.listenTo(
+              n,
+              "widgets:expanded",
+              x.bind(this.trigger, this, "dom:refresh", this)
+            ),
+            this.options?.query && n.trigger("expand:header"),
+            m(this.el).append(n.el);
+        },
+        renderNoSearchResults: function () {
+          return this.noSearchResultsView.render();
         },
       });
     }
@@ -20395,7 +20263,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           return `<div class="csui-search-widget-view"></div>
 <div class="csui-widget-list-panel csui-normal-scrolling"></div>
 
@@ -20423,74 +20291,67 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/lib/marionette3",
       "csui/perspective.manage/sidebar/search.widget.view",
       "csui/perspective.manage/sidebar/widget.panel.list.view",
-      "csui/perspective.manage/sidebar/widget.search.results.view",
       "hbs!csui/perspective.manage/sidebar/impl/widget.panel",
       "css!csui/perspective.manage/sidebar/impl/widget.panel",
     ],
-    function (x, m, p, y, s, e) {
+    function (x, m, p, y, s) {
       "use strict";
       return m.View.extend({
-        template: e,
+        template: s,
         className: "csui-new-widget-panel",
         ui: { widgetTab: ".csui-widget-list-panel" },
         regions: {
           searchRegion: ".csui-search-widget-view",
           accordionRegion: ".csui-widget-list-panel",
         },
-        constructor: function (d) {
-          (this.options = d || {}),
-            this.options.data || (d.data = {}),
-            (this.options.pmanView = d.context.pmanView),
+        constructor: function (l) {
+          (this.options = l || {}),
+            this.options.data || (l.data = {}),
+            (this.options.pmanView = l.context.pmanView),
             (this.options.existsWidgetTypes =
               this._getExistsWidgetTypes() || []),
             m.View.prototype.constructor.apply(this, arguments);
         },
         onRender: function () {
           this.showChildView("searchRegion", new p(this.options));
-          let a = new y(this.options);
-          this.showChildView("accordionRegion", a),
+          let r = new y(this.options);
+          this.showChildView("accordionRegion", r),
             this.listenTo(
               this.getChildView("searchRegion"),
               "search:performed",
-              function (d) {
-                this.widgetSearchResultsView?.isAttached()
-                  ? this.widgetSearchResultsView.initiateFilterWidgets(d)
-                  : ((this.widgetSearchResultsView = new s(this.options)),
-                    (this.widgetSearchResultsView.options.query = d),
-                    this.showChildView(
-                      "accordionRegion",
-                      this.widgetSearchResultsView
-                    ));
+              function (l) {
+                let f = new y(x.extend({ query: l }, this.options));
+                this.showChildView("accordionRegion", f);
               }
             ),
             this.listenTo(
               this.getChildView("searchRegion"),
               "search:closed",
               function () {
-                let d = new y(this.options);
-                this.showChildView("accordionRegion", d);
+                let l = new y(this.options);
+                this.showChildView("accordionRegion", l);
               }
             );
         },
         _getExistsWidgetTypes: function () {
-          let a = this.options.context.perspective,
-            d = a.get("type"),
-            t = {},
-            i = [];
+          let r = this.options.context.perspective,
+            l = r.get("type"),
+            f = {},
+            t = [];
           return (
-            d == "flow"
-              ? ((t = a.get("options")),
-                t.widgets.forEach(
-                  x.bind(function (o) {
-                    o.type && i.push(o.type);
+            l == "flow"
+              ? ((f = r.get("options")),
+                f.widgets.forEach(
+                  x.bind(function (i) {
+                    i.type && t.push(i.type);
                   }, this)
                 ))
-              : d == "left-center-right" &&
-                ((t = a.get("options")),
-                t.center && i.push(t.center.type),
-                t.right && i.push(t.right.type),
-                t.left && i.push(t.left.type)),
-            i
+              : l == "left-center-right" &&
+                ((f = r.get("options")),
+                f.center && t.push(f.center.type),
+                f.right && t.push(f.right.type),
+                f.left && t.push(f.left.type)),
+            t
           );
         },
       });
@@ -20510,8 +20371,7 @@ csui.define("csui/lib/othelp", [], function () {
           signature: "Widgets",
           sequence: 2,
           name: p.widgets,
-          iconClass: "csui-sidebar-widgets-btn",
-          iconName: "csui_action:action_widgets32",
+          iconClass: "csui-sidebar-widget-btn",
           panelTitle: p.widgets,
         },
         getPanelView: function (s) {
@@ -20533,7 +20393,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -20712,9 +20572,9 @@ csui.define("csui/lib/othelp", [], function () {
         ),
       };
       s && r(s);
-      function r(a) {
-        x.each(a, function (d) {
-          x.each(d, function (t, i) {
+      function r(l) {
+        x.each(l, function (f) {
+          x.each(f, function (t, i) {
             var o = e[i];
             if (!o) throw new Error("Invalid target toolbar: " + i);
             x.each(t, function (n) {
@@ -20788,28 +20648,28 @@ csui.define("csui/lib/othelp", [], function () {
       s,
       e,
       r,
-      a,
-      d,
+      l,
+      f,
       t,
       i,
       o,
       n,
       u,
       c,
+      d,
       h,
-      f,
       k,
       C,
       S,
       w,
-      v,
       b,
+      v,
       _,
       T
     ) {
       "use strict";
-      var l = x.moduleConfig("csui/behaviors/limiting/limiting.behavior"),
-        g = p.defaults({}, m.config(), l, {
+      var a = x.moduleConfig("csui/behaviors/limiting/limiting.behavior"),
+        g = p.defaults({}, m.config(), a, {
           openInPerspective: !0,
           limit: 25,
           filterByProperty: "name",
@@ -20835,7 +20695,7 @@ csui.define("csui/lib/othelp", [], function () {
               E = M && M.viewStateModel;
             this._enableOpenPerspective =
               g.openInPerspective && E && E.get("history");
-            var P = f.getSignatures(k),
+            var P = h.getSignatures(k),
               O =
                 B.collection ||
                 B.context.getCollection(n, {
@@ -20855,14 +20715,14 @@ csui.define("csui/lib/othelp", [], function () {
               this.listenTo(
                 this.completeCollection || this.collection,
                 "error",
-                function (j, U, H) {
-                  var N = new b.Error(U);
+                function (F, U, H) {
+                  var N = new v.Error(U);
                   C.showMessage("error", N.message);
                 }
               ),
               (this.loadingText = _.loadingText),
               c.imbue(this),
-              (this.applicationScope = B.context.getModel(h));
+              (this.applicationScope = B.context.getModel(d));
           },
           childEvents: {
             "click:item": "onClickItem",
@@ -20913,7 +20773,7 @@ csui.define("csui/lib/othelp", [], function () {
               behaviorClass: I ? S : w,
               contentParent: ".tile-content",
               completeCollection: function () {
-                var A = f.getSignatures(k),
+                var A = h.getSignatures(k),
                   B =
                     this.options.collection ||
                     this.options.context.getCollection(n, {
@@ -20947,8 +20807,8 @@ csui.define("csui/lib/othelp", [], function () {
               dialogTitleIconNameRight: "csui_action_minimize32",
               dialogClassName: "recentlyaccessed",
             },
-            DefaultAction: { behaviorClass: a },
-            TabableRegion: { behaviorClass: d },
+            DefaultAction: { behaviorClass: l },
+            TabableRegion: { behaviorClass: f },
             ListViewKeyboardBehavior: { behaviorClass: t },
             CollectionState: {
               behaviorClass: i,
@@ -21001,9 +20861,9 @@ csui.define("csui/lib/othelp", [], function () {
               A.$el.attr(
                 "aria-label",
                 p.str.sformat(
-                  T.nameAndTypeAria,
-                  A.model.get("short_name"),
-                  A._nodeIconView.model.get("title")
+                  T.typeAndNameAria,
+                  A._nodeIconView.model.get("title"),
+                  A.model.get("short_name")
                 )
               );
           },
@@ -21030,7 +20890,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -21132,7 +20992,7 @@ csui.define("csui/lib/othelp", [], function () {
       "i18n!csui/widgets/shortcut/impl/nls/lang",
       "css!csui/widgets/shortcut/impl/shortcut",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i) {
+    function (x, m, p, y, s, e, r, l, f, t, i) {
       "use strict";
       var o = m.ItemView.extend({
         tagName: "a",
@@ -21194,7 +21054,7 @@ csui.define("csui/lib/othelp", [], function () {
             this.model.resetExpand(),
             this.model.setExpand({ properties: ["original_id"] }),
             this.model.resetCommands(),
-            this.model.setCommands(a.getAllCommandSignatures(d));
+            this.model.setCommands(l.getAllCommandSignatures(f));
         },
         onRender: function () {
           var n =
@@ -21221,7 +21081,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -21308,7 +21168,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -21414,7 +21274,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -21550,10 +21410,10 @@ csui.define("csui/lib/othelp", [], function () {
               y.forEach((e) => {
                 const r = this.createMainNode(e);
                 e.node = r;
-                const a = this.createNode4BackgroundImage(
+                const l = this.createNode4BackgroundImage(
                   e.customBackgroundImage
                 );
-                a && s.push(a.fetch({ suppressError: !0 }));
+                l && s.push(l.fetch({ suppressError: !0 }));
               }),
             s
           );
@@ -21651,15 +21511,15 @@ csui.define("csui/lib/othelp", [], function () {
       "css!csui/widgets/shortcuts/impl/shortcut/impl/medium.shortcut",
       "css!csui/widgets/shortcuts/impl/shortcut/impl/large.shortcut",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c, h, f, k, C, S) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c, d, h, k, C, S) {
       "use strict";
       var w = y.ItemView.extend(
         {
-          constructor: function (b) {
-            b || (b = {}),
-              (b.model = b.model || new p.Model()),
-              b.model.set(
-                x.defaults(b.model.attributes, {
+          constructor: function (v) {
+            v || (v = {}),
+              (v.model = v.model || new p.Model()),
+              v.model.set(
+                x.defaults(v.model.attributes, {
                   icon: w.DEFAULT_ICON,
                   theme: "csui-shortcut-theme-grey-shade1",
                   layout: "small",
@@ -21669,25 +21529,25 @@ csui.define("csui/lib/othelp", [], function () {
                   customBackgroundImage: "",
                 })
               ),
-              f === 2 && b.model.set("icon", w.BLACK_FOLDER_ICON),
-              y.ItemView.prototype.constructor.call(this, b),
+              h === 2 && v.model.set("icon", w.BLACK_FOLDER_ICON),
+              y.ItemView.prototype.constructor.call(this, v),
               (this.node = this.model.get("node")),
               this.node || this._ensureNode(),
               this._ensureNodeFetched();
           },
           tagName: "a",
           className: function () {
-            var v = [],
-              b = this.model.get("customBackgroundImage"),
+            var b = [],
+              v = this.model.get("customBackgroundImage"),
               _ = this.model.get("customBackgroundColor");
             return (
-              v.push("csui-shortcut-item"),
-              v.push("csui-acc-focusable"),
-              v.push(this.model.get("theme")),
-              v.push("csui-" + this.model.get("layout")),
-              (_ || b) && v.push("cs-background-custom"),
-              b && v.push("cs-background-image"),
-              v.join(" ")
+              b.push("csui-shortcut-item"),
+              b.push("csui-acc-focusable"),
+              b.push(this.model.get("theme")),
+              b.push("csui-" + this.model.get("layout")),
+              (_ || v) && b.push("cs-background-custom"),
+              v && b.push("cs-background-image"),
+              b.join(" ")
             );
           },
           getTemplate: function () {
@@ -21701,8 +21561,8 @@ csui.define("csui/lib/othelp", [], function () {
             }
           },
           templateHelpers: function () {
-            var v = this.getName();
-            return { icon: this.model.get("icon") || w.DEFAULT_ICON, name: v };
+            var b = this.getName();
+            return { icon: this.model.get("icon") || w.DEFAULT_ICON, name: b };
           },
           behaviors: {
             DefaultAction: { behaviorClass: e },
@@ -21730,21 +21590,21 @@ csui.define("csui/lib/othelp", [], function () {
               this._ensureBackgroundImageNodeThenApplyBackground(),
               this._updateNodeState();
           },
-          onKeyInView: function (v) {
-            (v.keyCode === 32 || v.keyCode === 13) && this.trigger("click");
+          onKeyInView: function (b) {
+            (b.keyCode === 32 || b.keyCode === 13) && this.trigger("click");
           },
           _generateImageUrlFromBWSNode: function () {
-            const v = this.model.get("layout") || "large",
-              b = this.$el.find(".tile-icon>.icon");
-            b.removeClass(f === 2 ? w.BLACK_FOLDER_ICON : w.DEFAULT_ICON),
-              this.renderNodeTypeIconView(this.model.get("node"), b, "", "", {
-                size: v,
+            const b = this.model.get("layout") || "large",
+              v = this.$el.find(".tile-icon>.icon");
+            v.removeClass(h === 2 ? w.BLACK_FOLDER_ICON : w.DEFAULT_ICON),
+              this.renderNodeTypeIconView(this.model.get("node"), v, "", "", {
+                size: b,
                 title: this.getName(),
               }),
               this.model.set("icon", "");
           },
           _updateElement: function () {
-            var v = this.getName();
+            var b = this.getName();
             this.node && this.$el.attr("href", o.getUrl(this.node)),
               this.model.get("node")?.get("image_url") &&
                 this._generateImageUrlFromBWSNode(),
@@ -21753,7 +21613,7 @@ csui.define("csui/lib/othelp", [], function () {
                 .attr("title", this.getName()),
               this.$el.attr(
                 "aria-label",
-                x.str.sformat(h.shortcutPrefixAria, v)
+                x.str.sformat(d.shortcutPrefixAria, b)
               );
           },
           _onThemeChange: function () {
@@ -21766,43 +21626,43 @@ csui.define("csui/lib/othelp", [], function () {
             this.trigger("change:customBackgroundImage");
           },
           _ensureBackgroundImageNodeThenApplyBackground: function () {
-            const v = this.model.get("customBackgroundImage");
+            const b = this.model.get("customBackgroundImage");
             if (
-              (v || this.model.set("deploy_url", ""),
-              this.options.perspectiveMode === "edit" && this.isUpdating && v)
+              (b || this.model.set("deploy_url", ""),
+              this.options.perspectiveMode === "edit" && this.isUpdating && b)
             ) {
-              const b = this;
-              this.createNode4BackgroundImage(v)
+              const v = this;
+              this.createNode4BackgroundImage(b)
                 .fetch()
                 .done(function (T) {
-                  const { deploy_url: l } = T;
-                  b.model.set("deploy_url", l),
-                    b._applyBackgroundStyle(b.model.attributes);
+                  const { deploy_url: a } = T;
+                  v.model.set("deploy_url", a),
+                    v._applyBackgroundStyle(v.model.attributes);
                 });
               return;
             }
             this._applyBackgroundStyle(this.model.attributes);
           },
           _applyBackgroundStyle: function ({
-            deploy_url: v,
-            version_number: b,
+            deploy_url: b,
+            version_number: v,
             modify_date: _,
             customBackgroundColor: T,
           }) {
-            const l = encodeURIComponent(_),
+            const a = encodeURIComponent(_),
               I = this.options.context
                 .getObject(C)
                 .getConnectionUrl()
                 .getOrigin(),
-              D = v ? `${I}${v}?m=${l}&v=${b}` : "";
+              D = b ? `${I}${b}?m=${a}&v=${v}` : "";
             (this.el.style.backgroundImage = `url(${D})`),
               (this.el.style.backgroundColor = T || ""),
               (this.el.style.backgroundBlendMode =
                 T && D ? "soft-light" : "normal");
           },
-          onClicked: function (v) {
-            s.isControlClick(v) ||
-              (v.preventDefault(),
+          onClicked: function (b) {
+            s.isControlClick(b) ||
+              (b.preventDefault(),
               this.triggerMethod("execute:defaultAction", this.node));
           },
           getName: function () {
@@ -21810,10 +21670,10 @@ csui.define("csui/lib/othelp", [], function () {
               ? this.model.get("displayName")
               : this.node.fetched
               ? this.node.get("name")
-              : h.loadingText;
+              : d.loadingText;
           },
           _ensureNode: function () {
-            (this.node = this.options.context.getModel(d, {
+            (this.node = this.options.context.getModel(f, {
               attributes: {
                 id: this.options.model.get("id") || "volume",
                 type: this.options.model.get("type") || 141,
@@ -21845,10 +21705,10 @@ csui.define("csui/lib/othelp", [], function () {
           },
         },
         {
-          prepareModelToFetch: function (v) {
-            v.excludeResources(),
-              v.resetFields(),
-              v.setFields({
+          prepareModelToFetch: function (b) {
+            b.excludeResources(),
+              b.resetFields(),
+              b.setFields({
                 properties: [
                   "container",
                   "id",
@@ -21860,10 +21720,10 @@ csui.define("csui/lib/othelp", [], function () {
                 ],
                 "versions.element(0)": ["mime_type"],
               }),
-              v.resetExpand(),
-              v.setExpand({ properties: ["original_id"] }),
-              v.resetCommands(),
-              v.setCommands(t.getAllCommandSignatures(i));
+              b.resetExpand(),
+              b.setExpand({ properties: ["original_id"] }),
+              b.resetCommands(),
+              b.setCommands(t.getAllCommandSignatures(i));
           },
           DEFAULT_ICON: "icon-folder",
           BLACK_FOLDER_ICON: "icon-folder-black",
@@ -22259,25 +22119,24 @@ csui.define("csui/lib/othelp", [], function () {
       "csui/widgets/shortcuts/impl/shortcut/shortcut.view",
       "csui/models/widget/widget.model",
       "csui/utils/base",
-      "csui/utils/perspective/perspective.util",
       "i18n!csui/widgets/shortcuts/impl/nls/lang",
       "i18n!csui/widgets/shortcuts/impl/nls/shortcuts.manifest",
       "json!csui/widgets/shortcuts/impl/shortcut/shortcut.manifest.json",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i) {
+    function (x, m, p, y, s, e, r, l, f, t) {
       "use strict";
-      i = e.resolveLocalizedManifest("shortcut.manifest", i, t);
-      var o = s.extend({
-        constructor: function (u) {
-          u || (u = {}),
-            (u.model = u.model || new y.Model()),
-            this._injectConfigurationBehaviour(u),
-            u.container.options.data.___pman_isdropped &&
-              u.collection.getShortcuts().length === 0 &&
-              u.model.set("___pman_opencallout", !0, { silent: !0 }),
-            u.context &&
-              u.context.perspective &&
-              (u.type = u.context.perspective.type),
+      t = e.resolveLocalizedManifest("shortcut.manifest", t, f);
+      var i = s.extend({
+        constructor: function (n) {
+          n || (n = {}),
+            (n.model = n.model || new y.Model()),
+            this._injectConfigurationBehaviour(n),
+            n.container.options.data.___pman_isdropped &&
+              n.collection.getShortcuts().length === 0 &&
+              n.model.set("___pman_opencallout", !0, { silent: !0 }),
+            n.context &&
+              n.context.perspective &&
+              (n.type = n.context.perspective.type),
             s.prototype.constructor.apply(this, arguments),
             this._registerEventHandlers();
         },
@@ -22287,58 +22146,58 @@ csui.define("csui/lib/othelp", [], function () {
           m.result(s.prototype, "modelEvents")
         ),
         onRefreshMask: function () {
-          var n = this._getDefaultWidgetConfig();
-          this.trigger("refresh:mask", n);
+          var o = this._getDefaultWidgetConfig();
+          this.trigger("refresh:mask", o);
         },
-        attachElContent: function (n) {
-          var u = this.$el.find(
+        attachElContent: function (o) {
+          var n = this.$el.find(
             ".csui-configure-perspective-widget .pman-widget-popover"
           );
           return (
-            u.length
+            n.length
               ? (this.$el
                   .children()
                   .not(".csui-configure-perspective-widget")
                   .remove(),
-                this.$el.prepend(p(n)))
-              : this.$el.html(n),
+                this.$el.prepend(p(o)))
+              : this.$el.html(o),
             !0
           );
         },
-        _getDefaultWidgetConfig: function (n) {
-          n || (n = this.options);
-          var u = d.groupAria + " ";
-          n.collection.getShortcuts().forEach(function (h, f) {
-            f > 0 && (u += ", "),
-              (u += h.get("displayName") || h.get("node").get("name"));
+        _getDefaultWidgetConfig: function (o) {
+          o || (o = this.options);
+          var n = l.groupAria + " ";
+          o.collection.getShortcuts().forEach(function (c, d) {
+            d > 0 && (n += ", "),
+              (n += c.get("displayName") || c.get("node").get("name"));
           });
-          var c = {
+          var u = {
             allowReplace: !1,
             notifyUpdatesImmediatly: !0,
-            useEnterToConfigure: this._isNewPlaceholder(n),
-            ItemsInGroupAriaLabel: u,
+            useEnterToConfigure: this._isNewPlaceholder(o),
+            ItemsInGroupAriaLabel: n,
           };
           return (
-            n.collection.getShortcuts().length > 1 &&
-              (c = m.extend(c, {
-                removeConfirmTitle: d.removeShortcut,
-                removeConfirmMsg: d.removeShortcutCnfrmMsg,
+            o.collection.getShortcuts().length > 1 &&
+              (u = m.extend(u, {
+                removeConfirmTitle: l.removeShortcut,
+                removeConfirmMsg: l.removeShortcutCnfrmMsg,
                 confirmOnRemove: !1,
               })),
-            c
+            u
           );
         },
-        _injectConfigurationBehaviour: function (n) {
-          var u = this._getDefaultWidgetConfig(n);
-          let c,
-            h = !!n.context._user?.get("privilege_system_admin_rights");
-          n.perspectiveMode === "personalize" || !h
-            ? ((c = structuredClone(i)),
-              delete c.options.fields.customBackgroundColor,
-              delete c.options.fields.customBackgroundImage,
-              delete c.schema.properties.customBackgroundColor,
-              delete c.schema.properties.customBackgroundImage)
-            : (c = i),
+        _injectConfigurationBehaviour: function (o) {
+          var n = this._getDefaultWidgetConfig(o);
+          let u,
+            c = !!o.context._user?.get("privilege_system_admin_rights");
+          o.perspectiveMode === "personalize" || !c
+            ? ((u = structuredClone(t)),
+              delete u.options.fields.customBackgroundColor,
+              delete u.options.fields.customBackgroundImage,
+              delete u.schema.properties.customBackgroundColor,
+              delete u.schema.properties.customBackgroundImage)
+            : (u = t),
             (this.behaviors = m.defaults(
               {
                 PerspectiveWidgetConfig: m.extend(
@@ -22347,67 +22206,53 @@ csui.define("csui/lib/othelp", [], function () {
                       "csui/perspective.manage/behaviours/pman.widget.config.behaviour"
                     ),
                     widgetConfig: function () {
-                      return { options: n.model.attributes };
+                      return { options: o.model.attributes };
                     },
-                    manifest: c,
+                    manifest: u,
                   },
-                  u
+                  n
                 ),
               },
               this.behaviors
             ));
         },
-        isShortcutValid: function (n) {
-          var u = !0;
+        isShortcutValid: function (o) {
+          var n = !0;
           return (
             this.collection.getShortcuts().length === 0 &&
               this.options.perspectiveMode === "edit" &&
-              (u = this.isOptionsValid(n)),
-            u
+              (n = this.isOptionsValid(o)),
+            n
           );
         },
-        validateConfiguration: function (n) {
-          var u = this.isShortcutValid(n),
-            c = u ? "removeClass" : "addClass";
+        validateConfiguration: function (o) {
+          var n = this.isShortcutValid(o),
+            u = n ? "removeClass" : "addClass";
           return (
-            this.$el.find(".tile-group")[c]("binf-hidden"),
-            this.$el[c]("csui-pman-shortcut-error"),
-            u
+            this.$el.find(".tile-group")[u]("binf-hidden"),
+            this.$el[u]("csui-pman-shortcut-error"),
+            n
           );
         },
-        isOptionsValid: function (n) {
-          return !!n.id || !!n.type;
+        isOptionsValid: function (o) {
+          return !!o.id || !!o.type;
         },
-        _updateShortcut: function (n) {
-          this.isShortcutValid(n.options) &&
+        _updateShortcut: function (o) {
+          this.isShortcutValid(o.options) &&
             this.$el
               .find(".csui-configure-perspective-widget")
               .removeClass("binf-perspective-has-error");
         },
         _registerEventHandlers: function () {
           this.listenTo(this, "delete:widget", function () {
-            delete this.options.container.options.data.___pman_opencallout,
-              this._notifyPerspectiveChanges();
+            delete this.options.container.options.data.___pman_opencallout;
           }),
-            this.listenTo(this, "update:widget:options", this._updateShortcut),
-            this.listenTo(
-              this,
-              "replace:widget",
-              this._notifyPerspectiveChanges
-            ),
-            this.listenTo(
-              this.options.context,
-              "perspective:save:success",
-              () => (this.notified = !1)
-            );
+            this.listenTo(this, "update:widget:options", this._updateShortcut);
         },
         _updateElement: function () {
           this.$el.attr("class", m.result(this, "className")),
             this.model.get("node")?.get("image_url") &&
               this._generateImageUrlFromBWSNode();
-        },
-        _notifyPerspectiveChanges: function () {
-          a.notifyPerspectiveChanges.call(this);
         },
         _ensureNode: function () {
           this._isNewPlaceholder()
@@ -22426,7 +22271,7 @@ csui.define("csui/lib/othelp", [], function () {
         },
         getName: function () {
           return this._isNewPlaceholder()
-            ? d.addShortcut
+            ? l.addShortcut
             : s.prototype.getName.apply(this, arguments);
         },
         onRender: function () {
@@ -22438,33 +22283,33 @@ csui.define("csui/lib/othelp", [], function () {
               r.clearFocusables(this.$el);
         },
         onDomRefresh: function () {
-          var n = this.$el.find(".wrapper-button");
+          var o = this.$el.find(".wrapper-button");
           if (
             (this.$el.find(".binf-popover").length ||
               r.clearFocusables(this.$el),
             this._isNewPlaceholder())
           )
-            n.attr("aria-label", d.addShortcutToGroup);
+            o.attr("aria-label", l.addShortcutToGroup);
           else {
-            var u =
+            var n =
               this.model.get("displayName") ||
               this.model.get("node").get("name");
-            n.attr("aria-label", m.str.sformat(d.accessShortcutActions, u)),
+            o.attr("aria-label", m.str.sformat(l.accessShortcutActions, n)),
               this.$el
                 .find(".icon-edit")
-                .attr("aria-label", m.str.sformat(d.shortcutSettings, u)),
+                .attr("aria-label", m.str.sformat(l.shortcutSettings, n)),
               this.$el
                 .find(".clear-icon")
-                .attr("aria-label", m.str.sformat(d.removeShortcutItem, u));
+                .attr("aria-label", m.str.sformat(l.removeShortcutItem, n));
           }
         },
-        onClicked: function (n) {
-          n.preventDefault(),
-            this.$el.find(".pman-widget-popover").has(n.target).length ||
-              n.stopPropagation();
+        onClicked: function (o) {
+          o.preventDefault(),
+            this.$el.find(".pman-widget-popover").has(o.target).length ||
+              o.stopPropagation();
         },
-        _isNewPlaceholder: function (n) {
-          return (n || this.options).model.isAddShortcut();
+        _isNewPlaceholder: function (o) {
+          return (o || this.options).model.isAddShortcut();
         },
         focus: function () {
           this.$el
@@ -22472,7 +22317,7 @@ csui.define("csui/lib/othelp", [], function () {
             .trigger("focus");
         },
       });
-      return o;
+      return i;
     }
   ),
   csui.define("css!csui/widgets/shortcuts/impl/shortcuts", [], function () {}),
@@ -22496,10 +22341,10 @@ csui.define("csui/lib/othelp", [], function () {
       "i18n!csui/widgets/shortcuts/impl/nls/lang",
       "css!csui/widgets/shortcuts/impl/shortcuts",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c) {
       "use strict";
-      var h = m.defaults({}, x.config() || {}, { isPageHasDarkTheme: !0 }),
-        f = ["shade1", "shade2", "shade3", "shade4"],
+      var d = m.defaults({}, x.config() || {}, { isPageHasDarkTheme: !0 }),
+        h = ["shade1", "shade2", "shade3", "shade4"],
         k = y.Model.extend({
           idAttribute: "shortcutItemId",
           isAddShortcut: function () {
@@ -22507,16 +22352,16 @@ csui.define("csui/lib/othelp", [], function () {
           },
         }),
         C = y.Collection.extend({
-          constructor: function (w, v) {
-            v || (v = {}),
-              m.defaults(v, {
+          constructor: function (w, b) {
+            b || (b = {}),
+              m.defaults(b, {
                 model: k,
-                comparator: function (b, _) {
+                comparator: function (v, _) {
                   return _.get("isAddNew") ? -1 : 0;
                 },
               }),
-              (this.options = v),
-              y.Collection.prototype.constructor.call(this, w, v);
+              (this.options = b),
+              y.Collection.prototype.constructor.call(this, w, b);
           },
           getShortcuts: function () {
             return this.filter(function (w) {
@@ -22532,10 +22377,10 @@ csui.define("csui/lib/othelp", [], function () {
                 !n.isPersonalWidgetId(w)
               )
             ) {
-              var v = this.where(function (b) {
-                return b.isAddShortcut();
+              var b = this.where(function (v) {
+                return v.isAddShortcut();
               });
-              return this.length < 4 && v.length === 0
+              return this.length < 4 && b.length === 0
                 ? (this.add({
                     id: "",
                     isAddNew: !0,
@@ -22545,26 +22390,26 @@ csui.define("csui/lib/othelp", [], function () {
                     customBackgroundImage: "",
                   }),
                   !0)
-                : this.length > 4 && v.length > 0
-                ? (this.remove(v), !0)
+                : this.length > 4 && b.length > 0
+                ? (this.remove(b), !0)
                 : !1;
             }
           },
         }),
         S = s.CollectionView.extend(
           {
-            constructor: function (v) {
-              v || (v = {}),
-                v.data || (v.data = {}),
-                (v = m.defaults(v, {
+            constructor: function (b) {
+              b || (b = {}),
+                b.data || (b.data = {}),
+                (b = m.defaults(b, {
                   reorderOnSort: !0,
                   widgetContainer: this,
                 })),
-                (v.data = this._normalizeData(v.data)),
-                (v.collection =
-                  v.collection ||
-                  new C([], m.pick(v, "perspectiveMode", n.KEY_WIDGET_ID))),
-                s.CollectionView.prototype.constructor.call(this, v);
+                (b.data = this._normalizeData(b.data)),
+                (b.collection =
+                  b.collection ||
+                  new C([], m.pick(b, "perspectiveMode", n.KEY_WIDGET_ID))),
+                s.CollectionView.prototype.constructor.call(this, b);
             },
             tagName: "div",
             className:
@@ -22612,7 +22457,7 @@ csui.define("csui/lib/othelp", [], function () {
               "delete:widget": "_onRemoveShortcut",
               "update:widget:options": "_updateShortcutOptions",
             },
-            childViewOptions: function (w, v) {
+            childViewOptions: function (w, b) {
               return {
                 context: this.options.context,
                 collection: this.options.collection,
@@ -22621,7 +22466,7 @@ csui.define("csui/lib/othelp", [], function () {
               };
             },
             getChildView: function () {
-              return this._isInlineEditMode() ? d : a;
+              return this._isInlineEditMode() ? f : l;
             },
             _normalizeData: function (w) {
               return (
@@ -22632,7 +22477,7 @@ csui.define("csui/lib/othelp", [], function () {
             },
             initialize: function () {
               (this.loadingText = c.loadingText),
-                (this.darkBackground = h.isPageHasDarkTheme),
+                (this.darkBackground = d.isPageHasDarkTheme),
                 u.imbue(this),
                 this.listenTo(this.collection, "add", this._onCollectionChange)
                   .listenTo(this.collection, "remove", this._onCollectionChange)
@@ -22661,13 +22506,13 @@ csui.define("csui/lib/othelp", [], function () {
             },
             _fetchModels: function (w) {
               this.blockActions();
-              const v = this.createDetailListForShortcuts(w),
-                b = p.whenAll.apply(p, v),
+              const b = this.createDetailListForShortcuts(w),
+                v = p.whenAll.apply(p, b),
                 _ = this;
               return (
-                b.always(function (T) {
-                  T.forEach((l) => {
-                    const g = l[0],
+                v.always(function (T) {
+                  T.forEach((a) => {
+                    const g = a[0],
                       I = g?.id,
                       D = w.findIndex((A) => A?.customBackgroundImage === I);
                     (w[D].deploy_url = g?.deploy_url),
@@ -22677,15 +22522,15 @@ csui.define("csui/lib/othelp", [], function () {
                   }),
                     _.unblockActions();
                 }),
-                b
+                v
               );
             },
             _setupCollection: function (w) {
               if (!this._isInlineEditMode()) {
-                var v = m.filter(w, function (b) {
-                  return !b.node.error;
+                var b = m.filter(w, function (v) {
+                  return !v.node.error;
                 });
-                v.length > 0 ? (w = v) : (w = m.first(w, 1));
+                b.length > 0 ? (w = b) : (w = m.first(w, 1));
               }
               (w = w || []), this.collection.reset(w);
             },
@@ -22708,26 +22553,26 @@ csui.define("csui/lib/othelp", [], function () {
               });
             },
             _getLayout: function (w) {
-              var v = "small";
-              return w === 1 ? (v = "large") : w === 2 && (v = "medium"), v;
+              var b = "small";
+              return w === 1 ? (b = "large") : w === 2 && (b = "medium"), b;
             },
-            _getShortcutTheme: function (w, v) {
-              var b = this.options.data.shortcutTheme
+            _getShortcutTheme: function (w, b) {
+              var v = this.options.data.shortcutTheme
                 ? this.options.data.shortcutTheme
                 : "csui-shortcut-theme-grey";
-              return v > 1 && ((w += 4 - v), (b += "-" + f[w])), b;
+              return b > 1 && ((w += 4 - b), (v += "-" + h[w])), v;
             },
-            _updateShortcutOptions: function (w, v) {
-              var b = w.model,
-                _ = v.options;
-              if (b.get("isAddNew")) {
-                if (v.softUpdate) return;
-                if (!v.isValid || !w.isOptionsValid(_)) {
+            _updateShortcutOptions: function (w, b) {
+              var v = w.model,
+                _ = b.options;
+              if (v.get("isAddNew")) {
+                if (b.softUpdate) return;
+                if (!b.isValid || !w.isOptionsValid(_)) {
                   this.options.perspectiveMode === n.MODE_EDIT_PERSPECTIVE &&
                     this._notifyOptionsChange(!w.isShortcutValid(_));
                   return;
                 }
-                b.set(
+                v.set(
                   {
                     isAddNew: void 0,
                     displayName: void 0,
@@ -22740,7 +22585,7 @@ csui.define("csui/lib/othelp", [], function () {
               }
               (w.isUpdating = !0),
                 this._setDefaultOptions(_),
-                b.set(_),
+                v.set(_),
                 this._notifyOptionsChange();
               var T = this.collection.evaluateAddNewExistence();
               delete w.isUpdating,
@@ -22753,34 +22598,34 @@ csui.define("csui/lib/othelp", [], function () {
               w.type = w.type || 141;
             },
             _onRemoveShortcut: function (w) {
-              var v = this.collection.indexOf(w.model);
+              var b = this.collection.indexOf(w.model);
               this.collection.remove(w.model);
-              var b = this.collection.getShortcuts();
-              b.length === 0
+              var v = this.collection.getShortcuts();
+              v.length === 0
                 ? this.options.widgetContainer.trigger("remove:widget")
                 : (this._notifyOptionsChange(),
-                  this.children.findByIndex(v).focus());
+                  this.children.findByIndex(b).focus());
             },
             _notifyOptionsChange: function (w) {
-              var v = this.collection.getShortcuts().map(function (b) {
+              var b = this.collection.getShortcuts().map(function (v) {
                 return {
-                  id: b.get("id"),
-                  type: b.get("type"),
-                  displayName: b.get("displayName"),
-                  icon: b.has("icon") ? b.get("icon") : "",
+                  id: v.get("id"),
+                  type: v.get("type"),
+                  displayName: v.get("displayName"),
+                  icon: v.has("icon") ? v.get("icon") : "",
                   customBackgroundColor:
-                    (b.has("customBackgroundColor") &&
-                      b.get("customBackgroundColor")) ||
+                    (v.has("customBackgroundColor") &&
+                      v.get("customBackgroundColor")) ||
                     "",
                   customBackgroundImage:
-                    (b.has("customBackgroundImage") &&
-                      b.get("customBackgroundImage")) ||
+                    (v.has("customBackgroundImage") &&
+                      v.get("customBackgroundImage")) ||
                     "",
                 };
               });
               this.options.widgetContainer.trigger("update:widget:options", {
                 shortcutTheme: this.collection.first().get("shortcutTheme"),
-                shortcutItems: v,
+                shortcutItems: b,
                 isValid: !w,
               });
             },
@@ -22798,7 +22643,7 @@ csui.define("csui/lib/othelp", [], function () {
                 "customBackgroundImage"
               );
             },
-            _onAddShortcut: function (w, v) {
+            _onAddShortcut: function (w, b) {
               this.collection.add(
                 {
                   id: "",
@@ -22816,13 +22661,13 @@ csui.define("csui/lib/othelp", [], function () {
             },
             _updateShortcutStyles: function () {
               var w = this.options.data.shortcutTheme,
-                v = this._getLayout(this.collection.length);
-              this.collection.each(function (b, _) {
+                b = this._getLayout(this.collection.length);
+              this.collection.each(function (v, _) {
                 var T = this._isInlineEditMode()
                     ? this.collection.getShortcuts().length
                     : this.collection.length,
-                  l = this._getShortcutTheme(_, T);
-                b.set({ layout: v, theme: l, shortcutTheme: w });
+                  a = this._getShortcutTheme(_, T);
+                v.set({ layout: b, theme: a, shortcutTheme: w });
               }, this);
             },
             onDrop: function (w) {
@@ -22840,8 +22685,8 @@ csui.define("csui/lib/othelp", [], function () {
             onDomRefresh: function () {
               if (this._isInlineEditMode()) {
                 var w = !0,
-                  v = c.groupAria,
-                  b = this.collection.getShortcuts().length,
+                  b = c.groupAria,
+                  v = this.collection.getShortcuts().length,
                   _ = "",
                   T = this.$el.parent().find(".shortcut-group-wrapper");
                 switch (
@@ -22874,19 +22719,19 @@ csui.define("csui/lib/othelp", [], function () {
                       ".shortcut-group-wrapper",
                       m.bind(this._onKeyInEmptyPlaceHolder, this)
                     ),
-                  b)
+                  v)
                 ) {
                   case 0:
                     _ = c.emptyGroup;
                     break;
                   case 1:
-                    _ = m.str.sformat(c.shortcutGroupWithOneItem, b, 4 - b);
+                    _ = m.str.sformat(c.shortcutGroupWithOneItem, v, 4 - v);
                     break;
                   case 4:
                     _ = c.maxItemsGroup;
                     break;
                   default:
-                    _ = m.str.sformat(c.shortcutGroupWithMixedItems, b, 4 - b);
+                    _ = m.str.sformat(c.shortcutGroupWithMixedItems, v, 4 - v);
                 }
                 this.$el
                   .parent()
@@ -22906,26 +22751,26 @@ csui.define("csui/lib/othelp", [], function () {
               return this.children.findByIndex(this._currentShortcutIndex);
             },
             _onEditEnterPress: function (w) {
-              var v = p(w.target);
+              var b = p(w.target);
               return this.collection.getShortcuts().length === 0 &&
-                this.$el.has(v).length === 0
+                this.$el.has(b).length === 0
                 ? (this.$el.find(".csui-pman-widget-masking").trigger("click"),
                   !1)
-                : v.is(this.$el.parent().find(".shortcut-group-wrapper"))
+                : b.is(this.$el.parent().find(".shortcut-group-wrapper"))
                 ? (this._enterConfiguration(), !1)
                 : !0;
             },
             _onEditKeyDown: function (w) {
-              var v = !0,
-                b = p(w.target);
+              var b = !0,
+                v = p(w.target);
               switch (w.keyCode) {
                 case 13:
                 case 32:
-                  v = this._onEditEnterPress(w);
+                  b = this._onEditEnterPress(w);
                   break;
                 case 27:
                   this.collection.getShortcuts().length > 0
-                    ? (b.is(this.$el.find(".wrapper-button"))
+                    ? (v.is(this.$el.find(".wrapper-button"))
                         ? this.$el
                             .parent()
                             .find(".shortcut-group-wrapper")
@@ -22933,9 +22778,9 @@ csui.define("csui/lib/othelp", [], function () {
                         : this.$el
                             .find(".csui-pman-shortcut-new .wrapper-button")
                             .trigger("focus"),
-                      (v = !1))
+                      (b = !1))
                     : this.collection.getShortcuts().length === 0 &&
-                      (this._exitConfiguration(), (v = !1));
+                      (this._exitConfiguration(), (b = !1));
                   break;
                 case 38:
                   this._selectPreviousShortcut();
@@ -22944,7 +22789,7 @@ csui.define("csui/lib/othelp", [], function () {
                   this._selectNextShortcut();
                   break;
               }
-              return v;
+              return b;
             },
             _enterConfiguration: function () {
               (this._currentShortcutIndex = -1), this._selectShortcut(0);
@@ -22977,17 +22822,17 @@ csui.define("csui/lib/othelp", [], function () {
                     w.shiftKey &&
                     p(w.target).is(p(".shortcut-group-wrapper"))
                   ) {
-                    var v = p(document.activeElement)
+                    var b = p(document.activeElement)
                         .closest(
                           ".csui-draggable-item.csui-pman-editable-widget"
                         )
                         .index(),
-                      b = p(".csui-dnd-container>.csui-pman-editable-widget"),
-                      _ = b.eq(v - 1).offset().top,
-                      T = b.eq(v).offset().top === _;
+                      v = p(".csui-dnd-container>.csui-pman-editable-widget"),
+                      _ = v.eq(b - 1).offset().top,
+                      T = v.eq(b).offset().top === _;
                     if (!T) {
-                      var l = v < 0 ? 0 : _ - p(".pman-header").height();
-                      p("html, body").animate({ scrollTop: l }, 0);
+                      var a = b < 0 ? 0 : _ - p(".pman-header").height();
+                      p("html, body").animate({ scrollTop: a }, 0);
                     }
                   }
                   break;
@@ -23013,27 +22858,27 @@ csui.define("csui/lib/othelp", [], function () {
           },
           {
             migrateSingleShortcut: function (w) {
-              var v;
+              var b;
               switch (w.background) {
                 case "cs-tile-background1":
-                  v = "csui-shortcut-theme-stone1";
+                  b = "csui-shortcut-theme-stone1";
                   break;
                 case "cs-tile-background2":
-                  v = "csui-shortcut-theme-teal2";
+                  b = "csui-shortcut-theme-teal2";
                   break;
                 case "cs-tile-background3":
-                  v = "csui-shortcut-theme-pink1";
+                  b = "csui-shortcut-theme-pink1";
                   break;
               }
-              return { shortcutItems: [w], shortcutTheme: v };
+              return { shortcutItems: [w], shortcutTheme: b };
             },
-            migrateData: function (w, v) {
+            migrateData: function (w, b) {
               switch (w) {
                 case "shortcut":
                 case "csui/widgets/shortcut":
-                  return S.migrateSingleShortcut(v);
+                  return S.migrateSingleShortcut(b);
                 default:
-                  return v;
+                  return b;
               }
             },
           }
@@ -23070,7 +22915,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -23163,7 +23008,7 @@ csui.define("csui/lib/othelp", [], function () {
       "css!csui/widgets/welcome.placeholder/impl/welcome.video/welcome.video",
       "csui/lib/binf/js/binf",
     ],
-    function (x, m, p, y, s, e, r, a, d, t) {
+    function (x, m, p, y, s, e, r, l, f, t) {
       var i = p.ItemView.extend({
         _dataDefaults: { videoSrc: r.videoSrc, videoPoster: r.videoPoster },
         className: "cs-dialog welcome-video binf-modal binf-fade",
@@ -23180,11 +23025,11 @@ csui.define("csui/lib/othelp", [], function () {
         },
         behaviors: {
           TabablesBehavior: {
-            behaviorClass: a,
+            behaviorClass: l,
             recursiveNavigation: !0,
             containTabFocus: !0,
           },
-          TabableRegion: { behaviorClass: d },
+          TabableRegion: { behaviorClass: f },
         },
         currentlyFocusedElement: function () {
           return this.$el;
@@ -23193,8 +23038,8 @@ csui.define("csui/lib/othelp", [], function () {
           n || (n = {}),
             n.data || (n.data = {}),
             x.each(this._dataDefaults, function (u, c) {
-              var h = n.data[c];
-              h || (n.data[c] = u);
+              var d = n.data[c];
+              d || (n.data[c] = u);
             }),
             p.ItemView.prototype.constructor.apply(this, arguments),
             (this.connection = n.context.getModel(e).connector.connection);
@@ -23203,7 +23048,7 @@ csui.define("csui/lib/othelp", [], function () {
           o.keyCode === 27 && this.destroy();
         },
         onDestroy: function () {
-          a.popTabableHandler(), this.$el.remove();
+          l.popTabableHandler(), this.$el.remove();
         },
         show: function () {
           this.render(),
@@ -23222,7 +23067,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -23253,7 +23098,7 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -23304,7 +23149,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -23362,7 +23207,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 8, column: 4 },
@@ -23378,7 +23223,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 11, column: 4 },
@@ -23423,12 +23268,12 @@ csui.define("csui/lib/othelp", [], function () {
       "hbs!csui/widgets/welcome.placeholder/impl/welcome.placeholder",
       "css!csui/widgets/welcome.placeholder/impl/welcome.placeholder",
     ],
-    function (x, m, p, y, s, e, r, a, d, t) {
+    function (x, m, p, y, s, e, r, l, f, t) {
       var i = p.ItemView.extend({
         _dataDefaults: {
           includeMessage: !0,
           includeVideo: !0,
-          message: d.message,
+          message: f.message,
         },
         className: "tile hero",
         template: t,
@@ -23444,15 +23289,15 @@ csui.define("csui/lib/othelp", [], function () {
             n = this.user.get("first_name"),
             u = new Date(),
             c = u.getHours(),
-            h = this._getGreeting(n, c);
+            d = this._getGreeting(n, c);
           return {
             videoSrc: o.videoSrc,
             videoPoster: o.videoPoster,
             includeMessage: o.includeMessage,
             includeVideo: o.includeVideo,
-            greeting: h,
+            greeting: d,
             message: o.message,
-            videoLabel: d.videoLabel,
+            videoLabel: f.videoLabel,
             date: e.formatExactDate(e.deserializeDate(u)),
           };
         },
@@ -23470,8 +23315,8 @@ csui.define("csui/lib/othelp", [], function () {
           n || (n = {}),
             n.data || (n.data = {}),
             m.each(this._dataDefaults, function (u, c) {
-              var h = n.data[c];
-              (h == null || h === "") && (n.data[c] = u);
+              var d = n.data[c];
+              (d == null || d === "") && (n.data[c] = u);
             }),
             p.ItemView.call(this, n),
             (this.user = n.context.getModel(s)),
@@ -23484,14 +23329,14 @@ csui.define("csui/lib/othelp", [], function () {
           o.includeVideo &&
             this.$el.attr(
               "aria-label",
-              m.str.sformat(d.withVideoWrapperAria, o.greeting, o.videoLabel)
+              m.str.sformat(f.withVideoWrapperAria, o.greeting, o.videoLabel)
             );
         },
         onDestroy: function () {
           x(window).off("resize.app", this.render);
         },
         onShowVideo: function () {
-          var o = new a(this.options);
+          var o = new l(this.options);
           o.show();
         },
         _setTextEllipse: function () {
@@ -23501,8 +23346,8 @@ csui.define("csui/lib/othelp", [], function () {
           if (u <= n) {
             for (; o.outerHeight() > n; ) {
               var c = o.text(),
-                h = c.replace(/\W*\s(\S)*$/, "...");
-              if (h.length < c.length) o.text(h);
+                d = c.replace(/\W*\s(\S)*$/, "...");
+              if (d.length < c.length) o.text(d);
               else break;
             }
             this.ui.welcomeMessageContainer.removeClass("binf-hidden");
@@ -23524,18 +23369,18 @@ csui.define("csui/lib/othelp", [], function () {
           if (o) {
             var c =
               n < 12
-                ? d.greetingMorning
+                ? f.greetingMorning
                 : n < 18
-                ? d.greetingAfternoon
-                : d.greetingEvening;
+                ? f.greetingAfternoon
+                : f.greetingEvening;
             u = m.str.sformat(c, o);
           } else
             u =
               n < 12
-                ? d.greetingMorningNoName
+                ? f.greetingMorningNoName
                 : n < 18
-                ? d.greetingAfternoonNoName
-                : d.greetingEveningNoName;
+                ? f.greetingAfternoonNoName
+                : f.greetingEveningNoName;
           return u;
         },
       });
@@ -23547,11 +23392,11 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           return `      <div id="cs-link-content" class="cs-link-content"></div>
 `;
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -23585,7 +23430,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -23626,7 +23471,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 7, column: 4 },
@@ -23642,7 +23487,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 10, column: 4 },
@@ -23687,7 +23532,7 @@ csui.define("csui/lib/othelp", [], function () {
       "i18n!csui/widgets/html.editor/impl/nls/lang",
       "css!csui/widgets/html.editor/impl/cslink.preview/cslink.preview",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i) {
+    function (x, m, p, y, s, e, r, l, f, t, i) {
       var o = y.ItemView.extend({
         template: t,
         className: "cs-link",
@@ -23713,8 +23558,8 @@ csui.define("csui/lib/othelp", [], function () {
           var n = this.options.targetEle,
             u = n.href || n.closest("a").href,
             c = u.match(/^.*\/open\/(.+)$/i) || u.match(/^.*\/nodes\/(.+)$/i),
-            h = x.Deferred(),
-            f = this,
+            d = x.Deferred(),
+            h = this,
             k = !0;
           if (this.options.isSameDomain && c)
             if (isNaN(parseInt(c[1]))) {
@@ -23726,26 +23571,26 @@ csui.define("csui/lib/othelp", [], function () {
                     this.options.targetEle.href.length
                   ),
                 S;
-              e._getNicknameId(f.options, C)
+              e._getNicknameId(h.options, C)
                 .done(function (w) {
                   (S = e.getNewNodeModel(
                     {},
-                    { connector: f.options.connector }
+                    { connector: h.options.connector }
                   )),
                     (S.attributes = S.parse(w)),
                     (S = e.getNewNodeModel(
                       { attributes: S.attributes },
-                      { connector: f.options.connector }
+                      { connector: h.options.connector }
                     )),
-                    (f.model = S),
-                    (f.id = f.model.get("id")),
-                    h.resolve();
+                    (h.model = S),
+                    (h.id = h.model.get("id")),
+                    d.resolve();
                 })
                 .fail(function () {
-                  x(f.options.targetEle).attr("title", i.cannotFindObject);
+                  x(h.options.targetEle).attr("title", i.cannotFindObject);
                 });
             } else this.id = c[1];
-          return k && h.resolve(), h.promise();
+          return k && d.resolve(), d.promise();
         },
         _executeProcess: function () {
           this.id !== -1
@@ -23753,7 +23598,7 @@ csui.define("csui/lib/othelp", [], function () {
                 { id: this.id },
                 {
                   connector: this.options.connector,
-                  commands: a.getAllSignatures(),
+                  commands: l.getAllSignatures(),
                   fields: this.options.fields || {},
                   expand: this.options.expand || {},
                 }
@@ -23768,9 +23613,9 @@ csui.define("csui/lib/othelp", [], function () {
                   (this.linkHeading = this.model.attributes.name);
                 var u = this,
                   c = this._getContent();
-                c.done(function (h) {
+                c.done(function (d) {
                   u.model.get("type") === 5574
-                    ? u._callbackExecuteProcess(h)
+                    ? u._callbackExecuteProcess(d)
                     : x(u.options.targetEle).attr(
                         "title",
                         m.str.sformat(i.goToTooltip, u.model.get("name"))
@@ -23786,17 +23631,17 @@ csui.define("csui/lib/othelp", [], function () {
           return (
             u
               .makeAjaxCall(c)
-              .done(function (h) {
-                n.resolve(h);
+              .done(function (d) {
+                n.resolve(d);
               })
-              .fail(function (h) {
-                n.reject(h);
+              .fail(function (d) {
+                n.reject(d);
               }),
             n.promise()
           );
         },
         _getUrl: function () {
-          return d.combine(
+          return f.combine(
             this.options.connector.getConnectionUrl().getApiBase("v2"),
             "/" + this.subTypeName + "/" + this.id + "/previewcontent"
           );
@@ -23862,14 +23707,14 @@ csui.define("csui/lib/othelp", [], function () {
                 isPreviewContent: !this.isEmptyContent,
                 linkPreviewContent: this.linkPreviewContent,
               },
-              h = this.template(c);
+              d = this.template(c);
             x(u).binf_popover({
               html: !0,
               trigger: "manual",
-              content: h,
+              content: d,
               container: x.fn.binf_modal.getDefaultContainer(),
-              placement: function (f) {
-                x(f).addClass("cs-link-popover");
+              placement: function (h) {
+                x(h).addClass("cs-link-popover");
                 var k = x("<div/>")
                   .attr("style", "display:none")
                   .addClass(
@@ -23880,23 +23725,23 @@ csui.define("csui/lib/othelp", [], function () {
                   (n.linkPreviewImage === null ||
                     n.linkPreviewContent === null ||
                     n.isEmptyContent) &&
-                    x(f).addClass("cs-link-preview-width");
+                    x(h).addClass("cs-link-preview-width");
                 var C = x(".cs-link-popover-temp-div").height() + 40,
                   S = x(".cs-link-popover-temp-div").width() + 40;
                 k.remove();
                 var w = x(u),
-                  v = w.offset(),
-                  b = v.left,
-                  _ = v.top,
-                  T = x(window).width() - (b + w.outerWidth()),
-                  l = x(window).height() - (_ + w.outerHeight(!0));
-                return l > C
+                  b = w.offset(),
+                  v = b.left,
+                  _ = b.top,
+                  T = x(window).width() - (v + w.outerWidth()),
+                  a = x(window).height() - (_ + w.outerHeight(!0));
+                return a > C
                   ? ((n.popoverPosition = "bottom"), "bottom")
                   : _ > C
                   ? ((n.popoverPosition = "top"), "top")
                   : T > S
                   ? ((n.popoverPosition = "right"), "right")
-                  : b > S
+                  : v > S
                   ? ((n.popoverPosition = "left"), "left")
                   : ((n.popoverPosition = "auto"), "auto");
               },
@@ -23916,7 +23761,7 @@ csui.define("csui/lib/othelp", [], function () {
             }),
             x(this.options.targetEle)
               .off("mouseleave")
-              .on("mouseleave", function (f) {
+              .on("mouseleave", function (h) {
                 setTimeout(function () {
                   x(".cs-link-popover:hover").length === 0 && n.destroy();
                 }, 10);
@@ -23938,10 +23783,10 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p, y, s) {
       "use strict";
       var e = s.extend({
-        constructor: function (a) {
-          (this.options = a || (a = {})),
-            p.Model.prototype.constructor.call(this, a),
-            this.makeConnectable(a).makeFetchable(a);
+        constructor: function (l) {
+          (this.options = l || (l = {})),
+            p.Model.prototype.constructor.call(this, l),
+            this.makeConnectable(l).makeFetchable(l);
         },
       });
       return (
@@ -23970,7 +23815,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -24052,7 +23897,7 @@ csui.define("csui/lib/othelp", [], function () {
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -24109,7 +23954,7 @@ csui.define("csui/lib/othelp", [], function () {
               {
                 name: "if",
                 hash: {},
-                fn: s.program(2, d, 0),
+                fn: s.program(2, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 6, column: 29 },
@@ -24146,10 +23991,10 @@ csui.define("csui/lib/othelp", [], function () {
 `
           );
         },
-        2: function (s, e, r, a, d) {
+        2: function (s, e, r, l, f) {
           return " csui-html-editor-reserved-icon ";
         },
-        4: function (s, e, r, a, d) {
+        4: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -24162,7 +24007,7 @@ csui.define("csui/lib/othelp", [], function () {
             {
               name: "if",
               hash: {},
-              fn: s.program(5, d, 0),
+              fn: s.program(5, f, 0),
               inverse: s.noop,
               loc: {
                 start: { line: 12, column: 2 },
@@ -24173,7 +24018,7 @@ csui.define("csui/lib/othelp", [], function () {
             ? t
             : "";
         },
-        5: function (s, e, r, a, d) {
+        5: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -24224,7 +24069,7 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -24237,8 +24082,8 @@ csui.define("csui/lib/othelp", [], function () {
             {
               name: "if",
               hash: {},
-              fn: s.program(1, d, 0),
-              inverse: s.program(4, d, 0),
+              fn: s.program(1, f, 0),
+              inverse: s.program(4, f, 0),
               loc: {
                 start: { line: 1, column: 0 },
                 end: { line: 16, column: 7 },
@@ -24264,7 +24109,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -24341,7 +24186,7 @@ csui.define("csui/lib/othelp", [], function () {
       "hbs!csui/widgets/html.editor/impl/dropdown.menu/dropdown.menu",
       "hbs!csui/widgets/html.editor/impl/dropdown.menu/dropdown.option",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o) {
       "use strict";
       var n = s.ItemView.extend({
           tagName: "li",
@@ -24379,18 +24224,18 @@ csui.define("csui/lib/othelp", [], function () {
           childEvents: { "csui.command.executed": "afterCommandExecution" },
           ui: { dropdownMenu: ".binf-dropdown-menu" },
           childViewOptions: function (c) {
-            var h = c.get("openForEdit") ? "HTMLEdit" : c.get("signature"),
-              f = { status: this.status, node: this.options.node };
+            var d = c.get("openForEdit") ? "HTMLEdit" : c.get("signature"),
+              h = { status: this.status, node: this.options.node };
             return (
-              h === "HTMLEdit"
-                ? (f.openForEdit = this.options.openForEdit)
-                : (h === "properties"
-                    ? (h = "Properties")
-                    : ["reserve", "unreserve"].indexOf(h) !== -1 &&
-                      (h === "unreserve" ? (h = "Unreserve") : (h = "Reserve"),
-                      (h += "Doc")),
-                  (f.command = r.get(h))),
-              f
+              d === "HTMLEdit"
+                ? (h.openForEdit = this.options.openForEdit)
+                : (d === "properties"
+                    ? (d = "Properties")
+                    : ["reserve", "unreserve"].indexOf(d) !== -1 &&
+                      (d === "unreserve" ? (d = "Unreserve") : (d = "Reserve"),
+                      (d += "Doc")),
+                  (h.command = r.get(d))),
+              h
             );
           },
           templateHelpers: function () {
@@ -24407,27 +24252,27 @@ csui.define("csui/lib/othelp", [], function () {
               ),
             };
             if (c.reserved) {
-              var h = this.node.get("reserved_user_id") === this.user.get("id");
-              h ||
+              var d = this.node.get("reserved_user_id") === this.user.get("id");
+              d ||
                 (c.tooltip = m.str.sformat(
                   t.reservedBy,
                   this.node.get("reserved_user_id"),
-                  d.formatExactDate(this.node.get("reserved_date"))
+                  f.formatExactDate(this.node.get("reserved_date"))
                 )),
-                (c.iconClass = h
+                (c.iconClass = d
                   ? "icon-html-editor-reserved-owned"
                   : "icon-html-editor-reserved_other");
             }
             return c;
           },
-          constructor: function (h) {
-            (this.parentView = h.parentView),
-              (this.node = h.node),
-              (this.user = h.user),
+          constructor: function (d) {
+            (this.parentView = d.parentView),
+              (this.node = d.node),
+              (this.user = d.user),
               (this.haveEditPermissions = !!(
-                h.node.actions.get("reserve") || h.node.actions.get("unreserve")
+                d.node.actions.get("reserve") || d.node.actions.get("unreserve")
               )),
-              (h.collection = this.buildCollection()),
+              (d.collection = this.buildCollection()),
               s.CompositeView.prototype.constructor.apply(this, arguments),
               this.listenTo(
                 this.options.node,
@@ -24441,7 +24286,7 @@ csui.define("csui/lib/othelp", [], function () {
               }),
               this.node.get("reserved") &&
                 this.node.get("reserved_user_id") !== this.user.get("id") &&
-                (this.reservedByUserModel = this.options.context.getModel(a, {
+                (this.reservedByUserModel = this.options.context.getModel(l, {
                   attributes: { id: this.node.get("reserved_user_id") },
                 }));
           },
@@ -24451,10 +24296,10 @@ csui.define("csui/lib/othelp", [], function () {
               (!this.node.get("reserved") ||
                 this.node.get("reserved_user_id") === this.user.get("id")) &&
                 c.add(new y.Model({ openForEdit: !0, name: "Edit" }));
-              var h,
-                f = ["properties", "permissions", "unreserve"],
+              var d,
+                h = ["properties", "permissions", "unreserve"],
                 k = this;
-              f.map(function (C) {
+              h.map(function (C) {
                 (C = k.node.actions.get(C)), C && c.add(C);
               });
             }
@@ -24468,8 +24313,8 @@ csui.define("csui/lib/othelp", [], function () {
               (this.collection = this.buildCollection()),
               this.render();
           },
-          afterCommandExecution: function (c, h) {
-            h.fail(
+          afterCommandExecution: function (c, d) {
+            d.fail(
               m.bind(function () {
                 c.model.get("name") === "Unreserve" && this.node.fetch();
               }, this)
@@ -24481,9 +24326,9 @@ csui.define("csui/lib/othelp", [], function () {
               "csui-html-editor-floating-dd-menu"
             );
             var c = this.ui.dropdownMenu.offset().left,
-              h = this.ui.dropdownMenu.outerWidth(),
-              f = document.body.scrollWidth,
-              k = c + 2 * h <= f;
+              d = this.ui.dropdownMenu.outerWidth(),
+              h = document.body.scrollWidth,
+              k = c + 2 * d <= h;
             k &&
               this.ui.dropdownMenu.addClass(
                 "csui-html-editor-floating-dd-menu"
@@ -24514,7 +24359,7 @@ csui.define("csui/lib/othelp", [], function () {
               this.reservedByUserModel &&
                 !this.reservedByUserModel.fetched &&
                 this.reservedByUserModel.fetch().done(
-                  m.bind(function (h) {
+                  m.bind(function (d) {
                     this.$el
                       .find(
                         ".binf-dropdown-toggle.csui-html-editor-control, .csui-html-editor-reserved-readonly"
@@ -24523,8 +24368,8 @@ csui.define("csui/lib/othelp", [], function () {
                         "title",
                         m.str.sformat(
                           t.reservedBy,
-                          h.data.display_name,
-                          d.formatExactDate(this.node.get("reserved_date"))
+                          d.data.display_name,
+                          f.formatExactDate(this.node.get("reserved_date"))
                         )
                       );
                   }, this)
@@ -24540,7 +24385,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -24647,22 +24492,22 @@ csui.define("csui/lib/othelp", [], function () {
       s,
       e,
       r,
-      a,
-      d,
+      l,
+      f,
       t,
       i,
       o,
       n,
       u,
       c,
+      d,
       h,
-      f,
       k,
       C,
       S,
       w,
-      v,
       b,
+      v,
       _
     ) {
       "use strict";
@@ -24683,7 +24528,7 @@ csui.define("csui/lib/othelp", [], function () {
         },
         templateHelpers: function () {
           return {
-            placeholder: v.PageDefaultContent,
+            placeholder: b.PageDefaultContent,
             id: this.model.get("id"),
             data: this.model.get("data"),
           };
@@ -24764,29 +24609,29 @@ csui.define("csui/lib/othelp", [], function () {
             (this.previewLinkViews = {});
         },
         onRender: function () {
-          var l = this.model.error;
-          this.$el[l ? "addClass" : "removeClass"]("csui-disabled"),
-            l
+          var a = this.model.error;
+          this.$el[a ? "addClass" : "removeClass"]("csui-disabled"),
+            a
               ? this.$el.parent().addClass("csui-html-editor-error")
               : this.$el.parent().removeClass("csui-html-editor-error"),
-            l &&
+            a &&
               this._errorRegion.show(
-                new h({
+                new d({
                   model: new p.Model({
-                    message: v.noWikiPageFound,
-                    title: l.message,
+                    message: b.noWikiPageFound,
+                    title: a.message,
                   }),
                 })
               ),
             this.$el.addClass(
               this.options.header ? "" : "csui-html-editor-no-header"
             ),
-            this.$el.parent().addClass(this.options.header || l ? "" : "tile"),
+            this.$el.parent().addClass(this.options.header || a ? "" : "tile"),
             this.filterHtmlContent(),
             this.refreshTabableElements();
         },
         filterHtmlContent: function () {
-          this.$el.find("table").each(function (l, g) {
+          this.$el.find("table").each(function (a, g) {
             x(g)
               .css({
                 border: g.getAttribute("border") + "px solid",
@@ -24798,7 +24643,7 @@ csui.define("csui/lib/othelp", [], function () {
                 .find("th,td")
                 .css("padding", g.getAttribute("cellpadding") + "px");
           }),
-            this.$el.find("big").each(function (l, g) {
+            this.$el.find("big").each(function (a, g) {
               x(g).replaceWith(
                 '<span class="csui-big">' + x(g).html() + "</span>"
               );
@@ -24816,21 +24661,21 @@ csui.define("csui/lib/othelp", [], function () {
               ))),
             (this.currentlyFocusedElementIndex = -1);
         },
-        moveTab: function (l) {
+        moveTab: function (a) {
           this.currentlyFocusedElementIndex = this.tabableElements.indexOf(
-            l.target
+            a.target
           );
           var g = x(this.tabableElements[this.currentlyFocusedElementIndex]),
             I = !1;
-          l.keyCode === 9 &&
-            (l.shiftKey
+          a.keyCode === 9 &&
+            (a.shiftKey
               ? this.currentlyFocusedElementIndex > 0
                 ? ((this.currentlyFocusedElementIndex -= 1),
                   x(
                     this.tabableElements[this.currentlyFocusedElementIndex]
                   ).trigger("focus"),
-                  l.stopPropagation(),
-                  l.preventDefault())
+                  a.stopPropagation(),
+                  a.preventDefault())
                 : (I = !0)
               : this.currentlyFocusedElementIndex <
                 this.tabableElements.length - 1
@@ -24838,12 +24683,12 @@ csui.define("csui/lib/othelp", [], function () {
                 x(this.tabableElements[this.currentlyFocusedElementIndex])
                   .prop("tabindex", 0)
                   .trigger("focus"),
-                l.stopPropagation(),
-                l.preventDefault())
+                a.stopPropagation(),
+                a.preventDefault())
               : (I = !0),
             I &&
               (this.mode === "write"
-                ? (l.shiftKey
+                ? (a.shiftKey
                     ? (this.currentlyFocusedElementIndex =
                         this.tabableElements.length - 1)
                     : (this.currentlyFocusedElementIndex = 0),
@@ -24857,33 +24702,33 @@ csui.define("csui/lib/othelp", [], function () {
                         (this.currentlyFocusedElementIndex = -1);
                     }, this)
                   )),
-            this.mode === "write" && (l.stopPropagation(), l.preventDefault()));
+            this.mode === "write" && (a.stopPropagation(), a.preventDefault()));
         },
-        _showPreview: function (l) {
+        _showPreview: function (a) {
           var g, I;
-          this.utils.getUrl(this, l).done(
+          this.utils.getUrl(this, a).done(
             m.bind(function () {
               (I = m.extend(
-                { targetEle: l.target, connector: this.connector },
+                { targetEle: a.target, connector: this.connector },
                 this.options
               )),
-                this.previewLinkViews[l.target.href]
-                  ? ((I.previewModel = this.previewLinkViews[l.target.href]),
-                    (g = new f(I)))
-                  : ((g = new f(I)),
+                this.previewLinkViews[a.target.href]
+                  ? ((I.previewModel = this.previewLinkViews[a.target.href]),
+                    (g = new h(I)))
+                  : ((g = new h(I)),
                     this.listenTo(g, "model:fetched", function (D) {
-                      this.previewLinkViews[l.target.href] = D;
+                      this.previewLinkViews[a.target.href] = D;
                     })),
                 g.render();
             }, this)
           );
         },
-        _updateUrl: function (l) {
-          this.utils.getUrl(this, l);
+        _updateUrl: function (a) {
+          this.utils.getUrl(this, a);
         },
         _renderActionsDropdown: function () {
           this.node.fetch().done(
-            m.bind(function (l) {
+            m.bind(function (a) {
               if (
                 ((this.dropdownMenu = new C({
                   openForEdit: this._openForEdit.bind(this),
@@ -24920,16 +24765,16 @@ csui.define("csui/lib/othelp", [], function () {
         editModeAccessibility: function () {
           x(document).on(
             "keydown.html.editor",
-            m.bind(function (l) {
+            m.bind(function (a) {
               const g = x(".fr-toolbar")[0];
               g &&
                 g.style.display != "none" &&
-                !x.contains(g, l.target) &&
-                (l.keyCode === 9
-                  ? this.moveTab(l)
-                  : [13, 32].indexOf(l.keyCode) !== -1 &&
-                    x(l.target).hasClass("csui-html-edit-icon") &&
-                    (x(l.target).trigger("click"), l.preventDefault()));
+                !x.contains(g, a.target) &&
+                (a.keyCode === 9
+                  ? this.moveTab(a)
+                  : [13, 32].indexOf(a.keyCode) !== -1 &&
+                    x(a.target).hasClass("csui-html-edit-icon") &&
+                    (x(a.target).trigger("click"), a.preventDefault()));
             }, this)
           );
         },
@@ -24952,8 +24797,8 @@ csui.define("csui/lib/othelp", [], function () {
                               }, this)
                             )
                           : u.confirmQuestion(
-                              m.bind(function (l) {
-                                l
+                              m.bind(function (a) {
+                                a
                                   ? (this._editContent(),
                                     (this.enableSaveButton = !0))
                                   : this._getLatestContent().done(
@@ -24966,8 +24811,8 @@ csui.define("csui/lib/othelp", [], function () {
                                     ),
                                   (this.alreadyTriggered = !0);
                               }, this),
-                              v.versionDifferenceConfirmMessage,
-                              v.versionDifferenceConfirmTitle
+                              b.versionDifferenceConfirmMessage,
+                              b.versionDifferenceConfirmTitle
                             );
                       }, this)
                     )
@@ -24975,13 +24820,13 @@ csui.define("csui/lib/othelp", [], function () {
                 }, this)
               )
               .fail(this.unblockActions.bind(this)),
-            a.isAppleMobile() &&
+            l.isAppleMobile() &&
               this.$el
                 .find(".csui-richtext-message")
                 .attr("contenteditable", !0)
                 .trigger("focus");
         },
-        destroyFREditor: function (l) {
+        destroyFREditor: function (a) {
           x(".csui-rich-text-mask").remove(),
             x(".csui-html-editor-zindex").removeClass(
               "csui-html-editor-zindex"
@@ -25003,36 +24848,36 @@ csui.define("csui/lib/othelp", [], function () {
             x(".csui-html-editor-zero-zindex").removeClass(
               "csui-html-editor-zero-zindex"
             ),
-            l.destroy();
+            a.destroy();
         },
-        extractSelectionData: function (l) {
-          return l
+        extractSelectionData: function (a) {
+          return a
             ? {
-                anchorNode: l.anchorNode,
-                anchorOffset: l.anchorOffset,
-                focusNode: l.focusNode,
-                focusOffset: l.focusOffset,
+                anchorNode: a.anchorNode,
+                anchorOffset: a.anchorOffset,
+                focusNode: a.focusNode,
+                focusOffset: a.focusOffset,
               }
             : null;
         },
         _editContent: async function () {
-          var l = this;
-          l.contentChanged = !!l.autoSaved;
-          const g = l.node.get("parent_id_expand").image_folder_id;
+          var a = this;
+          a.contentChanged = !!a.autoSaved;
+          const g = a.node.get("parent_id_expand").image_folder_id;
           async function I(V) {
             try {
               var L = new FormData();
               L.append("parent_id", g),
                 L.append("type", 144),
-                L.append("name", l.editorInstance.opts.imageUploadParams.name),
+                L.append("name", a.editorInstance.opts.imageUploadParams.name),
                 L.append("file", V);
-              var F = {
-                  url: l.connector.connection.url + "/nodes",
+              var j = {
+                  url: a.connector.connection.url + "/nodes",
                   type: "POST",
                   data: L,
-                  connector: l.connector,
+                  connector: a.connector,
                 },
-                G = await l.updateAjaxCall(F);
+                G = await a.updateAjaxCall(j);
               return G.id;
             } catch (W) {
               throw (console.error("Error fetching image ID:", W), W);
@@ -25041,193 +24886,187 @@ csui.define("csui/lib/othelp", [], function () {
           var D = new r(this.connector.connection.url),
             A = D.getCgiScript(),
             B = {
-              placeholderText: v.PageDefaultContent,
+              placeholderText: b.PageDefaultContent,
               externalParams: {
                 getImageId: I.bind(this),
                 connectionUrl: A,
                 imageBrowseEnabled:
-                  l.node.get("parent_id_expand").imagebrowseenabled,
-                enableSaveButton: l._enableSaveButton,
-                disableSaveButton: l._disableSaveButton,
+                  a.node.get("parent_id_expand").imagebrowseenabled,
+                enableSaveButton: a._enableSaveButton,
+                disableSaveButton: a._disableSaveButton,
                 widgetSelector: "div[data-csui-widget_type]",
               },
               requestHeaders: {
-                otcsticket: l.connector.connection.session.ticket,
+                otcsticket: a.connector.connection.session.ticket,
               },
               events: {
                 cancel: function () {
                   var V = this;
-                  l.blockActions(),
-                    l.contentChanged
+                  a.blockActions(),
+                    a.contentChanged
                       ? (this.$tb.hide(),
                         this.opts.externalParams.actionButtons.hide(),
                         u.confirmQuestion(
                           function (L) {
                             L
-                              ? l
+                              ? a
                                   ._getLatestVersion()
                                   .done(function () {
-                                    !l.model.get("data") &&
-                                      l.model.set({
-                                        data: l.model.get("oldData"),
-                                      }),
-                                      l.oldVersion !== l.model.get("version")
-                                        ? l
-                                            ._getLatestContent()
-                                            .done(
-                                              m.bind(function () {
-                                                (l.oldVersion =
-                                                  this.model.get("version")),
-                                                  V.html.set(
-                                                    l.model.get("oldData")
-                                                  );
-                                              }, l)
-                                            )
-                                            .fail(function (F) {
-                                              l.editorInstance.events.trigger(
-                                                "onFailure",
-                                                [F]
-                                              );
-                                            })
-                                        : V.html.set(l.model.get("oldData")),
-                                      l.trigger("updateScrollbar"),
-                                      l.destroyFREditor(V),
-                                      l.autoSaved &&
-                                        l.deleteAutoSavedContent({
-                                          connector: l.connector,
-                                          wikiId: l.node.get("parent_id"),
-                                          pageId: l.model.get("id"),
+                                    a.oldVersion !== a.model.get("version")
+                                      ? a
+                                          ._getLatestContent()
+                                          .done(
+                                            m.bind(function () {
+                                              (a.oldVersion =
+                                                this.model.get("version")),
+                                                V.html.set(
+                                                  a.model.get("oldData")
+                                                );
+                                            }, a)
+                                          )
+                                          .fail(function (j) {
+                                            a.editorInstance.events.trigger(
+                                              "onFailure",
+                                              [j]
+                                            );
+                                          })
+                                      : V.html.set(a.model.get("oldData")),
+                                      a.trigger("updateScrollbar"),
+                                      a.destroyFREditor(V),
+                                      a.autoSaved &&
+                                        a.deleteAutoSavedContent({
+                                          connector: a.connector,
+                                          wikiId: a.node.get("parent_id"),
+                                          pageId: a.model.get("id"),
                                         }),
-                                      l._toggleReserve();
+                                      a._toggleReserve();
                                   })
-                                  .fail(function (F) {
-                                    l.editorInstance.events.trigger(
+                                  .fail(function (j) {
+                                    a.editorInstance.events.trigger(
                                       "onFailure",
-                                      [F]
+                                      [j]
                                     );
                                   })
                               : (this.$tb.show(),
                                 this.opts.externalParams.actionButtons.show(),
-                                x(l.options.richTextElementId).trigger("focus"),
-                                l.unblockActions());
+                                x(a.options.richTextElementId).trigger("focus"),
+                                a.unblockActions());
                           }.bind(this),
-                          v.CancelConfirmMessage,
-                          v.cancelTitle,
+                          b.CancelConfirmMessage,
+                          b.cancelTitle,
                           (u.buttonData.Yes = {
-                            label: v.Yes,
-                            tooltip: v.Yes,
+                            label: b.Yes,
+                            tooltip: b.Yes,
                             aria: "",
                           }),
                           (u.buttonData.No = {
-                            label: v.No,
-                            tooltip: v.No,
+                            label: b.No,
+                            tooltip: b.No,
                             aria: "",
                           })
                         ))
-                      : l
+                      : a
                           ._getLatestVersion()
                           .done(function () {
-                            !l.model.get("data") &&
-                              l.model.set({ data: l.model.get("oldData") }),
-                              l.oldVersion !== l.model.get("version")
-                                ? l
-                                    ._getLatestContent()
-                                    .done(
-                                      m.bind(function () {
-                                        (l.oldVersion =
-                                          this.model.get("version")),
-                                          V.html.set(l.model.get("oldData"));
-                                      }, l)
-                                    )
-                                    .fail(function (L) {
-                                      l.editorInstance.events.trigger(
-                                        "onFailure",
-                                        [L]
-                                      );
-                                    })
-                                : V.html.set(l.model.get("oldData")),
-                              l.destroyFREditor(V),
-                              l._toggleReserve();
+                            a.oldVersion !== a.model.get("version")
+                              ? a
+                                  ._getLatestContent()
+                                  .done(
+                                    m.bind(function () {
+                                      (a.oldVersion =
+                                        this.model.get("version")),
+                                        V.html.set(a.model.get("oldData"));
+                                    }, a)
+                                  )
+                                  .fail(function (L) {
+                                    a.editorInstance.events.trigger(
+                                      "onFailure",
+                                      [L]
+                                    );
+                                  })
+                              : V.html.set(a.model.get("oldData")),
+                              a.destroyFREditor(V),
+                              a._toggleReserve();
                           })
                           .fail(function (L) {
-                            l.editorInstance.events.trigger("onFailure", [L]);
+                            a.editorInstance.events.trigger("onFailure", [L]);
                           });
                 },
                 "save.before": function () {
-                  l._autoSaveContent();
+                  a._autoSaveContent();
                 },
                 onSave: function () {
-                  l.blockActions(),
-                    l
+                  a.blockActions(),
+                    a
                       ._getLatestVersion()
                       .done(function () {
-                        l.alreadyTriggered ||
-                        l.oldVersion === l.model.get("version")
-                          ? ((l.enableSaveButton = !1),
-                            l
+                        a.alreadyTriggered ||
+                        a.oldVersion === a.model.get("version")
+                          ? ((a.enableSaveButton = !1),
+                            a
                               ._saveContent()
                               .done(() => {
-                                l.editorInstance.events.trigger("onSuccess");
+                                a.editorInstance.events.trigger("onSuccess");
                               })
                               .fail((V) => {
-                                l.editorInstance.events.trigger("onFailure", [
+                                a.editorInstance.events.trigger("onFailure", [
                                   V,
                                 ]);
                               }))
                           : u.confirmQuestion(
                               function (V) {
                                 V
-                                  ? ((l.enableSaveButton = !1),
-                                    l
+                                  ? ((a.enableSaveButton = !1),
+                                    a
                                       ._saveContent()
                                       .done(() => {
-                                        l.editorInstance.events.trigger(
+                                        a.editorInstance.events.trigger(
                                           "onSuccess"
                                         );
                                       })
                                       .fail((L) => {
-                                        l.editorInstance.events.trigger(
+                                        a.editorInstance.events.trigger(
                                           "onFailure",
                                           [L]
                                         );
                                       }))
-                                  : (x(l.options.richTextElementId).trigger(
+                                  : (x(a.options.richTextElementId).trigger(
                                       "focus"
                                     ),
-                                    l._enableSaveButton(),
-                                    l.unblockActions());
+                                    a._enableSaveButton(),
+                                    a.unblockActions());
                               },
-                              v.versionDifferenceConfirmMessage,
-                              v.versionDifferenceConfirmTitle
+                              b.versionDifferenceConfirmMessage,
+                              b.versionDifferenceConfirmTitle
                             );
                       })
                       .fail(function (V) {
-                        l.editorInstance.events.trigger("onFailure", [V]);
+                        a.editorInstance.events.trigger("onFailure", [V]);
                       });
                 },
                 onSuccess: function () {
-                  l.model.set({
-                    data: l.editorInstance.html.get(),
-                    oldData: l.editorInstance.html.get(),
+                  a.model.set({
+                    data: a.editorInstance.html.get(),
+                    oldData: a.editorInstance.html.get(),
                   }),
-                    l
+                    a
                       ._getLatestVersion()
                       .done(function () {
-                        (l.oldVersion = l.model.get("version")),
-                          l.destroyFREditor(l.editorInstance),
-                          l.node.fetch(),
-                          l.unblockActions();
+                        (a.oldVersion = a.model.get("version")),
+                          a.destroyFREditor(a.editorInstance),
+                          a.node.fetch(),
+                          a.unblockActions();
                       })
                       .fail(function (V) {
-                        l.editorInstance.events.trigger("onFailure", [V]);
+                        a.editorInstance.events.trigger("onFailure", [V]);
                       });
                 },
                 onFailure: function (V) {
-                  let L = new a.RequestErrorMessage(V);
+                  let L = new l.RequestErrorMessage(V);
                   S.showMessage("error", L.toString() || V?.message),
-                    l.trigger("updateScrollbar"),
-                    l.unblockActions(),
-                    l._enableSaveButton();
+                    a.trigger("updateScrollbar"),
+                    a.unblockActions(),
+                    a._enableSaveButton();
                 },
                 click: function (V) {
                   const L = V.target;
@@ -25237,50 +25076,51 @@ csui.define("csui/lib/othelp", [], function () {
                     V.preventDefault();
                 },
                 initialized: function () {
-                  x(l.options.richTextElementId).addClass(
+                  x(a.options.richTextElementId).addClass(
                     "csui-rich-text-editor-toolbar"
                   ),
-                    (l.mode = "write"),
-                    l.unblockActions(),
-                    l.$el.find(".csui-richtext-message").trigger("focus"),
-                    (l.editorInstance.opts.externalParams.actionButtons = x(
+                    (a.mode = "write"),
+                    a.unblockActions(),
+                    a.$el.find(".csui-richtext-message").trigger("focus"),
+                    (a.editorInstance.opts.externalParams.actionButtons = x(
                       ".froala-save-cancel"
                     )),
-                    (l.editorInstance.initialSnapshot =
-                      l.editorInstance.snapshot.get()),
-                    l._actionButtonsPosition(),
-                    l.refreshTabableElements(),
+                    (a.editorInstance.initialEditorText = a.editorInstance.html
+                      .get()
+                      .trim()),
+                    a._actionButtonsPosition(),
+                    a.refreshTabableElements(),
                     N(),
                     (this.html.get = this.opts.customHtmlGet.bind(this));
                 },
                 contentChanged: function () {
-                  l._validateState();
+                  a._validateState();
                 },
               },
             };
-          (l.editorInstance = await d("#" + this.options.richTextElementId, B)),
+          (a.editorInstance = await f("#" + this.options.richTextElementId, B)),
             (window.onbeforeunload = function () {
               return !1;
             }),
             csui.require(
               ["csui/dialogs/node.picker/node.picker"],
               function (V) {
-                l.editorInstance.opts.csLink = {
+                a.editorInstance.opts.csLink = {
                   nodeLink: w,
                   nodePicker: function () {
                     return new V({
-                      connector: l.connector,
-                      dialogTitle: v.contentServerLink,
-                      context: l.options.context,
+                      connector: a.connector,
+                      dialogTitle: b.contentServerLink,
+                      context: a.options.context,
                       resolveShortcuts: !0,
                       resultOriginalNode: !1,
-                      currentUser: l.options.context.getModel(i),
+                      currentUser: a.options.context.getModel(i),
                     });
                   },
                 };
               }
             );
-          var M = l.$("#" + this.options.richTextElementId),
+          var M = a.$("#" + this.options.richTextElementId),
             E = M.find(".fr-wrapper");
           E.attr("contenteditable", !0),
             this.editIconEle.addClass("binf-hidden");
@@ -25289,25 +25129,25 @@ csui.define("csui/lib/othelp", [], function () {
             z = x.fn.binf_modal.getDefaultContainer();
           (P.className = "csui-rich-text-mask"),
             (O.className = "csui-rich-text-mask csui-rich-text-body-mask"),
-            l.grandParentEle.before(P),
+            a.grandParentEle.before(P),
             x(z).append(O),
-            a.isMSBrowser() &&
+            l.isMSBrowser() &&
               x("#breadcrumb-wrap") &&
               x("#breadcrumb-wrap").addClass("csui-html-editor-zero-zindex");
-          var j = x(P),
+          var F = x(P),
             U = x(O),
             H =
               this.grandParentEle.find(".csui-html-editor-no-header").length > 0
                 ? 5
                 : 80,
             N = function () {
-              U.css("height", "0px"), j.css("top", "0px");
+              U.css("height", "0px"), F.css("top", "0px");
               var V = M.offset().top - x(P).offset().top - H,
                 L = M.offset().top - H;
               (L = V < 0 ? L + -V : L),
                 (V = V < 0 ? 0 : V),
                 U.css("height", L + "px"),
-                j.css({
+                F.css({
                   height: document.body.scrollHeight - O.offsetHeight,
                   top: V,
                 }),
@@ -25318,44 +25158,44 @@ csui.define("csui/lib/othelp", [], function () {
             x(".csui-richtext-message").on("change", N);
         },
         _saveContent: function () {
-          var l = this,
+          var a = this,
             g = x.Deferred(),
             I = new FormData();
           I.append(
             "TextField",
-            l.editorInstance.html.get() === ""
+            a.editorInstance.html.get() === ""
               ? "<p></p>"
-              : l.editorInstance.html.get()
+              : a.editorInstance.html.get()
           );
           var D = {
-              url: l.connector.connection.url + "/nodes/" + l.options.id,
+              url: a.connector.connection.url + "/nodes/" + a.options.id,
               type: "PUT",
               data: I,
               dataType: "json",
               processData: !1,
               contentType: !1,
-              connector: l.connector,
-              view: l,
+              connector: a.connector,
+              view: a,
               requestType: "saveContent",
             },
-            A = l.updateAjaxCall(D),
+            A = a.updateAjaxCall(D),
             B = function () {
-              if (l.autoSaved) {
-                const E = l.connector.getConnectionUrl().getApiBase("v2"),
-                  P = l.node.get("parent_id"),
-                  O = l.model.get("id"),
+              if (a.autoSaved) {
+                const E = a.connector.getConnectionUrl().getApiBase("v2"),
+                  P = a.node.get("parent_id"),
+                  O = a.model.get("id"),
                   z = {
                     type: "DELETE",
-                    connector: l.connector,
+                    connector: a.connector,
                     wikiId: P,
                     pageId: O,
                     url: r.combine(E, "/wiki/" + P + "/autosave/" + O),
                   };
-                return l.updateAjaxCall(z);
+                return a.updateAjaxCall(z);
               } else return x.Deferred().resolve().promise();
             },
             M = function () {
-              return l._toggleReserve(!0);
+              return a._toggleReserve(!0);
             };
           return (
             Promise.all([A, B(), M()])
@@ -25369,17 +25209,17 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         _disableSaveButton: function () {
-          var l = x("body").find(".csui-html-edit-save");
-          l.length && (l[0].disabled = !0);
+          var a = x("body").find(".csui-html-edit-save");
+          a.length && (a[0].disabled = !0);
         },
         _enableSaveButton: function () {
-          var l = x("body").find(".csui-html-edit-save");
-          l.length && (l[0].disabled = !1);
+          var a = x("body").find(".csui-html-edit-save");
+          a.length && (a[0].disabled = !1);
         },
-        _toggleReserve: function (l) {
+        _toggleReserve: function (a) {
           let g = x.Deferred(),
             I = new FormData();
-          if (l) {
+          if (a) {
             if (
               this.node.get("reserved") &&
               this.node.get("reserved_user_id") === this.user.get("id")
@@ -25412,9 +25252,9 @@ csui.define("csui/lib/othelp", [], function () {
           );
         },
         _autoSaveContent: function () {
-          let l = this.editorInstance;
-          if (l && l.html.get().trim() !== this.model.get("data").trim()) {
-            let g = l.html.get() || "<p></p>",
+          let a = this.editorInstance;
+          if (a && a.html.get().trim() !== this.model.get("data").trim()) {
+            let g = a.html.get(),
               I = new FormData();
             I.append("wikiId", this.node.get("parent_id")),
               I.append("pageId", this.model.get("id")),
@@ -25433,7 +25273,7 @@ csui.define("csui/lib/othelp", [], function () {
           }
         },
         _getLatestContent: function () {
-          var l = {
+          var a = {
             url: r.combine(
               this.connector.getConnectionUrl().getApiBase("v2"),
               "/wiki/" + this.model.get("id") + "/autosave"
@@ -25443,10 +25283,10 @@ csui.define("csui/lib/othelp", [], function () {
             connector: this.connector,
             view: this,
           };
-          return this.updateAjaxCall(l);
+          return this.updateAjaxCall(a);
         },
         _getLatestVersion: function () {
-          var l = {
+          var a = {
             url: r.combine(
               this.connector.getConnectionUrl().getApiBase("v2"),
               "/nodes/" + this.model.get("id")
@@ -25456,48 +25296,38 @@ csui.define("csui/lib/othelp", [], function () {
             connector: this.connector,
             view: this,
           };
-          return this.updateAjaxCall(l);
+          return this.updateAjaxCall(a);
         },
         _validateState: function () {
-          if (
-            ((this.utils = this.utils || k.getRichTextEditorUtils()),
-            this.editorInstance)
-          ) {
-            let l = this.editorInstance.snapshot
-              .get()
-              .html.replace(/(|\s)fr-selected-cell/g, "");
-            if (
-              ((l = l.replace(/ class=""/g, "")),
-              l !== this.editorInstance.initialSnapshot.html)
-            ) {
-              (this.contentChanged = !0),
+          (this.utils = this.utils || k.getRichTextEditorUtils()),
+            this.editorInstance &&
+            this.editorInstance.html.get().trim() !==
+              this.editorInstance.initialEditorText
+              ? ((this.contentChanged = !0),
                 this._enableSaveButton(),
-                this.refreshTabableElements();
-              return;
-            }
-          }
-          (this.contentChanged = !1),
-            this._disableSaveButton(),
-            this.refreshTabableElements();
+                this.refreshTabableElements())
+              : ((this.contentChanged = !1),
+                this._disableSaveButton(),
+                this.refreshTabableElements());
         },
         _appendActionButtons: function () {
-          var l = x("body"),
+          var a = x("body"),
             g = {
-              saveLabel: v.saveTitle,
-              cancelLabel: v.cancelTitle,
-              cancelAria: v.cancelAria,
-              saveAria: v.saveAria,
+              saveLabel: b.saveTitle,
+              cancelLabel: b.cancelTitle,
+              cancelAria: b.cancelAria,
+              saveAria: b.saveAria,
               isFroala: !0,
             };
           (this.scrollbarWidth = window.innerWidth - document.body.clientWidth),
-            l.append(_(g)),
-            l.find(".csui-html-edit-save").on(
+            a.append(_(g)),
+            a.find(".csui-html-edit-save").on(
               "click",
               m.bind(function () {
                 this.editorInstance.events.trigger("onSave");
               }, this)
             ),
-            l.find(".csui-html-edit-cancel").on(
+            a.find(".csui-html-edit-cancel").on(
               "click",
               m.bind(function () {
                 this.editorInstance.events.trigger("cancel");
@@ -25512,14 +25342,14 @@ csui.define("csui/lib/othelp", [], function () {
         _unbindEvents: function () {
           window.onbeforeunload = null;
         },
-        updateAjaxCall: function (l) {
+        updateAjaxCall: function (a) {
           var g = x.Deferred(),
-            I = l.url,
-            D = l.data,
-            A = l.type,
-            B = l.connector,
-            M = l.view,
-            E = l.requestType;
+            I = a.url,
+            D = a.data,
+            A = a.type,
+            B = a.connector,
+            M = a.view,
+            E = a.requestType;
           return (
             B.makeAjaxCall({
               url: I,
@@ -25531,12 +25361,12 @@ csui.define("csui/lib/othelp", [], function () {
               success: function (P, O, z) {
                 switch (E) {
                   case "getContent":
-                    if (P.results.data.autoSaved)
-                      (M.autoSaved = !0),
+                    P.results.data.autoSaved
+                      ? ((M.autoSaved = !0),
                         u.confirmQuestion(
-                          function (j) {
+                          function (F) {
                             var U = P.results.data.content;
-                            j
+                            F
                               ? ((U = P.results.data.autoSaved),
                                 (M.enableSaveButton = !0))
                               : ((M.enableSaveButton = !1),
@@ -25549,28 +25379,24 @@ csui.define("csui/lib/othelp", [], function () {
                               M.model.set({ data: U }),
                               g.resolve();
                           },
-                          v.RestoreDialogMessage,
-                          v.RestoreDiaglogTitle,
+                          b.RestoreDialogMessage,
+                          b.RestoreDiaglogTitle,
                           (u.buttonData.Yes = {
-                            label: v.Continue,
-                            tooltip: v.Continue,
+                            label: b.Continue,
+                            tooltip: b.Continue,
                             aria: "",
                           }),
                           (u.buttonData.No = {
-                            label: v.Discard,
-                            tooltip: v.Discard,
+                            label: b.Discard,
+                            tooltip: b.Discard,
                             aria: "",
                           })
-                        );
-                    else {
-                      const j = P.results.data.content,
-                        U =
-                          M.model.get("version") === 1 &&
-                          !M.options.wikitemplateid
-                            ? ""
-                            : j;
-                      M.model.set({ data: U, oldData: j }), g.resolve();
-                    }
+                        ))
+                      : (M.model.set({
+                          data: P.results.data.content,
+                          oldData: P.results.data.content,
+                        }),
+                        g.resolve());
                     break;
                   case "versions-reserve":
                     (M.model.attributes.version =
@@ -25593,14 +25419,14 @@ csui.define("csui/lib/othelp", [], function () {
             g.promise()
           );
         },
-        deleteAutoSavedContent: function (l) {
+        deleteAutoSavedContent: function (a) {
           this.autoSaved &&
-            ((l.type = "DELETE"),
-            (l.url = r.combine(
-              l.connector.getConnectionUrl().getApiBase("v2"),
-              "/wiki/" + l.wikiId + "/autosave/" + l.pageId
+            ((a.type = "DELETE"),
+            (a.url = r.combine(
+              a.connector.getConnectionUrl().getApiBase("v2"),
+              "/wiki/" + a.wikiId + "/autosave/" + a.pageId
             )),
-            this.updateAjaxCall(l),
+            this.updateAjaxCall(a),
             (this.autoSaved = !1));
         },
       });
@@ -25613,7 +25439,7 @@ csui.define("csui/lib/othelp", [], function () {
     function (x, m, p) {
       var y = p.template({
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -25671,16 +25497,16 @@ csui-html-editor-wrapper-parent-` +
       "csui/widgets/html.editor/impl/html.editor.content.view",
       "hbs!csui/widgets/html.editor/impl/html.editor.wrapper.template",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n) {
-      var u = d.extend({
-          constructor: function (f) {
-            f || (f = {}),
-              (f.icon = "cs-wiki-icon-wiki"),
-              (this.context = f.context),
-              (f.id = "csui-html-tile-wrapper-" + f.wikiPageId),
-              d.prototype.constructor.call(this, f),
-              (f = f.data ? x.extend(f, f.data) : f),
-              (this.options = f),
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n) {
+      var u = f.extend({
+          constructor: function (h) {
+            h || (h = {}),
+              (h.icon = "cs-wiki-icon-wiki"),
+              (this.context = h.context),
+              (h.id = "csui-html-tile-wrapper-" + h.wikiPageId),
+              f.prototype.constructor.call(this, h),
+              (h = h.data ? x.extend(h, h.data) : h),
+              (this.options = h),
               (this.options.parentView = this),
               (this.contentViewOptions = this.options);
           },
@@ -25711,45 +25537,45 @@ csui-html-editor-wrapper-parent-` +
             "click @ui.contentAreaLinks": "onClickLink",
             "click @ui.editIcon": "onClickEditIcon",
           },
-          constructor: function (f) {
-            (f = f || {}),
-              f.data || (f.data = {}),
-              x.extend(f, f.data),
-              (f.wikiPageId = f.wikipageid || f.id),
-              (f.id = "csui-html-editor-grand-parent-" + f.wikiPageId),
-              (f.title = f.titlefield || f.title),
-              (f.header = !!f.title),
-              (f.scrollableParent = f.header
+          constructor: function (h) {
+            (h = h || {}),
+              h.data || (h.data = {}),
+              x.extend(h, h.data),
+              (h.wikiPageId = h.wikipageid || h.id),
+              (h.id = "csui-html-editor-grand-parent-" + h.wikiPageId),
+              (h.title = h.titlefield || h.title),
+              (h.header = !!h.title),
+              (h.scrollableParent = h.header
                 ? ".tile-content"
                 : ".csui-html-editor-wrapper-parent"),
-              (this.context = f.context),
+              (this.context = h.context),
               p.CompositeView.prototype.constructor.apply(this, arguments);
           },
           behaviors: {
             TabableRegionBehavior: { behaviorClass: t },
             DefaultAction: { behaviorClass: i },
           },
-          onClickEditIcon: function (h) {
+          onClickEditIcon: function (d) {
             y.channel("dropdown:open").trigger("align:dropDown:menu", this);
           },
-          onClickLink: function (h) {
-            var f = m(h.target).attr("href")
-              ? m(h.target)
-              : m(h.target).parents("a");
-            f[0] &&
-              f.attr("href") &&
+          onClickLink: function (d) {
+            var h = m(d.target).attr("href")
+              ? m(d.target)
+              : m(d.target).parents("a");
+            h[0] &&
+              h.attr("href") &&
               this._handleClickLink({
-                event: h,
+                event: d,
                 connector: this.options.model.connector,
                 callingViewInstance: this,
               });
           },
-          _handleClickLink: function (h) {
-            var f,
-              k = m(h.event.target).attr("href")
-                ? m(h.event.target)
-                : m(h.event.target).parents("a"),
-              C = h.callingViewInstance,
+          _handleClickLink: function (d) {
+            var h,
+              k = m(d.event.target).attr("href")
+                ? m(d.event.target)
+                : m(d.event.target).parents("a"),
+              C = d.callingViewInstance,
               S = this,
               w = k.attr("href") ? k.attr("href") : "";
             if (
@@ -25758,50 +25584,50 @@ csui-html-editor-wrapper-parent-` +
             )
               if (w.match(/^.*\/open|Open\/(.+)$/)) {
                 if (
-                  (h.event.stopPropagation(),
-                  h.event.preventDefault(),
+                  (d.event.stopPropagation(),
+                  d.event.preventDefault(),
                   w.indexOf("open/") !== -1 || w.indexOf("Open/") !== -1)
                 ) {
-                  var v = w.substring(w.lastIndexOf("/") + 1, w.length);
-                  v.match(/^[0-9]+$/)
-                    ? ((f = this.getNewNodeModel({
+                  var b = w.substring(w.lastIndexOf("/") + 1, w.length);
+                  b.match(/^[0-9]+$/)
+                    ? ((h = this.getNewNodeModel({
                         attributes: {
                           id: parseInt(
                             w.substring(w.lastIndexOf("/") + 1, w.length),
                             10
                           ),
                         },
-                        connector: h.connector,
+                        connector: d.connector,
                       })),
-                      f
+                      h
                         .fetch()
                         .done(function () {
-                          C.triggerMethod("execute:defaultAction", f);
+                          C.triggerMethod("execute:defaultAction", h);
                         })
-                        .fail(function (l, g, I) {
+                        .fail(function (a, g, I) {
                           window.location.href = w;
                         }))
                     : this.updateAjaxCall({
                         url:
-                          h.connector.getConnectionUrl().getApiBase("v2") +
+                          d.connector.getConnectionUrl().getApiBase("v2") +
                           "/wiki/nickname/" +
-                          v +
+                          b +
                           "?actions=open&fields=properties",
-                        connector: h.connector,
-                        view: h.callingViewInstance,
+                        connector: d.connector,
+                        view: d.callingViewInstance,
                         type: "GET",
                       })
-                        .done(function (l) {
-                          (f = S.getNewNodeModel(
+                        .done(function (a) {
+                          (h = S.getNewNodeModel(
                             {},
-                            { connector: h.connector }
+                            { connector: d.connector }
                           )),
-                            (f.attributes = f.parse(l)),
-                            (f = S.getNewNodeModel(
-                              { attributes: f.attributes },
-                              { connector: h.connector }
+                            (h.attributes = h.parse(a)),
+                            (h = S.getNewNodeModel(
+                              { attributes: h.attributes },
+                              { connector: d.connector }
                             )),
-                            C.triggerMethod("execute:defaultAction", f);
+                            C.triggerMethod("execute:defaultAction", h);
                         })
                         .fail(function () {
                           window.location.href = w;
@@ -25811,48 +25637,48 @@ csui-html-editor-wrapper-parent-` +
                 w.match(/^.*\/wiki\/[0-9]+\/(.+)$/) ||
                 w.match(/^.*\/wiki\/[0-9]+$/)
               ) {
-                var b;
+                var v;
                 if (
-                  (h.event.stopPropagation(),
-                  h.event.preventDefault(),
+                  (d.event.stopPropagation(),
+                  d.event.preventDefault(),
                   w.match(/^.*\/wiki\/[0-9]+\/(.+)$/))
                 )
-                  b = decodeURIComponent(
+                  v = decodeURIComponent(
                     w.substring(w.lastIndexOf("/") + 1, w.length)
                   );
                 else if (w.match(/^.*\/wiki\/[0-9]+$/)) {
                   var _ = decodeURIComponent(
                     w.substring(0, w.lastIndexOf("/") - 5)
                   );
-                  b = decodeURIComponent(
+                  v = decodeURIComponent(
                     _.substring(_.lastIndexOf("/") + 1, _.length)
                   );
                 }
                 this.updateAjaxCall({
                   url:
-                    h.connector.getConnectionUrl().getApiBase("v2") +
+                    d.connector.getConnectionUrl().getApiBase("v2") +
                     "/wiki/" +
                     this.options.wikiid +
                     "/wikipages",
-                  connector: h.connector,
-                  view: h.callingViewInstance,
+                  connector: d.connector,
+                  view: d.callingViewInstance,
                   type: "GET",
                 })
-                  .done(function (l) {
-                    (f = l.results.find(function (g) {
-                      if (g.name === b) return g;
+                  .done(function (a) {
+                    (h = a.results.find(function (g) {
+                      if (g.name === v) return g;
                     })),
-                      f
-                        ? ((f = S.getNewNodeModel({
-                            attributes: f,
-                            connector: h.connector,
+                      h
+                        ? ((h = S.getNewNodeModel({
+                            attributes: h,
+                            connector: d.connector,
                           })),
-                          f
+                          h
                             .fetch()
                             .done(function () {
-                              h.callingViewInstance.triggerMethod(
+                              d.callingViewInstance.triggerMethod(
                                 "execute:defaultAction",
-                                f
+                                h
                               );
                             })
                             .fail(function (g, I, D) {
@@ -25864,10 +25690,10 @@ csui-html-editor-wrapper-parent-` +
                     window.location.href = w;
                   });
               } else if (w.match(/^.*objId\=(.+)$/)) {
-                h.event.stopPropagation(), h.event.preventDefault();
+                d.event.stopPropagation(), d.event.preventDefault();
                 var T = w.indexOf("objId=");
                 T !== -1 &&
-                  ((f = this.getNewNodeModel({
+                  ((h = this.getNewNodeModel({
                     attributes: {
                       id: parseInt(
                         w.substring(
@@ -25877,48 +25703,48 @@ csui-html-editor-wrapper-parent-` +
                         10
                       ),
                     },
-                    connector: h.connector,
+                    connector: d.connector,
                   })),
-                  f
+                  h
                     .fetch()
                     .done(function () {
-                      h.callingViewInstance.triggerMethod(
+                      d.callingViewInstance.triggerMethod(
                         "execute:defaultAction",
-                        f
+                        h
                       );
                     })
-                    .fail(function (l, g, I) {
+                    .fail(function (a, g, I) {
                       window.location.href = w;
                     }));
               } else
                 w.match(/^.*\/app\/nodes\/(.+)$/) &&
-                  (h.event.stopPropagation(),
-                  h.event.preventDefault(),
+                  (d.event.stopPropagation(),
+                  d.event.preventDefault(),
                   w.indexOf("nodes/") !== -1 &&
-                    ((f = this.getNewNodeModel({
+                    ((h = this.getNewNodeModel({
                       attributes: {
                         id: parseInt(
                           w.substring(w.lastIndexOf("/") + 1, w.length),
                           10
                         ),
                       },
-                      connector: h.connector,
+                      connector: d.connector,
                     })),
-                    f
+                    h
                       .fetch()
                       .done(function () {
-                        C.triggerMethod("execute:defaultAction", f);
+                        C.triggerMethod("execute:defaultAction", h);
                       })
-                      .fail(function (l, g, I) {
+                      .fail(function (a, g, I) {
                         window.location.href = w;
                       })));
           },
-          updateAjaxCall: function (h) {
-            var f = m.Deferred(),
-              k = h.url,
-              C = h.data,
-              S = h.type,
-              w = h.connector;
+          updateAjaxCall: function (d) {
+            var h = m.Deferred(),
+              k = d.url,
+              C = d.data,
+              S = d.type,
+              w = d.connector;
             return (
               (this.ajaxRequest = m.ajax(
                 w.extendAjaxOptions({
@@ -25928,15 +25754,15 @@ csui-html-editor-wrapper-parent-` +
                   contentType: !1,
                   crossDomain: !0,
                   processData: !1,
-                  success: function (v, b, _) {
-                    f.resolve(v);
+                  success: function (b, v, _) {
+                    h.resolve(b);
                   },
-                  error: function (v, b, _) {
-                    f.reject();
+                  error: function (b, v, _) {
+                    h.reject();
                   },
                 })
               )),
-              f.promise()
+              h.promise()
             );
           },
           currentlyFocusedElement: function () {
@@ -25947,45 +25773,45 @@ csui-html-editor-wrapper-parent-` +
                   ".csui-html-editor-dropdown .csui-html-editor-control"
                 );
           },
-          getNewNodeModel: function (h) {
-            return new s(h.attributes, {
-              connector: h.connector,
-              commands: a.getAllSignatures(),
-              fields: h.fields || {},
-              expand: h.expand || {},
+          getNewNodeModel: function (d) {
+            return new s(d.attributes, {
+              connector: d.connector,
+              commands: l.getAllSignatures(),
+              fields: d.fields || {},
+              expand: d.expand || {},
             });
           },
-          onKeyInView: function (h) {
+          onKeyInView: function (d) {
             this.htmlEditorContentView.mode === "read" &&
-              this.htmlEditorContentView.moveTab(h);
+              this.htmlEditorContentView.moveTab(d);
           },
-          onRender: function (h) {
-            var f = this;
+          onRender: function (d) {
+            var h = this;
             this.getWikiDetails().done(function () {
               var k;
-              (f.options.autosaveInterval = 6e4),
-                f.options.header === void 0 || f.options.header
-                  ? ((k = new u(f.options)),
-                    f.listenToOnce(
+              (h.options.autosaveInterval = 6e4),
+                h.options.header === void 0 || h.options.header
+                  ? ((k = new u(h.options)),
+                    h.listenToOnce(
                       k,
                       "show",
                       x.bind(function () {
-                        f.htmlEditorContentView = k.getChildView("content");
-                      }, f)
+                        h.htmlEditorContentView = k.getChildView("content");
+                      }, h)
                     ))
-                  : ((f.options.parentView = f),
-                    (k = new o(f.options)),
-                    (f.htmlEditorContentView = k)),
+                  : ((h.options.parentView = h),
+                    (k = new o(h.options)),
+                    (h.htmlEditorContentView = k)),
                 new p.Region({
-                  el: f.$el.find(".csui-html-editor-wrapper-parent"),
+                  el: h.$el.find(".csui-html-editor-wrapper-parent"),
                 }).show(k),
-                (f._triggerView = f),
-                f.listenTo(
-                  f.htmlEditorContentView,
+                (h._triggerView = h),
+                h.listenTo(
+                  h.htmlEditorContentView,
                   "refresh:tabindexes",
                   x.bind(function () {
-                    f.trigger("refresh:tabindexes");
-                  }, f)
+                    h.trigger("refresh:tabindexes");
+                  }, h)
                 );
             });
           },
@@ -25996,37 +25822,37 @@ csui-html-editor-wrapper-parent-` +
                 .addClass("csui-normal-scrolling");
           },
           getWikiDetails: function () {
-            var h = this.options.context.getModel(r),
-              f =
-                !!h.get("data") &&
-                !!h.get("data").bwsinfo &&
-                !!h.get("data").bwsinfo.id,
+            var d = this.options.context.getModel(r),
+              h =
+                !!d.get("data") &&
+                !!d.get("data").bwsinfo &&
+                !!d.get("data").bwsinfo.id,
               k = this,
               C = m.Deferred(),
               S,
               w,
-              v;
+              b;
             if (
-              !f ||
+              !h ||
               this.options.data.wikicontainerid ||
               this.options.data.wikitemplateid
             )
               C.resolve();
             else {
-              h =
-                h.get("type") === 848
-                  ? h
+              d =
+                d.get("type") === 848
+                  ? d
                   : new s(
-                      { id: h.get("data").bwsinfo.id },
-                      { connector: h.connector }
+                      { id: d.get("data").bwsinfo.id },
+                      { connector: d.connector }
                     );
-              var b = this.getChildren(h, 5573, ["id", "main_page_id"]);
-              b.fetch().done(function () {
-                if (((S = b.length > 0 ? b.models[0] : void 0), S))
-                  if (((v = S.get("main_page_id")), v))
+              var v = this.getChildren(d, 5573, ["id", "main_page_id"]);
+              v.fetch().done(function () {
+                if (((S = v.length > 0 ? v.models[0] : void 0), S))
+                  if (((b = S.get("main_page_id")), b))
                     (k.options.wikiid = S.get("id")),
-                      (k.options.wikiPageid = v),
-                      (k.options.wikiPageId = v),
+                      (k.options.wikiPageid = b),
+                      (k.options.wikiPageId = b),
                       C.resolve();
                   else {
                     var _ = k.getChildren(S, 5574, ["id"]);
@@ -26044,7 +25870,7 @@ csui-html-editor-wrapper-parent-` +
             }
             return C.promise();
           },
-          getChildren: function (h, f, k) {
+          getChildren: function (d, h, k) {
             var C = new e(
               {},
               x.defaults(
@@ -26054,9 +25880,9 @@ csui-html-editor-wrapper-parent-` +
                   fields: { properties: k },
                   delayRestCommands: !1,
                   orderBy: "create_date",
-                  filter: { type: f },
+                  filter: { type: h },
                 },
-                { node: h }
+                { node: d }
               )
             );
             return C;
@@ -26074,7 +25900,6 @@ csui-html-editor-wrapper-parent-` +
     ToolbarItemOpen: "Open",
     ToolbarItemDownload: "Download",
     ToolbarItemEdit: "Edit",
-    ToolbarItemPlay: "Play Media",
     ToolbarItemProperties: "Properties",
     location: "Location",
     docPreviewImgAlt: "Document Preview",
@@ -26098,7 +25923,7 @@ csui-html-editor-wrapper-parent-` +
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -26149,7 +25974,7 @@ csui-html-editor-wrapper-parent-` +
 `
           );
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -26305,7 +26130,7 @@ csui-html-editor-wrapper-parent-` +
           );
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -26324,7 +26149,7 @@ csui-html-editor-wrapper-parent-` +
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 4, column: 4 },
@@ -26955,7 +26780,7 @@ csui-html-editor-wrapper-parent-` +
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 106, column: 6 },
@@ -27110,7 +26935,7 @@ csui-html-editor-wrapper-parent-` +
       "hbs!csui/widgets/document.overview/impl/document.overview",
       "css!csui/widgets/document.overview/impl/document.overview",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c, h, f, k, C, S) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c, d, h, k, C, S) {
       "use strict";
       e = e(m.id);
       var w = p.extend(
@@ -27119,38 +26944,38 @@ csui-html-editor-wrapper-parent-` +
             "csui/utils/commands/open.document/delegates/open.document.delegates"
           )
         ),
-        v = y.ItemView.extend({
+        b = y.ItemView.extend({
           className: "cs-form csui-general-form cs-document-overview-wrapper",
           template: S,
           templateHelpers: function () {
-            var b = !0,
-              _ = d.findTypeByNode(this.options.node),
+            var v = !0,
+              _ = f.findTypeByNode(this.options.node),
               T = this.options.node.get("size_formatted"),
-              l = this.options.node.get("size"),
-              g = a.formatExactDateTime(
-                a.deserializeDate(this.options.node.get("modify_date"))
+              a = this.options.node.get("size"),
+              g = l.formatExactDateTime(
+                l.deserializeDate(this.options.node.get("modify_date"))
               ),
               I = this.options.node.get("description"),
               D = !!I,
               A = {
                 unique: p.uniqueId("_doc"),
-                lang: f,
-                back_button: b,
+                lang: h,
+                back_button: v,
                 mime_type: _,
                 has_description: D,
                 size_value: T,
-                size_full_value: l,
+                size_full_value: a,
                 modify_date: g,
                 desc_value: I,
-                type_label: f.type,
-                size_label: f.size,
-                modify_label: f.modified,
-                desc_label: f.description,
+                type_label: h.type,
+                size_label: h.size,
+                modify_label: h.modified,
+                desc_label: h.description,
                 imgSrc:
                   "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
-                imgAlt: f.docPreviewImgAlt,
-                goBackTitle: f.goBackTitle,
-                goBackAria: f.goBackAria,
+                imgAlt: h.docPreviewImgAlt,
+                goBackTitle: h.goBackTitle,
+                goBackAria: h.goBackAria,
               };
             return A;
           },
@@ -27187,7 +27012,7 @@ csui-html-editor-wrapper-parent-` +
           },
           constructor: function (_) {
             _ || (_ = {}),
-              h.imbue(this),
+              d.imbue(this),
               _.data || (_.data = {}),
               _.node ||
                 (_.node = _.context.getModel(t, {
@@ -27230,8 +27055,8 @@ csui-html-editor-wrapper-parent-` +
                 this._currentlyFocusedElement
               ),
               T &&
-                this.listenTo(T, "navigate", function (l) {
-                  l && !this.back_button && this.ui.back.show();
+                this.listenTo(T, "navigate", function (a) {
+                  a && !this.back_button && this.ui.back.show();
                 }),
               this.blockActions();
           },
@@ -27279,10 +27104,10 @@ csui-html-editor-wrapper-parent-` +
               [
                 "csui/widgets/metadata/impl/header/item.name/metadata.item.name.view",
               ],
-              p.bind(function (b) {
+              p.bind(function (v) {
                 this.metadataItemNameView &&
                   this.metadataItemNameView.destroy(),
-                  (this.metadataItemNameView = new b({
+                  (this.metadataItemNameView = new v({
                     model: this.options.node,
                     container: this.options.node.parent,
                     containerCollection: this.options.containerCollection,
@@ -27307,27 +27132,27 @@ csui-html-editor-wrapper-parent-` +
               }, this)
             );
           },
-          _saveItemName: function (b) {
+          _saveItemName: function (v) {
             var _ = this,
-              T = b.sender.getValue(),
-              l = { name: T },
-              g = b.sender && b.sender.model,
+              T = v.sender.getValue(),
+              a = { name: T },
+              g = v.sender && v.sender.model,
               I = this.options.model || this.options.node;
             g &&
               g.changed.name_multilingual &&
-              p.extend(l, { name_multilingual: g.changed.name_multilingual }),
+              p.extend(a, { name_multilingual: g.changed.name_multilingual }),
               I.setFields("versions.element(0)", "owner_id");
             var D = p.clone(I.attributes);
-            return I.save(D, { data: l, wait: !0, silent: !0 })
+            return I.save(D, { data: a, wait: !0, silent: !0 })
               .then(function () {
                 I.fetch({ silent: !0 }).done(function () {
                   _._updateModifyDateAndTimeStamp(),
-                    b.success(),
-                    I.trigger("change:name", I, l);
+                    v.success(),
+                    I.trigger("change:name", I, a);
                 });
               })
               .fail(function (A) {
-                b.error(A);
+                v.error(A);
               });
           },
           _addCommentView: function () {
@@ -27336,26 +27161,26 @@ csui-html-editor-wrapper-parent-` +
                 "csui/controls/tableheader/comment/comment.button.view",
                 "esoc/widgets/utils/commentdialog/commentdialog.view",
               ],
-              p.bind(function (b) {
+              p.bind(function (v) {
                 var _ = this.options;
                 (_.originatingView = this),
                   (_.model = this.options.node || this.options.model);
-                var T = new b(_),
-                  l = new y.Region({ el: this.ui.commentButtonRegion });
-                l.show(T), this._unblockActions();
+                var T = new v(_),
+                  a = new y.Region({ el: this.ui.commentButtonRegion });
+                a.show(T), this._unblockActions();
               }, this)
             );
           },
           _addFavoriteView: function () {
             csui.require(
               ["csui/widgets/favorites/favorite.star.view"],
-              p.bind(function (b) {
+              p.bind(function (v) {
                 var _ = this.options;
                 (_.model = this.options.node || this.options.model),
                   (_.popoverAtBodyElement = !0);
-                var T = new b(_),
-                  l = new y.Region({ el: this.ui.favoriteStarRegion });
-                l.show(T);
+                var T = new v(_),
+                  a = new y.Region({ el: this.ui.favoriteStarRegion });
+                a.show(T);
               }, this)
             );
           },
@@ -27379,13 +27204,13 @@ csui-html-editor-wrapper-parent-` +
               );
           },
           _updateModifyDateAndTimeStamp: function () {
-            var b = this.ui.modifySectionBtn,
-              _ = b.find("span"),
-              T = a.formatExactDateTime(
-                a.deserializeDate(this.options.node.get("modify_date"))
+            var v = this.ui.modifySectionBtn,
+              _ = v.find("span"),
+              T = l.formatExactDateTime(
+                l.deserializeDate(this.options.node.get("modify_date"))
               );
             _.text() != T &&
-              (b.attr("aria-label", f.modified + ":" + T),
+              (v.attr("aria-label", h.modified + ":" + T),
               _.attr("title", T).text(T));
           },
           _showThumbnail: function () {
@@ -27401,7 +27226,7 @@ csui-html-editor-wrapper-parent-` +
               ),
               !this.thumbnailSet)
             ) {
-              var b = this;
+              var v = this;
               (this.thumbnailSet = !0),
                 this.thumbnail.hasOwnProperty("imgUrl") && this.thumbnail.imgUrl
                   ? this._showImage()
@@ -27412,7 +27237,7 @@ csui-html-editor-wrapper-parent-` +
             this.$el.addClass("cs-document-overview-wrapper-with-thumbnail"),
               this.ui.thumbnailContainer.removeClass("binf-hidden"),
               this.trigger("thumbnail:show:image");
-            var b = this,
+            var v = this,
               _ = this.ui.thumbnailImg;
             _.attr("src", this.thumbnail.imgUrl),
               _.prop("tabindex", "0"),
@@ -27422,11 +27247,11 @@ csui-html-editor-wrapper-parent-` +
                   : _.addClass("cs-form-img-horizontal"),
                   _.addClass("cs-form-img-border"),
                   _.removeClass("binf-hidden");
-                var l = s.Event("tab:content:render");
-                b.$el.trigger(l);
+                var a = s.Event("tab:content:render");
+                v.$el.trigger(a);
               });
           },
-          _showDefaultImage: function (b, _) {
+          _showDefaultImage: function (v, _) {
             e.warn(_.message);
           },
           _destroyThumbnail: function () {
@@ -27435,17 +27260,17 @@ csui-html-editor-wrapper-parent-` +
               (this.thumbnailSet = !1);
           },
           _addLocationView: function () {
-            var b = this,
+            var v = this,
               _ = function () {
                 csui.require(
                   ["csui/controls/table/cells/parent/parent.view"],
                   p.bind(function (A) {
                     var B = new A({
-                      model: b.options.node,
-                      context: b.options.context,
+                      model: v.options.node,
+                      context: v.options.context,
                       nameEdit: !1,
                       iconSize: "contain",
-                      el: b.$el.find(b.ui.location),
+                      el: v.$el.find(v.ui.location),
                     });
                     B.render();
                   }, this)
@@ -27454,11 +27279,11 @@ csui-html-editor-wrapper-parent-` +
             if (this.options.node.get("parent_id_expand")) _();
             else {
               var T = this.options.node,
-                l = T.get("parent_id"),
+                a = T.get("parent_id"),
                 g = T.connector,
                 I = r.combine(
                   g.getConnectionUrl().getApiBase("v2"),
-                  "/nodes/" + l + "/properties"
+                  "/nodes/" + a + "/properties"
                 ),
                 D = { type: "GET", url: I };
               g.makeAjaxCall(D).done(
@@ -27480,20 +27305,20 @@ csui-html-editor-wrapper-parent-` +
               this.ui.reserveUser.html();
           },
           _updateReserveField: function () {
-            var b = this._isReserved();
-            if (b && !this.isReserved) {
+            var v = this._isReserved();
+            if (v && !this.isReserved) {
               this.ui.reserveInfo.removeClass("binf-hidden");
               var _ = {
                   context: this.options.context,
                   tableView: this,
                   model: this.options.node || this.options.model,
-                  reservedByLabel: f.reservedByUnreserve,
+                  reservedByLabel: h.reservedByUnreserve,
                 },
                 T = this;
               csui.require(
                 ["csui/controls/node.state/impl/reservation/reservation.view"],
-                function (l) {
-                  T.reserveFieldView = new l(_);
+                function (a) {
+                  T.reserveFieldView = new a(_);
                   var g = new y.Region({ el: T.ui.reserverBtn });
                   (T.reserveFieldView.tagName = "span"),
                     g.show(T.reserveFieldView),
@@ -27511,27 +27336,27 @@ csui-html-editor-wrapper-parent-` +
                 }
               );
             } else
-              !b &&
+              !v &&
                 this.isReserved &&
                 (this.reserveFieldView && this.reserveFieldView.destroy(),
                 this._cleanAndInitReserveRow(),
                 (this.isReserved = !1));
           },
           _showCreatedByUserName: function () {
-            var b = {
+            var v = {
               baseElement: this.ui.createdBy,
               userId: this.options.node.get("create_user_id"),
             };
-            this._showUserName(b);
+            this._showUserName(v);
           },
-          _showUserName: function (b) {
+          _showUserName: function (v) {
             this._getUserField({
-              userid: b.userId,
+              userid: v.userId,
               placeholder: this.ui.creadyByUser,
               showUserProfileLink: !0,
             }),
               this._getUserField({
-                userid: b.userId,
+                userid: v.userId,
                 placeholder: this.ui.createdByPic,
                 userWidgetWrapperClass: "",
                 showUserWidgetFor: "profilepic",
@@ -27540,20 +27365,20 @@ csui-html-editor-wrapper-parent-` +
               });
           },
           _showModifiedByUserName: function () {
-            const b = {
+            const v = {
               baseElement: this.ui.modifiedBy,
               userId: this.options.node.get("modify_user_id"),
             };
-            this._showModifiedUserName(b);
+            this._showModifiedUserName(v);
           },
-          _showModifiedUserName: function (b) {
+          _showModifiedUserName: function (v) {
             this._getUserField({
-              userid: b.userId,
+              userid: v.userId,
               placeholder: this.ui.modifiedByUser,
               showUserProfileLink: !0,
             }),
               this._getUserField({
-                userid: b.userId,
+                userid: v.userId,
                 placeholder: this.ui.modifiedByPic,
                 userWidgetWrapperClass: "",
                 showUserWidgetFor: "profilepic",
@@ -27561,7 +27386,7 @@ csui-html-editor-wrapper-parent-` +
                 disableTabForProfilePic: !0,
               });
           },
-          _getUserField: function (b) {
+          _getUserField: function (v) {
             csui.require(
               ["esoc/controls/userwidget/userwidget.view"],
               p.bind(function (_) {
@@ -27573,19 +27398,19 @@ csui-html-editor-wrapper-parent-` +
                       imgSrc:
                         "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=",
                     },
-                    b
+                    v
                   ),
-                  l = new _(T),
-                  g = new y.Region({ el: s(b.placeholder) });
-                g.show(l);
+                  a = new _(T),
+                  g = new y.Region({ el: s(v.placeholder) });
+                g.show(a);
               }, this)
             );
           },
           _checkPermissions: function () {
-            var b = { signature: "Edit", actionBtnEle: this.ui.editBtn },
+            var v = { signature: "Edit", actionBtnEle: this.ui.editBtn },
               _ = { signature: "Download", actionBtnEle: this.ui.downloadBtn },
               T = { signature: "OpenDocument", actionBtnEle: this.ui.openBtn },
-              l = {
+              a = {
                 signature: "Properties",
                 actionBtnEle: this.ui.propertiesBtn,
               },
@@ -27602,31 +27427,31 @@ csui-html-editor-wrapper-parent-` +
               });
             D && D.length && g.exclude.push("OpenInBrowser"),
               this._checkPermForSpecificAction(T, g),
-              this._checkPermForSpecificAction(b),
+              this._checkPermForSpecificAction(v),
               this._checkPermForSpecificAction(_),
-              this._checkPermForSpecificAction(l);
+              this._checkPermForSpecificAction(a);
           },
-          _checkPermForOpenAction: function (b) {
-            var _ = this.commands.findWhere({ signature: b.signature });
+          _checkPermForOpenAction: function (v) {
+            var _ = this.commands.findWhere({ signature: v.signature });
             _.checkPermission(this.options.node).then(function (T) {
               T
-                ? b.actionBtnEle.removeClass("binf-hidden")
-                : b.actionBtnEle.addClass("binf-hidden");
+                ? v.actionBtnEle.removeClass("binf-hidden")
+                : v.actionBtnEle.addClass("binf-hidden");
             });
           },
-          _checkPermForSpecificAction: function (b, _ = {}) {
-            var T = this.commands.findWhere({ signature: b.signature }),
-              l = {
+          _checkPermForSpecificAction: function (v, _ = {}) {
+            var T = this.commands.findWhere({ signature: v.signature }),
+              a = {
                 nodes: new n([this.options.node]),
                 container: this.options.node.parent,
                 commandData: _,
               },
               g = { context: this.options.context };
-            if (!(T && T.enabled(l, g)))
+            if (!(T && T.enabled(a, g)))
               T &&
                 T.get("signature") === "OpenDocument" &&
                 this.ui.thumbnailSection.css("cursor", "default"),
-                b.actionBtnEle.addClass("binf-hidden");
+                v.actionBtnEle.addClass("binf-hidden");
             else {
               if (T && T.get("signature") === "OpenDocument") {
                 var I = this;
@@ -27634,11 +27459,11 @@ csui-html-editor-wrapper-parent-` +
                   I._handleClickThumbnail(D);
                 });
               }
-              b.actionBtnEle.removeClass("binf-hidden");
+              v.actionBtnEle.removeClass("binf-hidden");
             }
           },
-          onKeyInView: function (b) {
-            var _ = b || window.event,
+          onKeyInView: function (v) {
+            var _ = v || window.event,
               T = _.target || _.srcElement;
             (_.keyCode === 13 || _.keyCode === 32) &&
               (this.$el.find(".title-input").is(_.target) ||
@@ -27648,37 +27473,37 @@ csui-html-editor-wrapper-parent-` +
           },
           onBackButton: function () {
             if (!this.backButtonClicked) {
-              var b = this.options,
-                _ = b && b.context,
+              var v = this.options,
+                _ = v && v.context,
                 T = _ && _.viewStateModel;
               T && T.restoreLastFragment(), (this.backButtonClicked = !0);
             }
           },
-          _handleClickThumbnail: function (b) {
-            b.stopImmediatePropagation(), this._executeCommand("OpenDocument");
+          _handleClickThumbnail: function (v) {
+            v.stopImmediatePropagation(), this._executeCommand("OpenDocument");
           },
-          _handleClickButton: function (b) {
-            b.stopImmediatePropagation();
-            var _ = s(b.target).data("signature");
+          _handleClickButton: function (v) {
+            v.stopImmediatePropagation();
+            var _ = s(v.target).data("signature");
             this._executeCommand(_);
           },
-          _executeCommand: function (b) {
-            var _ = this.commands.get(b),
+          _executeCommand: function (v) {
+            var _ = this.commands.get(v),
               T = this;
             T.collection = new n([this.options.node]);
-            var l = {
+            var a = {
                 nodes: new n([this.options.node]),
                 container: this.options.node,
                 originatingView: T,
               },
               g = { context: this.options.context };
             try {
-              if (!_) throw new Error('Command "' + b + '" not found.');
-              var I = _.execute(l, g);
+              if (!_) throw new Error('Command "' + v + '" not found.');
+              var I = _.execute(a, g);
               c.handleExecutionResults(I, {
                 command: _,
-                suppressSuccessMessage: l.suppressSuccessMessage,
-                suppressFailMessage: l.suppressFailMessage,
+                suppressSuccessMessage: a.suppressSuccessMessage,
+                suppressFailMessage: a.suppressFailMessage,
               });
             } catch (D) {
               e.warn(
@@ -27690,19 +27515,19 @@ csui-html-editor-wrapper-parent-` +
             }
           },
           _navigateToParent: function () {
-            var b = this.options.model.get("parent_id");
-            b && this._setNextNodeModelFactory(b);
+            var v = this.options.model.get("parent_id");
+            v && this._setNextNodeModelFactory(v);
           },
-          _setNextNodeModelFactory: function (b) {
-            if (this.options.context && b !== void 0) {
+          _setNextNodeModelFactory: function (v) {
+            if (this.options.context && v !== void 0) {
               var _ = this.options.context.getModel(C);
               _ &&
-                (_.get("id") === b && _.unset("id", { silent: !0 }),
-                _.set("id", b));
+                (_.get("id") === v && _.unset("id", { silent: !0 }),
+                _.set("id", v));
             }
           },
         });
-      return v;
+      return b;
     }
   ),
   csui.define("csui/widgets/version.overview/impl/nls/lang", {
@@ -27736,7 +27561,7 @@ csui-html-editor-wrapper-parent-` +
     ["module", "hbs", "nuc/lib/handlebars"],
     function (x, m, p) {
       var y = p.template({
-        1: function (s, e, r, a, d) {
+        1: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -27787,7 +27612,7 @@ csui-html-editor-wrapper-parent-` +
 `
           );
         },
-        3: function (s, e, r, a, d) {
+        3: function (s, e, r, l, f) {
           var t,
             i =
               s.lookupProperty ||
@@ -27847,11 +27672,11 @@ csui-html-editor-wrapper-parent-` +
 `
           );
         },
-        5: function (s, e, r, a, d) {
+        5: function (s, e, r, l, f) {
           return "binf-hidden";
         },
         compiler: [8, ">= 4.3.0"],
-        main: function (s, e, r, a, d) {
+        main: function (s, e, r, l, f) {
           var t,
             i,
             o =
@@ -27870,7 +27695,7 @@ csui-html-editor-wrapper-parent-` +
               {
                 name: "if",
                 hash: {},
-                fn: s.program(1, d, 0),
+                fn: s.program(1, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 4, column: 4 },
@@ -28482,7 +28307,7 @@ csui-html-editor-wrapper-parent-` +
               {
                 name: "if",
                 hash: {},
-                fn: s.program(3, d, 0),
+                fn: s.program(3, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 85, column: 6 },
@@ -28527,7 +28352,7 @@ csui-html-editor-wrapper-parent-` +
               {
                 name: "unless",
                 hash: {},
-                fn: s.program(5, d, 0),
+                fn: s.program(5, f, 0),
                 inverse: s.noop,
                 loc: {
                   start: { line: 110, column: 75 },
@@ -28738,18 +28563,7 @@ csui-html-editor-wrapper-parent-` +
   </div>
   <div class="cs-fadeout-container"></div>
   <div class="cs-content-footer">
-    <button class="binf-btn primary-btn command-btn play-btn binf-hidden" type="button"
-              data-signature="OpenVideo">` +
-            s.escapeExpression(
-              s.lambda(
-                (t = e != null ? o(e, "lang") : e) != null
-                  ? o(t, "ToolbarItemPlay")
-                  : t,
-                e
-              )
-            ) +
-            `</button>
-    <button class="binf-btn primary-btn command-btn open-btn binf-hidden" type="button"
+    <button class="binf-btn primary-btn command-btn open-btn" type="button"
             data-signature="OpenVersionDelegate">` +
             s.escapeExpression(
               s.lambda(
@@ -28821,16 +28635,16 @@ csui-html-editor-wrapper-parent-` +
       "hbs!csui/widgets/version.overview/impl/version.overview",
       "css!csui/widgets/version.overview/impl/version.overview",
     ],
-    function (x, m, p, y, s, e, r, a, d, t, i, o, n, u, c) {
+    function (x, m, p, y, s, e, r, l, f, t, i, o, n, u, c) {
       "use strict";
       e = e(m.id);
-      var h = p.extend(
+      var d = p.extend(
           { fileActionSettings: [] },
           x.moduleConfig(
             "csui/utils/commands/open.document/delegates/open.document.delegates"
           )
         ),
-        f = o.extend({
+        h = o.extend({
           className: "cs-form csui-general-form cs-version-overview-wrapper",
           template: c,
           templateHelpers: function () {
@@ -28838,9 +28652,9 @@ csui-html-editor-wrapper-parent-` +
               C = this.getFormattedSizeValue(k),
               S = this.options.node.get("version_number_name"),
               w = this.options.node.get("locked"),
-              v = o.prototype.templateHelpers.call(this);
+              b = o.prototype.templateHelpers.call(this);
             return (
-              p.extend(v, {
+              p.extend(b, {
                 size_value: C,
                 size_full_value: k,
                 versionText: p.str.sformat(u.versionText, S),
@@ -28849,7 +28663,7 @@ csui-html-editor-wrapper-parent-` +
                 lockedBy: u.lockedBy,
                 back_button: this.back_button,
               }),
-              v
+              b
             );
           },
           ui: function () {
@@ -28867,7 +28681,6 @@ csui-html-editor-wrapper-parent-` +
               descriptionSectionBtn: ".description_section button",
               descriptionField:
                 ".description_section span.cs-field-textarea-data",
-              playBtn: ".play-btn",
             });
           },
           constructor: function (C) {
@@ -28879,7 +28692,7 @@ csui-html-editor-wrapper-parent-` +
             var S = C.context && C.context.viewStateModel;
             (this.back_button = S && S.hasRouted()),
               y.ItemView.prototype.constructor.apply(this, arguments),
-              (this.commands = a),
+              (this.commands = l),
               (this.isReloading = !1),
               (this.parentNode = void 0),
               (this.supportOriginatingView = !0),
@@ -29082,26 +28895,23 @@ csui-html-editor-wrapper-parent-` +
                 signature: "OpenVersionDelegate",
                 actionBtnEle: this.ui.openBtn,
               },
-              S = { signature: "OpenVideo", actionBtnEle: this.ui.playBtn },
-              w = { exclude: ["OpenVersionPerspective", "Download"] };
-            let v = this,
-              b = h.fileActionSettings.filter(function (_) {
+              S = { exclude: ["OpenVersionPerspective", "Download"] };
+            let w = this,
+              b = d.fileActionSettings.filter(function (v) {
                 if (
-                  (_.Action === "Download" && (v.orderOfDownload = _.order),
-                  v.orderOfDownload &&
-                    _.Action === "OpenInBrowser" &&
-                    v.orderOfDownload < _.order)
+                  (v.Action === "Download" && (w.orderOfDownload = v.order),
+                  w.orderOfDownload &&
+                    v.Action === "OpenInBrowser" &&
+                    w.orderOfDownload < v.order)
                 )
                   return !0;
               });
-            b && b.length && w.exclude.push("OpenInBrowser"),
-              this._checkPermForSpecificAction(S),
-              this.ui.playBtn.hasClass("binf-hidden") &&
-                this._checkPermForSpecificAction(C, w),
+            b && b.length && S.exclude.push("OpenInBrowser"),
+              this._checkPermForSpecificAction(C, S),
               this._checkPermForSpecificAction(k);
           },
           getFormattedSizeValue: function (k) {
-            return d.formatFriendlyFileSize(k);
+            return f.formatFriendlyFileSize(k);
           },
           _showLockRow: function () {
             this._updatelockField();
@@ -29121,8 +28931,8 @@ csui-html-editor-wrapper-parent-` +
                 ["csui/controls/node.state/impl/locked/locked.view"],
                 function (w) {
                   S.lockFieldView = new w(p.extend(C));
-                  var v = new y.Region({ el: S.ui.lockBtn });
-                  v.show(S.lockFieldView),
+                  var b = new y.Region({ el: S.ui.lockBtn });
+                  b.show(S.lockFieldView),
                     S.$el
                       .find("li.csui-node-state-locked")
                       .attr("role", "none")
@@ -29160,7 +28970,7 @@ csui-html-editor-wrapper-parent-` +
             k && this._setNextNodeModelFactory(k);
           },
         });
-      return f;
+      return h;
     }
   ),
   csui.define("json!csui/widgets/error.global/error.global.manifest.json", {
