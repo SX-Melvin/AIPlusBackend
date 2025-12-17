@@ -17597,15 +17597,17 @@ csui.define("csui/lib/othelp", [], function () {
             category: "header",
             svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0" /><style type="text/css"> .metaphor--header-header_user42{fill:#FFFFFF;} </style> <path class="metaphor--header-header_user42 ot-metaphor" d="M30,29.509v-0.965c0-0.088,0-0.175,0-0.263v-0.088c-0.088-0.877-0.088-1.316-0.439-2.281  c-0.175-0.614-0.614-1.053-1.316-1.403c-0.702-0.263-1.491-0.439-2.193-0.614c-0.702-0.088-1.316-0.263-1.754-0.439  c-0.263-0.175-0.526-0.351-0.789-0.614c-0.088-0.175-0.263-0.263-0.263-0.439l-0.351-0.351l0.351-0.263  c0.351-0.263,0.614-0.614,0.877-0.965c0.351-0.526,0.614-1.14,0.702-1.93l0.088-0.263l0.263-0.088c0.088,0,0.088-0.088,0.176-0.175  c0.088-0.175,0.175-0.439,0.263-0.614c0.088-0.439,0-0.702-0.088-0.877l-0.088-0.175l0.088-0.351  c0.088-0.351,0.088-0.79,0.088-1.228c-0.088-0.79-0.263-1.491-0.263-1.491c-0.176-0.614-0.614-1.316-1.316-1.754  C23.509,11.439,22.544,11,21.14,11c-1.404,0-2.368,0.526-2.895,0.877c-0.702,0.526-1.228,1.14-1.316,1.754  c0,0.088-0.175,0.789-0.263,1.491c0,0.439,0,0.877,0.088,1.228l0.088,0.351l-0.088,0.088c-0.088,0.175-0.176,0.439-0.088,0.877  c0.088,0.263,0.175,0.526,0.263,0.614s0.176,0.175,0.176,0.175l0.263,0.088l0.088,0.263c0.175,0.702,0.439,1.404,0.702,1.93  c0.263,0.351,0.526,0.702,0.877,0.965l0.351,0.263l-0.175,0.351c-0.088,0.175-0.175,0.351-0.263,0.439  c-0.175,0.263-0.439,0.439-0.789,0.614c-0.439,0.175-1.053,0.351-1.754,0.439c-0.789,0.176-1.579,0.263-2.281,0.614  s-1.14,0.789-1.316,1.403c-0.263,0.965-0.351,1.491-0.439,2.281c0,0.175-0.088,0.263-0.088,0.439v0.965  c0,0.789,0.702,1.491,1.491,1.491h14.737C29.298,31,30,30.386,30,29.509z" /> <circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="21.0" /></svg>',
           },
+          // Insight Explorer START
           csui_li_header_aviator42: {
             category: "header",
             svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"><circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0"></circle><style type="text/css"> .st0--header-li_header_aviator42{fill:#333333;} </style><g transform="translate(6.000000,37.000000) scale(0.035000,-0.035000)" fill="#ffffff" stroke="none"><path d="M410 683 c-134 -359 -191 -516 -188 -528 2 -10 27 -3 97 26 51 21 109 39 128 39 19 0 72 -17 119 -37 46 -20 87 -34 90 -30 8 8 -206 587 -217 587 -4 0 -17 -26 -29 -57z"></path><path d="M20 595 c0 -22 33 -76 59 -98 30 -25 40 -27 120 -27 l88 0 22 59 c11 32 21 61 21 65 0 3 -70 6 -155 6 -85 0 -155 -2 -155 -5z"></path><path d="M550 590 c0 -5 9 -34 21 -65 l20 -55 82 0 c93 0 135 18 162 69 31 61 30 61 -135 61 -89 0 -150 -4 -150 -10z"></path><path d="M106 425 c15 -50 79 -109 113 -103 16 3 54 99 43 109 -4 4 -42 9 -84 11 -74 3 -78 2 -72 -17z"></path><path d="M610 433 c0 -19 35 -113 42 -113 28 0 80 33 98 62 33 54 29 58 -60 58 -44 0 -80 -3 -80 -7z"></path></g><defs xmlns="http://www.w3.org/2000/svg"><radialGradient id="radial0" gradientUnits="userSpaceOnUse" cx="0" cy="0" fx="0" fy="0" r="1" gradientTransform="matrix(-0.718767,15.382919,-38.254862,-1.648682,3.360248,3.602162)"><stop offset="1" style="stop-color:rgb(100%,100%,100%);stop-opacity:1;"></stop></radialGradient></defs></svg>',
           }
+          // Insight Explorer END
         });
-    }
-  ),
-  csui.define(
-    "csui/controls/app.header/app.header.controls/csui.app.header.controls",
+      }
+    ),
+    csui.define(
+      "csui/controls/app.header/app.header.controls/csui.app.header.controls",
     ["csui/themes/carbonfiber/ot-icons/icons_csui_header"],
     function () {
       return [
