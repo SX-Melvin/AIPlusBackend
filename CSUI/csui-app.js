@@ -15455,6 +15455,7 @@ csui.define("csui/lib/othelp", [], function () {
             const userID = that.options.context._user.attributes.id;
             const userHomepageID = userID == 1000 ? 2004 : userID;
             let ARCHIVE_MESSAGE_COUNT = 0;
+            let TOOLS_SELECTED = "CHATS";
             let CHAT_ID = null;
             let paginations = {chatHistory: {now: 1, max: null}};
             const PERSON_NAME = that.options.context._user.attributes.name;
@@ -15687,28 +15688,36 @@ csui.define("csui/lib/othelp", [], function () {
                       <div id="mySidenav" class="sidenav">
                           
                         <div style="margin:5px 5px;height:calc(100% - 15px);overflow:hidden;padding-bottom:110px">
-                          <div style="font-size:15px;font-weight:bold;margin-top:10px;margin-bottom:10px;margin-left:4px;">Tools</div>
+                          <div class="chat-sidenav-title">TOOLS</div>
 
-                          <button class="hoverable msger-btn chat-sidenav-title" style="display:block;width:100%">
+                          <button id="msger-tool-CHATS" title="View all your chats" class="hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="CHATS" style="display:flex;width:100%;align-items:center;gap:6px">
                             <img src="${CHAT_LOGO}" style="width:14px" />
-                            <strong>&nbsp;Chats</strong>
+                            <span>&nbsp;CHATS</span>
                           </button>
 
-                          <button class="hoverable msger-btn chat-sidenav-title" style="display:block;width:100%">
+                          <button id="msger-tool-PROJECTS" title="View all your projects" class="hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="PROJECTS" style="display:flex;width:100%;align-items:center;gap:6px">
                             <img src="${PROJECT_LOGO}" style="width:14px" />
-                            <strong>&nbsp;Projects</strong>
+                            <span>&nbsp;PROJECTS</span>
                           </button>
 
                           <br>
 
-                          <div class="chat-sidenav-sub-title" style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
-                            <strong>Your chats</strong>
-                            <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
-                            <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
+                          <div id="chat-history-section">
+                            <div style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
+                              <div class="chat-sidenav-title">YOUR CHATS</div>  
+                              <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
+                              <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
+                            </div>
+                            <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;background:#eeeeee"></div>
                           </div>
-                          <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;background:#eeeeee"></div>
-                        </div>
 
+                          <div id="chat-project-section" style="display:none">
+                            <div style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
+                              <div class="chat-sidenav-title">YOUR PROJECTS</div>  
+                            </div>
+                            <div id="chat-project-container" class="msger-scroll" style="overflow:scroll;height:96%;background:#eeeeee"></div>
+                          </div>
+                        </div>
                       </div>
 
                       <div id="show-messages-button" class="show-all-message-popup shadow hoverable" title="Show all previous messages">
@@ -15742,23 +15751,15 @@ csui.define("csui/lib/othelp", [], function () {
                         <header class="msger-header" style="border-left:1px solid whitesmoke">
                           <div class="msger-header-title" id="chatbotmenu">
                             <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
-                          
-                          <div style="
-                          font-size: 18px;
-                          font-weight: 600;
-                          font-family: 'OpenText Sans';
-                          color: #2c3e50;
-                          display:inline-block;
-                          vertical-align:middle
-                          ">Aviator</div>
-                            </div>
+                            <div style="font-size: 15px;font-weight: 600;font-family: 'OpenText Sans';color: #2c3e50;display:inline-block;vertical-align:middle">AVIATOR</div>
+                          </div>
                             
-                            <div class="msger-header-options">
+                          <div class="msger-header-options">
                             <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
-                            <img src="${CLOSE_ICON}" />
+                              <img src="${CLOSE_ICON}" />
                             </button>
-                            </div>
-                          </header>
+                          </div>
+                        </header>
 
                           <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>
                           
@@ -15826,6 +15827,13 @@ csui.define("csui/lib/othelp", [], function () {
               if(CHAT_ID != null) {
                 await AIPlusAPI.updateSession(CHAT_ID);
               }
+            });
+            
+            document.querySelectorAll(".msger-tool-btn").forEach(x => {
+              x.addEventListener("click", async (e) => {
+                e.preventDefault();
+                AIPlusUtils.toggleSelectedTools(e.target.dataset.menu);
+              })
             });
 
             document.getElementById("show-messages-button").addEventListener("click", async (e) => {
@@ -16220,6 +16228,25 @@ csui.define("csui/lib/othelp", [], function () {
               backendUrl: "/aiplus"
             }
             var AIPlusUtils = {
+              toggleSelectedTools: function (selected) {
+                TOOLS_SELECTED = selected;
+
+                if(TOOLS_SELECTED.toUpperCase() == "CHATS") {
+                  document.querySelector("#chat-history-section").style.display = "block";
+                  document.querySelector("#chat-project-section").style.display = "none";
+                } else if(TOOLS_SELECTED.toUpperCase() == "PROJECTS") {
+                  document.querySelector("#chat-history-section").style.display = "none";
+                  document.querySelector("#chat-project-section").style.display = "block";
+                }
+
+                document.querySelectorAll(".msger-tool-btn").forEach(x => {
+                  if(x.id == `msger-tool-${TOOLS_SELECTED.toUpperCase()}`) {
+                    x.classList.add("hoverable-active");
+                  } else {
+                    x.classList.remove("hoverable-active");
+                  }
+                });
+              },
               removeFileLoader: function (id) {
                 document.querySelector(`#remove-file-btn-${id}`).style.display = "block";
                 document.querySelector(`#loader-file-${id}`).style.display = "none";

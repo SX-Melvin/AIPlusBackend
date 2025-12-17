@@ -13725,15 +13725,22 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     /* background-color: white!important; */
     border: none!important;
 }
+.msger-tool-btn {
+    margin-top: 4px!important;
+}
 .chat-sidenav-title {
     background-color: none!important;
-    font-weight: 400!important;
-    padding:10px 5px!important;
-    border-radius: 5px;
+    padding: 10px 5px!important;
+    font-weight: 600!important;
+    color: #525252!important;
+    font-size: 12px!important;
 }
 .chat-sidenav-sub-title {
-    font-weight: bold!important;
-    padding:10px!important;
+    border-radius: 5px;
+    font-weight: 600!important;
+    padding: 10px 5px!important;
+    font-size: 12px!important;
+    color: #525252!important;
 }
 .chat-history-item {
     border: none;
