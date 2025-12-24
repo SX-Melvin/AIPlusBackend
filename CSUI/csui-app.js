@@ -15459,26 +15459,33 @@ csui.define("csui/lib/othelp", [], function () {
             let CHAT_ID = null;
             let paginations = {chatHistory: {now: 1, max: null}};
             const PERSON_NAME = that.options.context._user.attributes.name;
-            const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_toolbar_copy.svg"
-            const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_generate.svg"
-            const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_smart_close.svg";
-            const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_chat.svg";
-            const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_delete.svg";
-            const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_info.svg";
-            const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh_blue.svg";
-            const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator_project.svg";
-            const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator.png";
-            const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_folder.svg";
-            const FILE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_file.svg";
-            const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_refresh.svg";
-            const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_down.svg";
-            const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_times_red.svg";
-            const ERROR_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_error.svg";
-            const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator_arrow_left.svg";
-            const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator_bot.svg";
+            const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_success.svg"
+            const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_toolbar_copy.svg"
+            const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_generate.svg"
+            const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_smart_close.svg";
+            const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_chat.svg";
+            const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_info.svg";
+            const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_refresh_blue.svg";
+            const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_project.svg";
+            const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator.png";
+            const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_folder.svg";
+            const DOCUMENT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_document.svg";
+            const IMAGE_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_image.svg";
+            const PDF_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_pdf.svg";
+            const EXCEL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_excel.svg";
+            const POWERPOINT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_powerpoint.svg";
+            const WORD_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_word.svg";
+            const TEXT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_text.svg";
+            const EMAIL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_outlook.svg";
+            const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_refresh.svg";
+            const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_arrow_down.svg";
+            const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_times_red.svg";
+            const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_delete.svg";
+            const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_arrow_left.svg";
+            const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_bot.svg";
             let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
-
-            function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = [], reason = null) {
+            
+            function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = [], reason = null, smartFilingMetadata = []) {
               let msgHTML;
               const msgerChat = get(".msger-chat");
               const uniqueId = new Date().getTime();
@@ -15488,9 +15495,51 @@ csui.define("csui/lib/othelp", [], function () {
               }
 
               msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
-              if(side == "left")
-              {
-                  msgHTML += `
+              if(side == "smart-filing-text") {
+                msgHTML += `
+                  <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
+                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
+                      <div class="msg-info"></div>
+
+                      <div style="justify-content:space-between;display:flex;align-items:center;font-weight:600;margin-bottom:10px">
+                        <div>Smart Filing</div>
+                        <button class="msger-btn hoverable-fade" style="display:none" id="smart-filing-close-btn-${uniqueId}" title="Close" onclick="document.getElementById('msg-${uniqueId}').remove()">
+                          <img src="${CLOSE_ICON}" width="14" />
+                        </button>
+                      </div>
+
+                      <div style="white-space: pre-line;display:flex" id="bot-text-${uniqueId}" class="msg-text">
+                        <div class="bot-text-container">${text}</div>
+                        <div class="dot" style="margin-left:4px"></div>
+                        <div class="dot" style="margin-left:2px"></div>
+                        <div class="dot" style="margin-left:2px"></div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              } else if(side == "smart-filing") {
+                msgHTML += `
+                  <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
+                    <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
+                      <div class="msg-info"></div>
+
+                      <div style="justify-content:space-between;display:flex;align-items:center;font-weight:600;margin-bottom:10px">
+                        <div>Smart Filing</div>
+                        <button class="msger-btn" title="Close" onclick="document.getElementById("msg-${uniqueId}").remove()"><img src="${CLOSE_ICON}" width="18" /></button>
+                      </div>
+
+                      <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${smartFilingMetadata.map(x => x.reasoning).join(". ")}. What would you like me to do?</div>
+                      
+                      <div class="smart-filing-actions-container" data-id="${uniqueId}" id="chat-smart-filing-${uniqueId}">
+                        ${AIPlusUtils.renderSmartFilingOptions(smartFilingMetadata)}
+                      </div>
+
+                      <button class="msger-btn" style="width:100%;margin-top:12px;display:block;background:#0d73a0;;font-weight:550;color:white;border-radius:8px;padding:12px 6px">File to selected location</button>
+                    </div>
+                  </div>
+                `;
+              } else if(side == "left") {
+                msgHTML += `
                   <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
                     <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
                       <div class="msg-info"></div>
@@ -15526,7 +15575,7 @@ csui.define("csui/lib/othelp", [], function () {
                       <div id="chat-source-section-${uniqueId}" style="display:none" class="msger-scroll chat-source-section">${AIPlusUtils.processChatSources(sources)}</div>
                     </div>
                   </div>
-              `;
+                `;
               } else if(side == "loading") {
                   msgHTML = `
                   <div id="botloading" class="msg ${side}-msg">
@@ -15688,9 +15737,9 @@ csui.define("csui/lib/othelp", [], function () {
                       <div id="mySidenav" class="sidenav">
                           
                         <div style="margin:5px 5px;height:calc(100% - 15px);overflow:hidden;padding-bottom:110px">
-                          <div class="chat-sidenav-title">TOOLS</div>
+                          <div class="chat-sidenav-title">MENU</div>
 
-                          <button id="msger-tool-CHATS" title="View all your chats" class="hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="CHATS" style="display:flex;width:100%;align-items:center;gap:6px">
+                          <button id="msger-tool-CHATS" title="View all your chats" class="hoverable-active hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="CHATS" style="display:flex;width:100%;align-items:center;gap:6px">
                             <img src="${CHAT_LOGO}" style="width:14px" />
                             <span>&nbsp;CHATS</span>
                           </button>
@@ -15705,7 +15754,7 @@ csui.define("csui/lib/othelp", [], function () {
                           <div id="chat-history-section">
                             <div style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
                               <div class="chat-sidenav-title">YOUR CHATS</div>  
-                              <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="12px" src="${REFRESH_ICON}" /></button>
+                              <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="13px" src="${REFRESH_ICON}" /></button>
                               <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
                             </div>
                             <div id="chat-room-container" class="msger-scroll" style="overflow:scroll;height:96%;background:#eeeeee"></div>
@@ -15725,27 +15774,16 @@ csui.define("csui/lib/othelp", [], function () {
                       </div>
                       
                       <div class="msger-chat-container" style="position:relative;min-height: 0;">
-                        <div id="msger-dropzone" class="msger-dropzone">
+                        <div id="msger-dropzone" class="msger-dropzone msger-overlay">
                           <center class="msger-drop-text">Drop files here<br /><br />Will be uploaded to your personal folder</center>
                         </div>
                         
-                        <div style="position:absolute;background-color:rgba(0,0,0,.2);bottom:0;right:0;left:0;top:46px;display:none" class="load-container" id="msger-chat-container-loader">
-                          <div class="outer-border">
-                            <div class="loader">
-                              <svg class="spinner spinner-inner" xmlns="http://www.w3.org/2000/svg" width="73" height="73" viewBox="0 0 73 73" fill="none">
-                                <path d="M36.5 8.79752C51.7874 8.79752 64.2025 21.2126 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752ZM72.5 36.5C72.5 16.63 56.37 0.5 36.5 0.5C16.63 0.5 0.499999 16.63 0.499999 36.5C0.499999 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5Z" fill="#CFDCFC" style="fill:#CFDCFC;fill:color(display-p3 0.8118 0.8627 0.9882);fill-opacity:1;"></path>
-                                <clipPath id="smart_loader_1764047844677">
-                                  <path d="M40.6488 4.64876C40.6488 2.35746 38.7913 0.5 36.5 0.5C16.63 0.5 0.500007 16.63 0.500007 36.5C0.500007 56.37 16.63 72.5 36.5 72.5C56.37 72.5 72.5 56.37 72.5 36.5C72.5 34.2087 70.6425 32.3512 68.3512 32.3512C66.0599 32.3512 64.2025 34.2087 64.2025 36.5C64.2025 51.7874 51.7874 64.2025 36.5 64.2025C21.2126 64.2025 8.79753 51.7874 8.79753 36.5C8.79753 21.2126 21.2126 8.79752 36.5 8.79752C38.7913 8.79752 40.6488 6.94006 40.6488 4.64876Z" style=""></path>
-                                </clipPath>
-                                <foreignObject width="73" height="73" clip-path="url(#smart_loader_1764047844677)">
-                                  <div class="spinner-gradient"></div>
-                                </foreignObject>
-                              </svg>
-                            </div>
-                            <div class="binf-sr-only" aria-live="polite" aria-busy="true">
-                              Loading..
-                            </div>
-                          </div>
+                        <div class="msger-chat-loader msger-overlay" id="msger-chat-container-loader" style="display:none">
+                          <center class="msger-drop-text">
+                            <div class="dot-lg"></div>
+                            <div class="dot-lg"></div>
+                            <div class="dot-lg"></div>
+                          </center>
                         </div>
 
                         <header class="msger-header" style="border-left:1px solid whitesmoke">
@@ -15755,7 +15793,7 @@ csui.define("csui/lib/othelp", [], function () {
                           </div>
                             
                           <div class="msger-header-options">
-                            <button title="Close" id="closeaviator" class="msg-img msger-img-btn">
+                            <button title="Close" id="closeaviator" class="msg-img msger-img-btn hoverable-fade">
                               <img src="${CLOSE_ICON}" />
                             </button>
                           </div>
@@ -15771,7 +15809,7 @@ csui.define("csui/lib/othelp", [], function () {
                               <!-- Inline Buttons -->
                               <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                                   <!-- Clear Button with "New Chat" Text -->
-                                  <div id="clearbtn" class="clear-button">
+                                  <div id="clearbtn" class="clear-button hoverable-fade" title="Create new conversation">
                                       <svg fill="#e4e4e4" width="12" height="12" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
                                       <span style="font-size: 12px; color: #e4e4e4;">New Chat</span>
                                   </div>
@@ -15786,7 +15824,7 @@ csui.define("csui/lib/othelp", [], function () {
                                     <div style="margin-right: 10px;" id="counter">0/2000</div>
                           
                                       <!-- File Input -->
-                                      <label for="file-input" class="icon-button" style="cursor: pointer;">
+                                      <label for="file-input" class="icon-button hoverable-fade" style="cursor: pointer;" title="Upload files">
                                           <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                                               <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#054faa"></path>
                                           </svg>
@@ -15795,14 +15833,14 @@ csui.define("csui/lib/othelp", [], function () {
                                       <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
                           
                                       <!-- Submit Button -->
-                                      <button id="submitquestion" type="submit" class="icon-button" style="cursor: pointer; background: none; border: none;" disabled="">
+                                      <button title="Submit question" id="submitquestion" type="submit" class="icon-button hoverable-fade" style="cursor: pointer; background: none; border: none;" disabled="">
                                           <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                               <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#004395"></path>
                                           </svg>
                                       </button>
                           
                                       <!-- Stop Button -->
-                                      <button id="chatbotstop" type="button" class="icon-button" style="display: none; cursor: pointer; background: none; border: none;">
+                                      <button title="Stop generating" id="chatbotstop" type="button" class="icon-button hoverable-fade" style="display: none; cursor: pointer; background: none; border: none;">
                                           <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                               <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#004395"></path>
                                           </svg>
@@ -15832,7 +15870,7 @@ csui.define("csui/lib/othelp", [], function () {
             document.querySelectorAll(".msger-tool-btn").forEach(x => {
               x.addEventListener("click", async (e) => {
                 e.preventDefault();
-                AIPlusUtils.toggleSelectedTools(e.target.dataset.menu);
+                AIPlusUtils.toggleSelectedTools(x.dataset.menu);
               })
             });
 
@@ -15949,45 +15987,8 @@ csui.define("csui/lib/othelp", [], function () {
 
               // Render each of the file boxes
               for(const file of files) {
-                const uniqueId = new Date().getTime();
-                document.getElementById("files-container").innerHTML += `
-                  <div class="file-item-container" id="file-item-container-${uniqueId}">
-                    <div class="file-item" id="file-item-${uniqueId}" style="font-size:11px;padding:4px">
-                      <svg class="file-icon" style="width:16px;height:16px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-4H8V8h5v2zm1-7.5L18.5 9H14V2.5z" />
-                      </svg>
-                      <span class="file-name"><a download="${file.name}" href="${URL.createObjectURL(file)}">${file.name}</a></span>
-                      <button data-idx="${uniqueId}" title="Remove" id="remove-file-btn-${uniqueId}" class="remove-btn" style="display: none">
-                        <img src="${TIMES_RED_ICON}" width="16" />
-                      </button>
-                      <div id="loader-file-${uniqueId}" style="display:flex">
-                        <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation">
-                      </div>
-                    </div>
-
-                    <div class="file-item" id="file-item-error-${uniqueId}" style="font-size:11px;padding:4px;display:none">
-                      <img src="${ERROR_ICON}" style="margin-right: 10px;" width="14" />
-                      <span class="file-name" style="color:red"></span>
-                    </div>
-
-                    <div class="file-item file-item-folder-suggestion" id="folder-item-${uniqueId}" style="display:none">
-                      <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
-                      <span class="file-name"><a target="_blank" href="/"></a></span>
-                      <img src="${INFO_ICON}" class="folder-item-info" width="14" />
-                    </div>
-
-                    <div class="file-item file-item-folder-suggestion" id="folder-item-loader-${uniqueId}" style="display:none">
-                      <img src="${FOLDER_ICON}" style="margin-right: 10px;" width="14" />
-                      <span class="file-name" style="font-style:italic;font-weight:thin">Finding folder...</span>
-                      <div>
-                        <div class="dot-sm"></div>
-                        <div class="dot-sm"></div>
-                        <div class="dot-sm"></div>
-                      </div>
-                    </div>
-                  </div>
-                `;
-                fileList.push({file, id: uniqueId});
+                const id = appendMessage("smart-filing-text", `Uploading ${file.name} to personal folder`);
+                fileList.push({file, id});
               }
               
               document.querySelectorAll('.remove-btn').forEach(btn => {
@@ -16000,7 +16001,6 @@ csui.define("csui/lib/othelp", [], function () {
               idx = 0
               const jobs = [];
               for(const file of fileList) {
-                console.log(file)
                 const node = await AIPlusAPI.uploadToOTCS(file.file);
                 if(node.id) {
                   jobs.push({
@@ -16009,7 +16009,7 @@ csui.define("csui/lib/othelp", [], function () {
                     file: file.file
                   });
                 } else if (node.error) {
-                  AIPlusUtils.showFileError(file.id, "Error when uploading to personal folder: " + node.error)
+                  AIPlusUtils.changeSmartFilingText(file.id, `Error when uploading ${file.file.name} to personal folder: ${node.error}`, true);
                 }
               }
               
@@ -16017,15 +16017,18 @@ csui.define("csui/lib/othelp", [], function () {
               let queues = [];
               let suggestionFilings = [];
               for(const job of jobs) {
+                AIPlusUtils.changeSmartFilingText(job.id, `Ingesting ${job.file.name}`);
                 const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10);
-                if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
+                if(jobResult.existingFile) {
+                  suggestionFilings.push(job);
+                } else if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
                   queues.push({
                     file: job.file,
                     id: job.id,
                     job: jobResult
                   });
                 } else if (jobResult.error) {
-                  AIPlusUtils.showFileError(job.id, "Error when ingesting file: " + jobResult.message ?? jobResult.error)
+                  AIPlusUtils.changeSmartFilingText(job.id, `Error when ingesting ${job.file.name}: ${jobResult.message ?? jobResult.error}`, true);
                 }
               }
 
@@ -16038,11 +16041,9 @@ csui.define("csui/lib/othelp", [], function () {
                   if (getJob.status?.toLowerCase() === "completed") {
                     queues = queues.filter(x => x.job.jobId !== job.job.jobId);
                     suggestionFilings.push(job);
-                    AIPlusUtils.removeFileLoader(job.id);
-                  } 
-                  else if (getJob.status?.toLowerCase() === "failed") {
+                  } else if (getJob.status?.toLowerCase() === "failed") {
                     queues = queues.filter(x => x.job.jobId !== job.job.jobId);
-                    AIPlusUtils.showFileError(job.id, "Error when ingesting file: " + getJob.error ?? "An unxpected error occurred");
+                    AIPlusUtils.changeSmartFilingText(job.id, `Error when ingesting ${job.file.name}: ${getJob.error ?? "An unxpected error occurred"}`, true);
                   }
                 }
               
@@ -16055,29 +16056,28 @@ csui.define("csui/lib/othelp", [], function () {
                 const files = [...suggestionFilings];
               
                 for (const file of files) {
-                  const fileName = file.file.name?.toLowerCase();
-                  const isEmail = fileName.endsWith(".eml") || fileName.endsWith(".msg");
-                  if(!isEmail) {
-                    suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
-                    continue;
-                  }
+                  try {
+                    const fileName = file.file.name?.toLowerCase().split('.').pop();
 
-                  
-                  // If file is email, then proceed
-                  AIPlusUtils.showFileSuggestionLoader(file.id);
-                  const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file.file);
-                  if(filingSuggestion.data.suggestion != null) {
-                    document.querySelector(`#folder-item-${file.id} a`).innerText = filingSuggestion.data.suggestion.folderName;
-                    document.querySelector(`#folder-item-${file.id} a`).setAttribute("href", `/otcs/cs.exe/app/nodes/${filingSuggestion.data.suggestion.folderId}`);
-                    document.querySelector(`#folder-item-${file.id} a`).setAttribute("target", "_blank");
-                    document.querySelector(`#folder-item-${file.id} .file-name`).setAttribute("title", "Recommended folder for filing");
-                    document.querySelector(`#folder-item-${file.id} .folder-item-info`).setAttribute("title", filingSuggestion.data.suggestion.reasoning);
-                    document.querySelector(`#folder-item-${file.id}`).style.display = "flex";
-                  } else {
-                    console.warn("no filing suggestion found: " + filingSuggestion);
+                    // File isnt email, skipped
+                    if(!(fileName == "msg" || fileName == "eml")) {
+                      AIPlusUtils.changeSmartFilingText(file.id, `${file.file.name} successfully uploaded to your personal folder`, false, true);
+                      continue;
+                    }
+                    
+                    // If file is email, then proceed
+                    AIPlusUtils.changeSmartFilingText(file.id, `Analyzing ${file.file.name}`);
+                    const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file.file);
+                    if(filingSuggestion.data.suggestions != null && filingSuggestion.data.suggestions.length > 0) {
+                      document.getElementById(`msg-${file.id}`).remove();
+                      appendMessage("smart-filing", "", null, false, null, [], null, filingSuggestion.data.suggestions);
+                    } else {
+                      console.warn("no filing suggestion found: " + filingSuggestion);
+                    }
+                    suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
+                  } catch (error) {
+                    AIPlusUtils.changeSmartFilingText(file.id, `Error when analyzing ${job.file.name}: ${error.message ?? "An unxpected error occurred"}`, true);
                   }
-                  suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
-                  AIPlusUtils.removeFileLoader(file.id);
                 }
                   
                 if (queues.length > 0 || suggestionFilings.length > 0) {
@@ -16095,18 +16095,17 @@ csui.define("csui/lib/othelp", [], function () {
 
             messageEle.focus();
             messageEle.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
+              if (event.key === 'Enter') {
                 if (event.shiftKey) {
-                    messageEle.value += '\n';
-                }
-                else {
-                    document.getElementById("submitquestion").disabled = false;
-                    document.getElementById("submitquestion").click();
-                    messageEle.value = ""
+                  messageEle.value += '\n';
+                } else {
+                  document.getElementById("submitquestion").disabled = false;
+                  document.getElementById("submitquestion").click();
+                  messageEle.value = ""
                 }
                 event.preventDefault();
-                }
-            })
+              }
+            });
 
             let maxLength = messageEle.getAttribute('maxlength');
             let currentLength = messageEle.value.length;
@@ -16247,22 +16246,25 @@ csui.define("csui/lib/othelp", [], function () {
                   }
                 });
               },
-              removeFileLoader: function (id) {
-                document.querySelector(`#remove-file-btn-${id}`).style.display = "block";
-                document.querySelector(`#loader-file-${id}`).style.display = "none";
-                document.querySelector(`#folder-item-loader-${id}`).style.display = "none";
-              },
-              showFileSuggestionLoader: function (id) {
-                this.removeFileLoader(id);
-                document.querySelector(`#folder-item-loader-${id}`).style.display = "flex";
-              },
-              showFileError: function (id, errorMsg) {
-                document.querySelector(`#file-item-error-${id}`).style.display = "flex";
-                document.querySelector(`#file-item-error-${id}`).querySelector("span").innerText = errorMsg;
-                document.querySelector(`#folder-item-${id}`).style.display = "none";
-                document.querySelector(`#remove-file-btn-${id}`).style.display = "block";
-                document.querySelector(`#loader-file-${id}`).style.display = "none";
-                document.querySelector(`#folder-item-loader-${id}`).style.display = "none";
+              renderSmartFilingOptions: function(metadata) {
+                let html = "";
+
+                for(const m of metadata) {
+                  html += `
+                    <div class="smart-filing-actions-box">
+                      <input type="checkbox" />
+
+                      <div>
+                        <div style="font-weight:600">${m.folderName}</div>
+                        <div class="smart-filing-actions-desc">${m.description}</div>
+                      </div>
+
+                      ${m.isRecommended ? `<div><div class="smart-filing-actions-badge">Recommended</div></div>` : ''}
+                    </div>
+                  `;
+                }
+
+                return html;
               },
               toggleShowMessageButton: function(isVisible) {
                 if(isVisible) {
@@ -16291,13 +16293,13 @@ csui.define("csui/lib/othelp", [], function () {
                 }
 
                 return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${d.nodeId}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
-                  <img width="16px" src="${FILE_ICON}">
+                  <img width="16px" src="${AIPlusUtils.getFileIcon(data.fileName)}">
                   <div class="file-chat-bubble-text">${d.fileName}</div>
                 </a>`;
               },
               appendChatItem: function(data) {
                 return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.customMetadata.nodeId}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
-                  <img width="16px" src="${FILE_ICON}">
+                  <img width="16px" src="${AIPlusUtils.getFileIcon(data.fileName)}">
                   <div class="file-chat-bubble-text">${data.fileName}</div>
                 </a>`;
               },
@@ -16342,7 +16344,7 @@ csui.define("csui/lib/othelp", [], function () {
                     <button data-id="${chatRoom.sessionId}" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
                       ${chatRoom.title}
                       <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
-                        <img src="${DELETE_ICON}" style="width:14px;" class="hoverable-fade">
+                        <img src="${DELETE_ICON}" style="width:18px;" class="hoverable-fade">
                       </div>
                     </button>`);
                 }
@@ -16415,6 +16417,27 @@ csui.define("csui/lib/othelp", [], function () {
                   }
                 }
               },
+              changeSmartFilingText: function(id, text, isError = false, isSuccess = false, showCloseBtn = false) {
+                const el = document.querySelector(`#bot-text-${id}`);
+                
+                if(el) {
+                  if(isSuccess) {
+                    el.innerHTML = `<div style="display:flex;align-items:center"><img src="${SUCCESS_ICON}" style="width:18px;margin-right:6px"><span>${text}</span></div>`;
+                    showCloseBtn = true;
+                  } else if(isError) {
+                    el.style.color = "#d51212";
+                    el.innerHTML = `<div style="display:flex;align-items:center"><img src="${TIMES_RED_ICON}" style="width:18px;margin-right:6px"><span>${text}</span></div>`;
+                    showCloseBtn = true;
+                  } else {
+                    el.style.color = "black";
+                    document.querySelector(`#bot-text-${id} .bot-text-container`).innerText = text;
+                  }
+
+                  if(showCloseBtn) {
+                    document.getElementById(`smart-filing-close-btn-${id}`).style.display = "inline-block";
+                  }
+                }
+              },
               parseMarkdown: function(text) {
                 return marked.parse((text ?? "").replace(/```/g, "\n```"));
               },
@@ -16450,10 +16473,32 @@ csui.define("csui/lib/othelp", [], function () {
                   el.style.display = "none";
                 }
               },
+              getFileIcon: function(fileName) {
+                let result = DOCUMENT_MIME_ICON;
+                const extension = fileName.split('.').pop()?.toLowerCase();
+                if(extension) {
+                  if(extension == "pdf") {
+                    result = PDF_MIME_ICON;
+                  } else if(["msg", "eml"].includes(extension)) {
+                    result = EMAIL_MIME_ICON;
+                  } else if(["ppt", "pptx"].includes(extension)) {
+                    result = POWERPOINT_MIME_ICON;
+                  } else if(["txt", "csv"].includes(extension)) {
+                    result = TEXT_MIME_ICON;
+                  } else if(["png", "svg", "jpg", "jpeg", "gif"].includes(extension)) {
+                    result = IMAGE_MIME_ICON;
+                  } else if(["xls", "xlsx"].includes(extension)) {
+                    result = EXCEL_MIME_ICON;
+                  } else if(["doc", "docx"].includes(extension)) {
+                    result = WORD_MIME_ICON;
+                  }
+                }
+                return result;
+              },
               toggleLoaderChatContainer: function(isVisible) {
                 const el = document.querySelector("#msger-chat-container-loader");
                 if(isVisible) {
-                  el.style.display = "block";
+                  el.style.display = "flex";
                 } else {
                   el.style.display = "none";
                 }
@@ -16989,6 +17034,7 @@ csui.define("csui/lib/othelp", [], function () {
               addAviatorElementAsIcon();
           }
           checkForMenuElement();
+
           // Explorer Insight END
         },
       });

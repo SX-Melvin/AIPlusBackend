@@ -1,8 +1,8 @@
 # AIPlusBackend
 
-## Move marked.min.js to /img/csui/themes/carbonfiber/marked.min.js
+## Move `marked.min.js` to /img/csui/themes/carbonfiber/marked.min.js
 
-## Move all img files to /support/csui/themes/carbonfiber/image/icons
+## Move `aviator` folder to /support/csui/themes/carbonfiber/image/icons
 
 ## SQL Tables
 ```

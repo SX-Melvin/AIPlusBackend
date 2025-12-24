@@ -33,31 +33,50 @@ namespace AIPlusBackend.Services
 
             try
             {
-                var wId = Guid.NewGuid().ToString();
+                //var wId = Guid.NewGuid().ToString();
+                var wId = "test-filing8";
                 var token = utils.Login().Result.Token;
                 var jsonIngested = false;
                 var suggestFileIngested = false;
 
-                var jsonFile = await utils.UploadFile(wId, Path.Combine(config.Value.FolderStructureJSONPath, "folders_structure.json"), "", token);
+                var jsonFile = await utils.UploadFile(wId, Path.Combine(config.Value.FolderStructureJSONPath, "folders.json"), "", token);
                 var suggestFile = await utils.UploadFile(wId, filePath, "", token);
 
-                while(!jsonIngested || !suggestFileIngested)
-                {
-                    if(!jsonIngested)
-                    {
-                        var res = await utils.GetJob(jsonFile.JobId, token);
-                        if(res.Status == "completed")
-                        {
-                            jsonIngested = true;
-                        } 
-                        else if(res.Status == "failed" || res.Error != null)
-                        {
-                            result.ErrorMessage = res.Error;
-                            break;
-                        }
-                    }
+                //while(!jsonIngested || !suggestFileIngested)
+                //{
+                //    if(!jsonIngested)
+                //    {
+                //        var res = await utils.GetJob(jsonFile.JobId, token);
+                //        if(res.Status == "completed")
+                //        {
+                //            jsonIngested = true;
+                //        } 
+                //        else if(res.Status == "failed" || res.Error != null)
+                //        {
+                //            result.ErrorMessage = res.Error;
+                //            break;
+                //        }
+                //    }
 
-                    if(!suggestFileIngested)
+                //    if(!suggestFileIngested)
+                //    {
+                //        var res = await utils.GetJob(jsonFile.JobId, token);
+                //        if (res.Status == "completed")
+                //        {
+                //            suggestFileIngested = true;
+                //        }
+                //        else if (res.Status == "failed" || res.Error != null)
+                //        {
+                //            result.ErrorMessage = res.Error;
+                //            break;
+                //        }
+                //    }
+
+                //    await Task.Delay(TimeSpan.FromSeconds(2));
+                //}
+                while (!suggestFileIngested)
+                {
+                    if (!suggestFileIngested)
                     {
                         var res = await utils.GetJob(jsonFile.JobId, token);
                         if (res.Status == "completed")
@@ -74,20 +93,20 @@ namespace AIPlusBackend.Services
                     await Task.Delay(TimeSpan.FromSeconds(2));
                 }
 
-                if(result.ErrorMessage != null)
+                if (result.ErrorMessage != null)
                 {
                     return result;
                 }
 
-                var response = await utils.GetFilingSuggestion(wId, token);
+                var response = await utils.GetFilingSuggestion(wId, token, suggestFile.FileName);
                 result.Data = response;
 
-                csdb.CreateTempFile(new()
-                {
-                    DeleteAt = DateTime.Now.AddMinutes(0),
-                    JobId = jsonFile.JobId,
-                    WorkspaceID = wId
-                });
+                //csdb.CreateTempFile(new()
+                //{
+                //    DeleteAt = DateTime.Now.AddMinutes(0),
+                //    JobId = jsonFile.JobId,
+                //    WorkspaceID = wId
+                //});
                 csdb.CreateTempFile(new()
                 {
                     DeleteAt = DateTime.Now.AddMinutes(0),

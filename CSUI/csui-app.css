@@ -6845,6 +6845,33 @@ body.bin-widgets .binf-modal-backdrop {
     font-size: 12px!important;
     font-weight: 500!important;
 }
+.smart-filing-actions-desc {
+    color:#aeaeae;
+    font-weight: 550;
+    font-size:12px!important;
+}
+.smart-filing-actions-box {
+    display:flex;
+    gap: 10px;
+    margin-bottom: 10px!important;
+    font-size: 12px!important;
+    align-items: center;
+}
+.smart-filing-actions-badge {
+    background:rgb(58, 231, 58, .4)!important;
+    border-radius:6px;
+    font-size: 10px!important;
+    padding:4px 6px!important;
+    font-weight:600;
+    color:#008503!important;
+}
+.smart-filing-actions-container {
+    background:white;
+    margin-top: 15px!important;
+    border:1px solid #c3c3c3!important;
+    padding: 10px 15px!important;
+    border-radius:8px;
+}
 .chat-reason {
     padding: 4px 6px!important;
     border-radius: 4px;
@@ -6866,15 +6893,22 @@ body.bin-widgets .binf-modal-backdrop {
 .msger-dropzone:hover {
     opacity: .4;
 }
-.msger-dropzone {
-    border: 18px dashed whitesmoke!important;
+.msger-overlay {
     position: absolute;
-    background-color: rgba(0,0,0,.2);
     bottom: 0;
     right: 0;
     left: 0;
     top: 46px;
     z-index: 1;
+}
+.msger-chat-loader {
+    background-color: rgba(0,0,0,.2);
+    justify-content: center;    /* horizontal center */
+    align-items: center;        /* vertical center */
+}
+.msger-dropzone {
+    border: 18px dashed whitesmoke!important;
+    background-color: rgba(0,0,0,.2);
     display: none;
     justify-content: center;    /* horizontal center */
     align-items: center;        /* vertical center */

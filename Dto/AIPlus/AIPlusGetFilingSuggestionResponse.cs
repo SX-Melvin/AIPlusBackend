@@ -2,7 +2,7 @@
 {
     public class AIPlusGetFilingSuggestionResponse
     {
-        public AIPlusFilingSuggestionSuggestion Suggestion { get; set; }
+        public List<AIPlusFilingSuggestionSuggestion> Suggestions { get; set; }
         public AIPlusFilingSuggestionEmailFile EmailFile { get; set; }
         public FoldersFile FoldersFile { get; set; }
     }
@@ -12,7 +12,7 @@
         public string FolderName { get; set; }
         public string Confidence { get; set; }
         public string Reasoning { get; set; }
-        public List<string> Alternatives { get; set; }
+        public bool IsRecommended { get; set; }
     }
     public class FoldersFile
     {
@@ -26,4 +26,3 @@
         public string JobId { get; set; }
     }
 }
-
