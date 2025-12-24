@@ -4,6 +4,7 @@ using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Utils;
 using AIPlusBackend.Utils.Common;
 using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace AIPlusBackend.Services
 {
@@ -33,52 +34,17 @@ namespace AIPlusBackend.Services
 
             try
             {
-                //var wId = Guid.NewGuid().ToString();
-                var wId = "test-filing8";
+                var wId = "smart-filing";
                 var token = utils.Login().Result.Token;
-                var jsonIngested = false;
                 var suggestFileIngested = false;
 
-                var jsonFile = await utils.UploadFile(wId, Path.Combine(config.Value.FolderStructureJSONPath, "folders.json"), "", token);
                 var suggestFile = await utils.UploadFile(wId, filePath, "", token);
 
-                //while(!jsonIngested || !suggestFileIngested)
-                //{
-                //    if(!jsonIngested)
-                //    {
-                //        var res = await utils.GetJob(jsonFile.JobId, token);
-                //        if(res.Status == "completed")
-                //        {
-                //            jsonIngested = true;
-                //        } 
-                //        else if(res.Status == "failed" || res.Error != null)
-                //        {
-                //            result.ErrorMessage = res.Error;
-                //            break;
-                //        }
-                //    }
-
-                //    if(!suggestFileIngested)
-                //    {
-                //        var res = await utils.GetJob(jsonFile.JobId, token);
-                //        if (res.Status == "completed")
-                //        {
-                //            suggestFileIngested = true;
-                //        }
-                //        else if (res.Status == "failed" || res.Error != null)
-                //        {
-                //            result.ErrorMessage = res.Error;
-                //            break;
-                //        }
-                //    }
-
-                //    await Task.Delay(TimeSpan.FromSeconds(2));
-                //}
-                while (!suggestFileIngested)
+                while (!suggestFileIngested && suggestFile.ExistingFile == null)
                 {
                     if (!suggestFileIngested)
                     {
-                        var res = await utils.GetJob(jsonFile.JobId, token);
+                        var res = await utils.GetJob(suggestFile.JobId, token);
                         if (res.Status == "completed")
                         {
                             suggestFileIngested = true;
@@ -98,19 +64,19 @@ namespace AIPlusBackend.Services
                     return result;
                 }
 
-                var response = await utils.GetFilingSuggestion(wId, token, suggestFile.FileName);
+                var response = await utils.GetFilingSuggestion(wId, token, suggestFile.FileName ?? suggestFile.ExistingFile.FileName);
+
+                foreach (var suggestion in response.Suggestions)
+                {
+                    suggestion.Path = csdb.GetNodeFullPath(Convert.ToInt64(suggestion.FolderId)) ?? "";
+                }
+
                 result.Data = response;
 
-                //csdb.CreateTempFile(new()
-                //{
-                //    DeleteAt = DateTime.Now.AddMinutes(0),
-                //    JobId = jsonFile.JobId,
-                //    WorkspaceID = wId
-                //});
                 csdb.CreateTempFile(new()
                 {
                     DeleteAt = DateTime.Now.AddMinutes(0),
-                    JobId = suggestFile.JobId,
+                    JobId = suggestFile.JobId ?? suggestFile.ExistingFile.JobId,
                     WorkspaceID = wId
                 });
             }

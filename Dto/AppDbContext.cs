@@ -8,7 +8,10 @@ namespace AIPlusBackend.Dto
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
+        public DbSet<DTreeFullPath> DTreeFullPaths { get; set; }
+
         public DbSet<DTreeACL> DTreeACLs { get; set; }
+        public DbSet<DTreeCore> DTreeCores { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<Database.Chat> Chats { get; set; }
         public DbSet<AIPlusTempFile> AIPlusTempFiles { get; set; }
@@ -19,6 +22,12 @@ namespace AIPlusBackend.Dto
             // Exclude KUAFs Table From Migrations
             modelBuilder.Entity<DTreeACL>().HasNoKey();
             modelBuilder.Entity<DTreeACL>().ToTable(nameof(DTreeACL), t => t.ExcludeFromMigrations());
+            
+            modelBuilder.Entity<DTreeFullPath>().HasNoKey();
+            modelBuilder.Entity<DTreeFullPath>().ToTable(nameof(DTreeFullPath), t => t.ExcludeFromMigrations());
+            
+            modelBuilder.Entity<DTreeCore>().HasNoKey();
+            modelBuilder.Entity<DTreeCore>().ToTable(nameof(DTreeCore), t => t.ExcludeFromMigrations());
             
             modelBuilder.Entity<KUAF>().HasNoKey();
             modelBuilder.Entity<KUAF>().ToTable(nameof(KUAF), t => t.ExcludeFromMigrations());

@@ -12,6 +12,37 @@ namespace AIPlusBackend.Utils
         {
             return await Task.FromResult(_context.DTreeACLs.Where(acl => nodeIds.Contains(acl.DataID)).ToList());
         }
+        public string? GetNodeFullPath(long nodeId)
+        {
+            return _context.Set<DTreeFullPath>()
+            .FromSql($"""
+                WITH PathCTE AS (
+                    SELECT
+                        ParentID,
+                        DataID,
+                        Name,
+                        CAST(Name AS NVARCHAR(MAX)) AS FullPath
+                    FROM DTreeCore
+                    WHERE DataID = {nodeId}
+
+                    UNION ALL
+
+                    -- Walk UP to the root
+                    SELECT
+                        p.ParentID,
+                        p.DataID,
+                        p.Name,
+                        CAST(p.Name + ' / ' + c.FullPath AS NVARCHAR(MAX)) AS FullPath
+                    FROM DTreeCore p
+                    JOIN PathCTE c
+                        ON p.DataID = c.ParentID
+                )
+                SELECT TOP 1 *
+                FROM PathCTE
+                WHERE DataID = 2000;
+            """)
+            .AsNoTracking().AsEnumerable().FirstOrDefault()?.FullPath;
+        }
         public KUAF? GetKUAFByID(long userId)
         {
             return _context.KUAFs.FirstOrDefault(x => x.ID == userId);
