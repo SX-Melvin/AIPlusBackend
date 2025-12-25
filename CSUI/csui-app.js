@@ -15485,7 +15485,7 @@ csui.define("csui/lib/othelp", [], function () {
             const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_bot.svg";
             let PERSON_IMG = `/otcs/cs.exe/${that.options.context._user.attributes.photo_url}`;
             
-            function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = [], reason = null, smartFilingMetadata = []) {
+            function appendMessage(side, text, date = null, appendOnFirstChild = false, metadata = null, sources = [], reason = null, smartFilingMetadata = {}) {
               let msgHTML;
               const msgerChat = get(".msger-chat");
               const uniqueId = new Date().getTime();
@@ -15510,7 +15510,7 @@ csui.define("csui/lib/othelp", [], function () {
 
                       <div style="white-space: pre-line;display:flex" id="bot-text-${uniqueId}" class="msg-text">
                         <div class="bot-text-container">${text}</div>
-                        <div class="dot" style="margin-left:4px"></div>
+                        <div class="dot" style="margin-left:8px"></div>
                         <div class="dot" style="margin-left:2px"></div>
                         <div class="dot" style="margin-left:2px"></div>
                       </div>
@@ -15525,16 +15525,21 @@ csui.define("csui/lib/othelp", [], function () {
 
                       <div style="justify-content:space-between;display:flex;align-items:center;font-weight:600;margin-bottom:10px">
                         <div>Smart Filing</div>
-                        <button class="msger-btn" title="Close" onclick="document.getElementById("msg-${uniqueId}").remove()"><img src="${CLOSE_ICON}" width="18" /></button>
+                        <button class="msger-btn" title="Close" onclick="document.getElementById('msg-${uniqueId}').remove()"><img src="${CLOSE_ICON}" width="18" /></button>
                       </div>
 
-                      <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${smartFilingMetadata.map(x => x.reasoning).join(". ")}. What would you like me to do?</div>
+                      <div id="bot-text-${uniqueId}" class="msg-text">
+                        I've analyzed "${smartFilingMetadata.file.name}". ${smartFilingMetadata.suggestions.map(x => x.reasoning).join(". ")}
+                        <div style="margin-top:6px">Where would you like to file it?</div>
+                      </div>
                       
                       <div class="smart-filing-actions-container" data-id="${uniqueId}" id="chat-smart-filing-${uniqueId}">
-                        ${AIPlusUtils.renderSmartFilingOptions(smartFilingMetadata)}
+                        ${AIPlusUtils.renderSmartFilingOptions(smartFilingMetadata.suggestions, uniqueId)}
                       </div>
 
-                      <button class="msger-btn" style="width:100%;margin-top:12px;display:block;background:#0d73a0;;font-weight:550;color:white;border-radius:8px;padding:12px 6px">File to selected location</button>
+                      <button data-id="${uniqueId}" title="Upload the file to selected locations" id="sf-submit-btn-${uniqueId}" class="msger-btn hoverable-fade" style="width:100%;margin-top:12px;display:block;background:#0d73a0;;font-weight:550;color:white;border-radius:8px;padding:12px 6px">
+                        <center>File to selected location</center>
+                      </button>
                     </div>
                   </div>
                 `;
@@ -15618,7 +15623,33 @@ csui.define("csui/lib/othelp", [], function () {
               }
 
               let botChatDivEl = document.getElementById(`chat-copy-${uniqueId}`);
+              const el = document.getElementById(`sf-submit-btn-${uniqueId}`);
               
+              if(el) {
+                el.addEventListener("click", async (e) => {
+                  el.style.display = "none";
+
+                  const checked = [];
+                  document.querySelectorAll(`.smart-filing-checkbox-${el.dataset.id}`).forEach(x => {
+                    if(x.checked) {
+                      checked.push(x.dataset.id);
+                    } else {
+                      x.remove();
+                    }
+                  });
+
+                  for(const nodeId of checked) {
+                    AIPlusUtils.showLoaderOnSmartFilingUpload(el.dataset.id, nodeId);
+                    const res = await AIPlusAPI.uploadToOTCS(smartFilingMetadata.file, nodeId);
+                    if(res.error) {
+                      AIPlusUtils.showMessageResultOnSmartFilingUpload(el.dataset.id, nodeId, res.error, true);
+                    } else {
+                      AIPlusUtils.showMessageResultOnSmartFilingUpload(el.dataset.id, nodeId, "Successfully uploaded!");
+                    }
+                  }
+                });
+              }
+
               if(botChatDivEl) {
                 const copyTooltip = document.querySelector(`#chat-copy-${uniqueId} .chatbottooltip`);
 
@@ -16070,7 +16101,10 @@ csui.define("csui/lib/othelp", [], function () {
                     const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file.file);
                     if(filingSuggestion.data.suggestions != null && filingSuggestion.data.suggestions.length > 0) {
                       document.getElementById(`msg-${file.id}`).remove();
-                      appendMessage("smart-filing", "", null, false, null, [], null, filingSuggestion.data.suggestions);
+                      appendMessage("smart-filing", "", null, false, null, [], null, {
+                        suggestions: filingSuggestion.data.suggestions,
+                        file: file.file
+                      });
                     } else {
                       console.warn("no filing suggestion found: " + filingSuggestion);
                     }
@@ -16246,18 +16280,24 @@ csui.define("csui/lib/othelp", [], function () {
                   }
                 });
               },
-              renderSmartFilingOptions: function(metadata) {
+              renderSmartFilingOptions: function(metadata, id) {
                 let html = "";
 
                 for(const m of metadata) {
                   html += `
-                    <div class="smart-filing-actions-box">
-                      <input type="checkbox" />
-
-                      <div>
-                        <div style="font-weight:600">${m.folderName}</div>
-                        <div class="smart-filing-actions-desc">${m.description}</div>
+                    <div class="smart-filing-actions-box" id="smart-filing-actions-box-${id}-${m.folderId}">
+                      <div id="smart-filing-loader-${id}-${m.folderId}" style="display:none">
+                        <div class="dot-sm"></div>
+                        <div class="dot-sm"></div>
+                        <div class="dot-sm"></div>
                       </div>
+
+                      <input type="checkbox" id="smart-filing-checkbox-${id}-${m.folderId}" data-id="${m.folderId}" class="smart-filing-checkbox-${id}" />
+
+                      <label style="cursor:pointer" for="smart-filing-checkbox-${id}-${m.folderId}">
+                        <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:600">${m.folderName}</div>
+                        <div style="margin-top:4px" id="smart-filing-actions-desc-${id}-${m.folderId}" class="smart-filing-actions-desc">${m.path}</div>
+                      </label>
 
                       ${m.isRecommended ? `<div><div class="smart-filing-actions-badge">Recommended</div></div>` : ''}
                     </div>
@@ -16376,6 +16416,27 @@ csui.define("csui/lib/othelp", [], function () {
                     await AIPlusAPI.getChats(e.target.dataset.id, 1);
                   });
                 });
+              },
+              showLoaderOnSmartFilingUpload(id, folderId) {
+                console.log(id, folderId);
+                // document.querySelector(`#smart-filing-actions-desc-${id}-${folderId}`).remove();
+                const title = document.querySelector(`#smart-filing-title-${id}-${folderId}`);
+                title.innerText = "Uploading " + title.innerText;
+                document.querySelector(`#smart-filing-loader-${id}-${folderId}`).style.display = "block";
+                document.querySelector(`#smart-filing-actions-box-${id}-${folderId} input[type=checkbox]`).remove();
+                const badge = document.querySelector(`#smart-filing-actions-box-${id}-${folderId} .smart-filing-actions-badge`);
+                if(badge) {
+                  badge.remove();
+                }
+              },
+              showMessageResultOnSmartFilingUpload(id, folderId, text, isError = false) {
+                if(isError) {
+                  document.querySelector(`#smart-filing-loader-${id}-${folderId}`).innerHTML = `<img src="${TIMES_RED_ICON}" width="16" />`;
+                  document.querySelector(`#smart-filing-title-${id}-${folderId}`).style.color = "#d51212";
+                } else {
+                  document.querySelector(`#smart-filing-loader-${id}-${folderId}`).innerHTML = `<img src="${SUCCESS_ICON}" width="16" />`;
+                }
+                document.querySelector(`#smart-filing-title-${id}-${folderId}`).innerHTML = text;
               },
               reRenderChatRooms: function() {
                 document.querySelectorAll('.chat-history-item').forEach(e => {
@@ -16566,12 +16627,12 @@ csui.define("csui/lib/othelp", [], function () {
               }
             }
             var AIPlusAPI = {
-              uploadToOTCS: async function(file) {
+              uploadToOTCS: async function(file, parentId = null) {
                 try {
                   const formdata = new FormData();
                   formdata.append("body", JSON.stringify({
                     type: AIPlusUtils.getFileSubType(file), 
-                    parent_id: userHomepageID, 
+                    parent_id: parentId ?? userHomepageID, 
                     name: file.name
                   }));
                   formdata.append("file", file, file.name);
