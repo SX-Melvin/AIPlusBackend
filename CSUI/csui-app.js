@@ -15627,17 +15627,24 @@ csui.define("csui/lib/othelp", [], function () {
               
               if(el) {
                 el.addEventListener("click", async (e) => {
-                  el.style.display = "none";
-
                   const checked = [];
                   document.querySelectorAll(`.smart-filing-checkbox-${el.dataset.id}`).forEach(x => {
                     if(x.checked) {
                       checked.push(x.dataset.id);
-                    } else {
-                      x.remove();
                     }
                   });
-
+                  
+                  if(checked.length == 0) {
+                    return;
+                  }
+                  
+                  document.querySelectorAll(`.smart-filing-checkbox-${el.dataset.id}`).forEach(x => {
+                    if(!x.checked) {
+                      document.querySelector(`#smart-filing-actions-box-${el.dataset.id}-${x.dataset.id}`).remove();
+                    }
+                  });
+                  
+                  el.style.display = "none";
                   for(const nodeId of checked) {
                     AIPlusUtils.showLoaderOnSmartFilingUpload(el.dataset.id, nodeId);
                     const res = await AIPlusAPI.uploadToOTCS(smartFilingMetadata.file, nodeId);

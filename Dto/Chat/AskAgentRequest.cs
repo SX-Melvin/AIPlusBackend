@@ -7,6 +7,6 @@ namespace AIPlusBackend.Dto.Chat
     {
         public long? RoomId { get; set; } = null;
         public string AIPlusToken { get; set; }
-        public AIPlusAskQuestionRequest Data { get; set; }
+        public NewProjectRequest Data { get; set; }
     }
 }

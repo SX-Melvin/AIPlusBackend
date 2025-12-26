@@ -126,32 +126,15 @@ namespace AIPlusBackend.Utils
                 PageSize = pageSize
             };
         }
-        public Pagination<Chat> GetChatsByChatIdAscending(long chatId, int pageNumber, int pageSize)
-        {
-            var query = _context.Chats
-                .Where(x => x.ChatRoomID == chatId)
-                .OrderBy(c => c.CreatedAt);
-
-            int totalCount = query.Count();
-
-            var items = query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return new Pagination<Chat>
-            {
-                Data = items,
-                TotalRecords = totalCount,
-                HasNext = pageNumber * pageSize < totalCount,
-                PageNumber = pageNumber,
-                TotalPage = (int)Math.Ceiling((double)totalCount / pageSize),
-                PageSize = pageSize
-            };
-        }
         public Chat CreateChat(Chat data)
         {
             _context.Chats.Add(data);
+            _context.SaveChanges();
+            return data;
+        }
+        public ProjectRoom CreateProject(ProjectRoom data)
+        {
+            _context.ProjectRooms.Add(data);
             _context.SaveChanges();
             return data;
         }

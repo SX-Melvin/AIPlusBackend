@@ -75,7 +75,7 @@ namespace AIPlusBackend.Utils
 
             return result;
         }
-        public async Task<List<AIPlusAskQuestionResponse>> AskQuestionByWorkspace(string wId, AIPlusAskQuestionRequest body, string token)
+        public async Task<List<AIPlusAskQuestionResponse>> AskQuestionByWorkspace(string wId, NewProjectRequest body, string token)
         {
             List<AIPlusAskQuestionResponse> result = new();
 
@@ -143,7 +143,7 @@ namespace AIPlusBackend.Utils
 
             return result;
         }
-        public async IAsyncEnumerable<AIPlusAskQuestionResponse> AskQuestion(AIPlusAskQuestionRequest body, string token)
+        public async IAsyncEnumerable<AIPlusAskQuestionResponse> AskQuestion(NewProjectRequest body, string token)
         {
             var request = new RestRequest($"/api/workspaces/{config.Value.WorkspaceId}/chat/stream", Method.Post);
             request.AddHeader("Authorization", $"Bearer {token}");

@@ -13,6 +13,13 @@ CREATE TABLE CSDB.otcs.AIPlus_ChatRooms (
 	CreatedAt datetime2(0) DEFAULT getdate() NOT NULL
 );
 
+CREATE TABLE CSDB.otcs.AIPlus_ProjectRooms (
+	ID int IDENTITY(1,1) NOT NULL,
+	Title varchar(200) NOT NULL,
+	UserID bigint NOT NULL,
+	CreatedAt datetime2(0) DEFAULT getdate() NULL
+);
+
 CREATE TABLE CSDB.otcs.AIPlus_Chats (
 	ID bigint IDENTITY(1,1) NOT NULL,
 	IsHuman bit DEFAULT 1 NOT NULL,

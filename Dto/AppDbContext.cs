@@ -10,6 +10,7 @@ namespace AIPlusBackend.Dto
 
         public DbSet<DTreeFullPath> DTreeFullPaths { get; set; }
 
+        public DbSet<ProjectRoom> ProjectRooms { get; set; }
         public DbSet<DTreeACL> DTreeACLs { get; set; }
         public DbSet<DTreeCore> DTreeCores { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
