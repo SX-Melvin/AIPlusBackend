@@ -1,13 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using AIPlusBackend.Dto.Database;
+using Newtonsoft.Json;
 
 namespace AIPlusBackend.Dto.AIPlus
 {
     public class NewProjectResponse
     {
-        [JsonProperty("userId")]
+        public long ID { get; set; }
         public long UserId { get; set; }
-
-        [JsonProperty("title")]
         public string Title { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

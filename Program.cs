@@ -41,7 +41,7 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<AIPlusService>();
 builder.Services.AddScoped<AIPlusUtils>();
 builder.Services.AddScoped<TempFileService>();
-builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<CSService>();
 builder.Services.AddScoped<CSDBUtils>();
 

@@ -1,6 +1,7 @@
 ﻿using AIPlusBackend.Configurations;
 using AIPlusBackend.Dto;
 using AIPlusBackend.Dto.AIPlus;
+using AIPlusBackend.Dto.Database;
 using AIPlusBackend.Utils;
 using AIPlusBackend.Utils.Common;
 using Microsoft.Extensions.Options;
@@ -22,9 +23,12 @@ namespace AIPlusBackend.Services
                     Title = body.Title,
                     UserID = body.UserId
                 });
+
                 result.Data = new()
                 {
                     Title = data.Title,
+                    CreatedAt = data.CreatedAt,
+                    ID = data.ID,
                     UserId = data.UserID
                 };
             }
@@ -37,13 +41,29 @@ namespace AIPlusBackend.Services
             return result;
         }
         
-        public async Task<APIResponse<Pagination<GetProjectByUserIdResponse>>> GetProjectByUserId(long userId, int pageNumber, int pageSize)
+        public async Task<APIResponse<Pagination<ProjectRoom>>> GetProjectByUserId(long userId, int pageNumber = 1, int pageSize = 20)
         {
-            var result = new APIResponse<Pagination<GetProjectByUserIdResponse>>();
+            var result = new APIResponse<Pagination<ProjectRoom>>();
 
             try
             {
-                
+                result.Data = csdb.GetProjectRoomsByUser(userId, pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
+            }
+
+            return result;
+        }
+        public async Task<APIResponse<ProjectRoom?>> UpdateProjectById(long id, UpdateProjectByIdRequest data)
+        {
+            var result = new APIResponse<ProjectRoom?>();
+
+            try
+            {
+                result.Data = csdb.UpdateProjectRoomById(id, data);
             }
             catch (Exception ex)
             {

@@ -2,11 +2,8 @@ using AIPlusBackend.Configurations;
 using AIPlusBackend.Dto;
 using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Services;
-using AIPlusBackend.Utils;
+using AIPlusBackend.Dto.Database;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System.Text;
-using System.Threading;
 
 namespace AIPlusBackend.Controllers
 {
@@ -33,12 +30,28 @@ namespace AIPlusBackend.Controllers
         }
         
         [HttpGet("User/{userId}/Project")]
-        public async Task<APIResponse<Pagination<GetProjectByUserIdResponse>>> GetProjectsByUserId([FromQuery] int pageNumber, [FromQuery] int pageSize, long userId)
+        public async Task<APIResponse<Pagination<ProjectRoom>>> GetProjectsByUserId(long userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 25)
         {
-            var result = new APIResponse<Pagination<GetProjectByUserIdResponse>>();
+            var result = new APIResponse<Pagination<ProjectRoom>>();
             try
             {
                 return await service.GetProjectByUserId(userId, pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
+        
+        [HttpPatch("Project/{id}")]
+        public async Task<APIResponse<ProjectRoom?>> UpdateProjectById(long id, [FromBody] UpdateProjectByIdRequest body)
+        {
+            var result = new APIResponse<ProjectRoom?>();
+            try
+            {
+                return await service.UpdateProjectById(id, body);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 ﻿using AIPlusBackend.Dto;
+using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Dto.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -69,22 +70,11 @@ namespace AIPlusBackend.Utils
 
             return true;
         }
-        public ChatRoom CreateChatRoom(ChatRoom data)
+        public Pagination<ProjectRoom> GetProjectRoomsByUser(long userId, int pageNumber, int pageSize)
         {
-            _context.ChatRooms.Add(data);
-            _context.SaveChanges();
-            return data;
-        }
-        public void DeleteChatRoom(long id)
-        {
-            _context.ChatRooms.Where(x => x.ID == id).ExecuteDelete();
-            _context.Chats.Where(x => x.ChatRoomID == id).ExecuteDelete();
-        }
-        public Pagination<ChatRoom> GetChatRoomsByUser(long userId, int pageNumber, int pageSize)
-        {
-            var query = _context.ChatRooms
-        .Where(x => x.UserID == userId)
-        .OrderByDescending(c => c.CreatedAt);
+            var query = _context.ProjectRooms
+            .Where(x => x.UserID == userId)
+            .OrderByDescending(c => c.CreatedAt);
 
             int totalCount = query.Count();
 
@@ -93,7 +83,7 @@ namespace AIPlusBackend.Utils
                 .Take(pageSize)
                 .ToList();
 
-            return new Pagination<ChatRoom>
+            return new Pagination<ProjectRoom>
             {
                 Data = items,
                 TotalPage = (int)Math.Ceiling((double)totalCount / pageSize),
@@ -103,34 +93,17 @@ namespace AIPlusBackend.Utils
                 PageSize = pageSize
             };
         }
-        public Pagination<Chat> GetChatsByChatId(long chatId, int pageNumber, int pageSize)
+        public ProjectRoom? UpdateProjectRoomById(long id, UpdateProjectByIdRequest data)
         {
-            var query = _context.Chats
-                .Where(x => x.ChatRoomID == chatId)
-                .OrderByDescending(c => c.CreatedAt);
-
-            int totalCount = query.Count();
-
-            var items = query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return new Pagination<Chat>
+            var projectRoom = _context.ProjectRooms.FirstOrDefault(x => x.ID == id);
+            if(projectRoom != null)
             {
-                Data = items,
-                TotalRecords = totalCount,
-                HasNext = pageNumber * pageSize < totalCount,
-                PageNumber = pageNumber,
-                TotalPage = (int)Math.Ceiling((double)totalCount / pageSize),
-                PageSize = pageSize
-            };
-        }
-        public Chat CreateChat(Chat data)
-        {
-            _context.Chats.Add(data);
-            _context.SaveChanges();
-            return data;
+                projectRoom.Title = data.Title;
+                projectRoom.SessionID = data.SessionID;
+                _context.SaveChanges();
+            }
+
+            return projectRoom;
         }
         public ProjectRoom CreateProject(ProjectRoom data)
         {

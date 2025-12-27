@@ -7,9 +7,10 @@ namespace AIPlusBackend.Dto.Database
     public class ProjectRoom
     {
         [Key]
-        public long ID { get; set; }
+        public int ID { get; set; }
         public long UserID { get; set; }
         public string Title { get; set; }
+        public string? SessionID { get; set; } = null;
         public DateTime CreatedAt { get; set; }
     }
 }
