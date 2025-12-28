@@ -13,7 +13,7 @@ namespace AIPlusBackend.Controllers
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        [HttpPost("New")]
+        [HttpPost("")]
         public async Task<APIResponse<NewProjectResponse>> NewProject([FromBody] NewProjectRequest body)
         {
             var result = new APIResponse<NewProjectResponse>();
@@ -45,7 +45,7 @@ namespace AIPlusBackend.Controllers
             return result;
         }
         
-        [HttpPatch("Project/{id}")]
+        [HttpPatch("{id}")]
         public async Task<APIResponse<ProjectRoom?>> UpdateProjectById(long id, [FromBody] UpdateProjectByIdRequest body)
         {
             var result = new APIResponse<ProjectRoom?>();
