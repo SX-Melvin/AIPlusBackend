@@ -8,8 +8,9 @@ async function showAviator() {
   const userHomepageID = userID == 1000 ? 2004 : userID;
   let ARCHIVE_MESSAGE_COUNT = 0;
   let TOOLS_SELECTED = "CHATS";
+  let PROJECT_ID = null;
   let CHAT_ID = null;
-  let paginations = {chatHistory: {now: 1, max: null}};
+  let paginations = {chatHistory: {now: 1, max: null}, project: {now: 1, max: null}};
   const PERSON_NAME = window.aiPlusContext.options.context._user.attributes.name;
   const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_success.svg"
   const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_toolbar_copy.svg"
@@ -291,10 +292,10 @@ async function showAviator() {
   } 
 
   // Utils
-  function showNewProjectForm() {
+  async function showNewProjectForm() {
     const newProjectName = prompt("Project Name:");
     if(newProjectName) {
-      
+      await AIPlusAPI.createProject(newProjectName);
     }
   }
 
@@ -362,6 +363,8 @@ async function showAviator() {
                 <div id="chat-project-section" style="display:none">
                   <div style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
                     <div class="chat-sidenav-title">YOUR PROJECTS</div>  
+                    <button title="Refresh conversations" id="chat-project-refresh" class="msger-btn"><img width="13px" src="${REFRESH_ICON}" /></button>
+                    <img id="chat-project-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
                   </div>
                   <div id="chat-project-container" class="msger-scroll" style="overflow:scroll;height:96%;background:#eeeeee"></div>
                 </div>
@@ -461,7 +464,7 @@ async function showAviator() {
 
   document.getElementById("enable-tools").addEventListener("change", async (e) => {
     e.preventDefault();
-    if(CHAT_ID != null) {
+    if(CHAT_ID != null || CHAT_ID != "null") {
       await AIPlusAPI.updateSession(CHAT_ID);
     }
   });
@@ -720,6 +723,7 @@ async function showAviator() {
     if(TOOLS_SELECTED == "CHATS") {
       clearChats();
     } else if(TOOLS_SELECTED == "PROJECTS") {
+      clearChats();
       showNewProjectForm();
     }
   });
@@ -827,14 +831,26 @@ async function showAviator() {
     await AIPlusAPI.getChatRooms(1);
   });
 
+  document.getElementById("chat-project-refresh").addEventListener("click", async (e) => {
+    await AIPlusAPI.getProjectRooms(1);
+  });
+
   var AIPlusConfig = {
     otcsApiUrl: "/otcs/cs.exe/api",
     apiUrl: "https://ai-agent-test.leapcount.com",
     backendUrl: "/aiplus"
   }
   var AIPlusUtils = {
-    toggleSelectedTools: function (selected) {
+    toggleSelectedTools: async function (selected) {
       TOOLS_SELECTED = selected;
+      
+      document.querySelectorAll(".msger-tool-btn").forEach(x => {
+        if(x.id == `msger-tool-${TOOLS_SELECTED.toUpperCase()}`) {
+          x.classList.add("hoverable-active");
+        } else {
+          x.classList.remove("hoverable-active");
+        }
+      });
 
       if(TOOLS_SELECTED.toUpperCase() == "CHATS") {
         document.querySelector("#chat-history-section").style.display = "block";
@@ -844,15 +860,8 @@ async function showAviator() {
         document.querySelector("#chat-history-section").style.display = "none";
         document.querySelector("#chat-project-section").style.display = "block";
         document.querySelector("#clearbtn-text").innerText = "New Project";
+        await AIPlusAPI.getProjectRooms(1);
       }
-
-      document.querySelectorAll(".msger-tool-btn").forEach(x => {
-        if(x.id == `msger-tool-${TOOLS_SELECTED.toUpperCase()}`) {
-          x.classList.add("hoverable-active");
-        } else {
-          x.classList.remove("hoverable-active");
-        }
-      });
     },
     renderSmartFilingOptions: function(metadata, id) {
       let html = "";
@@ -907,7 +916,7 @@ async function showAviator() {
       }
 
       return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${d.nodeId}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
-        <img width="16px" src="${AIPlusUtils.getFileIcon(data.fileName)}">
+        <img width="16px" src="${AIPlusUtils.getFileIcon(d.fileName)}">
         <div class="file-chat-bubble-text">${d.fileName}</div>
       </a>`;
     },
@@ -942,6 +951,53 @@ async function showAviator() {
       
       result += `</div>`;
       return result;
+    },
+    appendChatProjectRoom: function(projects, appendMode = false) {
+      const chatRoomContainer = document.querySelector("#chat-project-container");
+
+      if(!appendMode) {
+        chatRoomContainer.innerHTML = ``;
+        if(projects == null || projects.length == 0) {
+          chatRoomContainer.innerHTML = `<div style="padding:0px 10px;font-style:italic;font-weight:bold;font-size:13px">- No projects found -</div>`;
+        }
+      }
+
+      for(const chatRoom of projects) {
+        chatRoomContainer.insertAdjacentHTML("beforeend", `
+          <button data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" title="${chatRoom.title}" class="p-relative chat-project-item msger-btn hoverable ${PROJECT_ID == chatRoom.id ? "hoverable-active" : ""}">
+            ${chatRoom.title}
+            <div title="Delete this project" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
+              <img src="${DELETE_ICON}" style="width:18px;" class="hoverable-fade">
+            </div>
+          </button>`);
+      }
+      
+      document.querySelectorAll('.chat-history-tooltip').forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          if(confirm("Delete this project?")) {
+            await AIPlusAPI.deleteProject(btn.dataset.projectId);
+          }
+        });
+      });
+
+      document.querySelectorAll('.chat-project-item').forEach(btn => {
+        btn.addEventListener("mouseenter", async (e) => {
+          document.querySelector(`#tooltip-${e.target.dataset.projectId}`).style.display = "block";
+        });
+        btn.addEventListener("mouseleave", async (e) => {
+          document.querySelector(`#tooltip-${e.target.dataset.projectId}`).style.display = "none";
+        });
+
+        btn.addEventListener("click", async (e) => {
+          clearChats();
+          AIPlusUtils.toggleInitialMsg(false);
+          CHAT_ID = e.target.dataset.id;
+          PROJECT_ID = e.target.dataset.projectId;
+          this.reRenderChatRooms();
+          if(e.target.dataset.id != "null") await AIPlusAPI.getChats(e.target.dataset.id, 1);
+        });
+      });
     },
     appendChatRoom: function(rooms, appendMode = false) {
       const chatRoomContainer = document.querySelector("#chat-room-container");
@@ -1020,6 +1076,23 @@ async function showAviator() {
           e.classList.remove("hoverable-active");
         }
       });
+      
+      document.querySelectorAll('.chat-project-item').forEach(e => {
+        if(PROJECT_ID == e.dataset.projectId) {
+          e.classList.add("hoverable-active");
+        } else {
+          e.classList.remove("hoverable-active");
+        }
+      });
+    },
+    toggleProjectRoomLoader: function(isVisible) {
+      if(isVisible) {
+        document.querySelector("#chat-project-refresh").style.display = "none";
+        document.querySelector("#chat-project-refresh-animation").style.display = "block";
+      } else {
+        document.querySelector("#chat-project-refresh").style.display = "block";
+        document.querySelector("#chat-project-refresh-animation").style.display = "none";
+      }
     },
     toggleChatHistoryLoader: function(isVisible) {
       if(isVisible) {
@@ -1158,6 +1231,7 @@ async function showAviator() {
       const chatReasonSection = document.querySelector(`#chat-reason-section-${msgId}`);
       chatReasonSection.innerHTML = this.parseMarkdown(text);
       chatReasonSection.scrollTop += 500;
+      get(".msger-chat").scrollTop += 500;
     },
     appendMetadataItem: function(msgId, metadata) {
       if(metadata) {
@@ -1358,6 +1432,29 @@ async function showAviator() {
         throw error;
       }
     },
+    createProject: async function(title) {
+      try {
+        const response = await fetch(`${AIPlusConfig.backendUrl}/api/project`, {
+          method: "POST",
+          redirect: "follow",
+          body: JSON.stringify({
+            userId: userID,
+            title
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        
+        this.getProjectRooms(1);
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        alert(error);
+        console.error("createProject error:", error);
+        throw error;
+      }
+    },
     updateSession: async function(id) {
       try {
         AIPlusUtils.toggleLoaderEnableTools(false);
@@ -1478,6 +1575,27 @@ async function showAviator() {
         throw error;
       }
     },
+    getProjectRooms: async function(page = 1, size = 30, appendMode = false) {
+      try {
+        AIPlusUtils.toggleProjectRoomLoader(true);
+        if(size == null) size = 30;
+
+        const response = await fetch(`${AIPlusConfig.backendUrl}/api/project/user/${userID}/project?pageNumber=${page}&pageSize=${size}`, {
+          method: "GET",
+          redirect: "follow"
+        });
+    
+        const result = await response.json();
+        paginations.project.max = result.data.totalPage;
+        paginations.project.now = page;
+        AIPlusUtils.appendChatProjectRoom(result.data.data, appendMode);
+        AIPlusUtils.toggleProjectRoomLoader(false);
+        return result;
+      } catch (error) {
+        console.error("getProjectRooms error:", error);
+        throw error;
+      }
+    },
     getChatRooms: async function(page = 1, size = 30, appendMode = false) {
       try {
         AIPlusUtils.toggleChatHistoryLoader(true);
@@ -1562,6 +1680,16 @@ async function showAviator() {
       } catch (error) {
         console.error("Ingest error:", error);
       }
+    },
+    deleteProject: async function(id) {
+      const response = await fetch(`${AIPlusConfig.backendUrl}/api/project/${id}`, {
+        method: "DELETE",
+        redirect: "follow"
+      });
+
+      this.getProjectRooms(1);
+      const result = await response.json();
+      return result;
     },
     login: async function() {
       const response = await fetch(`${AIPlusConfig.backendUrl}/api/ai/login`, {

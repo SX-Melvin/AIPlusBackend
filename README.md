@@ -1,8 +1,12 @@
 # AIPlusBackend
 
+## Move `csui-app.css`, `csui-app.js`, `csui-browse.css` and `csui-browse.js`  to /img/csui/bundles/
+
+## Move `aiplus.js` to /img/csui/themes/carbonfiber/aiplus.js
+
 ## Move `marked.min.js` to /img/csui/themes/carbonfiber/marked.min.js
 
-## Move `aviator` folder to /support/csui/themes/carbonfiber/image/icons
+## Move `aviator` folder to /support/csui/themes/carbonfiber/image/icons/
 
 ## SQL Tables
 ```

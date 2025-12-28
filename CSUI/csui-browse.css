@@ -13754,6 +13754,18 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     white-space: nowrap!important;
     text-overflow: ellipsis!important;
 }
+.chat-project-item {
+    border: none;
+    margin-bottom: 5px!important;
+    display: block;
+    width: 100%;
+    text-align: start;
+    border-radius: 10px;
+    padding: 10px!important;
+    overflow: hidden!important;
+    white-space: nowrap!important;
+    text-overflow: ellipsis!important;
+}
 .hoverable-active {
     background-color: rgba(200, 200, 200, .5)!important;
 }
