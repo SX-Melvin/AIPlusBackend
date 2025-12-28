@@ -60,5 +60,21 @@ namespace AIPlusBackend.Controllers
 
             return result;
         }
+
+        [HttpDelete("{id}")]
+        public async Task<APIResponse<bool>> DeleteProjectById(int id)
+        {
+            var result = new APIResponse<bool>();
+            try
+            {
+                return await service.DeleteProject(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
     }
 }

@@ -21,7 +21,9 @@ namespace AIPlusBackend.Services
                 var data = csdb.CreateProject(new()
                 {
                     Title = body.Title,
-                    UserID = body.UserId
+                    UserID = body.UserId,
+                    SessionID = null,
+                    CreatedAt = DateTime.Now,
                 });
 
                 result.Data = new()
@@ -31,6 +33,22 @@ namespace AIPlusBackend.Services
                     ID = data.ID,
                     UserId = data.UserID
                 };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
+            }
+
+            return result;
+        }
+        public async Task<APIResponse<bool>> DeleteProject(int ID)
+        {
+            var result = new APIResponse<bool>();
+
+            try
+            {
+                result.Data = csdb.DeleteProject(ID);
             }
             catch (Exception ex)
             {

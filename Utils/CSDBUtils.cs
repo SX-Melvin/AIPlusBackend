@@ -111,5 +111,17 @@ namespace AIPlusBackend.Utils
             _context.SaveChanges();
             return data;
         }
+        public bool DeleteProject(int ID)
+        {
+            var response = false;
+            var data = _context.ProjectRooms.FirstOrDefault(x => x.ID == ID);
+            if(data != null)
+            {
+                _context.ProjectRooms.Remove(data);
+                _context.SaveChanges();
+                response = true;
+            }
+            return response;
+        }
     }
 }
