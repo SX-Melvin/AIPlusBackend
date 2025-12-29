@@ -13881,13 +13881,12 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     border:1px solid #d1d1d1!important;
 }
 
-.right-msg .msg-bubble {
-    border:1px solid #154075!important;
-    background-color: #154075!important;
+.smart-filing-text-msg .msg-bubble {
+    border:1px solid #d1d1d1!important;
 }
 
-.right-msg .msg-bubble .msg-text {
-    color:#f7f7f7!important;
+.smart-filing-msg .msg-bubble {
+    border:1px solid #d1d1d1!important;
 }
 
 .msg-info {
@@ -13910,22 +13909,45 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     border-bottom-left-radius: 0;
 }
 
-.right-msg {
-    flex-direction: row-reverse;
+.right-msg .msg-bubble {
+    border:1px solid #2a6396!important;
+    background-color: #2a6396!important;
+    border-top-right-radius: 0;
 }
 
-.right-msg .msg-bubble {
-    background: var(--right-msg-bg);
-    color: #fff;
-    border-top-right-radius: 0;
+.right-msg .msg-bubble .msg-text {
+    color:#f7f7f7!important;
+}
+
+.right-msg {
+    flex-direction: row-reverse;
 }
 
 .right-msg .msg-img {
     margin: 0 0 0 10px;
 }
 
+.file-upload-load-msg .msg-bubble {
+    border:1px solid #2a6396!important;
+    background-color: #2a6396!important;
+    border-top-right-radius: 0;
+}
+
+.file-upload-load-msg .msg-bubble .msg-text {
+    color:#f7f7f7!important;
+}
+
+.file-upload-load-msg {
+    flex-direction: row-reverse;
+}
+
+.file-upload-load-msg .msg-img {
+    margin: 0 0 0 10px;
+}
+
 .msg-text {
     word-break: break-word;
+    font-weight: 500!important;
 }
 
 .msger-inputarea {
@@ -13951,6 +13973,38 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     flex: 1;
     background: #ddd;
     width: 100%;
+}
+
+progress.msger-progress::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 7px;
+}
+
+progress.msger-progress::-webkit-progress-value {
+    background-color: whitesmoke;
+    border-radius: 7px;
+}
+
+progress.msger-progress::-moz-progress-bar {
+    background-color: whitesmoke;
+    border-radius: 7px;
+}
+
+progress.msger-progress {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    height: 6px;
+}
+
+.msger-error {
+    font-style: italic!important;
+    word-wrap:break-word; 
+    overflow-wrap:break-word; 
+    white-space:pre-line; 
+    text-align:left;
+    color: #dede13;
+    font-size: 12px!important;
 }
 
 .shadow {
@@ -13989,7 +14043,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     align-items: center!important; 
     gap: 6px; 
     padding: 10px 14px!important; 
-    background-color: #164f95; 
+    background-color: #2a6396; 
     border: 1px solid #ddd; 
     border-radius: 20px!important; 
     cursor: pointer;

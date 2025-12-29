@@ -12,8 +12,9 @@ async function showAviator() {
   let CHAT_ID = null;
   let paginations = {chatHistory: {now: 1, max: null}, project: {now: 1, max: null}};
   const PERSON_NAME = window.aiPlusContext.options.context._user.attributes.name;
-  const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_success.svg"
+  const CHATS_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_chats.svg"
   const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_toolbar_copy.svg"
+  const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_success.svg"
   const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_generate.svg"
   const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_smart_close.svg";
   const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_chat.svg";
@@ -21,6 +22,7 @@ async function showAviator() {
   const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_refresh_blue.svg";
   const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_project.svg";
   const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator.png";
+  const WARNING_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_warning.svg";
   const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_folder.svg";
   const DOCUMENT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_document.svg";
   const IMAGE_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_image.svg";
@@ -48,50 +50,50 @@ async function showAviator() {
     }
 
     msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
-    if(side == "smart-filing-text") {
+    if(side == "file-upload-load") {
+      if(window.aiPlusContext.options.context._user.attributes.photo_url != null) {
+        msgHTML += `<div class="msg-img" style="background-image: url(${PERSON_IMG}); margin-top: 20px; display: inherit;"></div>`;
+      }
       msgHTML += `
-        <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
-          <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
-            <div class="msg-info"></div>
+      <div style="max-width:85%;">
+        <div class="msg-info">
+          <div class="msg-info-name"></div>
+          <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
+        </div>
 
-            <div style="justify-content:space-between;display:flex;align-items:center;font-weight:600;margin-bottom:10px">
-              <div>Smart Filing</div>
-              <button class="msger-btn hoverable-fade" style="display:none" id="smart-filing-close-btn-${uniqueId}" title="Close" onclick="document.getElementById('msg-${uniqueId}').remove()">
-                <img src="${CLOSE_ICON}" width="14" />
-              </button>
-            </div>
-
-            <div style="white-space: pre-line;display:flex" id="bot-text-${uniqueId}" class="msg-text">
-              <div class="bot-text-container">${text}</div>
-              <div class="dot" style="margin-left:8px"></div>
-              <div class="dot" style="margin-left:2px"></div>
-              <div class="dot" style="margin-left:2px"></div>
+        <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble shadow">
+          <div style="display:flex;align-items:center;gap:8px">
+            <img src="${AIPlusUtils.getFileIcon(text)}" width="32" />
+            <div>
+              <div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line;text-align:left;margin-bottom:4px" class="msg-text">${text}</div>
+              <div id="file-status-${uniqueId}">
+                <progress class="msger-progress" value="0" max="100" style="width:100%"></progress>
+                <div id="file-error-${uniqueId}" style="display:none;align-items:center;margin-top:8px">
+                  <img src="${WARNING_ICON}" width="16" style="display:inline;margin-right:4px" />
+                  <span class="msger-error"></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      `;
+        </div>
+      </div>`;
     } else if(side == "smart-filing") {
       msgHTML += `
         <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
           <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
             <div class="msg-info"></div>
 
-            <div style="justify-content:space-between;display:flex;align-items:center;font-weight:600;margin-bottom:10px">
-              <div>Smart Filing</div>
-              <button class="msger-btn" title="Close" onclick="document.getElementById('msg-${uniqueId}').remove()"><img src="${CLOSE_ICON}" width="18" /></button>
-            </div>
-
             <div id="bot-text-${uniqueId}" class="msg-text">
-              I've analyzed "${smartFilingMetadata.file.name}". ${smartFilingMetadata.suggestions.map(x => x.reasoning).join(". ")}
-              <div style="margin-top:6px">Where would you like to file it?</div>
+              I've analyzed "${smartFilingMetadata.file.name}". Where would you like to file it?
             </div>
             
-            <div class="smart-filing-actions-container" data-id="${uniqueId}" id="chat-smart-filing-${uniqueId}">
+            <div style="margin-top:10px" data-id="${uniqueId}" id="chat-smart-filing-${uniqueId}">
               ${AIPlusUtils.renderSmartFilingOptions(smartFilingMetadata.suggestions, uniqueId)}
             </div>
 
-            <button data-id="${uniqueId}" title="Upload the file to selected locations" id="sf-submit-btn-${uniqueId}" class="msger-btn hoverable-fade" style="width:100%;margin-top:12px;display:block;background:#0d73a0;;font-weight:550;color:white;border-radius:8px;padding:12px 6px">
-              <center>File to selected location</center>
+            <button data-id="${uniqueId}" title="File Selected" id="sf-submit-btn-${uniqueId}" class="msger-btn hoverable-fade" style="border:none;border-radius:40px!important;margin-top:12px;display:block;background:#2a6396;font-size:12px;font-weight:550;color:white;border-radius:8px;padding:8px 12px">
+              <center>File Selected</center>
             </button>
           </div>
         </div>
@@ -162,7 +164,7 @@ async function showAviator() {
             <div class="msg-info-time">${PERSON_NAME} ${formatDate(date)}</div>
             </div>
 
-            <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; background-color:#99e3e3; margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble shadow"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
+            <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble shadow"><div style="word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line; color:black; text-align:left;" class="msg-text">${text}</div></div>
         </div>
         </div>
     `;
@@ -340,7 +342,7 @@ async function showAviator() {
                 <div class="chat-sidenav-title">MENU</div>
 
                 <button id="msger-tool-CHATS" title="View all your chats" class="hoverable-active hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="CHATS" style="display:flex;width:100%;align-items:center;gap:6px">
-                  <img src="${CHAT_LOGO}" style="width:14px" />
+                  <img src="${CHATS_IMG}" style="width:14px" />
                   <span>&nbsp;CHATS</span>
                 </button>
 
@@ -352,7 +354,7 @@ async function showAviator() {
                 <br>
 
                 <div id="chat-history-section">
-                  <div style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
+                  <div style="border-top:1px solid #a6a6a6;display:flex;justify-content:space-between;align-items:center;">
                     <div class="chat-sidenav-title">YOUR CHATS</div>  
                     <button title="Refresh conversations" id="chat-refresh" class="msger-btn"><img width="13px" src="${REFRESH_ICON}" /></button>
                     <img id="chat-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
@@ -361,7 +363,7 @@ async function showAviator() {
                 </div>
 
                 <div id="chat-project-section" style="display:none">
-                  <div style="border-top:1px solid black;display:flex;justify-content:space-between;align-items:center;">
+                  <div style="border-top:1px solid #a6a6a6;display:flex;justify-content:space-between;align-items:center;">
                     <div class="chat-sidenav-title">YOUR PROJECTS</div>  
                     <button title="Refresh conversations" id="chat-project-refresh" class="msger-btn"><img width="13px" src="${REFRESH_ICON}" /></button>
                     <img id="chat-project-refresh-animation" src="${REFRESH_BLUE_ICON}" width="16px" class="spin-animation" style="display:none" />
@@ -412,8 +414,8 @@ async function showAviator() {
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                         <!-- Clear Button with "New Chat" Text -->
                         <div id="clearbtn" class="clear-button hoverable-fade" title="Create new conversation">
-                            <svg fill="#e4e4e4" width="12" height="12" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
-                            <span style="font-size: 12px; color: #e4e4e4;" id="clearbtn-text">New Chat</span>
+                            <svg fill="#FFFFFF" width="12" height="12" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
+                            <span style="font-size: 12px; color: whitesmoke;" id="clearbtn-text">New Chat</span>
                         </div>
                 
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -428,7 +430,7 @@ async function showAviator() {
                             <!-- File Input -->
                             <label for="file-input" class="icon-button hoverable-fade" style="cursor: pointer;" title="Upload files">
                                 <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#054faa"></path>
+                                    <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#2a6396"></path>
                                 </svg>
                             </label>
 
@@ -436,15 +438,15 @@ async function showAviator() {
                 
                             <!-- Submit Button -->
                             <button title="Submit question" id="submitquestion" type="submit" class="icon-button hoverable-fade" style="cursor: pointer; background: none; border: none;" disabled="">
-                                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#004395"></path>
-                                </svg>
+                              <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#2a6396"></path>
+                              </svg>
                             </button>
                 
                             <!-- Stop Button -->
                             <button title="Stop generating" id="chatbotstop" type="button" class="icon-button hoverable-fade" style="display: none; cursor: pointer; background: none; border: none;">
                                 <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#004395"></path>
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#2a6396"></path>
                                 </svg>
                             </button>
                         </div>
@@ -589,8 +591,7 @@ async function showAviator() {
 
     // Render each of the file boxes
     for(const file of files) {
-      const id = appendMessage("smart-filing-text", `Uploading ${file.name} to personal folder`);
-      fileList.push({file, id});
+      fileList.push({file, id: appendMessage("file-upload-load", file.name)});
     }
     
     document.querySelectorAll('.remove-btn').forEach(btn => {
@@ -610,8 +611,9 @@ async function showAviator() {
           id: file.id,
           file: file.file
         });
+        AIPlusUtils.changeFileUploadStatus(file.id, 20);
       } else if (node.error) {
-        AIPlusUtils.changeSmartFilingText(file.id, `Error when uploading ${file.file.name} to personal folder: ${node.error}`, true);
+        AIPlusUtils.changeFileUploadStatus(file.id, 0, `Error when uploading ${file.file.name} to personal folder: ${node.error}`);
       }
     }
     
@@ -619,7 +621,6 @@ async function showAviator() {
     let queues = [];
     let suggestionFilings = [];
     for(const job of jobs) {
-      AIPlusUtils.changeSmartFilingText(job.id, `Ingesting ${job.file.name}`);
       const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10);
       if(jobResult.existingFile) {
         suggestionFilings.push(job);
@@ -629,8 +630,9 @@ async function showAviator() {
           id: job.id,
           job: jobResult
         });
+        AIPlusUtils.changeFileUploadStatus(file.id, 40);
       } else if (jobResult.error) {
-        AIPlusUtils.changeSmartFilingText(job.id, `Error when ingesting ${job.file.name}: ${jobResult.message ?? jobResult.error}`, true);
+        AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${jobResult.message ?? jobResult.error}`);
       }
     }
 
@@ -643,9 +645,10 @@ async function showAviator() {
         if (getJob.status?.toLowerCase() === "completed") {
           queues = queues.filter(x => x.job.jobId !== job.job.jobId);
           suggestionFilings.push(job);
+          AIPlusUtils.changeFileUploadStatus(file.id, 60);
         } else if (getJob.status?.toLowerCase() === "failed") {
           queues = queues.filter(x => x.job.jobId !== job.job.jobId);
-          AIPlusUtils.changeSmartFilingText(job.id, `Error when ingesting ${job.file.name}: ${getJob.error ?? "An unxpected error occurred"}`, true);
+          AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${getJob.error ?? "An unxpected error occurred"}`);
         }
       }
     
@@ -663,15 +666,15 @@ async function showAviator() {
 
           // File isnt email, skipped
           if(!(fileName == "msg" || fileName == "eml")) {
-            AIPlusUtils.changeSmartFilingText(file.id, `${file.file.name} successfully uploaded to your personal folder`, false, true);
+            AIPlusUtils.changeFileUploadStatus(file.id, 100);
             continue;
           }
           
           // If file is email, then proceed
-          AIPlusUtils.changeSmartFilingText(file.id, `Analyzing ${file.file.name}`);
+          AIPlusUtils.changeFileUploadStatus(file.id, 80);
           const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file.file);
           if(filingSuggestion.data.suggestions != null && filingSuggestion.data.suggestions.length > 0) {
-            document.getElementById(`msg-${file.id}`).remove();
+            AIPlusUtils.changeFileUploadStatus(file.id, 100);
             appendMessage("smart-filing", "", null, false, null, [], null, {
               suggestions: filingSuggestion.data.suggestions,
               file: file.file
@@ -681,7 +684,7 @@ async function showAviator() {
           }
           suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
         } catch (error) {
-          AIPlusUtils.changeSmartFilingText(file.id, `Error when analyzing ${job.file.name}: ${error.message ?? "An unxpected error occurred"}`, true);
+          AIPlusUtils.changeFileUploadStatus(file.id, 0, `Error when analyzing ${job.file.name}: ${error.message ?? "An unxpected error occurred"}`);
         }
       }
         
@@ -878,11 +881,8 @@ async function showAviator() {
             <input type="checkbox" id="smart-filing-checkbox-${id}-${m.folderId}" data-id="${m.folderId}" class="smart-filing-checkbox-${id}" />
 
             <label style="cursor:pointer" for="smart-filing-checkbox-${id}-${m.folderId}">
-              <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:600">${m.folderName}</div>
-              <div style="margin-top:4px" id="smart-filing-actions-desc-${id}-${m.folderId}" class="smart-filing-actions-desc">${m.path}</div>
+              <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:600">${m.path}</div>
             </label>
-
-            ${m.isRecommended ? `<div><div class="smart-filing-actions-badge">Recommended</div></div>` : ''}
           </div>
         `;
       }
@@ -967,7 +967,7 @@ async function showAviator() {
           <button data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" title="${chatRoom.title}" class="p-relative chat-project-item msger-btn hoverable ${PROJECT_ID == chatRoom.id ? "hoverable-active" : ""}">
             ${chatRoom.title}
             <div title="Delete this project" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
-              <img src="${DELETE_ICON}" style="width:18px;" class="hoverable-fade">
+              <img src="${DELETE_ICON}" style="width:16px;" class="hoverable-fade">
             </div>
           </button>`);
       }
@@ -1011,10 +1011,11 @@ async function showAviator() {
 
       for(const chatRoom of rooms.sessions) {
         chatRoomContainer.insertAdjacentHTML("beforeend", `
-          <button data-id="${chatRoom.sessionId}" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
-            ${chatRoom.title}
+          <button data-id="${chatRoom.sessionId}" style="display:flex;align-items:center" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
+            <img data-id="${chatRoom.sessionId}" src="${CHAT_LOGO}" width="14" style="display:inline;margin-right:6px">  
+            <span data-id="${chatRoom.sessionId}" style="font-size:13px;font-weight:500">${chatRoom.title}</span>
             <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
-              <img src="${DELETE_ICON}" style="width:18px;" class="hoverable-fade">
+              <img src="${DELETE_ICON}" style="width:16px;" class="hoverable-fade">
             </div>
           </button>`);
       }
@@ -1125,25 +1126,22 @@ async function showAviator() {
         }
       }
     },
-    changeSmartFilingText: function(id, text, isError = false, isSuccess = false, showCloseBtn = false) {
-      const el = document.querySelector(`#bot-text-${id}`);
+    changeFileUploadStatus: function(id, progress, errorMessage = null) {
+      const loader = document.querySelector(`#msg-${id} .msger-progress`);
       
-      if(el) {
-        if(isSuccess) {
-          el.innerHTML = `<div style="display:flex;align-items:center"><img src="${SUCCESS_ICON}" style="width:18px;margin-right:6px"><span>${text}</span></div>`;
-          showCloseBtn = true;
-        } else if(isError) {
-          el.style.color = "#d51212";
-          el.innerHTML = `<div style="display:flex;align-items:center"><img src="${TIMES_RED_ICON}" style="width:18px;margin-right:6px"><span>${text}</span></div>`;
-          showCloseBtn = true;
-        } else {
-          el.style.color = "black";
-          document.querySelector(`#bot-text-${id} .bot-text-container`).innerText = text;
-        }
+      if(errorMessage != null) {
+        if(loader) loader.remove();
+        document.querySelector(`#file-error-${id}`).style.display = "flex";
+        document.querySelector(`#msg-${id} .msger-error`).innerText = errorMessage;
+        return;
+      }
 
-        if(showCloseBtn) {
-          document.getElementById(`smart-filing-close-btn-${id}`).style.display = "inline-block";
+      if(loader) {
+        if (progress >= 100) {
+          document.querySelector(`#file-status-${id}`).remove();
+          return;
         }
+        loader.setAttribute("value", progress);
       }
     },
     parseMarkdown: function(text) {
@@ -1153,16 +1151,15 @@ async function showAviator() {
       const el = document.getElementById("initial-msg");
       if(isVisible) {
         if(!el) {
-          get('.msger-chat').insertAdjacentHTML("afterbegin", `<div class="msg left-msg" id="initial-msg">
-            <div class="msg-img"
-                style="background-image:url(${BOT_IMG});margin-top:20px; display:inherit;">
+          get('.msger-chat').insertAdjacentHTML("afterbegin", `<center id="initial-msg" style="font-weight:500;border-bottom:1px solid #a6a6a6;padding: 12px 6px;margin-bottom:16px">
+            <div style="font-weight:550;font-size:16px;color:#164f95">• AVIATOR •</div>
+            <div style="margin-top:6px">I can help you analyze documents, finds files, and summzarize policies.</div>
+            <div style="margin-top:18px">
+              <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:6px 12px;font-size:12px;" class="">Summarize latest report</button>
+              <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:4px 12px;font-size:12px;margin-left:10px;margin-right:10px;" class="">Find HR Policy</button>
+              <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:4px 12px;font-size:12px;" class="">Audit Logs</button>
             </div>
-            <div style="background-color:#F4F4F4;  width:fit-content;" class="msg-bubble shadow">
-                <div class="msg-info"></div>
-                <div class="msg-text" id="msg-text">Hi, welcome to Aviator, I see you want to know about
-                    <strong style="font-weight: bold;">everything</strong>. Ask me anything about the document.</div>
-            </div>
-          </div>`);
+          </center>`);
         }
       } else {
         if(el) {
@@ -1255,7 +1252,6 @@ async function showAviator() {
             return 749;
           }
         }
-        console.log(result);
       }
       return result;
     },
@@ -1707,6 +1703,7 @@ async function showAviator() {
 
   await AIPlusAPI.login();
 
+  // On Render
   clearChats();
   await AIPlusAPI.getChatRooms(1);
   AIPlusUtils.toggleInitialMsg(true);

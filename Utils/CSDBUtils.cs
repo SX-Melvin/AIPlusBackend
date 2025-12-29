@@ -33,7 +33,7 @@ namespace AIPlusBackend.Utils
                         p.ParentID,
                         p.DataID,
                         p.Name,
-                        CAST(p.Name + ' / ' + c.FullPath AS NVARCHAR(MAX)) AS FullPath
+                        CAST(p.Name + ' : ' + c.FullPath AS NVARCHAR(MAX)) AS FullPath
                     FROM DTreeCore p
                     JOIN PathCTE c
                         ON p.DataID = c.ParentID
