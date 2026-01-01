@@ -9,7 +9,7 @@ async function showAviator() {
   let ARCHIVE_MESSAGE_COUNT = 0;
   let TOOLS_SELECTED = "CHATS";
   let PROJECT_ID = null;
-  let CHAT_ID = null;
+  let SESSION_ID = null;
   let paginations = {chatHistory: {now: 1, max: null}, project: {now: 1, max: null}};
   const PERSON_NAME = window.aiPlusContext.options.context._user.attributes.name;
   const CHATS_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_chats.svg"
@@ -23,7 +23,6 @@ async function showAviator() {
   const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_project.svg";
   const LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator.png";
   const WARNING_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_warning.svg";
-  const FOLDER_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_folder.svg";
   const DOCUMENT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_document.svg";
   const IMAGE_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_image.svg";
   const PDF_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_pdf.svg";
@@ -31,7 +30,7 @@ async function showAviator() {
   const POWERPOINT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_powerpoint.svg";
   const WORD_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_word.svg";
   const TEXT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_text.svg";
-  const EMAIL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_outlook.svg";
+  const EMAIL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_email.svg";
   const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_refresh.svg";
   const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_arrow_down.svg";
   const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_times_red.svg";
@@ -171,7 +170,6 @@ async function showAviator() {
     }
 
     if(appendOnFirstChild) {
-      AIPlusUtils.toggleInitialMsg(false);
       msgerChat.insertAdjacentHTML("afterbegin", msgHTML);
     } else {
       msgerChat.insertAdjacentHTML("beforeend", msgHTML);
@@ -302,14 +300,12 @@ async function showAviator() {
   }
 
   function clearChats() {
-    AIPlusUtils.toggleInitialMsg(true);
-    CHAT_ID = null;
+    SESSION_ID = null;
 
     const chat = document.querySelector('.msger-chat');
-    [...chat.children].slice(1).forEach(child => child.remove());
+    [...chat.children].forEach(child => child.remove());
 
     messageEle.value = "";
-    counterEle.innerHTML = `0/${maxLength}`;
     if(document.getElementById("submitquestion")) {
       document.getElementById("submitquestion").disabled = true;
     }
@@ -392,8 +388,7 @@ async function showAviator() {
 
               <header class="msger-header" style="border-left:1px solid whitesmoke">
                 <div class="msger-header-title" id="chatbotmenu">
-                  <img src="${LOGO}" style="width:22px;height:22px;display:inline-block;vertical-align:middle;margin-right:10px" />
-                  <div style="font-size: 15px;font-weight: 600;font-family: 'OpenText Sans';color: #2c3e50;display:inline-block;vertical-align:middle">AVIATOR</div>
+                  <div style="margin-top:6px;font-size: 15px;font-weight: 600;height: 22px;color: #2c3e50;display:inline-block;vertical-align:middle">ASK ARK</div>
                 </div>
                   
                 <div class="msger-header-options">
@@ -403,6 +398,19 @@ async function showAviator() {
                 </div>
               </header>
 
+                <div id="initial-msg-container">
+                  <center id="initial-msg" style="font-weight:500;border-bottom:1px solid #a6a6a6;padding: 20px 6px;margin-bottom:16px">
+                    <div style="font-weight:550;font-size:16px;color:#164f95">
+                      <span style="color:#43c4dc">ACCESSIBLE</span>&nbsp;•&nbsp;
+                      <span style="color:#2A6396">RELIABLE</span>&nbsp;•&nbsp;
+                      <span style="color:#d3b03b">KNOWLEDGE</span>
+                    </div>
+                    <div style="margin-top:6px;font-weight:550">I can help you analyze documents, finds files, and summzarize policies.</div>
+                    <div style="margin-top:18px;display:none">
+                      <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:6px 12px;font-size:12px;" class="">Summarize latest report</button>
+                    </div>
+                  </center>
+                </div>
                 <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>
                 
                 <div id="files-container"></div>
@@ -425,36 +433,34 @@ async function showAviator() {
                             <label for="enable-tools"> Enable Tools</label>
                             <div style="margin-left:2px" title="Used for combining PDF files, getting tables from PDF, removing sensitive content, listing workspace files & finding files by name"><img src="${INFO_ICON}" draggable="false" width="12px" /></div>
                           </div>
-                          <div style="margin-right: 10px;" id="counter">0/2000</div>
                 
-                            <!-- File Input -->
-                            <label for="file-input" class="icon-button hoverable-fade" style="cursor: pointer;" title="Upload files">
-                                <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#2a6396"></path>
-                                </svg>
-                            </label>
-
-                            <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
-                
-                            <!-- Submit Button -->
-                            <button title="Submit question" id="submitquestion" type="submit" class="icon-button hoverable-fade" style="cursor: pointer; background: none; border: none;" disabled="">
-                              <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#2a6396"></path>
+                          <!-- File Input -->
+                          <label for="file-input" class="icon-button hoverable-fade" style="cursor: pointer;" title="Upload files">
+                              <svg width="20" height="20" viewBox="0 0 448 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" fill="#2a6396"></path>
                               </svg>
-                            </button>
-                
-                            <!-- Stop Button -->
-                            <button title="Stop generating" id="chatbotstop" type="button" class="icon-button hoverable-fade" style="display: none; cursor: pointer; background: none; border: none;">
-                                <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#2a6396"></path>
-                                </svg>
-                            </button>
+                          </label>
+
+                          <input style="display: none;" id="file-input" type="file" accept="image/png, .pdf">
+              
+                          <!-- Submit Button -->
+                          <button title="Submit question" id="submitquestion" type="submit" class="icon-button hoverable-fade" style="cursor: pointer; background: none; border: none;" disabled="">
+                            <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z" fill="#2a6396"></path>
+                            </svg>
+                          </button>
+              
+                          <!-- Stop Button -->
+                          <button title="Stop generating" id="chatbotstop" type="button" class="icon-button hoverable-fade" style="display: none; cursor: pointer; background: none; border: none;">
+                              <svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5z" fill="#2a6396"></path>
+                              </svg>
+                          </button>
                         </div>
                     </div>
                 </div>
               </div>
             </div>
-
         </section>
     `;
 
@@ -466,8 +472,8 @@ async function showAviator() {
 
   document.getElementById("enable-tools").addEventListener("change", async (e) => {
     e.preventDefault();
-    if(CHAT_ID != null || CHAT_ID != "null") {
-      await AIPlusAPI.updateSession(CHAT_ID);
+    if(SESSION_ID != null || SESSION_ID != "null") {
+      await AIPlusAPI.updateSession(SESSION_ID);
     }
   });
   
@@ -483,7 +489,7 @@ async function showAviator() {
     AIPlusUtils.toggleShowMessageButton(false);
     ARCHIVE_MESSAGE_COUNT = 0;
     document.getElementById("show-messages-button").style.display = 'none';
-    await AIPlusAPI.getArchiveMessages(CHAT_ID);
+    await AIPlusAPI.getArchiveMessages(SESSION_ID);
   });
 
   // Handle the overlay dropzone area
@@ -630,7 +636,7 @@ async function showAviator() {
           id: job.id,
           job: jobResult
         });
-        AIPlusUtils.changeFileUploadStatus(file.id, 40);
+        AIPlusUtils.changeFileUploadStatus(job.id, 40);
       } else if (jobResult.error) {
         AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${jobResult.message ?? jobResult.error}`);
       }
@@ -645,7 +651,7 @@ async function showAviator() {
         if (getJob.status?.toLowerCase() === "completed") {
           queues = queues.filter(x => x.job.jobId !== job.job.jobId);
           suggestionFilings.push(job);
-          AIPlusUtils.changeFileUploadStatus(file.id, 60);
+          AIPlusUtils.changeFileUploadStatus(job.id, 60);
         } else if (getJob.status?.toLowerCase() === "failed") {
           queues = queues.filter(x => x.job.jobId !== job.job.jobId);
           AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${getJob.error ?? "An unxpected error occurred"}`);
@@ -662,15 +668,6 @@ async function showAviator() {
     
       for (const file of files) {
         try {
-          const fileName = file.file.name?.toLowerCase().split('.').pop();
-
-          // File isnt email, skipped
-          if(!(fileName == "msg" || fileName == "eml")) {
-            AIPlusUtils.changeFileUploadStatus(file.id, 100);
-            continue;
-          }
-          
-          // If file is email, then proceed
           AIPlusUtils.changeFileUploadStatus(file.id, 80);
           const filingSuggestion = await AIPlusAPI.getFilingSuggestion(file.file);
           if(filingSuggestion.data.suggestions != null && filingSuggestion.data.suggestions.length > 0) {
@@ -699,7 +696,6 @@ async function showAviator() {
 
   //handle counter
   const messageEle = document.getElementById('chatarea');
-  const counterEle = document.getElementById('counter');
 
   messageEle.focus();
   messageEle.addEventListener('keydown', function(event) {
@@ -717,7 +713,6 @@ async function showAviator() {
 
   let maxLength = messageEle.getAttribute('maxlength');
   let currentLength = messageEle.value.length;
-  counterEle.innerHTML = `${currentLength}/${maxLength}`;
   
   //handle clear
   document.getElementById("clearbtn").addEventListener('click', function (e) {
@@ -737,13 +732,8 @@ async function showAviator() {
       const target = e.target;
       document.getElementById("chatarea").style.height = (document.getElementById("chatarea").scrollHeight) + "px";
 
-      // Get the `maxlength` attribute
-      const maxLength = target.getAttribute('maxlength');
-
       // Count the current number of characters
       const currentLength = target.value.length;
-
-      counterEle.innerHTML = `${currentLength}/${maxLength}`;
       if(document.getElementById("submitquestion"))
       {
       if(document.getElementById("submitquestion").disabled == true)
@@ -786,24 +776,27 @@ async function showAviator() {
 
       appendMessage("right", msgText);
       msgerInput.value = "";
-      counterEle.innerHTML = `0/${maxLength}`;
       botResponse(msgText);
   });
 
   async function botResponse(questionToAsk) {
-    if(CHAT_ID == null) {
+    if(SESSION_ID == null || SESSION_ID == "null") {
       const session = await AIPlusAPI.createSession(questionToAsk);
       if(session == null) {
         return;
       }
-      CHAT_ID = session.sessionId;
+      SESSION_ID = session.sessionId;
+      if(TOOLS_SELECTED == "PROJECTS") {
+        await AIPlusAPI.updateProjectSession(PROJECT_ID, null, SESSION_ID);
+        document.getElementById(`project-${PROJECT_ID}`).dataset.id = SESSION_ID;
+      }
     }
     
     AIPlusAPI.ask({
       enableQueryRewrite: true,
       enableReasoning: true,
       streamReasoning: true,
-      sessionId: CHAT_ID,
+      sessionId: SESSION_ID,
       userId: userID.toString(),
       messages: [
         {role: "user", "content": questionToAsk}
@@ -964,7 +957,7 @@ async function showAviator() {
 
       for(const chatRoom of projects) {
         chatRoomContainer.insertAdjacentHTML("beforeend", `
-          <button data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" title="${chatRoom.title}" class="p-relative chat-project-item msger-btn hoverable ${PROJECT_ID == chatRoom.id ? "hoverable-active" : ""}">
+          <button id="project-${chatRoom.id}" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" title="${chatRoom.title}" class="p-relative chat-project-item msger-btn hoverable ${PROJECT_ID == chatRoom.id ? "hoverable-active" : ""}">
             ${chatRoom.title}
             <div title="Delete this project" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
               <img src="${DELETE_ICON}" style="width:16px;" class="hoverable-fade">
@@ -991,11 +984,10 @@ async function showAviator() {
 
         btn.addEventListener("click", async (e) => {
           clearChats();
-          AIPlusUtils.toggleInitialMsg(false);
-          CHAT_ID = e.target.dataset.id;
+          SESSION_ID = e.target.dataset.id;
           PROJECT_ID = e.target.dataset.projectId;
           this.reRenderChatRooms();
-          if(e.target.dataset.id != "null") await AIPlusAPI.getChats(e.target.dataset.id, 1);
+          if(e.target.dataset.id != "null") await AIPlusAPI.getChats(e.target.dataset.id);
         });
       });
     },
@@ -1011,9 +1003,9 @@ async function showAviator() {
 
       for(const chatRoom of rooms.sessions) {
         chatRoomContainer.insertAdjacentHTML("beforeend", `
-          <button data-id="${chatRoom.sessionId}" style="display:flex;align-items:center" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${CHAT_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
-            <img data-id="${chatRoom.sessionId}" src="${CHAT_LOGO}" width="14" style="display:inline;margin-right:6px">  
-            <span data-id="${chatRoom.sessionId}" style="font-size:13px;font-weight:500">${chatRoom.title}</span>
+          <button data-id="${chatRoom.sessionId}" style="display:flex;align-items:center" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${SESSION_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
+            <img data-id="${chatRoom.sessionId}" src="${CHAT_LOGO}" width="16" style="display:inline;margin-right:6px">  
+            <span data-id="${chatRoom.sessionId}" style="font-size:13px;font-weight:550">${chatRoom.title}</span>
             <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
               <img src="${DELETE_ICON}" style="width:16px;" class="hoverable-fade">
             </div>
@@ -1039,12 +1031,9 @@ async function showAviator() {
 
         btn.addEventListener("click", async (e) => {
           clearChats();
-          AIPlusUtils.toggleInitialMsg(false);
-          CHAT_ID = e.target.dataset.id;
-          
+          SESSION_ID = e.target.dataset.id;
           this.reRenderChatRooms();
-          
-          await AIPlusAPI.getChats(e.target.dataset.id, 1);
+          await AIPlusAPI.getChats(e.target.dataset.id);
         });
       });
     },
@@ -1071,7 +1060,7 @@ async function showAviator() {
     },
     reRenderChatRooms: function() {
       document.querySelectorAll('.chat-history-item').forEach(e => {
-        if(e.dataset.id == CHAT_ID) {
+        if(e.dataset.id == SESSION_ID) {
           e.classList.add("hoverable-active");
         } else {
           e.classList.remove("hoverable-active");
@@ -1146,26 +1135,6 @@ async function showAviator() {
     },
     parseMarkdown: function(text) {
       return marked.parse((text ?? "").replace(/```/g, "\n```"));
-    },
-    toggleInitialMsg: function(isVisible) {
-      const el = document.getElementById("initial-msg");
-      if(isVisible) {
-        if(!el) {
-          get('.msger-chat').insertAdjacentHTML("afterbegin", `<center id="initial-msg" style="font-weight:500;border-bottom:1px solid #a6a6a6;padding: 12px 6px;margin-bottom:16px">
-            <div style="font-weight:550;font-size:16px;color:#164f95">• AVIATOR •</div>
-            <div style="margin-top:6px">I can help you analyze documents, finds files, and summzarize policies.</div>
-            <div style="margin-top:18px">
-              <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:6px 12px;font-size:12px;" class="">Summarize latest report</button>
-              <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:4px 12px;font-size:12px;margin-left:10px;margin-right:10px;" class="">Find HR Policy</button>
-              <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:4px 12px;font-size:12px;" class="">Audit Logs</button>
-            </div>
-          </center>`);
-        }
-      } else {
-        if(el) {
-          el.remove();
-        }
-      }
     },
     toggleLoaderEnableTools: function(isVisible) {
       const el = document.querySelector("#enable-tools");
@@ -1305,8 +1274,8 @@ async function showAviator() {
       activeController = new AbortController();
       const { signal } = activeController;
       appendMessage('loading');
-
-      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/chat/stream`, {
+      const workspace = TOOLS_SELECTED == "PROJECTS" ? `${PROJECT_ID}_project` : wID;
+      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${workspace}/chat/stream`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1480,9 +1449,31 @@ async function showAviator() {
         throw error;
       }
     },
+    updateProjectSession: async function(id, title, sessionId) {
+      try {
+        const response = await fetch(`${AIPlusConfig.backendUrl}/api/project/${id}`, {
+          method: "PATCH",
+          redirect: "follow",
+          body: JSON.stringify({
+            sessionID: sessionId,
+            title
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        alert(error);
+        console.error("updateProjectSession error:", error);
+        throw error;
+      }
+    },
     createSession: async function(name) {
       try {
-        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions`, {
+        const workspace = TOOLS_SELECTED == "PROJECTS" ? `${PROJECT_ID}_project` : wID;
+        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${workspace}/sessions`, {
           method: "POST",
           redirect: "follow",
           body: JSON.stringify({
@@ -1562,7 +1553,7 @@ async function showAviator() {
           method: "DELETE",
           redirect: "follow"
         });
-        if(CHAT_ID == id) {
+        if(SESSION_ID == id) {
           clearChats();
         }
         await this.getChatRooms(1);
@@ -1616,12 +1607,12 @@ async function showAviator() {
         throw error;
       }
     },
-    getChats: async function(chatId, page, size = 25, appendMode = true) {
+    getChats: async function(chatId, size = 25, appendMode = true) {
       try {
         if(size == null) size = 25;
-
+        const workspace = TOOLS_SELECTED == "PROJECTS" ? `${PROJECT_ID}_project` : wID;
         AIPlusUtils.toggleLoaderChatContainer(true);
-        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${wID}/sessions/${chatId}?order=desc&includeMessages=true&userId=${userID}`, {
+        const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${workspace}/sessions/${chatId}?order=desc&includeMessages=true&userId=${userID}`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
           },
@@ -1634,7 +1625,7 @@ async function showAviator() {
         AIPlusUtils.toggleShowMessageButton(false);
         AIPlusUtils.setEnableToolsValue(result.settings.enableTools);
         let idx = 0;
-
+        
         for (const chat of result.messages) {
           const nextData = result.messages[idx+1];
           let sources = [];
@@ -1706,7 +1697,6 @@ async function showAviator() {
   // On Render
   clearChats();
   await AIPlusAPI.getChatRooms(1);
-  AIPlusUtils.toggleInitialMsg(true);
 }
 
 var Menuelement = document.getElementsByTagName("otc-menuitem");

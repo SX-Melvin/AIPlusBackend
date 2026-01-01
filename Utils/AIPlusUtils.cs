@@ -116,19 +116,19 @@ namespace AIPlusBackend.Utils
 
             return result;
         }
-        public async Task<AIPlusGetFilingSuggestionResponse> GetFilingSuggestion(string wId, string token, string? emailFileName = null)
+        public async Task<AIPlusGetFilingSuggestionResponse> GetFilingSuggestion(string wId, string token, string? documentFileName = null)
         {
             AIPlusGetFilingSuggestionResponse result = new();
 
             try
             {
-                var request = new RestRequest($"/api/workspaces/{wId}/file-email", Method.Post);
+                var request = new RestRequest($"/api/workspaces/{wId}/file-document", Method.Post);
                 request.AddHeader("Authorization", $"Bearer {token}");
-                if(emailFileName != null)
+                if(documentFileName != null)
                 {
                     request.AddJsonBody(new
                     {
-                        emailFileName
+                        documentFileName
                     });
                 }
 

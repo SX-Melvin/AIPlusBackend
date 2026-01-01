@@ -8,6 +8,6 @@ namespace AIPlusBackend.Dto.AIPlus
         public string SessionID { get; set; }
 
         [JsonProperty("title")]
-        public string Title { get; set; }
+        public string? Title { get; set; } = null;
     }
 }

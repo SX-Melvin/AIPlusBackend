@@ -98,7 +98,10 @@ namespace AIPlusBackend.Utils
             var projectRoom = _context.ProjectRooms.FirstOrDefault(x => x.ID == id);
             if(projectRoom != null)
             {
-                projectRoom.Title = data.Title;
+                if(data.Title != null)
+                {
+                    projectRoom.Title = data.Title;
+                }
                 projectRoom.SessionID = data.SessionID;
                 _context.SaveChanges();
             }

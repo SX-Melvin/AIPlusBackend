@@ -13732,7 +13732,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     background-color: none!important;
     padding: 10px 5px!important;
     font-weight: 600!important;
-    color: #525252!important;
+    color: #787878!important;
     font-size: 12px!important;
 }
 .chat-sidenav-sub-title {
@@ -13740,7 +13740,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     font-weight: 600!important;
     padding: 10px 5px!important;
     font-size: 12px!important;
-    color: #525252!important;
+    color: #6c6c6c!important;
 }
 .chat-history-item {
     border: none;
@@ -13749,7 +13749,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     width: 100%;
     text-align: start;
     border-radius: 10px;
-    padding: 10px!important;
+    padding: 6px 8px!important;
     overflow: hidden!important;
     white-space: nowrap!important;
     text-overflow: ellipsis!important;
@@ -13815,11 +13815,15 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     width: 100%;
 }
 .msger-container {
+    font-family: "Roboto"!important;
     position: fixed;
     z-index: 100;
     width: 75%;
     height: 100%;
     right: 0;
+}
+.msger-container * {
+    font-family: "Roboto"!important;
 }
 .msger-chat-container {
     display: flex !important;
