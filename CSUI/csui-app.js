@@ -15469,6 +15469,7 @@ csui.define("csui/lib/othelp", [], function () {
                     const searchIcon = Menuelement.querySelectorAll('otc-button')[0];
                     Menuelement.insertBefore(AviatorButtonElement, searchIcon);
                     
+                    // SETUP JS
                     const script = document.createElement("script");
                     script.src = "/img/csui/themes/carbonfiber/marked.min.js";
                     const script2 = document.createElement("script");
@@ -15476,6 +15477,40 @@ csui.define("csui/lib/othelp", [], function () {
                     AviatorButtonElement.appendChild(script);
                     AviatorButtonElement.appendChild(script2);
 
+                    // SETUP FONTS
+                    const fonts = [
+                      "Poppins-Black.ttf",
+                      "Poppins-BlackItalic.ttf",
+                      "Poppins-Bold.ttf",
+                      "Poppins-BoldItalic.ttf",
+                      "Poppins-ExtraBold.ttf",
+                      "Poppins-ExtraBoldItalic.ttf",
+                      "Poppins-ExtraLight.ttf",
+                      "Poppins-ExtraLightItalic.ttf",
+                      "Poppins-Italic.ttf",
+                      "Poppins-Light.ttf",
+                      "Poppins-LightItalic.ttf",
+                      "Poppins-Medium.ttf",
+                      "Poppins-MediumItalic.ttf",
+                      "Poppins-Regular.ttf",
+                      "Poppins-SemiBold.ttf",
+                      "Poppins-SemiBoldItalic.ttf",
+                      "Poppins-Thin.ttf",
+                      "Poppins-ThinItalic.ttf",
+                    ];
+                    
+                    fonts.forEach(file => {
+                      const link = document.createElement("link");
+                      link.rel = "preload";
+                      link.as = "font";
+                      link.type = "font/ttf";
+                      link.href = `/img/csui/themes/carbonfiber/fonts/aviator_webfonts/${file}`;
+                      link.crossOrigin = "anonymous";
+                      document.head.appendChild(link);
+                    });
+//                     <link rel="preconnect" href="https://fonts.googleapis.com">
+// <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+// <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></link>
                     AviatorButtonElement.addEventListener('click', function() {
                       showAviator();
                     });

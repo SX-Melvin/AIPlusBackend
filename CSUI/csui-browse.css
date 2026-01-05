@@ -13754,6 +13754,13 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     white-space: nowrap!important;
     text-overflow: ellipsis!important;
 }
+.chat-history-item-text {
+    overflow: hidden!important;
+    white-space: nowrap!important;
+    text-overflow: ellipsis!important;
+    font-size:12px!important;
+    font-weight:500!important;
+}
 .chat-project-item {
     border: none;
     margin-bottom: 5px!important;
@@ -13761,10 +13768,17 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     width: 100%;
     text-align: start;
     border-radius: 10px;
-    padding: 10px!important;
+    padding: 6px 8px!important;
     overflow: hidden!important;
     white-space: nowrap!important;
     text-overflow: ellipsis!important;
+}
+.chat-project-item-text {
+    overflow: hidden!important;
+    white-space: nowrap!important;
+    text-overflow: ellipsis!important;
+    font-size:12px!important;
+    font-weight:500!important;
 }
 .hoverable-active {
     background-color: rgba(200, 200, 200, .5)!important;
@@ -13814,8 +13828,134 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     color: black;
     width: 100%;
 }
+/* Thin */
+@font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Thin.ttf") format("truetype");
+    font-weight: 100;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-ThinItalic.ttf") format("truetype");
+    font-weight: 100;
+    font-style: italic;
+  }
+  
+  /* ExtraLight */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-ExtraLight.ttf") format("truetype");
+    font-weight: 200;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-ExtraLightItalic.ttf") format("truetype");
+    font-weight: 200;
+    font-style: italic;
+  }
+  
+  /* Light */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-LightItalic.ttf") format("truetype");
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  /* Regular */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  /* Medium */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-MediumItalic.ttf") format("truetype");
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  /* SemiBold */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-SemiBoldItalic.ttf") format("truetype");
+    font-weight: 600;
+    font-style: italic;
+  }
+  
+  /* Bold */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-BoldItalic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+  }
+  
+  /* ExtraBold */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-ExtraBoldItalic.ttf") format("truetype");
+    font-weight: 800;
+    font-style: italic;
+  }
+  
+  /* Black */
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("/img/csui/themes/carbonfiber/fonts/aviator_webfonts/Poppins-BlackItalic.ttf") format("truetype");
+    font-weight: 900;
+    font-style: italic;
+  }
+  
 .msger-container {
-    font-family: "Roboto"!important;
+    font-family: "Poppins"!important;
     position: fixed;
     z-index: 100;
     width: 75%;
@@ -13823,7 +13963,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     right: 0;
 }
 .msger-container * {
-    font-family: "Roboto"!important;
+    font-family: "Poppins"!important;
 }
 .msger-chat-container {
     display: flex !important;
@@ -13931,6 +14071,24 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     margin: 0 0 0 10px;
 }
 
+.file-upload-msg .msg-bubble {
+    border:1px solid #2a6396!important;
+    background-color: #2a6396!important;
+    border-top-right-radius: 0;
+}
+
+.file-upload-msg .msg-bubble .msg-text {
+    color:#f7f7f7!important;
+}
+
+.file-upload-msg {
+    flex-direction: row-reverse;
+}
+
+.file-upload-msg .msg-img {
+    margin: 0 0 0 10px;
+}
+
 .file-upload-load-msg .msg-bubble {
     border:1px solid #2a6396!important;
     background-color: #2a6396!important;
@@ -13951,7 +14109,7 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
 
 .msg-text {
     word-break: break-word;
-    font-weight: 500!important;
+    font-size: 12.5px!important;
 }
 
 .msger-inputarea {
@@ -14016,7 +14174,7 @@ progress.msger-progress {
 }
 
 .file-chat-bubble-text {
-    font-size:12px!important;
+    font-size:11px!important;
     margin-left:6px!important;
     overflow: hidden!important;
     white-space: nowrap!important;
@@ -14032,8 +14190,8 @@ progress.msger-progress {
     background-color:white!important;
     border-radius:10px!important;
     align-items:center!important;
-    padding-left:14px!important;
-    padding-right:14px!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
 }
 
 .msger-send-btn {

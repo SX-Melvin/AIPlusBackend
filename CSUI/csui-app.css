@@ -6842,8 +6842,7 @@ body.bin-widgets .binf-modal-backdrop {
 .chat-reason-section {
     max-height:450px!important;
     overflow:auto!important;
-    font-size: 12px!important;
-    font-weight: 500!important;
+    font-size: 11.5px!important;
 }
 .smart-filing-actions-desc {
     color:#aeaeae;
@@ -6920,9 +6919,10 @@ body.bin-widgets .binf-modal-backdrop {
     border-radius: 8px!important;
     position:absolute!important;
     background-color:white!important;
-    top:58px!important;
+    bottom:-16px!important;
     cursor: pointer!important;
-    left:55%!important;
+    left: 50% !important;
+    transform: translateX(-50%);
     display:none;
     font-size: 13px!important;
     padding:8px 10px!important;
