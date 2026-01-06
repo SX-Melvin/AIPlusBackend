@@ -14309,10 +14309,20 @@ progress.msger-progress {
         background-color: #078db3;
     }
 }
+.msger-container ul {
+    list-style: disc!important;
+}
 .p-relative {
     position: relative;
 }
 .chat-history-tooltip {
+    display:none;
+    border-radius:5px!important;
+    position:absolute!important;
+    right:10px!important;
+    top:7px!important;
+}
+.chat-project-tooltip {
     display:none;
     border-radius:5px!important;
     position:absolute!important;

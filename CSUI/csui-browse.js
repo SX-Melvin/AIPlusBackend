@@ -843,6 +843,34 @@ csui.define("csui/behaviors/item.name/impl/nls/lang", {
             m === this._focusedToolbarItemIndex
               ? this._focusableElements[m].setAttribute("tabindex", "0")
               : this._focusableElements[m].setAttribute("tabindex", "-1");
+
+          // CSUI: ARK START
+          let that = this;
+          let propBtn = that.toolbarRegion.$el.find("li[data-csui-command='properties']");
+          if(document.querySelector("#ask-ark-toolbar") != null) {
+            document.querySelector("#ask-ark-toolbar")?.remove();
+          }
+
+          if(propBtn.length > 0) {
+            if(!document.querySelector("#ask-ark-toolbar")) {
+              propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Ark</a></li>`);
+            }
+
+            if(that.selectedChildren.models.filter(node => node.attributes.type != 144).length > 0) {
+              if(document.querySelector("#ask-ark-toolbar")) document.querySelector("#ask-ark-toolbar").remove();
+            } else {
+              if(!document.querySelector("#ask-ark-toolbar")) {
+                propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Ark</a></li>`);
+              }
+            }
+
+            if(document.querySelector("#ask-ark-toolbar") != null) {
+              document.querySelector("#ask-ark-toolbar")?.addEventListener("click", () => {
+                window.aiPlusSendFilesToChatbot(that.selectedChildren.models);
+              });
+            }
+          }
+          // CSUI: ARK END
         },
         _moveFocus: function () {
           this.trigger("changed:focus");

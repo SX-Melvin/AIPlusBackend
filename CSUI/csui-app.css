@@ -6840,7 +6840,7 @@ body.bin-widgets .binf-modal-backdrop {
     display:inline-block;
 }
 .chat-reason-section {
-    max-height:450px!important;
+    max-height:300px!important;
     overflow:auto!important;
     font-size: 11.5px!important;
 }

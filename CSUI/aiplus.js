@@ -1,9 +1,9 @@
 // Explorer Insight START
-var wID = "psd_internal1-secure";
+var wID = "psd_internal4-secure";
 let activeController = false;
 let ticket = window.aiPlusContext.options.context._user.connector.connection.session.ticket;
 let userID = window.aiPlusContext.options.context._user.attributes.id;
-const userHomepageID = userID == 1000 ? 2004 : userID;
+let userHomepageID = userID == 1000 ? 2004 : userID;
 let ARCHIVE_MESSAGE_COUNT = 0;
 let TOOLS_SELECTED = "CHATS";
 let PROJECT_ID = null;
@@ -34,6 +34,8 @@ const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator
 const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_delete.svg";
 const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_arrow_left.svg";
 const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_bot.svg";
+const EDIT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_edit.svg";
+const FILES_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_files.svg";
 let NODE_IDS_REFERENCE = [];
 const nodesTableDiv = document.querySelector("div.binf-widgets");
 
@@ -59,11 +61,13 @@ var AIPlusUtils = {
       document.querySelector("#chat-project-section").style.display = "none";
       document.querySelector("#clearbtn-text").innerText = "New Chat";
       document.querySelector("#dropzone-text").innerText = "Will be uploaded to your personal folder";
+      document.querySelector("#showfiles").style.display = "none";
     } else if(TOOLS_SELECTED.toUpperCase() == "PROJECTS") {
       document.querySelector("#chat-history-section").style.display = "none";
       document.querySelector("#chat-project-section").style.display = "block";
       document.querySelector("#clearbtn-text").innerText = "New Project";
-      document.querySelector("#dropzone-text").innerText = "Will be uploaded to this workspace";
+      document.querySelector("#dropzone-text").innerText = "Will be uploaded to your personal folder";
+      document.querySelector("#showfiles").style.display = "flex";
       await AIPlusAPI.getProjectRooms(1);
     }
   },
@@ -82,7 +86,7 @@ var AIPlusUtils = {
           <input type="checkbox" id="smart-filing-checkbox-${id}-${m.folderId}" data-id="${m.folderId}" class="smart-filing-checkbox-${id}" />
 
           <label style="cursor:pointer" for="smart-filing-checkbox-${id}-${m.folderId}">
-            <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:600">${m.path}</div>
+            <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:500">${m.path}</div>
           </label>
         </div>
       `;
@@ -166,15 +170,15 @@ var AIPlusUtils = {
     for(const chatRoom of projects) {
       chatRoomContainer.insertAdjacentHTML("beforeend", `
         <button id="project-${chatRoom.id}" data-id="${chatRoom.sessionID}" style="display:flex;align-items:center" data-project-id="${chatRoom.id}" title="${chatRoom.title}" class="p-relative chat-project-item msger-btn hoverable ${PROJECT_ID == chatRoom.id ? "hoverable-active" : ""}">
-          <img data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" src="${PROJECT_LOGO}" width="16" style="display:inline;margin-right:6px">  
+          <img data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" src="${PROJECT_LOGO}" width="15" style="display:inline;margin-right:6px">  
           <span data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" class="chat-project-item-text">${chatRoom.title}</span>
-          <div title="Delete this project" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-history-tooltip">
-            <img src="${DELETE_ICON}" style="width:16px;" class="hoverable-fade">
+          <div title="Delete this project" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-project-tooltip">
+            <img src="${DELETE_ICON}" style="width:13px;" class="hoverable-fade">
           </div>
         </button>`);
     }
     
-    document.querySelectorAll('.chat-history-tooltip').forEach(btn => {
+    document.querySelectorAll('.chat-project-tooltip').forEach(btn => {
       btn.addEventListener("click", async (e) => {
         e.stopPropagation();
         if(confirm("Delete this project?")) {
@@ -216,7 +220,7 @@ var AIPlusUtils = {
           <img data-id="${chatRoom.sessionId}" src="${CHAT_LOGO}" width="16" style="display:inline;margin-right:6px">  
           <span data-id="${chatRoom.sessionId}" class="chat-history-item-text">${chatRoom.title}</span>
           <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
-            <img src="${DELETE_ICON}" style="width:16px;" class="hoverable-fade">
+            <img src="${DELETE_ICON}" style="width:13px;" class="hoverable-fade">
           </div>
         </button>`);
     }
@@ -384,6 +388,22 @@ var AIPlusUtils = {
       el.style.display = "none";
     }
   },
+  finishChatVerification: function(uniqueId, data) {
+    if(document.querySelector(`#chat-verification-${uniqueId}`)) {
+      document.querySelector(`#chat-verification-${uniqueId}`).style.display = "none";
+    }
+  },
+  updateChatVerificationClaimStatus: function(uniqueId, data) {
+    if(document.querySelector(`#chat-verification-${uniqueId}`)) {
+      document.querySelector(`#chat-verification-${uniqueId} li#chat-claim-${data.index}`).innerHTML += `&nbsp;<span style="font-weight:500;">${data.verdict} (${data.source})</span>`;;
+    }
+  },
+  appendChatVerificationClaim: function(uniqueId, progress) {
+    if(document.querySelector(`#chat-verification-${uniqueId}`)) {
+      document.querySelector(`#chat-verification-${uniqueId}`).style.display = "block";
+      document.querySelector(`#chat-verification-${uniqueId}`).insertAdjacentHTML("beforeend", `<li id="chat-claim-${progress.index}"><span>${progress.claim}</span></li>`);
+    }
+  },
   removeLoaderTextbox: function() {
     if(document.getElementById("botloading")) {
       document.getElementById("botloading").remove();
@@ -536,7 +556,11 @@ var AIPlusAPI = {
             }
 
             // CHECK Type
-            if(data.type == 'reasoning') {
+            if(data.type == 'verification_progress') {
+              AIPlusUtils.appendChatVerificationClaim(msgId, data);
+            } else if(data.type == 'verification_result') {
+              AIPlusUtils.updateChatVerificationClaimStatus(msgId, data);
+            } else if(data.type == 'reasoning') {
               if(!firstReasonHasRendered) {
                 document.querySelector(`#chat-reason-${msgId}`).style.display = "flex";
                 document.getElementById(`chat-reason-${msgId}`).click();
@@ -562,6 +586,16 @@ var AIPlusAPI = {
               AIPlusUtils.toggleChatTools(true, msgId);
               AIPlusUtils.toggleChatSources(sources.length > 0, msgId);
             } else if(data.type == 'thinking') {
+              AIPlusUtils.removeLoaderTextbox();
+              AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
+            } else if(data.type == 'verification_end') {
+              AIPlusUtils.finishChatVerification(msgId);
+            } else if(data.type == 'verification_start') {
+              if(!firstMessageHasRendered) {
+                AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, "");
+                AIPlusUtils.finishChatReasoning(msgId);
+                firstMessageHasRendered = true;
+              }
               AIPlusUtils.removeLoaderTextbox();
               AIPlusUtils.replaceTextMessageBox(`msg-${msgId}`, data.message);
             } else if(data.type == 'error') {
@@ -927,54 +961,13 @@ async function botResponse(questionToAsk) {
     enableReasoning: true,
     streamReasoning: true,
     sessionId: SESSION_ID,
+    enableFactCheck: true,
+    factCheckClaims: 1,
     userId: userID.toString(),
     messages: [
       message
     ]
   });
-}
-
-async function handleFilesForProject(files) {
-  // Ingest each of the files to agent
-  let queues = [];
-  let suggestionFilings = [];
-
-  for(const job of files) {
-    const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({}), 10);
-    if(jobResult.existingFile) {
-      suggestionFilings.push(job);
-    } else if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
-      queues.push({
-        file: job.file,
-        id: job.id,
-        job: jobResult
-      });
-      AIPlusUtils.changeFileUploadStatus(job.id, 50);
-    } else if (jobResult.error) {
-      AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${jobResult.message ?? jobResult.error}`);
-    }
-  }
-
-  const checkJobs = async () => {
-    const jobs = [...queues];
-  
-    for (const job of jobs) {
-      const getJob = await AIPlusAPI.getJob(job.job.jobId);
-  
-      if (getJob.status?.toLowerCase() === "completed") {
-        queues = queues.filter(x => x.job.jobId !== job.job.jobId);
-        AIPlusUtils.changeFileUploadStatus(job.id, 100);
-      } else if (getJob.status?.toLowerCase() === "failed") {
-        queues = queues.filter(x => x.job.jobId !== job.job.jobId);
-        AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${getJob.error ?? "An unxpected error occurred"}`);
-      }
-    }
-  
-    if (queues.length > 0) {
-      setTimeout(checkJobs, 3000);
-    }
-  };
-  checkJobs();
 }
 
 async function handleFiles(files) {
@@ -992,12 +985,8 @@ async function handleFiles(files) {
     fileList.push({file, id: appendMessage("file-upload-load", file.name)});
   }
 
-  if(TOOLS_SELECTED == "PROJECTS") {
-    if(PROJECT_ID == null) {
-      alert("Please select a project");
-      return;
-    }
-    await handleFilesForProject(fileList);
+  if(TOOLS_SELECTED == "PROJECTS" && PROJECT_ID == null) {
+    alert("Please select a project");
     return;
   }
 
@@ -1155,7 +1144,9 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
         <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
           <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
           
-          <div data-id="${uniqueId}" data-id="false" id="chat-reason-${uniqueId}" class="chat-reason hoverable" style="display:none">
+          <ul data-id="${uniqueId}" id="chat-verification-${uniqueId}" style="display:none;padding-right:15px;padding-left:15px;margin-top:8px;margin-bottom:6px;font-size:11.5px;font-style:italic"></ul>
+
+          <div data-id="${uniqueId}" data-id="false" id="chat-reason-${uniqueId}" class="chat-reason hoverable" style="display:none;margin-bottom:6px">
             <img data-id="${uniqueId}" src="${INFO_ICON}" width="12" draggable="false" />
             <span data-id="${uniqueId}" style="margin-left:4px;">Reasoning</span>
             <img data-id="${uniqueId}" class="chevron" draggable="false" src="${ARROW_LEFT_ICON}" width="14" />
@@ -1450,11 +1441,17 @@ function createChatbotElement() {
               
                   <!-- Inline Buttons -->
                   <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                      <!-- Clear Button with "New Chat" Text -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                       <div id="clearbtn" class="clear-button hoverable-fade" title="Create new conversation">
-                          <svg fill="#FFFFFF" width="12" height="12" viewBox="0 0 512 512" id="_35_Compose" data-name="35 Compose" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="Path_46" data-name="Path 46" d="M480,512H32A31.991,31.991,0,0,1,0,480V32A31.991,31.991,0,0,1,32,0H352L288,64H64V448H448V224l64-64V480A31.991,31.991,0,0,1,480,512ZM128,384V288L416,0h32l64,64V96L224,384ZM272,272,448,96,416,64,240,240Zm-80,16-32,32v32h32l32-32Z" fill-rule="evenodd"></path> </g></svg>
-                          <span style="font-size: 12px; color: whitesmoke;" id="clearbtn-text">New Chat</span>
+                        <img src="${EDIT_ICON}" width="12" />
+                        <span style="font-size: 12px; color: whitesmoke;" id="clearbtn-text">New Chat</span>
                       </div>
+
+                      <div id="showfiles" style="display:none" class="clear-button hoverable-fade" title="Show files in this workspace">
+                        <img src="${FILES_ICON}" width="12" />
+                        <span style="font-size: 12px; color: whitesmoke;" id="clearbtn-text">Files</span>
+                      </div>
+                    </div>
               
                       <div style="display: flex; align-items: center; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 4px; margin-right: 10px;">
@@ -1498,11 +1495,13 @@ function createChatbotElement() {
 }
 
 async function showAviator(justCheckComponent = false) {
+  if(document.querySelector("#aichatbottable")) return;
+
   nodesTableDiv.appendChild(createChatbotElement());
 
   document.getElementById("enable-tools").addEventListener("change", async (e) => {
     e.preventDefault();
-    if(SESSION_ID != null || SESSION_ID != "null") {
+    if(SESSION_ID != null && SESSION_ID != "null") {
       await AIPlusAPI.updateSession(SESSION_ID);
     }
   });
@@ -1630,7 +1629,7 @@ async function showAviator(justCheckComponent = false) {
     }
   });
   
-  //handle clear
+  // handle clear
   document.getElementById("clearbtn").addEventListener('click', function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -1640,6 +1639,14 @@ async function showAviator(justCheckComponent = false) {
       clearChats();
       showNewProjectForm();
     }
+  });
+
+  // handle show files of project
+  document.getElementById("showfiles").addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    
   });
 
   document.getElementById('chatarea').addEventListener('input', function (e) {
@@ -1738,16 +1745,19 @@ const checkContext = setInterval(() => {
   if(window.aiPlusContext != null) {
     ticket = window.aiPlusContext.options.context._user.connector.connection.session.ticket;
     userID = window.aiPlusContext.options.context._user.attributes.id;
+    userHomepageID = userID == 1000 ? 2004 : userID;
   }
 }, 100);
 
-window.aiPlusSendFilesToChatbot = (nodes) => {
+window.aiPlusSendFilesToChatbot = async (nodes) => {
   showAviator(true);
   clearChats();
+  NODE_IDS_REFERENCE = [];
   for(const node of nodes) {
     appendMessage("file-upload", node.attributes.name);
     NODE_IDS_REFERENCE.push(node.attributes.id.toString());
   }
+  await AIPlusAPI.getChatRooms();
 };
 
 // Explorer Insight END
