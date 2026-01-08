@@ -1,9 +1,5 @@
-.icon-toolbar-aviator {
-    background-image: url(../toolbars/impl/images/toolbar_aviator24.svg)
-}
-
 .icon-toolbar-aviator:hover {
-    background-image: url(../toolbars/impl/images/toolbar_aviator_mo24.svg)
+    opacity: .4;
 }
 
 .icon-toolbar-wfinitiate {

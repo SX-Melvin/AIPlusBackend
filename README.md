@@ -6,10 +6,8 @@
 
 - Move `marked.min.js` to `/img/csui/themes/carbonfiber/marked.min.js`
 
-- Move `images` folder contents to `/support/webwork/toolbars/impl/images/` *(Move the imgs not the folder itself)*
-
 - Move `aviator` folder to `/support/csui/themes/carbonfiber/image/icons/`
-- 
+
 - Move `aviator_webfonts` folder to `/support/csui/themes/carbonfiber/fonts/`
 
 - Add the `.icon-toolbar-aviator` CSS rule from `workflow-all.css` to `/support/webwork/bundles/workflow-all.css`
