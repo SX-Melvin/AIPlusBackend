@@ -66,9 +66,18 @@ namespace AIPlusBackend.Services
 
                 var response = await utils.GetFilingSuggestion(wId, token, suggestFile.FileName ?? suggestFile.ExistingFile.FileName);
 
-                foreach (var suggestion in response.Suggestions)
+                for (int i = response.Suggestions.Count - 1; i >= 0; i--)
                 {
-                    suggestion.Path = csdb.GetNodeFullPath(Convert.ToInt64(suggestion.FolderId)) ?? "";
+                    var suggestion = response.Suggestions[i];
+                    var path = csdb.GetNodeFullPath(Convert.ToInt64(suggestion.FolderId));
+
+                    if (path == null)
+                    {
+                        response.Suggestions.RemoveAt(i);
+                        continue;
+                    }
+
+                    suggestion.Path = path;
                 }
 
                 result.Data = response;

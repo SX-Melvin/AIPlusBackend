@@ -14309,8 +14309,31 @@ progress.msger-progress {
         background-color: #078db3;
     }
 }
+.msg-text hr {
+    background-color: #333333!important;
+    opacity: .8;
+    height: 1px!important;
+    border: none!important;
+}
+.msger-container input[type=checkbox] {
+    margin: 0!important;
+}
 .msger-container ul {
     list-style: disc!important;
+}
+.msger-container strong, .msger-container b {
+    font-weight: 600;
+}
+.msg-text ul {
+    padding-left:16px;
+    padding-right:16px
+}
+.chat-reason-section ul {
+    list-style: disc!important;
+}
+.chat-reason-section ul {
+    padding-left:16px;
+    padding-right:16px
 }
 .p-relative {
     position: relative;
@@ -14328,5 +14351,28 @@ progress.msger-progress {
     position:absolute!important;
     right:10px!important;
     top:7px!important;
+}
+
+.msger-container th, .msger-container td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+.msger-container th {
+  background-color: #f4f4f4;
+  font-weight: 500;
+}
+.msger-container tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+.msger-container tbody tr:hover {
+    background-color: #f1f1f1;
+}
+.msger-container table {
+    width: 96%;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    overflow: hidden; /* required for radius to work */
 }
 /* AI Chatbot */

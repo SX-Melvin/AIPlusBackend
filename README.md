@@ -1,14 +1,20 @@
-# AIPlusBackend
+# CSUI AI Plus Integration Deployment Instructions
 
-## Move `csui-app.css`, `csui-app.js`, `csui-browse.css` and `csui-browse.js`  to /img/csui/bundles/
+- Adjust codes from `csui-app.css`, `csui-app.js`, `csui-browse.css`, `csui-view-support.js` and `csui-browse.js` to `/img/csui/bundles/`
 
-## Move `aiplus.js` to /img/csui/themes/carbonfiber/aiplus.js
+- Move `aiplus.js` to `/img/csui/themes/carbonfiber/aiplus.js`
 
-## Move `marked.min.js` to /img/csui/themes/carbonfiber/marked.min.js
+- Move `marked.min.js` to `/img/csui/themes/carbonfiber/marked.min.js`
 
-## Move `aviator` folder to /support/csui/themes/carbonfiber/image/icons/
+- Move `images` folder contents to `/support/webwork/toolbars/impl/images/` *(Move the imgs not the folder itself)*
 
-## SQL Tables
+- Move `aviator` folder to `/support/csui/themes/carbonfiber/image/icons/`
+- 
+- Move `aviator_webfonts` folder to `/support/csui/themes/carbonfiber/fonts/`
+
+- Add the `.icon-toolbar-aviator` CSS rule from `workflow-all.css` to `/support/webwork/bundles/workflow-all.css`
+
+# SQL Tables
 ```
 CREATE TABLE CSDB.otcs.AIPlus_ChatRooms (
 	ID bigint IDENTITY(1,1) NOT NULL,

@@ -844,7 +844,7 @@ csui.define("csui/behaviors/item.name/impl/nls/lang", {
               ? this._focusableElements[m].setAttribute("tabindex", "0")
               : this._focusableElements[m].setAttribute("tabindex", "-1");
 
-          // CSUI: ARK START
+          // CSUI: AVIATOR START
           let that = this;
           let propBtn = that.toolbarRegion.$el.find("li[data-csui-command='properties']");
           if(document.querySelector("#ask-ark-toolbar") != null) {
@@ -853,14 +853,14 @@ csui.define("csui/behaviors/item.name/impl/nls/lang", {
 
           if(propBtn.length > 0) {
             if(!document.querySelector("#ask-ark-toolbar")) {
-              propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Ark</a></li>`);
+              propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Aviator</a></li>`);
             }
 
             if(that.selectedChildren.models.filter(node => node.attributes.type != 144).length > 0) {
               if(document.querySelector("#ask-ark-toolbar")) document.querySelector("#ask-ark-toolbar").remove();
             } else {
               if(!document.querySelector("#ask-ark-toolbar")) {
-                propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Ark</a></li>`);
+                propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Aviator</a></li>`);
               }
             }
 
@@ -870,7 +870,7 @@ csui.define("csui/behaviors/item.name/impl/nls/lang", {
               });
             }
           }
-          // CSUI: ARK END
+          // CSUI: AVIATOR END
         },
         _moveFocus: function () {
           this.trigger("changed:focus");

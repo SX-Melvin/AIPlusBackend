@@ -1,5 +1,6 @@
 // Explorer Insight START
 var wID = "psd_internal4-secure";
+// var wID = "psd_test-secure";
 let activeController = false;
 let ticket = window.aiPlusContext.options.context._user.connector.connection.session.ticket;
 let userID = window.aiPlusContext.options.context._user.attributes.id;
@@ -101,6 +102,9 @@ var AIPlusUtils = {
       document.getElementById("show-messages-button").style.display = "none";
     }
   },
+  concatenateSentence: function(sentences) {
+    document.getElementById(`loader-file-${id}`).style.display = "none";
+  },
   finishFile: function(id) {
     document.getElementById(`loader-file-${id}`).style.display = "none";
   },
@@ -109,6 +113,9 @@ var AIPlusUtils = {
   },
   isToolsEnabled: function() {
     return document.querySelector("#enable-tools").checked;
+  },
+  constructNodeLink(nodeId) {
+    return `/otcs/cs.exe/app/nodes/${nodeId}`;
   },
   processChatSource: function(data) {
     let d = data;
@@ -120,13 +127,13 @@ var AIPlusUtils = {
       }
     }
 
-    return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${d.nodeId}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+    return `<a target="_blank" href="${this.constructNodeLink(d.nodeId)}" title="${d.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
       <img width="16px" src="${AIPlusUtils.getFileIcon(d.fileName)}">
       <div class="file-chat-bubble-text">${d.fileName}</div>
     </a>`;
   },
   appendChatItem: function(data) {
-    return `<a target="_blank" href="/otcs/cs.exe/app/nodes/${data.customMetadata.nodeId}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
+    return `<a target="_blank" href="${this.constructNodeLink(data.customMetadata.nodeId)}" title="${data.fileName}" class="msger-btn shadow file-chat-bubble hoverable-fade">
       <img width="16px" src="${AIPlusUtils.getFileIcon(data.fileName)}">
       <div class="file-chat-bubble-text">${data.fileName}</div>
     </a>`;
@@ -1144,7 +1151,7 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
         <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
           <div style="white-space: pre-line;" id="bot-text-${uniqueId}" class="msg-text">${text}</div>
           
-          <ul data-id="${uniqueId}" id="chat-verification-${uniqueId}" style="display:none;padding-right:15px;padding-left:15px;margin-top:8px;margin-bottom:6px;font-size:11.5px;font-style:italic"></ul>
+          <ul data-id="${uniqueId}" id="chat-verification-${uniqueId}" style="display:none;padding-right:16px;padding-left:16px;margin-top:8px;margin-bottom:6px;font-size:11.5px;font-style:italic"></ul>
 
           <div data-id="${uniqueId}" data-id="false" id="chat-reason-${uniqueId}" class="chat-reason hoverable" style="display:none;margin-bottom:6px">
             <img data-id="${uniqueId}" src="${INFO_ICON}" width="12" draggable="false" />
