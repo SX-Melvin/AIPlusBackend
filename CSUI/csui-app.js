@@ -15463,7 +15463,7 @@ csui.define("csui/lib/othelp", [], function () {
                     AviatorButtonElement.setAttribute("icon", "csui_header:csui_li_header_aviator42");
                     AviatorButtonElement.setAttribute("iconappearance", "default");
                     AviatorButtonElement.setAttribute("slot", "beforeOverflow");
-                    AviatorButtonElement.setAttribute("title", "Aviator");
+                    AviatorButtonElement.setAttribute("title", "AI+");
                     AviatorButtonElement.style.borderRadius = "16px";
                     
                     const searchIcon = Menuelement.querySelectorAll('otc-button')[0];
@@ -15504,13 +15504,11 @@ csui.define("csui/lib/othelp", [], function () {
                       link.rel = "preload";
                       link.as = "font";
                       link.type = "font/ttf";
-                      link.href = `/img/csui/themes/carbonfiber/fonts/aviator_webfonts/${file}`;
+                      link.href = `/img/csui/themes/carbonfiber/fonts/aiplus_webfonts/${file}`;
                       link.crossOrigin = "anonymous";
                       document.head.appendChild(link);
                     });
-//                     <link rel="preconnect" href="https://fonts.googleapis.com">
-// <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-// <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></link>
+
                     AviatorButtonElement.addEventListener('click', function() {
                       showAviator();
                     });
@@ -16225,7 +16223,11 @@ csui.define("csui/lib/othelp", [], function () {
           // Insight Explorer START
           csui_li_header_aviator42: {
             category: "header",
-            svg: '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"><circle class="ot-state" fill="none" stroke="none" cx="21" cy="21" r="20.0"></circle><style type="text/css"> .st0--header-li_header_aviator42{fill:#333333;} </style><g transform="translate(6.000000,37.000000) scale(0.035000,-0.035000)" fill="#ffffff" stroke="none"><path d="M410 683 c-134 -359 -191 -516 -188 -528 2 -10 27 -3 97 26 51 21 109 39 128 39 19 0 72 -17 119 -37 46 -20 87 -34 90 -30 8 8 -206 587 -217 587 -4 0 -17 -26 -29 -57z"></path><path d="M20 595 c0 -22 33 -76 59 -98 30 -25 40 -27 120 -27 l88 0 22 59 c11 32 21 61 21 65 0 3 -70 6 -155 6 -85 0 -155 -2 -155 -5z"></path><path d="M550 590 c0 -5 9 -34 21 -65 l20 -55 82 0 c93 0 135 18 162 69 31 61 30 61 -135 61 -89 0 -150 -4 -150 -10z"></path><path d="M106 425 c15 -50 79 -109 113 -103 16 3 54 99 43 109 -4 4 -42 9 -84 11 -74 3 -78 2 -72 -17z"></path><path d="M610 433 c0 -19 35 -113 42 -113 28 0 80 33 98 62 33 54 29 58 -60 58 -44 0 -80 -3 -80 -7z"></path></g><defs xmlns="http://www.w3.org/2000/svg"><radialGradient id="radial0" gradientUnits="userSpaceOnUse" cx="0" cy="0" fx="0" fy="0" r="1" gradientTransform="matrix(-0.718767,15.382919,-38.254862,-1.648682,3.360248,3.602162)"><stop offset="1" style="stop-color:rgb(100%,100%,100%);stop-opacity:1;"></stop></radialGradient></defs></svg>',
+            svg: `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 42 42" xml:space="preserve" class="ot-svg ot-svg--header"> <defs><style>
+            .aiplus-toolbar-hover:hover {
+                fill: rgba(0,0,0,0.2)!important;
+            }
+        </style>  </defs> <image href="/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_white.svg" x="50%" y="50%" transform="translate(-10 -10)" width="20" height="20" clip-path="url(#circleView)"></image> <circle class="ot-top-state aiplus-toolbar-hover" fill="transparent" stroke="none" cx="21" cy="21" r="20.0"></circle><circle class="ot-focus" fill="none" stroke="none" cx="21" cy="21" r="20.5"></circle></svg>`,
           }
           // Insight Explorer END
         });

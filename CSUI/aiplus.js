@@ -10,33 +10,34 @@ let TOOLS_SELECTED = "CHATS";
 let PROJECT_ID = null;
 let SESSION_ID = null;
 let paginations = {chatHistory: {now: 1, max: null}, project: {now: 1, max: null}};
-const CHATS_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_chats.svg"
-const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_toolbar_copy.svg"
-const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_success.svg"
-const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_generate.svg"
-const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_smart_close.svg";
-const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_chat.svg";
-const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_info.svg";
-const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_refresh_blue.svg";
-const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_project.svg";
-const PROJECTS_LOGO = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_projects.svg";
-const WARNING_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_warning.svg";
-const DOCUMENT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_document.svg";
-const IMAGE_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_image.svg";
-const PDF_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_pdf.svg";
-const EXCEL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_excel.svg";
-const POWERPOINT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_powerpoint.svg";
-const WORD_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_word.svg";
-const TEXT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_text.svg";
-const EMAIL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_mime_email.svg";
-const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_refresh.svg";
-const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_arrow_down.svg";
-const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_times_red.svg";
-const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_delete.svg";
-const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_arrow_left.svg";
-const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_bot.svg";
-const EDIT_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_edit.svg";
-const FILES_ICON = "/img/csui/themes/carbonfiber/image/icons/aviator/aviator_files.svg";
+const CHATS_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_chats.svg"
+const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_toolbar_copy.svg"
+const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_success.svg"
+const GENERATE_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_generate.svg"
+const CLOSE_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_smart_close.svg";
+const CHAT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_chat.svg";
+const INFO_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_info.svg";
+const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_refresh_blue.svg";
+const AIPLUS_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus.svg";
+const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_project.svg";
+const PROJECTS_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_projects.svg";
+const WARNING_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_warning.svg";
+const DOCUMENT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_document.svg";
+const IMAGE_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_image.svg";
+const PDF_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_pdf.svg";
+const EXCEL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_excel.svg";
+const POWERPOINT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_powerpoint.svg";
+const WORD_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_word.svg";
+const TEXT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_text.svg";
+const EMAIL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_email.svg";
+const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_refresh.svg";
+const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_arrow_down.svg";
+const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_times_red.svg";
+const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_delete.svg";
+const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_arrow_left.svg";
+const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_bot.svg";
+const EDIT_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_edit.svg";
+const FILES_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_files.svg";
 let NODE_IDS_REFERENCE = [];
 const nodesTableDiv = document.querySelector("div.binf-widgets");
 
@@ -84,7 +85,7 @@ var AIPlusUtils = {
             <div class="dot-sm"></div>
           </div>
 
-          <input type="checkbox" id="smart-filing-checkbox-${id}-${m.folderId}" data-id="${m.folderId}" class="smart-filing-checkbox-${id}" />
+          <input type="checkbox" id="smart-filing-checkbox-${id}-${m.folderId}" data-id="${m.folderId}" data-path="${m.path}" class="smart-filing-checkbox-${id}" />
 
           <label style="cursor:pointer" for="smart-filing-checkbox-${id}-${m.folderId}">
             <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:500">${m.path}</div>
@@ -102,8 +103,19 @@ var AIPlusUtils = {
       document.getElementById("show-messages-button").style.display = "none";
     }
   },
-  concatenateSentence: function(sentences) {
-    document.getElementById(`loader-file-${id}`).style.display = "none";
+  concatenateSentences: function (sentences) {
+    let result = "";
+    const uniqueSentences = [...new Set(sentences)];
+  
+    for (const sentence of uniqueSentences) {
+      result += sentence;
+      if (result[result.length - 1] !== ".") {
+        result += ". ";
+      } else {
+        result += " ";
+      }
+    }
+    return result;
   },
   finishFile: function(id) {
     document.getElementById(`loader-file-${id}`).style.display = "none";
@@ -177,7 +189,7 @@ var AIPlusUtils = {
     for(const chatRoom of projects) {
       chatRoomContainer.insertAdjacentHTML("beforeend", `
         <button id="project-${chatRoom.id}" data-id="${chatRoom.sessionID}" style="display:flex;align-items:center" data-project-id="${chatRoom.id}" title="${chatRoom.title}" class="p-relative chat-project-item msger-btn hoverable ${PROJECT_ID == chatRoom.id ? "hoverable-active" : ""}">
-          <img data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" src="${PROJECT_LOGO}" width="15" style="display:inline;margin-right:6px">  
+          <img data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" src="${PROJECT_LOGO}" width="20" style="display:inline;margin-right:4px">  
           <span data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" class="chat-project-item-text">${chatRoom.title}</span>
           <div title="Delete this project" data-id="${chatRoom.sessionID}" data-project-id="${chatRoom.id}" id="tooltip-${chatRoom.id}" class="chat-project-tooltip">
             <img src="${DELETE_ICON}" style="width:13px;" class="hoverable-fade">
@@ -224,7 +236,7 @@ var AIPlusUtils = {
     for(const chatRoom of rooms.sessions) {
       chatRoomContainer.insertAdjacentHTML("beforeend", `
         <button data-id="${chatRoom.sessionId}" style="display:flex;align-items:center" title="${chatRoom.title}" class="p-relative chat-history-item msger-btn hoverable ${SESSION_ID == chatRoom.sessionId ? "hoverable-active" : ""}">
-          <img data-id="${chatRoom.sessionId}" src="${CHAT_LOGO}" width="16" style="display:inline;margin-right:6px">  
+          <img data-id="${chatRoom.sessionId}" src="${CHAT_LOGO}" width="20" style="display:inline;margin-right:4px">  
           <span data-id="${chatRoom.sessionId}" class="chat-history-item-text">${chatRoom.title}</span>
           <div title="Delete this conversation" data-id="${chatRoom.sessionId}" id="tooltip-${chatRoom.sessionId}" class="chat-history-tooltip">
             <img src="${DELETE_ICON}" style="width:13px;" class="hoverable-fade">
@@ -267,14 +279,19 @@ var AIPlusUtils = {
       badge.remove();
     }
   },
-  showMessageResultOnSmartFilingUpload(id, folderId, text, isError = false) {
+  showMessageResultOnSmartFilingUpload(id, folderId, text, isError = false, nodeMetadata = null) {
     if(isError) {
       document.querySelector(`#smart-filing-loader-${id}-${folderId}`).innerHTML = `<img src="${TIMES_RED_ICON}" width="16" />`;
       document.querySelector(`#smart-filing-title-${id}-${folderId}`).style.color = "#d51212";
     } else {
       document.querySelector(`#smart-filing-loader-${id}-${folderId}`).innerHTML = `<img src="${SUCCESS_ICON}" width="16" />`;
     }
-    document.querySelector(`#smart-filing-title-${id}-${folderId}`).innerHTML = text;
+
+    if(nodeMetadata == null) {
+      document.querySelector(`#smart-filing-title-${id}-${folderId}`).innerHTML = `<span>${text}</span>`;
+    } else {
+      document.querySelector(`#smart-filing-title-${id}-${folderId}`).innerHTML = `<span>${text}</span><a target="_blank" href="${AIPlusUtils.constructNodeLink(nodeMetadata.id)}" style="margin-left:6px">See file</a>`;
+    }
   },
   reRenderChatRooms: function() {
     document.querySelectorAll('.chat-history-item').forEach(e => {
@@ -1028,6 +1045,13 @@ async function handleFiles(files) {
         job: jobResult
       });
       AIPlusUtils.changeFileUploadStatus(job.id, 40);
+    } else if(jobResult.status.toLowerCase() == "completed") {
+      queues.push({
+        file: job.file,
+        id: job.id,
+        job: jobResult
+      });
+      AIPlusUtils.changeFileUploadStatus(job.id, 40);
     } else if (jobResult.error) {
       AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${jobResult.message ?? jobResult.error}`);
     }
@@ -1070,9 +1094,10 @@ async function handleFiles(files) {
         } else {
           console.warn("no filing suggestion found: " + filingSuggestion);
         }
-        suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
       } catch (error) {
         AIPlusUtils.changeFileUploadStatus(file.id, 0, `Error when analyzing ${file.file.name}: ${error.message ?? "An unxpected error occurred"}`);
+      } finally {
+        suggestionFilings = suggestionFilings.filter(x => x.id != file.id);
       }
     }
       
@@ -1132,7 +1157,7 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
       <div class="msg-img" style="background-image: url(${BOT_IMG}); margin-top: 20px; display: inherit;"></div>
         <div style="max-width:85%;background-color: #F4F4F4; width:fit-content;" class="msg-bubble shadow">
           <div id="bot-text-${uniqueId}" class="msg-text">
-            I've analyzed "${smartFilingMetadata.file.name}". Where would you like to file it?
+            I've analyzed "${smartFilingMetadata.file.name}". ${AIPlusUtils.concatenateSentences(smartFilingMetadata.suggestions.map(x => x.reasoning))} <br/><br/> Where would you like to file it?
           </div>
           
           <div style="margin-top:10px" data-id="${uniqueId}" id="chat-smart-filing-${uniqueId}">
@@ -1140,7 +1165,7 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
           </div>
 
           <button data-id="${uniqueId}" title="File Selected" id="sf-submit-btn-${uniqueId}" class="msger-btn hoverable-fade" style="border:none;border-radius:40px!important;margin-top:12px;display:block;background:#2a6396;font-size:12px;font-weight:550;color:white;border-radius:8px;padding:8px 12px">
-            <center>File Selected</center>
+            <center>Upload to Selected</center>
           </button>
         </div>
       </div>
@@ -1219,7 +1244,7 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
       const checked = [];
       document.querySelectorAll(`.smart-filing-checkbox-${el.dataset.id}`).forEach(x => {
         if(x.checked) {
-          checked.push(x.dataset.id);
+          checked.push({nodeId: x.dataset.id, path: x.dataset.path});
         }
       });
       
@@ -1234,13 +1259,14 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
       });
       
       el.style.display = "none";
-      for(const nodeId of checked) {
+      for(const {nodeId, path} of checked) {
         AIPlusUtils.showLoaderOnSmartFilingUpload(el.dataset.id, nodeId);
         const res = await AIPlusAPI.uploadToOTCS(smartFilingMetadata.file, nodeId);
         if(res.error) {
           AIPlusUtils.showMessageResultOnSmartFilingUpload(el.dataset.id, nodeId, res.error, true);
         } else {
-          AIPlusUtils.showMessageResultOnSmartFilingUpload(el.dataset.id, nodeId, "Successfully uploaded!");
+          const folderName = path.split(" : ").pop();
+          AIPlusUtils.showMessageResultOnSmartFilingUpload(el.dataset.id, nodeId, `Successfully uploaded to ${folderName}!`, false, res);
         }
       }
     });
@@ -1366,12 +1392,12 @@ function createChatbotElement() {
               <div class="chat-sidenav-title">MENU</div>
 
               <button id="msger-tool-CHATS" title="View all your chats" class="hoverable-active hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="CHATS" style="display:flex;width:100%;align-items:center;gap:6px">
-                <img src="${CHATS_IMG}" style="width:14px" />
+                <img src="${CHATS_IMG}" width="20" />
                 <span>&nbsp;CHATS</span>
               </button>
 
               <button id="msger-tool-PROJECTS" title="View all your projects" class="hoverable msger-btn chat-sidenav-sub-title msger-tool-btn" data-menu="PROJECTS" style="display:flex;width:100%;align-items:center;gap:6px">
-                <img src="${PROJECTS_LOGO}" style="width:14px" />
+                <img src="${PROJECTS_LOGO}" width="20" />
                 <span>&nbsp;PROJECTS</span>
               </button>
 
@@ -1412,7 +1438,15 @@ function createChatbotElement() {
 
             <header class="msger-header" style="border-left:1px solid whitesmoke">
               <div class="msger-header-title" id="chatbotmenu">
-                <div style="margin-top:6px;font-size: 15px;font-weight: 600;height: 22px;color: #2c3e50;display:inline-block;vertical-align:middle">ASK ARK</div>
+                <div style="height: 22px;color: #2c3e50;display:inline-block;vertical-align:middle">
+                  <div style="display:flex">
+                    <img src="${AIPLUS_LOGO}" width="26" height="26" />
+                    <div style="margin-left:8px">
+                      <div style="font-size:14px;font-weight:600;margin-bottom:2px">AI+</div>
+                      <div style="font-size:10px">Your helpful assistant</div>
+                    </div>
+                  </div>
+                </div>
               </div>
                 
               <div class="msger-header-options">
