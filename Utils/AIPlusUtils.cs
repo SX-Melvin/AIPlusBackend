@@ -134,8 +134,6 @@ namespace AIPlusBackend.Utils
 
                 var response = await Client.ExecuteAsync<AIPlusGetFilingSuggestionResponse>(request);
                 _logger.Info("AIPlus Get Filing Suggestion: " + response.Content);
-                _logger.Info("AIPlus Get Filing Suggestion: " + documentFileName);
-                _logger.Info("AIPlus Get Filing Suggestion: " + wId);
                 return response.Data;
             }
             catch(Exception ex)

@@ -1791,14 +1791,42 @@ const checkContext = setInterval(() => {
 }, 100);
 
 window.aiPlusSendFilesToChatbot = async (nodes) => {
-  showAviator(true);
-  clearChats();
-  NODE_IDS_REFERENCE = [];
-  for(const node of nodes) {
-    appendMessage("file-upload", node.attributes.name);
-    NODE_IDS_REFERENCE.push(node.attributes.id.toString());
+  try {
+    showAviator(true);
+    clearChats();
+    NODE_IDS_REFERENCE = [];
+    for(const node of nodes) {
+      appendMessage("file-upload", node.attributes.name);
+      NODE_IDS_REFERENCE.push(node.attributes.id.toString());
+    }
+    await AIPlusAPI.getChatRooms();
+  } catch (error) {
+    console.error(error);    
   }
-  await AIPlusAPI.getChatRooms();
+};
+
+window.aiPlusRenderIngestionStatus = async (nodes) => {
+  try {
+    for(const node of nodes) {
+      const row = document.querySelector(`a[href$="/nodes/${node.attributes.id}"]`).parentElement.parentElement;
+      const stateContainer = row.querySelector("ul.csui-node-states");
+      if(!stateContainer) {
+        const ul = document.createElement("ul");
+        ul.classList.add("csui-node-states");
+        row.querySelector("td.csui-table-cell-node-state").appendChild(ul);
+      }
+
+      row.querySelector("ul.csui-node-states").insertAdjacentElement("beforeend", `
+        <li class="csui-node-state-reservation">    
+          <button title="Reserved by Admin 12-01-2026" type="button" tabindex="-1" aria-label="Reserved by Admin at 12-01-2026, click to unreserve">
+            <span title="Reserved by Admin 12-01-2026" class="icon icon-reserved_self"></span>
+          </button>
+        </li>
+      `);
+    }
+  } catch (error) {
+    console.error(error);    
+  }
 };
 
 // Explorer Insight END

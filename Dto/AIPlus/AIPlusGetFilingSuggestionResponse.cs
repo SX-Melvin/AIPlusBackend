@@ -14,6 +14,19 @@
         public string Reasoning { get; set; }
         public string Path { get; set; }
         public bool IsRecommended { get; set; }
+        public List<AIPlusFilingSuggestionSuggestionCategories>? Categories { get; set; } = [];
+    }
+    public class AIPlusFilingSuggestionSuggestionCategories
+    {
+        public string Name { get; set; }
+        public long? Id { get; set; } = null;
+        public List<AIPlusFilingSuggestionSuggestionCategoriesField> Fields { get; set; }
+    }
+    public class AIPlusFilingSuggestionSuggestionCategoriesField
+    {
+        public string? Id { get; set; } = null;
+        public string Name { get; set; }
+        public string? Value { get; set; } = null;
     }
     public class FoldersFile
     {

@@ -15,10 +15,14 @@ namespace AIPlusBackend.Dto
         public DbSet<DTreeCore> DTreeCores { get; set; }
         public DbSet<AIPlusTempFile> AIPlusTempFiles { get; set; }
         public DbSet<KUAF> KUAFs { get; set; }
+        public DbSet<CatRegionMap> CatRegionMaps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Exclude KUAFs Table From Migrations
+            modelBuilder.Entity<CatRegionMap>().HasNoKey();
+            modelBuilder.Entity<CatRegionMap>().ToTable(nameof(CatRegionMap), t => t.ExcludeFromMigrations());
+            
             modelBuilder.Entity<DTreeACL>().HasNoKey();
             modelBuilder.Entity<DTreeACL>().ToTable(nameof(DTreeACL), t => t.ExcludeFromMigrations());
             

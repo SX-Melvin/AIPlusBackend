@@ -34,7 +34,7 @@ namespace AIPlusBackend.Services
 
             try
             {
-                var wId = "smart-filing";
+                var wId = "smart-filing2";
                 var token = utils.Login().Result.Token;
                 var suggestFileIngested = false;
 
@@ -70,6 +70,25 @@ namespace AIPlusBackend.Services
                 {
                     var suggestion = response.Suggestions[i];
                     var path = csdb.GetNodeFullPath(Convert.ToInt64(suggestion.FolderId));
+
+                    foreach(var category in suggestion.Categories)
+                    {
+                        var cat = csdb.GetCatRegionMapByName(category.Name);
+                        if(cat != null)
+                        {
+                            category.Id = cat.CatID;
+
+                            foreach (var field in category.Fields)
+                            {
+                                var f = csdb.GetCatRegionMapsByIdAndAttrName(cat.CatID, field.Name);
+                                if(f != null)
+                                {
+                                    field.Id = f.RegionName.Replace("Attr_", "");
+                                }
+                            }
+                        }
+                    }
+
 
                     if (path == null)
                     {

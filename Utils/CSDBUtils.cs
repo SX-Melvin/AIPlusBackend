@@ -93,6 +93,14 @@ namespace AIPlusBackend.Utils
                 PageSize = pageSize
             };
         }
+        public CatRegionMap? GetCatRegionMapByName(string name)
+        {
+            return _context.CatRegionMaps.FirstOrDefault(x => x.CatName == name);
+        }
+        public CatRegionMap? GetCatRegionMapsByIdAndAttrName(long id, string attrName)
+        {
+            return _context.CatRegionMaps.FirstOrDefault(x => x.CatID == id && attrName == x.AttrName);
+        }
         public ProjectRoom? UpdateProjectRoomById(long id, UpdateProjectByIdRequest data)
         {
             var projectRoom = _context.ProjectRooms.FirstOrDefault(x => x.ID == id);
