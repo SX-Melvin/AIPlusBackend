@@ -28,6 +28,24 @@ namespace AIPlusBackend.Services
 
             return result;
         }
+        public async Task<APIResponse<AIPlusSearchForFilesResponse>> SearchForFiles(string fileName)
+        {
+            var result = new APIResponse<AIPlusSearchForFilesResponse>();
+
+            try
+            {
+                var token = await utils.Login();
+                var data = await utils.SearchForFiles(fileName, config.Value.WorkspaceId, token.Token);
+                result.Data = data;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
+            }
+
+            return result;
+        }
         public async Task<APIResponse<AIPlusGetFilingSuggestionResponse>> FilingSuggestion(string filePath, long userId)
         {
             var result = new APIResponse<AIPlusGetFilingSuggestionResponse>();

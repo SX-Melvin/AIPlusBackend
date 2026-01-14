@@ -14,11 +14,12 @@
 
 # SQL Tables
 ```
-CREATE TABLE CSDB.otcs.AIPlus_ChatRooms (
+CREATE TABLE OTCS.dbo.AIPlus_TempFile (
 	ID bigint IDENTITY(1,1) NOT NULL,
-	Name varchar(255) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	UserID bigint NOT NULL,
-	CreatedAt datetime2(0) DEFAULT getdate() NOT NULL
+	JobId varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+	WorkspaceID varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	DeleteAt datetime2(0) DEFAULT getdate() NULL,
+	NodeID bigint NULL
 );
 
 CREATE TABLE CSDB.otcs.AIPlus_ProjectRooms (
@@ -28,12 +29,14 @@ CREATE TABLE CSDB.otcs.AIPlus_ProjectRooms (
 	CreatedAt datetime2(0) DEFAULT getdate() NULL
 );
 
-CREATE TABLE CSDB.otcs.AIPlus_Chats (
-	ID bigint IDENTITY(1,1) NOT NULL,
-	IsHuman bit DEFAULT 1 NOT NULL,
-	ChatRoomID bigint NOT NULL,
-	Message varchar(5000) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
-	CreatedAt datetime2(0) DEFAULT getdate() NOT NULL
+CREATE TABLE CSDB.otcs.AIPlus_SyncedFolders (
+	ID int IDENTITY(1,1) NOT NULL,
+	Name nvarchar(300) COLLATE SQL_Latin1_General_CP1_CS_AS NOT NULL,
+	NodeID bigint NOT NULL,
+	CreatedAt datetime2(0) DEFAULT getdate() NULL,
+	Description text COLLATE SQL_Latin1_General_CP1_CS_AS NULL,
+	Error text COLLATE SQL_Latin1_General_CP1_CS_AS NULL,
+	CONSTRAINT AIPlus_SyncedFolders_UNIQUE UNIQUE (NodeID)
 );
 
 CREATE TABLE CSDB.otcs.AIPlus_FileVersions (
@@ -57,12 +60,5 @@ CREATE TABLE CSDB.otcs.AIPlus_SyncedFiles (
 	CreatedAt datetime2(0) DEFAULT getdate() NOT NULL,
 	Error varchar(100) COLLATE SQL_Latin1_General_CP1_CS_AS NULL,
 	CONSTRAINT AIPlus_SyncedFiles_PK PRIMARY KEY (JobID)
-);
-
-CREATE TABLE CSDB.otcs.AIPlus_TempFile (
-	ID bigint IDENTITY(1,1) NOT NULL,
-	JobId varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	WorkspaceID varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-	DeleteAt datetime2(0) NOT NULL
 );
 ```

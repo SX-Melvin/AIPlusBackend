@@ -1,5 +1,6 @@
 ﻿using AIPlusBackend.Configurations;
 using AIPlusBackend.Dto.AIPlus;
+using AIPlusBackend.Dto.Database;
 using AIPlusBackend.Utils.Common;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -36,14 +37,18 @@ namespace AIPlusBackend.Utils
 
             return result;
         }
-        public async Task<AIPlusDeleteFileResponse> DeleteFile(string wID, string jobId, string token)
+        public async Task<AIPlusDeleteFileResponse> DeleteFile(AIPlusTempFile tempFile, string token)
         {
             AIPlusDeleteFileResponse result = new();
 
             try
             {
-                var request = new RestRequest($"/api/workspaces/{wID}/files/{jobId}", Method.Delete);
-                request.AddQueryParameter("deleteStorage", true); // Delete from storage as well
+                var request = new RestRequest($"/api/workspaces/{tempFile.WorkspaceID}/files/{tempFile.JobId}", Method.Delete);
+                request.AddQueryParameter("deleteStorage", true);
+                if(tempFile.NodeID.HasValue)
+                {
+                    request.AddQueryParameter("nodeId", tempFile.NodeID.Value);
+                }
                 request.AddHeader("Authorization", $"Bearer {token}");
                 var response = await Client.ExecuteAsync<AIPlusDeleteFileResponse>(request);
                 _logger.Info("AIPlus Delete File Response: " + response.Content);
@@ -66,6 +71,25 @@ namespace AIPlusBackend.Utils
                 request.AddHeader("Authorization", $"Bearer {token}");
                 var response = await Client.ExecuteAsync<AIPlusGetJobResponse>(request);
                 _logger.Info("AIPlus Get Job Response: " + response.Content);
+                return response.Data;
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
+        public async Task<AIPlusSearchForFilesResponse> SearchForFiles(string fileName, string wID, string? token = null)
+        {
+            AIPlusSearchForFilesResponse result = new();
+
+            try
+            {
+                var request = new RestRequest($"/api/workspaces/{wID}/files/search?q={fileName}", Method.Get);
+                request.AddHeader("Authorization", $"Bearer {token}");
+                var response = await Client.ExecuteAsync<AIPlusSearchForFilesResponse>(request);
+                _logger.Info("AIPlus Search For Files Response: " + response.Content);
                 return response.Data;
             }
             catch(Exception ex)

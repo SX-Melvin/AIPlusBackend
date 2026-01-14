@@ -19,6 +19,7 @@ namespace AIPlusBackend.Services
                 {
                     DeleteAt = DateTime.Now.AddMinutes(body.MinutesTillExpired),
                     JobId = body.JobId,
+                    NodeID = body.NodeID,
                     WorkspaceID = body.WorkspaceId
                 });
 

@@ -1,6 +1,6 @@
 ﻿namespace AIPlusBackend.Dto.AIPlus
 {
-    public class AIPlusDeleteFileResponse
+    public class AIPlusDeleteFileResponse: AIPlusCommonResponse
     {
         public string FileName { get; set; }
         public bool StorageDeleted { get; set; }

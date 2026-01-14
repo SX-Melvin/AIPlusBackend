@@ -64,7 +64,7 @@ var recurringJobs = app.Services.GetRequiredService<IRecurringJobManager>();
 recurringJobs.AddOrUpdate<DeleteTempFiles>(
     "delete-temp-files",
     job => job.CheckAndDeleteTempFiles(),
-    "*/10 * * * *"
+    "*/1 * * * *"
 );
 
 await app.RunAsync();
