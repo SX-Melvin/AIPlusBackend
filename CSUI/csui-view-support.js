@@ -10837,11 +10837,11 @@ csui.define(
 
                         const a = document.createElement("a");
 
-                        a.setAttribute("title", "Ask Aviator");
+                        a.setAttribute("title", "Ask AI+");
                         a.setAttribute("role", "menuitem");
                         a.setAttribute("class", "icon-toolbar-aviator csui-toolitem csui-acc-focusable csui-toolitem-icononly");
                         a.setAttribute("data-cstabindex", "-1");
-                        a.setAttribute("aria-label", "Ask Aviator");
+                        a.setAttribute("aria-label", "Ask AI+");
                         a.style.display = "flex";
                         a.style.justifyContent = "center";
                         a.style.marginLeft = "4px";

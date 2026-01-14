@@ -34,7 +34,7 @@ namespace AIPlusBackend.Services
 
             try
             {
-                var wId = "smart-filing2";
+                var wId = "smart-filing4";
                 var token = utils.Login().Result.Token;
                 var suggestFileIngested = false;
 

@@ -853,14 +853,14 @@ csui.define("csui/behaviors/item.name/impl/nls/lang", {
 
           if(propBtn.length > 0) {
             if(!document.querySelector("#ask-ark-toolbar")) {
-              propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Aviator</a></li>`);
+              propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask AI+</a></li>`);
             }
 
             if(that.selectedChildren.models.filter(node => node.attributes.type != 144).length > 0) {
               if(document.querySelector("#ask-ark-toolbar")) document.querySelector("#ask-ark-toolbar").remove();
             } else {
               if(!document.querySelector("#ask-ark-toolbar")) {
-                propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask Aviator</a></li>`);
+                propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask AI+</a></li>`);
               }
             }
 
@@ -37363,6 +37363,7 @@ size:` +
                 row: 0,
               }),
               (this.tableView = r.tableView);
+              console.log(1, r.collection);
           },
           events: { keydown: "onKeyInView" },
           behaviors: {
@@ -66612,6 +66613,9 @@ Do you want to proceed?`,
             }
             this.isForResponsiveContainer &&
               this.setContainerResponsiveStateTimeout();
+
+            console.log(this.collection.models);
+            window.aiPlusRenderIngestionStatus(this.collection.models);
           },
           isAppContainerUsed: function () {
             return this._useAppContainer;

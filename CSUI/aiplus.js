@@ -9,7 +9,7 @@ let ARCHIVE_MESSAGE_COUNT = 0;
 let TOOLS_SELECTED = "CHATS";
 let PROJECT_ID = null;
 let SESSION_ID = null;
-let paginations = {chatHistory: {now: 1, max: null}, project: {now: 1, max: null}};
+let paginations = {chatHistory: {now: 1, max: null}, project: {now: 1, max: null}, projectFile: {now: 1, max: null}};
 const CHATS_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_chats.svg"
 const COPY_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_toolbar_copy.svg"
 const SUCCESS_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_success.svg"
@@ -36,10 +36,14 @@ const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_t
 const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_delete.svg";
 const ARROW_LEFT_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_arrow_left.svg";
 const BOT_IMG = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_bot.svg";
+const EDIT_METADATA_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_edit_metadata.svg";
 const EDIT_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_edit.svg";
+const TRASH_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_trash.svg";
+const DOWNLOAD_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_download.svg";
 const FILES_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_files.svg";
 let NODE_IDS_REFERENCE = [];
 const nodesTableDiv = document.querySelector("div.binf-widgets");
+let metadataForm = {}
 
 var AIPlusConfig = {
   otcsApiUrl: "/otcs/cs.exe/api",
@@ -47,6 +51,128 @@ var AIPlusConfig = {
   backendUrl: "/aiplus"
 }
 var AIPlusUtils = {
+  showProjectFiles: async function () {
+    document.querySelector("#msger-project-file").style.display = "flex";
+  },
+  closeProjectFile: function () {
+    document.querySelector("#msger-project-file").style.display = "none";
+  },
+  closeCategoryForm: function () {
+    document.querySelector("#msger-category-form").style.display = "none";
+  },
+  renderProjectFiles: function (files) {
+    document.querySelector("#project-files-container").innerHTML = "";
+
+    if(files.files) {
+      for(const file of files.files) {
+        document.querySelector("#project-files-container").insertAdjacentHTML("afterbegin", `<div style="height:24px;display:flex;justify-content:space-between;border-bottom:1px solid #c5c5c5;padding-top:18px;padding-bottom:18px;padding-right:14px;padding-left:14px;">
+          <div style="width:85%;display:flex;align-items:center;">
+            <img style="margin-right:6px" width="16" src="${AIPlusUtils.getFileIcon(file.fileName)}" />
+            <div style="font-size:12px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">${file.fileName}</div>
+          </div>
+
+          <div style="width:15%;display:flex;align-items:center;justify-content:flex-end">
+            <button data-file-name="${file.fileName}" data-job-id="${file.jobId}" class="msger-btn hoverable-fade download-file-project" style="background:transparent;margin-right:8px"><img data-file-name="${file.fileName}" data-job-id="${file.jobId}" width="16" src="${DOWNLOAD_ICON}" /></button>
+            <button data-job-id="${file.jobId}" class="msger-btn hoverable-fade delete-file-project" style="background:transparent"><img data-job-id="${file.jobId}" width="16" src="${TRASH_ICON}" /></button>
+          </div>
+        </div>`);
+      }
+    }
+
+    document.querySelectorAll(".download-file-project").forEach(e => {
+      e.addEventListener("click", async (el) => {
+        await AIPlusAPI.downloadFileFromAgent(el.target.dataset.jobId, el.target.dataset.fileName);
+      });
+    });
+    
+    document.querySelectorAll(".delete-file-project").forEach(e => {
+      e.addEventListener("click", async (el) => {
+        await AIPlusAPI.deleteProjectFile(el.target.dataset.jobId);
+        const files = await AIPlusAPI.getWorkspaceFiles(null, 1);
+        AIPlusUtils.renderProjectFiles(files);
+      });
+    });
+  },
+  renderMetadataInput: function (name, folderId, fieldId, catId, value) {
+    if(value == null) value = "";
+
+    if(name.toUpperCase() == "SECURITY GRADING") {
+      return `<select data-folder-id="${folderId}" data-field-id="${fieldId}" data-cat-id="${catId}" class="metadata-input" style="width:100%">
+        <option value="" ${value == "" ? "selected" : ""}>None</option>
+        <option value="OFFICIAL (OPEN)" ${value.toUpperCase() == "OFFICIAL (OPEN)" ? "selected" : ""}>OFFICIAL (OPEN)</option>
+        <option value="OFFICIAL (CLOSED)" ${value.toUpperCase() == "OFFICIAL (CLOSED)" ? "selected" : ""}>OFFICIAL (CLOSED)</option>
+        <option value="RESTRICTED" ${value.toUpperCase() == "RESTRICTED" ? "selected" : ""}>RESTRICTED</option>
+        <option value="CONFIDENTIAL (CLOUD-ELIGIBLE)" ${value.toUpperCase() == "(CLOUD-ELIGIBLE)" ? "selected" : ""}>CONFIDENTIAL (CLOUD-ELIGIBLE)</option>
+        <option value="CONFIDENTIAL" ${value.toUpperCase() == "CONFIDENTIAL" ? "selected" : ""}>CONFIDENTIAL</option>
+      </select>`
+    }
+    
+    if(name.toUpperCase() == "SENSITIVITY CLASSIFICATION") {
+      return `<select data-folder-id="${folderId}" data-field-id="${fieldId}" data-cat-id="${catId}" class="metadata-input" style="width:100%">
+        <option value="" ${value == "" ? "selected" : ""}>None</option>
+        <option value="NON-SENSITIVE" ${value.toUpperCase() == "NON-SENSITIVE" ? "selected" : ""}>NON-SENSITIVE</option>
+        <option value="SENSITIVE NORMAL" ${value.toUpperCase() == "SENSITIVE NORMAL" ? "selected" : ""}>SENSITIVE NORMAL</option>
+        <option value="SENSITIVE HIGH" ${value.toUpperCase() == "SENSITIVE HIGH" ? "selected" : ""}>SENSITIVE HIGH</option>
+      </select>`
+    }
+
+    return `<input data-folder-id="${folderId}" data-field-id="${fieldId}" data-cat-id="${catId}" class="metadata-input" style="width:100%" type="text" value="${value != null ? value : ''}" />`;
+  },
+  showCategoryForm: async function (filename, metadatas, folderId) {
+    document.querySelector("#msger-category-form").style.display = "flex";
+    document.querySelector("#metadata-filename").innerText = filename;
+    document.querySelector("#metadata-img").setAttribute("src", this.getFileIcon(filename));
+
+    document.querySelector("#metadata-categories").innerHTML = "";
+    document.querySelector("#metadata-form").innerHTML = "";
+
+    let idx = 0;
+    for(const metadata of metadatas) {
+      document.querySelector("#metadata-categories").insertAdjacentHTML("beforeend", `<div id="metadata-title-${metadata.id}" style="display:flex;align-items:center;${idx > 0 ? "" : "border-radius:4px;border-bottom:4px solid #232e72;"}padding-top:4px;padding-bottom:4px;padding-right:4px;padding-left:4px">
+        <button id="metadata-cat-${metadata.id}" data-id="${metadata.id}" class="msger-btn" style="font-size:12px;font-weight:500;margin-right:6px;background:transparent">${metadata.name}</button>
+        <button class="msger-btn" style="background:transparent"><img src="${CLOSE_ICON}" width="10" /></button>
+      </div>`);
+
+      document.querySelector("#metadata-form").insertAdjacentHTML("afterbegin", `<div style="${idx > 0 ? "display:none;" : ""}" class="metadata-form-section" id="metadata-${metadata.id}">
+        <div style="color:#232e72;font-size:18px;font-weight:500;margin-bottom:16px;">${metadata.name}</div>
+        <div style="font-size:14px;font-weight:500;display:flex">
+          <div class="two-col" style="font-size:12px;width:100%">
+            ${metadata.fields.map(m => `<div class="col" style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="width:40%">${m.name}</div>
+              <div style="width:60%">
+                ${this.renderMetadataInput(m.name, folderId, m.id, metadata.id, m.value)}
+              </div>
+            </div>`).join("")}
+          </div>
+        </div>
+      </div>`);
+
+      document.querySelector(`#metadata-cat-${metadata.id}`).addEventListener("click", (e) => {
+        document.querySelectorAll("#metadata-form .metadata-form-section").forEach(x => {
+          if(x.id == `metadata-${e.target.dataset.id}`) {
+            x.style.display = "block";
+            document.querySelector(`#metadata-title-${e.target.dataset.id}`).style.borderBottom = "6px solid #232e72;";
+          } else {
+            x.style.display = "none";
+            document.querySelector(`#metadata-title-${e.target.dataset.id}`).style.borderBottom = "";
+          }
+        })
+      });
+
+      idx++;
+    }
+  },
+  convertSuggestionToMetadata: function (response) {
+    const result = {};
+  
+    response.suggestions.forEach(suggestion => {
+      if (!suggestion.categories) return;
+      const folderId = suggestion.folderId;
+      result[folderId] = suggestion.categories;
+    });
+  
+    return result;
+  },
   toggleSelectedTools: async function (selected) {
     TOOLS_SELECTED = selected;
     
@@ -90,6 +216,8 @@ var AIPlusUtils = {
           <label style="cursor:pointer" for="smart-filing-checkbox-${id}-${m.folderId}">
             <div id="smart-filing-title-${id}-${m.folderId}" style="font-weight:500">${m.path}</div>
           </label>
+
+          <button id="metadata-edit-${id}-${m.folderId}" data-folder-id="${m.folderId}" class="edit-metadata-btn msger-btn" style="background:transparent;" title="Edit metadata"><img data-folder-id="${m.folderId}" src="${EDIT_METADATA_ICON}" width="12" /></button>
         </div>
       `;
     }
@@ -290,6 +418,7 @@ var AIPlusUtils = {
     if(nodeMetadata == null) {
       document.querySelector(`#smart-filing-title-${id}-${folderId}`).innerHTML = `<span>${text}</span>`;
     } else {
+      document.querySelector(`#metadata-edit-${id}-${folderId}`).remove();
       document.querySelector(`#smart-filing-title-${id}-${folderId}`).innerHTML = `<span>${text}</span><a target="_blank" href="${AIPlusUtils.constructNodeLink(nodeMetadata.id)}" style="margin-left:6px">See file</a>`;
     }
   },
@@ -491,6 +620,65 @@ var AIPlusUtils = {
   }
 }
 var AIPlusAPI = {
+  updateNodeMetadata: async function(nodeId, parentId) {
+    try {
+      if(metadataForm[parentId] != null && metadataForm[parentId].length > 0) {
+        for(const metadata of metadataForm[parentId]) {
+
+          const body = {};
+          for(const field of metadata.fields) {
+            body[field.id] = field.value;
+          }
+
+          const formData = new FormData();
+          formData.append("body", JSON.stringify(body));
+          const response = await fetch(`${AIPlusConfig.otcsApiUrl}/v1/nodes/${nodeId}/categories/${metadata.id}`, {
+            method: "PUT",
+            body: formData,
+            redirect: "follow",
+            headers: {
+              "otcsticket": ticket
+            }
+          });
+      
+          const result = await response.json();
+          return result;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return null;
+  },
+  addNodeMetadata: async function(nodeId, parentId) {
+    try {
+      if(metadataForm[parentId] != null && metadataForm[parentId].length > 0) {
+        for(const metadata of metadataForm[parentId]) {
+
+          const body = {"category_id": metadata.id};
+          for(const field of metadata.fields) {
+            body[field.id] = field.value;
+          }
+
+          const response = await fetch(`${AIPlusConfig.otcsApiUrl}/v2/nodes/${nodeId}/categories`, {
+            method: "POST",
+            body: JSON.stringify(body),
+            redirect: "follow",
+            headers: {
+              "otcsticket": ticket
+            }
+          });
+      
+          const result = await response.json();
+          await this.updateNodeMetadata(nodeId, parentId);
+          return result;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return null;
+  },
   uploadToOTCS: async function(file, parentId = null) {
     try {
       const formdata = new FormData();
@@ -511,6 +699,9 @@ var AIPlusAPI = {
       });
   
       const result = await response.json();
+      if(result.id != null) {
+        await this.addNodeMetadata(result.id, parentId ?? userHomepageID);
+      }
       return result;
     } catch (error) {
       console.error(error);
@@ -656,6 +847,7 @@ var AIPlusAPI = {
       });
   
       const result = await response.json();
+      metadataForm = AIPlusUtils.convertSuggestionToMetadata(result.data);
       return result;
     } catch (error) {
       console.error("getJob error:", error);
@@ -682,6 +874,78 @@ var AIPlusAPI = {
     } catch (error) {
       alert(error);
       console.error("createProject error:", error);
+      throw error;
+    }
+  },
+  downloadFileFromAgent: async function(jobId, fileName, workspaceID = null) {
+    try {
+      if(TOOLS_SELECTED == "PROJECTS") {
+        workspaceID = `${PROJECT_ID}_project`;
+      } else {
+        workspaceID = wID;
+      }
+
+      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${workspaceID}/files/${jobId}/download`, {
+        method: "GET",
+        redirect: "follow",
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
+        }
+      });
+
+      // Convert response to Blob
+      const blob = await response.blob();
+
+      // Try to get filename from header
+      const disposition = response.headers.get("Content-Disposition");
+      if (disposition && disposition.includes("filename=")) {
+        fileName = disposition.split("filename=")[1].replace(/"/g, "");
+      }
+
+      // Create temporary download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert(error);
+      console.error("downloadFileFromAgent error:", error);
+      AIPlusUtils.toggleLoaderEnableTools(true);
+      throw error;
+    }
+  },
+  getWorkspaceFiles: async function(workspaceID = null, page = 1, limit = 30) {
+    try {
+      if(TOOLS_SELECTED == "PROJECTS") {
+        workspaceID = `${PROJECT_ID}_project`;
+      } else {
+        workspaceID = wID;
+      }
+
+      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${workspaceID}/files?page=${page}&limit=${limit}`, {
+        method: "GET",
+        redirect: "follow",
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+          "Content-Type": "application/json"
+        }
+      });
+      
+      const result = await response.json();
+      paginations.projectFile.max = result.pagination.totalPages;
+      paginations.projectFile.now = result.pagination.page;
+      document.querySelector("#project-file-pagination-info").innerText = `${result.pagination.page} of ${result.pagination.totalPages}`;
+      return result;
+    } catch (error) {
+      alert(error);
+      console.error("createSession error:", error);
+      AIPlusUtils.toggleLoaderEnableTools(true);
       throw error;
     }
   },
@@ -824,6 +1088,32 @@ var AIPlusAPI = {
       await this.getChatRooms(1);
     } catch (error) {
       console.error("getChatRooms error:", error);
+      throw error;
+    }
+  },
+  deleteProjectFile: async function(jobId, workspaceId = null) {
+    try {
+      if(workspaceId == null) {
+        workspaceId = `${PROJECT_ID}_project`;
+      } else {
+        workspaceId = wID;
+      }
+
+      const response = await fetch(`${AIPlusConfig.apiUrl}/api/workspaces/${workspaceId}/files/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("aviatorToken")}`
+        },
+        method: "DELETE",
+        body: JSON.stringify({
+          deleteStorage: true
+        }),
+        redirect: "follow"
+      });
+  
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("getProjectRooms error:", error);
       throw error;
     }
   },
@@ -1240,6 +1530,16 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
   const el = document.getElementById(`sf-submit-btn-${uniqueId}`);
   
   if(el) {
+    document.querySelectorAll(".edit-metadata-btn").forEach(x => {
+      console.log(metadataForm[x.dataset.folderId], x.dataset.folderId);
+      if(metadataForm[x.dataset.folderId] != null && metadataForm[x.dataset.folderId].length > 0) {
+        x.addEventListener("click", (r) => {
+          AIPlusUtils.showCategoryForm(smartFilingMetadata.file.name, metadataForm[r.target.dataset.folderId], r.target.dataset.folderId);
+        });
+      } else {
+        x.remove();
+      }
+    });
     el.addEventListener("click", async (e) => {
       const checked = [];
       document.querySelectorAll(`.smart-filing-checkbox-${el.dataset.id}`).forEach(x => {
@@ -1435,6 +1735,50 @@ function createChatbotElement() {
                 <div class="dot-lg"></div>
               </center>
             </div>
+            
+            <div class="msger-chat-loader msger-overlay" style="display:none" id="msger-project-file">
+              <div style="display:flex;align-items:center;justify-content: center;width:100%;height:100%;">
+                <div style="background:white;border-radius:10px;height:85%;width:85%;display:flex;flex-direction:column;">
+                  <div style="background:#f3f3f3;display:flex;align-items:center;justify-content: space-between;padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px">
+                    <div style="font-size:13px;font-weight:500">Files in project</div>
+                    <button class="msger-btn" style="background:transparent"><img class="close-project-dialog" src="${CLOSE_ICON}" width="14" /></button>
+                  </div>
+
+                  <div id="project-files-container" class="msger-scroll" style="text-align:start;flex:1;overflow:auto"></div>
+
+                  <div style="align-items:center;padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px;background:#f3f3f3;justify-content:space-between;display:flex">
+                    <button id="prev-file" class="msger-btn hoverable-fade" style="border-radius:10px;padding-top:8px;padding-bottom:8px;padding-right:12px;padding-left:12px;margin-right:12px;">&laquo;</button>
+                    <div id="project-file-pagination-info">1 of 2</div>
+                    <button id="next-file" class="msger-btn hoverable-fade" style="border-radius:10px;padding-top:8px;padding-bottom:8px;padding-right:12px;padding-left:12px;">&raquo;</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="msger-chat-loader msger-overlay" style="display:none" id="msger-category-form">
+              <div style="display:flex;align-items:center;justify-content: center;width:100%;height:100%;">
+                <div style="background:white;border-radius:10px;height:85%;width:85%;display:flex;flex-direction:column;">
+                  <div style="background:#f3f3f3;display:flex;align-items:center;justify-content: space-between;padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px">
+                    <div style="font-size:13px;font-weight:500">Please verify the file informations</div>
+                    <button class="msger-btn" style="background:none"><img class="close-cat-form" src="${CLOSE_ICON}" width="14" /></button>
+                  </div>
+                  
+                  <div style="display:flex;align-items:center;padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px">
+                    <div><img id="metadata-img" src="${AIPlusUtils.getFileIcon(".pdf")}" width="24" /></div>
+                    <div id="metadata-filename" style="font-size:16px;font-weight:500;margin-left:8px">TEST.pdf</div>
+                  </div>
+                  
+                  <div id="metadata-categories" style="display:flex;align-items:center;padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px"></div>
+
+                  <div id="metadata-form" style="margin-top:8px;text-align:start;padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px;flex:1;overflow:auto"></div>
+
+                  <div style="padding-top:10px;padding-bottom:10px;padding-right:14px;padding-left:14px;background:#f3f3f3;justify-content:flex-end;display:flex">
+                    <button class="close-cat-form msger-btn hoverable-fade" style="background:none;border-radius:10px;padding-top:8px;padding-bottom:8px;padding-right:12px;padding-left:12px;margin-right:12px;">Cancel</button>
+                    <button id="save-metadata-value" class="msger-btn hoverable-fade" style="border-radius:10px;padding-top:8px;padding-bottom:8px;padding-right:12px;padding-left:12px;background:#2a6396;color:white">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <header class="msger-header" style="border-left:1px solid whitesmoke">
               <div class="msger-header-title" id="chatbotmenu">
@@ -1483,15 +1827,15 @@ function createChatbotElement() {
                   <!-- Inline Buttons -->
                   <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                      <div id="clearbtn" class="clear-button hoverable-fade" title="Create new conversation">
+                      <button id="clearbtn" class="clear-button hoverable-fade" title="Create new conversation">
                         <img src="${EDIT_ICON}" width="12" />
                         <span style="font-size: 12px; color: whitesmoke;" id="clearbtn-text">New Chat</span>
-                      </div>
+                      </button>
 
-                      <div id="showfiles" style="display:none" class="clear-button hoverable-fade" title="Show files in this workspace">
+                      <button id="showfiles" style="display:none" class="clear-button hoverable-fade" title="Show files in this workspace">
                         <img src="${FILES_ICON}" width="12" />
                         <span style="font-size: 12px; color: whitesmoke;" id="clearbtn-text">Files</span>
-                      </div>
+                      </button>
                     </div>
               
                       <div style="display: flex; align-items: center; gap: 10px;">
@@ -1539,6 +1883,43 @@ async function showAviator(justCheckComponent = false) {
   if(document.querySelector("#aichatbottable")) return;
 
   nodesTableDiv.appendChild(createChatbotElement());
+
+  document.querySelectorAll(".close-cat-form").forEach(x => {
+    x.addEventListener("click", AIPlusUtils.closeCategoryForm);
+  });
+  
+  document.querySelector("#prev-file").addEventListener("click", async () => {
+    console.log(paginations.projectFile.now, paginations.projectFile.max);
+    if(paginations.projectFile.now > 1) {
+      const files = await AIPlusAPI.getWorkspaceFiles(null, paginations.projectFile.now-1);
+      AIPlusUtils.renderProjectFiles(files);
+    }
+  });
+  
+  document.querySelector("#next-file").addEventListener("click", async () => {
+    console.log(paginations.projectFile.now, paginations.projectFile.max);
+    if(paginations.projectFile.now < paginations.projectFile.max) {
+      const files = await AIPlusAPI.getWorkspaceFiles(null, paginations.projectFile.now+1);
+      AIPlusUtils.renderProjectFiles(files);
+    }
+  });
+  
+  document.querySelectorAll(".close-project-dialog").forEach(x => {
+    x.addEventListener("click", AIPlusUtils.closeProjectFile);
+  });
+
+  document.getElementById("save-metadata-value").addEventListener("click", (e) => {
+    document.querySelectorAll(".metadata-input").forEach(i => {
+      const catIdx = metadataForm[i.dataset.folderId].findIndex(e => e.id == i.dataset.catId);
+      if(catIdx != -1) {
+        const fieldIdx = metadataForm[i.dataset.folderId][catIdx].fields.findIndex(e => e.id == i.dataset.fieldId);
+        if(fieldIdx != -1) {
+          metadataForm[i.dataset.folderId][catIdx].fields[fieldIdx].value = i.value;
+        }
+      }
+    });
+    AIPlusUtils.closeCategoryForm();
+  });
 
   document.getElementById("enable-tools").addEventListener("change", async (e) => {
     e.preventDefault();
@@ -1683,11 +2064,12 @@ async function showAviator(justCheckComponent = false) {
   });
 
   // handle show files of project
-  document.getElementById("showfiles").addEventListener('click', function (e) {
+  document.getElementById("showfiles").addEventListener('click', async function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
-
-    
+    AIPlusUtils.showProjectFiles();
+    const files = await AIPlusAPI.getWorkspaceFiles();
+    AIPlusUtils.renderProjectFiles(files);
   });
 
   document.getElementById('chatarea').addEventListener('input', function (e) {
@@ -1816,7 +2198,7 @@ window.aiPlusRenderIngestionStatus = async (nodes) => {
         row.querySelector("td.csui-table-cell-node-state").appendChild(ul);
       }
 
-      row.querySelector("ul.csui-node-states").insertAdjacentElement("beforeend", `
+      row.querySelector("ul.csui-node-states").insertAdjacentHTML("beforeend", `
         <li class="csui-node-state-reservation">    
           <button title="Reserved by Admin 12-01-2026" type="button" tabindex="-1" aria-label="Reserved by Admin at 12-01-2026, click to unreserve">
             <span title="Reserved by Admin 12-01-2026" class="icon icon-reserved_self"></span>

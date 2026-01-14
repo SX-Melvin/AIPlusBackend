@@ -6651,6 +6651,16 @@ body.bin-widgets .binf-modal-backdrop {
 
 /*# sourceMappingURL=csui-app.css.map */
 
+.two-col {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .two-col .col {
+    flex: 0 0 calc(50% - 8px);
+  }
+
 #files-container {
     align-items: flex-start!important;
     padding: 0px 14px;
