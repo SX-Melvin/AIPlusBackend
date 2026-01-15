@@ -14,12 +14,13 @@
 
 # SQL Tables
 ```
-CREATE TABLE OTCS.dbo.AIPlus_TempFile (
+CREATE TABLE CSDB.otcs.AIPlus_TempFile (
 	ID bigint IDENTITY(1,1) NOT NULL,
 	JobId varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
 	WorkspaceID varchar(100) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	DeleteAt datetime2(0) DEFAULT getdate() NULL,
-	NodeID bigint NULL
+	NodeID bigint NULL,
+	Name varchar(255) COLLATE SQL_Latin1_General_CP1_CS_AS NULL
 );
 
 CREATE TABLE CSDB.otcs.AIPlus_ProjectRooms (

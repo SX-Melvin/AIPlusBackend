@@ -37,12 +37,32 @@ namespace AIPlusBackend.Utils.Scheduler
                             {
                                 foreach (var file in files.Files)
                                 {
-                                    // TODO CONTINUE HERE
+                                    if(file.CustomMetadata != null && file.CustomMetadata.NodeId == item.NodeID)
+                                    {
+                                        item.JobId = file.JobId;
+                                        break;
+                                    }
+
+                                    foreach (var alias in file.Aliases)
+                                    {
+                                        if(Int64.Parse(alias.NodeId) == item.NodeID)
+                                        {
+                                            item.JobId = file.JobId;
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
 
-                        var deleteRes = await _aiPlus.DeleteFile(item, token);
+                        if(item.JobId == null)
+                        {
+                            _logger.Error($"Cannot find Job ID for Temp File {item.Name} with Node ID {item.NodeID}");
+                            _dbUtils.DeleteTempFile(item.ID);
+                            return;
+                        }
+
+                        await _aiPlus.DeleteFile(item, token);
                         _dbUtils.DeleteTempFile(item.ID);
                     }
                 }

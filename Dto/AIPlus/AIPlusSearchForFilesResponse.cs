@@ -33,13 +33,6 @@
     }
     public class AIPlusSearchForFilesResponseFileCustomMetadata
     {
-        public int NodeId { get; set; }
-        public string ParentId { get; set; }
-        public string PiiAction { get; set; }
-        public bool PiiScanned { get; set; }
-        public int ChildIndex { get; set; }
-        public bool PiiDetected { get; set; }
-        public int ParentIndex { get; set; }
-        public string PiiHighestSeverity { get; set; }
+        public int? NodeId { get; set; } = null;
     }
 }

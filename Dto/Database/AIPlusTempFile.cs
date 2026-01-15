@@ -8,8 +8,8 @@ namespace AIPlusBackend.Dto.Database
         public long ID { get; set; }
         public long? NodeID { get; set; } = null;
         public string WorkspaceID { get; set; }
-        public string JobId { get; set; }
+        public string? JobId { get; set; } = null;
         public string? Name { get; set; } = null;
-        public DateTime DeleteAt { get; set; }
+        public DateTime? DeleteAt { get; set; } = null;
     }
 }
