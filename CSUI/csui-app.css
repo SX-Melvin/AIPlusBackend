@@ -6943,3 +6943,10 @@ body.bin-widgets .binf-modal-backdrop {
     pointer-events: none;  /* so dropping still works */
     font-size: 22px!important;
 }
+.unsync-aiplus g {
+    fill: #2a6396;
+}
+  
+.unsync-aiplus:hover g {
+    fill: #ff6600;
+}

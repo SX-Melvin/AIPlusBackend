@@ -37363,7 +37363,8 @@ size:` +
                 row: 0,
               }),
               (this.tableView = r.tableView);
-              console.log(1, r.collection);
+              window.aiPlusRenderIngestionStatus(r.collection);
+              // console.log(1, r.collection);
           },
           events: { keydown: "onKeyInView" },
           behaviors: {
@@ -66613,9 +66614,6 @@ Do you want to proceed?`,
             }
             this.isForResponsiveContainer &&
               this.setContainerResponsiveStateTimeout();
-
-            console.log(this.collection.models);
-            window.aiPlusRenderIngestionStatus(this.collection.models);
           },
           isAppContainerUsed: function () {
             return this._useAppContainer;

@@ -21,6 +21,7 @@ const REFRESH_BLUE_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplu
 const AIPLUS_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus.svg";
 const PROJECT_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_project.svg";
 const PROJECTS_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_projects.svg";
+const UNSYNC_LOGO = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_unsync.svg";
 const WARNING_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_warning.svg";
 const DOCUMENT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_document.svg";
 const IMAGE_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_image.svg";
@@ -60,7 +61,6 @@ var AIPlusUtils = {
     }
   },
   updateFileBubble: async function ({msgId, nodeId}) {
-    console.log({msgId, nodeId}, filesData[nodeId]);
     if(filesData[nodeId]) {
       document.querySelector(`#msg-${msgId} .file-bubble-filename`).innerText = filesData[nodeId].name;
       document.querySelector(`#msg-${msgId} .file-bubble-icon`).setAttribute("src", this.getFileIcon(filesData[nodeId].name));
@@ -718,15 +718,15 @@ var AIPlusAPI = {
     }
     return null;
   },
-  uploadToOTCS: async function(file, parentId = null) {
+  uploadToOTCS: async function(file, parentId = null, fileName = null) {
     try {
       const formdata = new FormData();
       formdata.append("body", JSON.stringify({
         type: AIPlusUtils.getFileSubType(file), 
         parent_id: parentId ?? userHomepageID, 
-        name: file.name
+        name: fileName ?? file.name
       }));
-      formdata.append("file", file, file.name);
+      formdata.append("file", file, fileName ?? file.name);
 
       const response = await fetch(`${AIPlusConfig.otcsApiUrl}/v1/nodes`, {
         method: "POST",
@@ -872,6 +872,25 @@ var AIPlusAPI = {
     AIPlusUtils.finishMessageBox(`msg-${msgId}`);
     
     await AIPlusAPI.getChatRooms(1);
+  },
+  getSyncedFiles: async function(nodeIds) {
+    try {
+      const response = await fetch(`${AIPlusConfig.backendUrl}/Api/Sync/GetSyncedFiles`, {
+        method: "POST",
+        body: JSON.stringify(nodeIds),
+        redirect: "follow",
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+          "Content-Type": "application/json"
+        }
+      });
+  
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("getJob error:", error);
+      throw error;
+    }
   },
   getFilingSuggestion: async function(file) {
     try {
@@ -1035,7 +1054,6 @@ var AIPlusAPI = {
           filesData[node.nodeId] = node;
         }
       }
-      console.log(filesData);
       return result;
     } catch (error) {
       alert(error);
@@ -1111,7 +1129,20 @@ var AIPlusAPI = {
         if(nextData != null && nextData.sources != null) {
           sources = nextData.sources;
         }
+
         appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), true, chat.toolCalls ?? [], sources, chat.reasoning ?? null);
+
+        if(chat.nodeIds != null) {
+          const msgIds = [];
+          for(const nodeId of chat.nodeIds) {
+            msgIds.push({
+              nodeId,
+              msgId: appendMessage("file-bubble", nodeId, null, true)
+            });
+          }
+
+          AIPlusUtils.handleFileBubbles(msgIds);
+        }
 
         idx++;
       }
@@ -1173,6 +1204,25 @@ var AIPlusAPI = {
           deleteStorage: true
         }),
         redirect: "follow"
+      });
+  
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("getProjectRooms error:", error);
+      throw error;
+    }
+  },
+  createSyncedFile: async function(body) {
+    try {
+      const response = await fetch(`${AIPlusConfig.backendUrl}/api/sync/AddSyncedFile`, {
+        method: "POST",
+        body: JSON.stringify(body),
+        redirect: "follow",
+        headers: {
+          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
+          "Content-Type": "application/json"
+        }
       });
   
       const result = await response.json();
@@ -1278,22 +1328,21 @@ var AIPlusAPI = {
       throw error;
     }
   },
-  ingest: async function(file, metadata = "", priority = 10) {
+  ingest: async function(file, metadata = "", priority = 10, fileName = null) {
     try {
       const formData = new FormData();
       const workspace = TOOLS_SELECTED == "PROJECTS" ? `${PROJECT_ID}_project` : wID;
       formData.append("workspaceId", workspace);
       formData.append("metadata", metadata);
       formData.append("priority", priority);
-      formData.append("file", file, file.name);
+      formData.append("file", file, fileName ?? file.name);
       
       const response = await fetch(`${AIPlusConfig.apiUrl}/api/documents`, {
         method: "POST",
         body: formData,
         redirect: "follow",
         headers: {
-          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`,
-          // "Content-Type": "multipart/form-data"
+          "Authorization": `Bearer ${sessionStorage.getItem('aviatorToken')}`
         }
       });
   
@@ -1397,11 +1446,26 @@ async function handleFiles(files) {
       jobs.push({
         nodeId: node.id,
         id: file.id,
-        file: file.file
+        file: file.file,
+        fileName: file.file.name
       });
       AIPlusUtils.changeFileUploadStatus(file.id, 20);
     } else if (node.error) {
-      AIPlusUtils.changeFileUploadStatus(file.id, 0, `Error when uploading ${file.file.name} to personal folder: ${node.error}`);
+      // File name already exist, rename the file
+      if(node.error.includes("already exists")) {
+        const newName = `${Date.now()}_${file.file.name}`;
+        console.warn(file.file, newName);
+        const node = await AIPlusAPI.uploadToOTCS(file.file, null, newName);
+        jobs.push({
+          nodeId: node.id,
+          id: file.id,
+          file: file.file,
+          fileName: newName
+        });
+        AIPlusUtils.changeFileUploadStatus(file.id, 20);
+      } else {
+        AIPlusUtils.changeFileUploadStatus(file.id, 0, `Error when uploading ${file.file.name} to personal folder: ${node.error}`);
+      }
     }
   }
   
@@ -1409,21 +1473,28 @@ async function handleFiles(files) {
   let queues = [];
   let suggestionFilings = [];
   for(const job of jobs) {
-    const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10);
+    const workspace = TOOLS_SELECTED == "PROJECTS" ? `${PROJECT_ID}_project` : wID;
+    const jobResult = await AIPlusAPI.ingest(job.file, JSON.stringify({"nodeId": job.nodeId}), 10, job.fileName);
     if(jobResult.existingFile) {
       suggestionFilings.push(job);
     } else if(jobResult != null && jobResult.status != null && jobResult.status.toLowerCase() == "queued") {
       queues.push({
+        workspace,
         file: job.file,
+        nodeId: job.nodeId,
         id: job.id,
-        job: jobResult
+        job: jobResult,
+        fileName: job.fileName
       });
       AIPlusUtils.changeFileUploadStatus(job.id, 40);
     } else if(jobResult.status.toLowerCase() == "completed") {
       queues.push({
+        workspace,
         file: job.file,
+        nodeId: job.nodeId,
         id: job.id,
-        job: jobResult
+        job: jobResult,
+        fileName: job.fileName
       });
       AIPlusUtils.changeFileUploadStatus(job.id, 40);
     } else if (jobResult.error) {
@@ -1435,14 +1506,25 @@ async function handleFiles(files) {
     const jobs = [...queues];
   
     for (const job of jobs) {
+      const sycnedFile = {
+        nodeID: job.nodeId,
+        jobID: job.job.jobId,
+        error: null,
+        status: job.job.status,
+        workspaceID: job.workspace
+      };
       const getJob = await AIPlusAPI.getJob(job.job.jobId);
   
       if (getJob.status?.toLowerCase() === "completed") {
         queues = queues.filter(x => x.job.jobId !== job.job.jobId);
         suggestionFilings.push(job);
+        sycnedFile.status = getJob.status;
+        await AIPlusAPI.createSyncedFile(sycnedFile);
         AIPlusUtils.changeFileUploadStatus(job.id, 60);
       } else if (getJob.status?.toLowerCase() === "failed") {
         queues = queues.filter(x => x.job.jobId !== job.job.jobId);
+        sycnedFile.status = getJob.status;
+        await AIPlusAPI.createSyncedFile(sycnedFile);
         AIPlusUtils.changeFileUploadStatus(job.id, 0, `Error when ingesting ${job.file.name}: ${getJob.error ?? "An unxpected error occurred"}`);
       }
     }
@@ -1632,7 +1714,6 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
   
   if(el) {
     document.querySelectorAll(".edit-metadata-btn").forEach(x => {
-      console.log(metadataForm[x.dataset.folderId], x.dataset.folderId);
       if(metadataForm[x.dataset.folderId] != null && metadataForm[x.dataset.folderId].length > 0) {
         x.addEventListener("click", (r) => {
           AIPlusUtils.showCategoryForm(smartFilingMetadata.file.name, metadataForm[r.target.dataset.folderId], r.target.dataset.folderId);
@@ -1991,7 +2072,6 @@ async function showAviator(justCheckComponent = false) {
   });
   
   document.querySelector("#prev-file").addEventListener("click", async () => {
-    console.log(paginations.projectFile.now, paginations.projectFile.max);
     if(paginations.projectFile.now > 1) {
       const files = await AIPlusAPI.getWorkspaceFiles(null, paginations.projectFile.now-1);
       AIPlusUtils.renderProjectFiles(files);
@@ -1999,7 +2079,6 @@ async function showAviator(justCheckComponent = false) {
   });
   
   document.querySelector("#next-file").addEventListener("click", async () => {
-    console.log(paginations.projectFile.now, paginations.projectFile.max);
     if(paginations.projectFile.now < paginations.projectFile.max) {
       const files = await AIPlusAPI.getWorkspaceFiles(null, paginations.projectFile.now+1);
       AIPlusUtils.renderProjectFiles(files);
@@ -2291,22 +2370,31 @@ window.aiPlusSendFilesToChatbot = async (nodes) => {
 
 window.aiPlusRenderIngestionStatus = async (nodes) => {
   try {
-    for(const node of nodes) {
-      const row = document.querySelector(`a[href$="/nodes/${node.attributes.id}"]`).parentElement.parentElement;
-      const stateContainer = row.querySelector("ul.csui-node-states");
-      if(!stateContainer) {
-        const ul = document.createElement("ul");
-        ul.classList.add("csui-node-states");
-        row.querySelector("td.csui-table-cell-node-state").appendChild(ul);
-      }
+    if(nodes.models != null && nodes.models.length > 0) {
+      const files = nodes.models.filter(x => [144, 749].includes(x.attributes.type));
+      const syncedFiles = await AIPlusAPI.getSyncedFiles(files.map(x => x.attributes.id));
 
-      row.querySelector("ul.csui-node-states").insertAdjacentHTML("beforeend", `
-        <li class="csui-node-state-reservation">    
-          <button title="Reserved by Admin 12-01-2026" type="button" tabindex="-1" aria-label="Reserved by Admin at 12-01-2026, click to unreserve">
-            <span title="Reserved by Admin 12-01-2026" class="icon icon-reserved_self"></span>
-          </button>
-        </li>
-      `);
+      for(const node of files) {
+        const files = syncedFiles.data.map(x => x.nodeID);
+
+        if(!files.includes(node.attributes.id)) {
+          const row = document.querySelector(`a[href$="/nodes/${node.attributes.id}"]`).parentElement.parentElement;
+          const stateContainer = row.querySelector("ul.csui-node-states");
+          if(!stateContainer) {
+            const ul = document.createElement("ul");
+            ul.classList.add("csui-node-states");
+            row.querySelector("td.csui-table-cell-node-state").appendChild(ul);
+          }
+    
+          row.querySelector("ul.csui-node-states").insertAdjacentHTML("beforeend", `
+            <li class="csui-node-state-reservation">    
+              <button type="button" class="hoverable-fade" title="File was not sycned to AI+">
+                <img width="18" src="${UNSYNC_LOGO}" />
+              </button>
+            </li>
+          `);
+        }
+      }
     }
   } catch (error) {
     console.error(error);    

@@ -14071,6 +14071,24 @@ body.binf-widgets:not(.csui-on-ipad) .csui-favorite-groups.csui-favorite-groups-
     margin: 0 0 0 10px;
 }
 
+.file-bubble-msg .msg-bubble {
+    border:1px solid #2a6396!important;
+    background-color: #2a6396!important;
+    border-top-right-radius: 0;
+}
+
+.file-bubble-msg .msg-bubble .msg-text {
+    color:#f7f7f7!important;
+}
+
+.file-bubble-msg {
+    flex-direction: row-reverse;
+}
+
+.file-bubble-msg .msg-img {
+    margin: 0 0 0 10px;
+}
+
 .file-upload-msg .msg-bubble {
     border:1px solid #2a6396!important;
     background-color: #2a6396!important;
