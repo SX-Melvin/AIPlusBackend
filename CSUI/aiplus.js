@@ -31,6 +31,7 @@ const WORD_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_m
 const TEXT_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_text.svg";
 const EMAIL_MIME_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_mime_email.svg";
 const REFRESH_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_refresh.svg";
+const SPINNER_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_spinner.svg";
 const ARROW_DOWN_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_arrow_down.svg";
 const TIMES_RED_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_times_red.svg";
 const DELETE_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_delete.svg";
@@ -44,6 +45,7 @@ const FILES_ICON = "/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_files
 let NODE_IDS_REFERENCE = [];
 const nodesTableDiv = document.querySelector("div.binf-widgets");
 let metadataForm = {}
+const filesData = {}
 
 var AIPlusConfig = {
   otcsApiUrl: "/otcs/cs.exe/api",
@@ -51,6 +53,43 @@ var AIPlusConfig = {
   backendUrl: "/aiplus"
 }
 var AIPlusUtils = {
+  handleFileBubbles: async function (msgs) {
+    await AIPlusAPI.getNodesById(msgs.map(m => m.nodeId));
+    for(const msg of msgs) {
+      this.updateFileBubble(msg);
+    }
+  },
+  updateFileBubble: async function ({msgId, nodeId}) {
+    console.log({msgId, nodeId}, filesData[nodeId]);
+    if(filesData[nodeId]) {
+      document.querySelector(`#msg-${msgId} .file-bubble-filename`).innerText = filesData[nodeId].name;
+      document.querySelector(`#msg-${msgId} .file-bubble-icon`).setAttribute("src", this.getFileIcon(filesData[nodeId].name));
+    } else {
+      document.querySelector(`#msg-${msgId} .file-bubble-filename`).innerText = "Deleted file";
+      document.querySelector(`#msg-${msgId} .file-bubble-icon`).setAttribute("src", this.getFileIcon(""));
+    }
+    document.querySelector(`#msg-${msgId} .file-bubble-filename`).style.display = "block";
+    document.querySelector(`#msg-${msgId} .file-bubble-icon`).style.display = "block";
+    document.querySelector(`#msg-${msgId} .file-bubble-loader`).style.display = "none";
+    document.querySelector(`#msg-${msgId} .file-bubble-text-loader`).style.display = "none";
+  },
+  showChatSuggestions: async function (suggestions) {
+    document.querySelector("#chat-suggestions").innerHTML = "";
+    document.querySelector("#chat-suggestions").style.display = "flex";
+
+    for(const suggestion of suggestions) {
+      document.querySelector("#chat-suggestions").insertAdjacentHTML('afterbegin', `<button class="follow-up-question hoverable-fade" data-question="${suggestion}" style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:6px 12px;font-size:11px;" class="">${suggestion}</button>`);
+    }
+
+    document.querySelectorAll(".follow-up-question").forEach(e => {
+      e.addEventListener("click", async (btn) => {
+        btn.stopPropagation();
+        document.querySelector("#chat-suggestions").innerHTML = "";
+        appendMessage("right", e.dataset.question);
+        await botResponse(e.dataset.question);
+      });
+    })
+  },
   showProjectFiles: async function () {
     document.querySelector("#msger-project-file").style.display = "flex";
   },
@@ -771,7 +810,9 @@ var AIPlusAPI = {
             }
 
             // CHECK Type
-            if(data.type == 'verification_progress') {
+            if(data.type == 'suggestions') {
+              AIPlusUtils.showChatSuggestions(data.questions);
+            } else if(data.type == 'verification_progress') {
               AIPlusUtils.appendChatVerificationClaim(msgId, data);
             } else if(data.type == 'verification_result') {
               AIPlusUtils.updateChatVerificationClaimStatus(msgId, data);
@@ -975,6 +1016,30 @@ var AIPlusAPI = {
       alert(error);
       console.error("createSession error:", error);
       AIPlusUtils.toggleLoaderEnableTools(true);
+      throw error;
+    }
+  },
+  getNodesById: async function(ids) {
+    try {
+      const response = await fetch(`${AIPlusConfig.backendUrl}/api/CS/GetNodes`, {
+        method: "POST",
+        redirect: "follow",
+        body: JSON.stringify(ids),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const result = await response.json();
+      if(result.data) {
+        for(const node of result.data) {
+          filesData[node.nodeId] = node;
+        }
+      }
+      console.log(filesData);
+      return result;
+    } catch (error) {
+      alert(error);
+      console.error("getNodesById error:", error);
       throw error;
     }
   },
@@ -1187,7 +1252,20 @@ var AIPlusAPI = {
         if(nextData != null && nextData.sources != null) {
           sources = nextData.sources;
         }
+
         appendMessage(chat.role == "user" ? "right" : "left", AIPlusUtils.parseMarkdown(chat.content), new Date(chat.timestamp), appendMode, chat.toolCalls ?? [], sources, chat.reasoning ?? null);
+        
+        if(chat.nodeIds != null) {
+          const msgIds = [];
+          for(const nodeId of chat.nodeIds) {
+            msgIds.push({
+              nodeId,
+              msgId: appendMessage("file-bubble", nodeId, null, appendMode)
+            });
+          }
+
+          AIPlusUtils.handleFileBubbles(msgIds);
+        }
 
         idx++;
       }
@@ -1250,27 +1328,7 @@ var AIPlusAPI = {
 
 async function botResponse(questionToAsk) {
   const message = {role: "user", "content": questionToAsk};
-  if(SESSION_ID == null || SESSION_ID == "null") {
-    const session = await AIPlusAPI.createSession(questionToAsk);
-    if(session == null) {
-      return;
-    }
-    SESSION_ID = session.sessionId;
-    if(TOOLS_SELECTED == "PROJECTS") {
-      await AIPlusAPI.updateProjectSession(PROJECT_ID, null, SESSION_ID);
-      document.getElementById(`project-${PROJECT_ID}`).dataset.id = SESSION_ID;
-      document.querySelector(`#project-${PROJECT_ID} span`).dataset.id = SESSION_ID;
-      document.querySelector(`#project-${PROJECT_ID} img`).dataset.id = SESSION_ID;
-    }
-  }
-  
-  if(NODE_IDS_REFERENCE != null && NODE_IDS_REFERENCE.length > 0) {
-    message.nodeIds = NODE_IDS_REFERENCE;
-  }
-
-  NODE_IDS_REFERENCE = [];
-
-  await AIPlusAPI.ask({
+  const chatOptions = {
     enableQueryRewrite: true,
     enableReasoning: true,
     streamReasoning: true,
@@ -1281,7 +1339,33 @@ async function botResponse(questionToAsk) {
     messages: [
       message
     ]
-  });
+  };
+  
+  if(SESSION_ID == null || SESSION_ID == "null") {
+    const session = await AIPlusAPI.createSession(questionToAsk);
+    if(session == null) {
+      return;
+    }
+
+    SESSION_ID = session.sessionId;
+    chatOptions.sessionId = SESSION_ID;
+
+    if(TOOLS_SELECTED == "PROJECTS") {
+      await AIPlusAPI.updateProjectSession(PROJECT_ID, null, SESSION_ID);
+      document.getElementById(`project-${PROJECT_ID}`).dataset.id = SESSION_ID;
+      document.querySelector(`#project-${PROJECT_ID} span`).dataset.id = SESSION_ID;
+      document.querySelector(`#project-${PROJECT_ID} img`).dataset.id = SESSION_ID;
+    }
+  }
+  
+  if(NODE_IDS_REFERENCE == null || NODE_IDS_REFERENCE?.length == 0) {
+    chatOptions.enableSuggestions = false;
+  } else {
+    message.nodeIds = NODE_IDS_REFERENCE;
+  }
+
+  // NODE_IDS_REFERENCE = [];
+  await AIPlusAPI.ask(chatOptions);
 }
 
 async function handleFiles(files) {
@@ -1409,7 +1493,24 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
   }
 
   let msgHTML = `<div id="msg-${uniqueId}" class="msg ${side}-msg">`;
-  if(side == "file-upload") {
+  if(side == "file-bubble") {
+    msgHTML += `
+    <div style="max-width:85%;">
+      <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble shadow">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img class="file-bubble-loader spin-animation" src="${SPINNER_ICON}" width="32" />
+          <img class="file-bubble-icon" src="${AIPlusUtils.getFileIcon("")}" style="display:none" width="32" />
+          <div>
+            <div class="file-bubble-text-loader msg-text" style="font-style:italic;word-wrap:break-word;display:flex;align-items:center;justify-content:center;">
+              Loading...
+            </div>
+            <div class="file-bubble-filename msg-text" style="display:none;word-wrap:break-word; overflow-wrap:break-word; white-space:pre-line;text-align:left;margin-bottom:4px">${text}</div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>`;
+  } else if(side == "file-upload") {
     msgHTML += `
     <div style="max-width:85%;">
       <div style="display:block; width:fit-content; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;margin-left:auto; margin-right:0; text-align:right;" class="msg-bubble shadow">
@@ -1651,7 +1752,7 @@ function appendMessage(side, text, date = null, appendOnFirstChild = false, meta
   
   msgerChat.scrollTop += 500;
   return uniqueId;
-} 
+}
 
 async function showNewProjectForm() {
   const newProjectName = prompt("Project Name:");
@@ -1662,6 +1763,9 @@ async function showNewProjectForm() {
 
 function clearChats() {
   SESSION_ID = null;
+
+  NODE_IDS_REFERENCE = [];
+  document.querySelector("#chat-suggestions").innerHTML = "";
 
   const chat = document.querySelector('.msger-chat');
   [...chat.children].forEach(child => child.remove());
@@ -1812,9 +1916,7 @@ function createChatbotElement() {
                     <span style="color:#d3b03b">KNOWLEDGE</span>
                   </div>
                   <div style="margin-top:6px;font-weight:550">I can help you analyze documents, finds files, and summarize policies.</div>
-                  <div style="margin-top:18px;display:none">
-                    <button style="background:none;border:1px solid #a6a6a6;border-radius:20px;padding:6px 12px;font-size:12px;" class="">Summarize latest report</button>
-                  </div>
+                  <div id="chat-suggestions" style="justify-content:center;margin-top:18px;display:none;gap:8px"></div>
                 </center>
               </div>
               <main class="msger-chat msger-scroll" id="chat-wrapper" style="padding-left:20px;position:relative"></main>

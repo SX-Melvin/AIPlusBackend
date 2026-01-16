@@ -51,5 +51,30 @@ namespace AIPlusBackend.Services
 
             return result;
         }
+        public async Task<APIResponse<List<GetNodesResponse>>> GetNodes(List<long> body)
+        {
+            APIResponse<List<GetNodesResponse>> result = new() { Data = [] };
+
+            try
+            {
+                var nodes = await csdbUtils.GetDTreesByDataIDs(body);
+                
+                foreach (var item in nodes)
+                {
+                    result.Data.Add(new()
+                    {
+                        NodeId = item.DataID,
+                        Name = item.Name
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
+            }
+
+            return result;
+        }
     }
 }

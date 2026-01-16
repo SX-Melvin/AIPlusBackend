@@ -31,5 +31,21 @@ namespace AIPlusBackend.Controllers
 
             return result;
         }
+
+        [HttpPost("GetNodes")]
+        public async Task<APIResponse<List<GetNodesResponse>>> GetNodes([FromBody] List<long> body)
+        {
+            var result = new APIResponse<List<GetNodesResponse>>();
+            try
+            {
+                result = await service.GetNodes(body);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
     }
 }

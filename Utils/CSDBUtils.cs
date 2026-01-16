@@ -13,6 +13,10 @@ namespace AIPlusBackend.Utils
         {
             return await Task.FromResult(_context.DTreeACLs.Where(acl => nodeIds.Contains(acl.DataID)).ToList());
         }
+        public async Task<List<DTreeCore>> GetDTreesByDataIDs(List<long> nodeIds)
+        {
+            return await Task.FromResult(_context.DTreeCores.Where(acl => nodeIds.Contains(acl.DataID)).ToList());
+        }
         public DTreeACL? GetDTreeACLByDataID(long nodeId)
         {
             return _context.DTreeACLs.FirstOrDefault(acl => nodeId == acl.DataID);
