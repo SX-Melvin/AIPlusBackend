@@ -13,6 +13,7 @@ namespace AIPlusBackend.Dto
         public DbSet<ProjectRoom> ProjectRooms { get; set; }
         public DbSet<DTreeACL> DTreeACLs { get; set; }
         public DbSet<DTreeCore> DTreeCores { get; set; }
+        public DbSet<AIPlusSyncedFile> AIPlusSyncedFiles { get; set; }
         public DbSet<AIPlusTempFile> AIPlusTempFiles { get; set; }
         public DbSet<KUAF> KUAFs { get; set; }
         public DbSet<CatRegionMap> CatRegionMaps { get; set; }

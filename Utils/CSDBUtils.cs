@@ -13,6 +13,18 @@ namespace AIPlusBackend.Utils
         {
             return await Task.FromResult(_context.DTreeACLs.Where(acl => nodeIds.Contains(acl.DataID)).ToList());
         }
+        public DTreeACL? GetDTreeACLsByDataIDs(long nodeId)
+        {
+            return _context.DTreeACLs.FirstOrDefault(acl => nodeId == acl.DataID);
+        }
+        public List<AIPlusSyncedFile> GetSyncedFilesByNodeIDs(List<long> nodeIds)
+        {
+            return _context.AIPlusSyncedFiles.Where(acl => nodeIds.Contains(acl.NodeID)).ToList();
+        }
+        public DTreeCore? GetDTreeByDataID(long nodeId)
+        {
+            return _context.DTreeCores.FirstOrDefault(acl => nodeId == acl.DataID);
+        }
         public async Task<List<DTreeCore>> GetDTreesByDataIDs(List<long> nodeIds)
         {
             return await Task.FromResult(_context.DTreeCores.Where(acl => nodeIds.Contains(acl.DataID)).ToList());
@@ -59,6 +71,12 @@ namespace AIPlusBackend.Utils
         public AIPlusTempFile? CreateTempFile(AIPlusTempFile data)
         {
             _context.AIPlusTempFiles.Add(data);
+            _context.SaveChanges();
+            return data;
+        }
+        public AIPlusSyncedFile? CreateSyncedFile(AIPlusSyncedFile data)
+        {
+            _context.AIPlusSyncedFiles.Add(data);
             _context.SaveChanges();
             return data;
         }

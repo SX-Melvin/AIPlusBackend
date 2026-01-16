@@ -7,6 +7,7 @@ namespace AIPlusBackend.Dto.Database
     {
         public long ParentID { get; set; }
         public long DataID { get; set; }
+        public long? VersionNum { get; set; } = null;
         public string Name { get; set; }
     }
 }
