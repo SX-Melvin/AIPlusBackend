@@ -43,13 +43,13 @@ namespace AIPlusBackend.Services
 
             return result;
         }
-        public async Task<APIResponse<List<AIPlusSyncedFile>>> GetSyncedFilesByNodeIDs(List<long> body)
+        public async Task<APIResponse<List<AIPlusSyncedFile>>> GetSyncedFilesByNodeIDs(List<long> body, string wID)
         {
             var result = new APIResponse<List<AIPlusSyncedFile>>();
 
             try
             {
-                result.Data = csdbUtils.GetSyncedFilesByNodeIDs(body);
+                result.Data = csdbUtils.GetSyncedFilesByNodeIDs(body, wID);
             }
             catch(Exception ex)
             {

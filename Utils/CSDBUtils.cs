@@ -17,9 +17,9 @@ namespace AIPlusBackend.Utils
         {
             return _context.DTreeACLs.FirstOrDefault(acl => nodeId == acl.DataID);
         }
-        public List<AIPlusSyncedFile> GetSyncedFilesByNodeIDs(List<long> nodeIds)
+        public List<AIPlusSyncedFile> GetSyncedFilesByNodeIDs(List<long> nodeIds, string wID)
         {
-            return _context.AIPlusSyncedFiles.Where(acl => nodeIds.Contains(acl.NodeID)).ToList();
+            return _context.AIPlusSyncedFiles.Where(acl => nodeIds.Contains(acl.NodeID) && acl.WorkspaceID == wID).ToList();
         }
         public DTreeCore? GetDTreeByDataID(long nodeId)
         {

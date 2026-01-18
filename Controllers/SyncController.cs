@@ -1,3 +1,4 @@
+using AIPlusBackend.Configurations;
 using AIPlusBackend.Dto;
 using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Dto.CSDB;
@@ -6,6 +7,7 @@ using AIPlusBackend.Dto.TempFile;
 using AIPlusBackend.Services;
 using AIPlusBackend.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Text;
 using System.Threading;
 
@@ -13,7 +15,7 @@ namespace AIPlusBackend.Controllers
 {
     [ApiController]
     [Route("Api/[controller]")]
-    public class SyncController(SyncService service) : ControllerBase
+    public class SyncController(SyncService service, IOptions<AIPlusConfiguration> config) : ControllerBase
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -41,7 +43,7 @@ namespace AIPlusBackend.Controllers
 
             try
             {
-                return await service.GetSyncedFilesByNodeIDs(body);
+                return await service.GetSyncedFilesByNodeIDs(body, config.Value.WorkspaceId);
             }
             catch (Exception ex)
             {
