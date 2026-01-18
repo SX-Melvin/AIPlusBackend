@@ -20,8 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.Configure<AIPlusConfiguration>(
-    builder.Configuration.GetSection("AIPlus"));
+builder.Services.Configure<AIPlusConfiguration>(builder.Configuration.GetSection("AIPlus"));
+builder.Services.Configure<OTCSConfiguration>(builder.Configuration.GetSection("OTCS"));
 
 builder.Services.AddCors(options =>
 {
@@ -45,6 +45,7 @@ builder.Services.AddScoped<SyncService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<CSService>();
 builder.Services.AddScoped<CSDBUtils>();
+builder.Services.AddScoped<OTCSUtils>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -856,11 +856,18 @@ csui.define("csui/behaviors/item.name/impl/nls/lang", {
               propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask AI+</a></li>`);
             }
 
-            if(that.selectedChildren.models.filter(node => node.attributes.type != 144).length > 0) {
+            if(that.selectedChildren.models.filter(node => node.attributes.type != 144 && node.attributes.type != 749).length > 0) {
               if(document.querySelector("#ask-ark-toolbar")) document.querySelector("#ask-ark-toolbar").remove();
             } else {
               if(!document.querySelector("#ask-ark-toolbar")) {
                 propBtn[0].insertAdjacentHTML("afterend", `<li data-csui-command="askark" id="ask-ark-toolbar" role="none" class=""><a href="#" role="menuitem" class="csui-toolitem csui-toolitem-textonly csui-acc-focusable" data-cstabindex="-1" tabindex="-1">Ask AI+</a></li>`);
+              }
+            }
+
+            for(const nodeId of that.selectedChildren.models.map(x => x.attributes.id)) {
+              if(!window.aiPlusIngestedFileIds.map(x => x.nodeID).includes(nodeId)) {
+                document.querySelector("#ask-ark-toolbar").remove();
+                break;
               }
             }
 

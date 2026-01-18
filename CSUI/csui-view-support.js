@@ -10829,31 +10829,61 @@ csui.define(
                       var that = this;
 
                       if(this.model.attributes.type == 144 || this.model.attributes.type == 749) {
-                        const li = document.createElement("li");
-                        li.style.width = "32px";
-                        li.style.height = "32px";
-                        li.setAttribute("data-csui-command", "none");
-                        li.setAttribute("role", "none");
-
-                        const a = document.createElement("a");
-
-                        a.setAttribute("title", "Ask AI+");
-                        a.setAttribute("role", "menuitem");
-                        a.setAttribute("class", "icon-toolbar-aviator csui-toolitem csui-acc-focusable csui-toolitem-icononly");
-                        a.setAttribute("data-cstabindex", "-1");
-                        a.setAttribute("aria-label", "Ask AI+");
-                        a.style.display = "flex";
-                        a.style.justifyContent = "center";
-                        a.style.marginLeft = "4px";
-                        a.style.alignItems = "center";
-                        a.setAttribute("id", "aviator-workflow");
-                        a.onclick = () => window.aiPlusSendFilesToChatbot([this.model]);
-
-                        a.innerHTML = `<img height="18" width="18" src="/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_black.svg" />`;
-
-                        li.appendChild(a);
-
-                        that.$el.find(">ul").prepend(li);
+                        if(window.aiPlusIngestedFileIds != null) {
+                          if(window.aiPlusIngestedFileIds.map(x => x.nodeID).includes(this.model.attributes.id)) {
+                            const li = document.createElement("li");
+                            li.style.width = "32px";
+                            li.style.height = "32px";
+                            li.setAttribute("data-csui-command", "none");
+                            li.setAttribute("role", "none");
+    
+                            const a = document.createElement("a");
+    
+                            a.setAttribute("title", "Ask AI+");
+                            a.setAttribute("role", "menuitem");
+                            a.setAttribute("class", "icon-toolbar-aviator csui-toolitem csui-acc-focusable csui-toolitem-icononly");
+                            a.setAttribute("data-cstabindex", "-1");
+                            a.setAttribute("aria-label", "Ask AI+");
+                            a.style.display = "flex";
+                            a.style.justifyContent = "center";
+                            a.style.marginLeft = "4px";
+                            a.style.alignItems = "center";
+                            a.setAttribute("id", "aviator-workflow");
+                            a.onclick = () => window.aiPlusSendFilesToChatbot([this.model]);
+    
+                            a.innerHTML = `<img height="18" width="18" src="/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_black.svg" />`;
+    
+                            li.appendChild(a);
+    
+                            that.$el.find(">ul").prepend(li);
+                          } else {
+                            const li = document.createElement("li");
+                            li.style.width = "32px";
+                            li.style.height = "32px";
+                            li.setAttribute("data-csui-command", "none");
+                            li.setAttribute("role", "none");
+    
+                            const a = document.createElement("a");
+    
+                            a.setAttribute("title", "Ingest document");
+                            a.setAttribute("role", "menuitem");
+                            a.setAttribute("class", "icon-toolbar-aviator csui-toolitem csui-acc-focusable csui-toolitem-icononly");
+                            a.setAttribute("data-cstabindex", "-1");
+                            a.setAttribute("aria-label", "Ingest document");
+                            a.style.display = "flex";
+                            a.style.justifyContent = "center";
+                            a.style.marginLeft = "4px";
+                            a.style.alignItems = "center";
+                            a.setAttribute("id", "aviator-workflow");
+                            a.onclick = () => window.aiPlusIngestFile(this.model);
+    
+                            a.innerHTML = `<img height="18" width="18" src="/img/csui/themes/carbonfiber/image/icons/aiplus/aiplus_upload.svg" />`;
+    
+                            li.appendChild(a);
+    
+                            that.$el.find(">ul").prepend(li);
+                          }
+                        }
                       }
                     }
                     // AVIATOR END

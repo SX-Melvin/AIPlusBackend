@@ -5,10 +5,11 @@ using AIPlusBackend.Utils;
 using AIPlusBackend.Utils.Common;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace AIPlusBackend.Services
 {
-    public class AIPlusService(AIPlusUtils utils, CSDBUtils csdb, IOptions<AIPlusConfiguration> config)
+    public class AIPlusService(AIPlusUtils utils, CSDBUtils csdb, OTCSUtils otcs, IOptions<AIPlusConfiguration> config)
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public async Task<APIResponse<AIPlusLoginResponse>> Login()
@@ -125,6 +126,58 @@ namespace AIPlusBackend.Services
                     JobId = suggestFile.JobId ?? suggestFile.ExistingFile.JobId,
                     WorkspaceID = wId
                 });
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                result.ErrorMessage = ex.Message;
+            }
+
+            return result;
+        }
+        public async Task<APIResponse<bool>> IngestDocument(long nodeID)
+        {
+            var result = new APIResponse<bool>()
+            {
+                Data = false
+            };
+
+            try
+            {
+                var node = csdb.GetDTreeByDataID(nodeID);
+                if(node != null)
+                {
+                    var ticket = otcs.GetTicket();
+                    var file = otcs.DownloadFile(nodeID, (int)node.VersionNum.Value, node.Name, ticket);
+                    if(file != null)
+                    {
+                        var token = utils.Login().Result.Token;
+                        var suggestFileIngested = false;
+
+                        var suggestFile = await utils.UploadFile(config.Value.WorkspaceId, file, "", token);
+
+                        while (!suggestFileIngested && suggestFile.ExistingFile == null)
+                        {
+                            if (!suggestFileIngested)
+                            {
+                                var res = await utils.GetJob(suggestFile.JobId, token);
+                                if (res.Status == "completed")
+                                {
+                                    suggestFileIngested = true;
+                                }
+                                else if (res.Status == "failed" || res.Error != null)
+                                {
+                                    result.ErrorMessage = res.Error;
+                                    break;
+                                }
+                            }
+
+                            await Task.Delay(TimeSpan.FromSeconds(2));
+                        }
+
+                        result.Data = suggestFileIngested;
+                    }
+                }
             }
             catch (Exception ex)
             {

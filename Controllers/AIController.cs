@@ -52,5 +52,21 @@ namespace AIPlusBackend.Controllers
 
             return result;
         }
+
+        [HttpPost("Ingest/{nodeID}")]
+        public async Task<APIResponse<bool>> IngestDocument(long nodeID)
+        {
+            var result = new APIResponse<bool>();
+            try
+            {
+                return await service.IngestDocument(nodeID);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return result;
+        }
     }
 }
