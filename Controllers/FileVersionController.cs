@@ -17,14 +17,14 @@ namespace AIPlusBackend.Controllers
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        [HttpPost("AddFileVersion")]
-        public async Task<APIResponse<AIPlusFileVersion?>> AddFileVersion([FromBody] AddFileVersionRequest body)
+        [HttpPost("NodeID/{nodeId}")]
+        public async Task<APIResponse<AIPlusFileVersion?>> AddFileVersion(long nodeId)
         {
             var result = new APIResponse<AIPlusFileVersion?>();
 
             try
             {
-                return await service.AddFileVersion(body);
+                return await service.AddFileVersion(nodeId);
             }
             catch (Exception ex)
             {
@@ -34,7 +34,7 @@ namespace AIPlusBackend.Controllers
             return result;
         }
 
-        [HttpDelete("DeleteFileVersion")]
+        [HttpDelete("NodeID/{nodeID}")]
         public async Task<APIResponse<bool>> DeleteFileVersion(long nodeID)
         {
             var result = new APIResponse<bool>();

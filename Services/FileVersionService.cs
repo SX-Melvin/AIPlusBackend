@@ -10,31 +10,25 @@ namespace AIPlusBackend.Services
     public class FileVersionService(CSDBUtils csdbUtils)
     {
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public async Task<APIResponse<AIPlusFileVersion?>> AddFileVersion(AddFileVersionRequest body)
+        public async Task<APIResponse<AIPlusFileVersion?>> AddFileVersion(long nodeId)
         {
             var result = new APIResponse<AIPlusFileVersion?>();
 
             try
             {
-                if(body.VerNum == null)
+                var latestVersion = csdbUtils.GetDTreeByDataID(nodeId);
+                if(latestVersion != null && latestVersion.VersionNum.HasValue)
                 {
-                    var latestVersion = csdbUtils.GetDTreeByDataID(body.NodeID);
-                    if(latestVersion != null && latestVersion.VersionNum.HasValue)
+                    var verNum = (int)latestVersion.VersionNum;
+                    result.Data = csdbUtils.CreateFileVersion(new()
                     {
-                        body.VerNum = (int)latestVersion.VersionNum;
-                    }
+                        CreatedAt = DateTime.UtcNow,
+                        Name = latestVersion.Name,
+                        NodeID = nodeId,
+                        ParentID = latestVersion.ParentID,
+                        VerNum = verNum
+                    });
                 }
-
-                var data = csdbUtils.CreateFileVersion(new()
-                {
-                    CreatedAt = DateTime.UtcNow,
-                    Name = body.Name,
-                    NodeID = body.NodeID,
-                    ParentID = body.ParentID,
-                    VerNum = body.VerNum ?? 1
-                });
-
-                result.Data = data;
             }
             catch(Exception ex)
             {
