@@ -42,6 +42,7 @@ builder.Services.AddScoped<AIPlusService>();
 builder.Services.AddScoped<AIPlusUtils>();
 builder.Services.AddScoped<TempFileService>();
 builder.Services.AddScoped<SyncService>();
+builder.Services.AddScoped<FileVersionService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<CSService>();
 builder.Services.AddScoped<CSDBUtils>();

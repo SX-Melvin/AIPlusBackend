@@ -4,6 +4,7 @@ using AIPlusBackend.Dto.AIPlus;
 using AIPlusBackend.Utils;
 using AIPlusBackend.Utils.Common;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -154,7 +155,10 @@ namespace AIPlusBackend.Services
                         var token = utils.Login().Result.Token;
                         var suggestFileIngested = false;
 
-                        var suggestFile = await utils.UploadFile(config.Value.WorkspaceId, file, "", token);
+                        var suggestFile = await utils.UploadFile(config.Value.WorkspaceId, file, JsonConvert.SerializeObject(new
+                        {
+                            nodeId = nodeID
+                        }), token);
 
                         while (!suggestFileIngested && suggestFile.ExistingFile == null)
                         {
@@ -164,10 +168,33 @@ namespace AIPlusBackend.Services
                                 if (res.Status == "completed")
                                 {
                                     suggestFileIngested = true;
+                                    csdb.CreateSyncedFile(new()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        JobID = suggestFile.JobId,
+                                        Name = suggestFile.FileName,
+                                        NodeID = nodeID,
+                                        ParentID = node.ParentID,
+                                        Status = res.Status.ToUpper(),
+                                        VerNum = (int)node.VersionNum.Value,
+                                        WorkspaceID = config.Value.WorkspaceId
+                                    });
                                 }
                                 else if (res.Status == "failed" || res.Error != null)
                                 {
                                     result.ErrorMessage = res.Error;
+                                    csdb.CreateSyncedFile(new()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        JobID = suggestFile.JobId,
+                                        Name = suggestFile.FileName,
+                                        NodeID = nodeID,
+                                        Error = res.Error,
+                                        ParentID = node.ParentID,
+                                        Status = res.Status.ToUpper(),
+                                        VerNum = (int)node.VersionNum.Value,
+                                        WorkspaceID = config.Value.WorkspaceId
+                                    });
                                     break;
                                 }
                             }
@@ -175,6 +202,7 @@ namespace AIPlusBackend.Services
                             await Task.Delay(TimeSpan.FromSeconds(2));
                         }
 
+                        csdb.DeleteFileVersionByNodeID(nodeID);
                         result.Data = suggestFileIngested;
                     }
                 }

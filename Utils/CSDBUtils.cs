@@ -21,6 +21,12 @@ namespace AIPlusBackend.Utils
         {
             return _context.AIPlusSyncedFiles.Where(acl => nodeIds.Contains(acl.NodeID) && acl.WorkspaceID == wID).ToList();
         }
+        public void DeleteFileVersionByNodeID(long nodeId)
+        {
+            var rows = _context.AIPlusFileVersions.Where(x => x.NodeID == nodeId).ToList();
+            _context.AIPlusFileVersions.RemoveRange(rows);
+            _context.SaveChanges();
+        }
         public DTreeCore? GetDTreeByDataID(long nodeId)
         {
             return _context.DTreeCores.FirstOrDefault(acl => nodeId == acl.DataID);
@@ -71,6 +77,12 @@ namespace AIPlusBackend.Utils
         public AIPlusTempFile? CreateTempFile(AIPlusTempFile data)
         {
             _context.AIPlusTempFiles.Add(data);
+            _context.SaveChanges();
+            return data;
+        }
+        public AIPlusFileVersion? CreateFileVersion(AIPlusFileVersion data)
+        {
+            _context.AIPlusFileVersions.Add(data);
             _context.SaveChanges();
             return data;
         }
